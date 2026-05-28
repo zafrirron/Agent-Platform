@@ -47,7 +47,8 @@ Copy the platform pack to any consumer repository root — new or existing — t
 | **Cross-IDE coordination** | `registry.yaml` prevents two IDEs editing the same file simultaneously; `CURRENT.md` preserves full context across switches |
 | **8 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data — activate by name, chain across sessions |
 | **7 playbooks** | add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit — step-by-step with agent assignments |
-| **10 best-practice rules** | Golden rules, task anatomy (Context/Goal/Constraints/Done-when), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
+| **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff with explicit done-when), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
+| **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before the task is marked done; coverage gate auto-detected at install; red suite blocks handoff |
 | **5 living context files** | api-contracts · adr-log (Architecture Decision Records) · known-issues · dependencies · project-overview — kept in sync as code evolves |
 | **🪨 Caveman skill** | ~65% output token savings; 5 slash commands (`/caveman`, `/caveman-commit`, `/caveman-review`, `/caveman-stats`, `/caveman-compress`); wired into all 4 frameworks |
 | **API agentic patterns** | 12 conventions for agents that build or consume APIs: schema-first, contract discipline, idempotency, structured errors, auth injection, rate-limit backoff, mock-first, contract tests |
@@ -132,7 +133,7 @@ Your existing code, docs, and config are untouched. Only the `.agent/`, `.claude
 
 | Phase | What happens |
 |-------|-------------|
-| **0 · Discover** | Reads repo name, README, stack (languages, build files) |
+| **0 · Discover** | Reads repo name, README, stack (languages, build files); detects `TEST_RUNNER`, `COVERAGE_CMD`, and sets `COVERAGE_THRESHOLD` (default 80%) |
 | **1 · Verify pack** | Confirms manifest + `AGENT-PLATFORM-TEMPLATES/` at repo root |
 | **2 · Apply** | Runs apply (e.g. `node AGENT-PLATFORM-APPLY.js`) — writes templates; skips existing files |
 | **3 · Stubs** | Fills project-specific stubs: stack, components, entry points, API contracts, dependencies |
@@ -227,6 +228,32 @@ Your customised content (filled stubs, project-specific docs, ADRs, known-issues
 
 ---
 
+### Upgrading from v2.x to v2.2
+
+v2.2 adds test enforcement (new placeholders, expanded rules). Existing installs need a targeted update:
+
+**Step 1 — Copy the 5 changed template files** from the new pack into your installed `.agent/` folder:
+
+| Source (pack) | Destination (your repo) |
+|---------------|------------------------|
+| `AGENT-PLATFORM-TEMPLATES/.agent/agents/test-agent.md` | `.agent/agents/test-agent.md` |
+| `AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md` | `.agent/CONVENTIONS.md` |
+| `AGENT-PLATFORM-TEMPLATES/.agent/CHECKLIST.md` | `.agent/CHECKLIST.md` |
+| `AGENT-PLATFORM-TEMPLATES/.agent/BEST-PRACTICES.md` | `.agent/BEST-PRACTICES.md` |
+| `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/api-integration.md` | `.agent/playbooks/api-integration.md` |
+
+**Step 2 — Fill the two new placeholders** in the files you just copied. Replace `{{COVERAGE_CMD}}` and `{{COVERAGE_THRESHOLD}}` with your project's values (e.g. `pytest --cov` and `80`).
+
+**Step 3 — Verify**:
+```
+Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair
+```
+This fills any remaining empty stubs without overwriting what you just set.
+
+> **Alternative (no customisations to preserve):** `mode=force` resets all templates in one command. Confirm before running — it overwrites project-specific content.
+
+---
+
 ## Usage guide — after install
 
 > **This section is for you (the human).** Once the bootstrap has run, here is everything you need to operate the platform day-to-day. No memorisation required — copy-paste the commands below.
@@ -275,7 +302,7 @@ Task: add rate-limiting middleware to the API
 | ⚙️ Backend | `Read .agent/agents/backend-agent.md` | APIs, services, server logic |
 | 🎨 Frontend | `Read .agent/agents/frontend-agent.md` | UI, components, client state |
 | 🔧 DevOps | `Read .agent/agents/devops-agent.md` | CI/CD, builds, infra scripts |
-| 🧪 Test | `Read .agent/agents/test-agent.md` | Tests, fixtures, coverage |
+| 🧪 Test | `Read .agent/agents/test-agent.md` | Tests, fixtures, coverage enforcement, quality gate |
 | 📚 Docs | `Read .agent/agents/docs-agent.md` | READMEs, changelogs, API docs |
 | 🔒 Security | `Read .agent/agents/security-agent.md` | Secrets, auth, threat review |
 | 🗄 Data | `Read .agent/agents/data-agent.md` | Schemas, migrations, pipelines |
@@ -473,6 +500,28 @@ Read .agent/context/adr-log.md
 
 Full template and examples are in the file. ADR-001 is pre-filled at bootstrap (the decision to adopt this platform).
 
+#### Test enforcement — built in from v2.2
+
+The platform mandates tests at every handoff. Rules live in `.agent/CONVENTIONS.md` and `.agent/CHECKLIST.md`.
+
+| Trigger | Required |
+|---------|---------|
+| New public function or module | Unit test |
+| Bug fix | Regression test (no exceptions) |
+| New API endpoint | Contract test (happy path + ≥1 error path) |
+| Any code change | Full suite green before handoff |
+
+The Test expert auto-detects your runner at install. Override in `.agent/CONVENTIONS.md`:
+```
+Test runner:    {{TEST_RUNNER}}
+Coverage cmd:   {{COVERAGE_CMD}}
+Coverage gate:  {{COVERAGE_THRESHOLD}}%
+```
+
+`untested = unfinished` — agents cannot mark a task done with red tests or uncovered new code.
+
+---
+
 #### Security quick-check (before every commit)
 
 ```
@@ -515,6 +564,9 @@ RELEASE             Read .agent/playbooks/release.md
 CAVEMAN ON          /caveman  (Claude Code)  |  "caveman mode"  (others)
 CAVEMAN OFF         stop caveman
 COMPRESS FILE       /caveman-compress <path>
+RUN TESTS           {{TEST_RUNNER}}
+CHECK COVERAGE      {{COVERAGE_CMD}}
+LOAD TEST EXPERT    Read .agent/agents/test-agent.md
 INSTALL PLATFORM    Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
 REPAIR PLATFORM     Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair
 UPGRADE PLATFORM    Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade
@@ -841,4 +893,4 @@ Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
 
 ---
 
-*Agent Platform Bootstrap v2.1 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.2 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
