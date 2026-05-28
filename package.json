@@ -1,0 +1,16 @@
+{
+  "name": "agent-platform-bootstrap",
+  "version": "2.1.0",
+  "private": true,
+  "description": "Multi-framework agent platform pack (orchestrator + manifest + templates). Not an application.",
+  "scripts": {
+    "manifest": "node tools/build-bootstrap-manifest.js",
+    "readme": "node tools/build-framework-readme.js",
+    "apply": "node AGENT-PLATFORM-APPLY.js",
+    "apply:upgrade": "node AGENT-PLATFORM-APPLY.js --mode=upgrade",
+    "check-tools": "node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/check_locks.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/prune_handoff.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/launch.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

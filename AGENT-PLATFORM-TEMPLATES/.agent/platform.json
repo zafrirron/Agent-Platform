@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "bootstrap_version": "{{BOOTSTRAP_VERSION}}",
+  "project": "{{PROJECT_NAME}}",
+  "updated_at": "{{DATE}}T00:00:00Z",
+  "generated_from": "AGENT-PLATFORM-BOOTSTRAP.md",
+  "managed_paths": [
+    "AGENTS.md",
+    "SYNC-POINTS.md",
+    "CLAUDE.md",
+    ".agent/",
+    ".claude/",
+    ".cursor/",
+    ".agents/",
+    ".codex/"
+  ],
+  "platform_tools": [
+    ".agent/tools/check_locks.js",
+    ".agent/tools/prune_handoff.js",
+    ".agent/tools/launch.mjs",
+    ".agent/tools/launch.sh",
+    ".agent/tools/launch.ps1",
+    ".agent/bootstrap/apply.js"
+  ],
+  "launch": {
+    "default": {
+      "command": "npm",
+      "args": ["start"],
+      "cwd": ".",
+      "env_unset": []
+    },
+    "windows": {
+      "command": "npm",
+      "args": ["start"],
+      "cwd": ".",
+      "env_unset": []
+    },
+    "unix": {
+      "command": "npm",
+      "args": ["start"],
+      "cwd": ".",
+      "env_unset": []
+    }
+  },
+  "notes": "Phase 3 fills launch.* from stack scan. Run: node .agent/tools/launch.mjs (all OS), or launch.sh / launch.ps1 wrappers."
+}

@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "bootstrap_version": "2.0.0",
+  "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
+  "templates_root": "AGENT-PLATFORM-TEMPLATES",
+  "apply_script": ".agent/bootstrap/apply.js",
+  "placeholders": [
+    "PROJECT_NAME",
+    "PROJECT_DESCRIPTION",
+    "DATE",
+    "HIGH_CONFLICT_PATHS",
+    "TEST_RUNNER",
+    "BOOTSTRAP_VERSION"
+  ],
+  "frameworks": [
+    "cursor",
+    "claude",
+    "antigravity",
+    "codex"
+  ],
+  "files": [
+    {
+      "path": ".agent/.shared-hub",
+      "template": ".agent/.shared-hub",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/BEST-PRACTICES.md",
+      "template": ".agent/BEST-PRACTICES.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/CHECKLIST.md",
+      "template": ".agent/CHECKLIST.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/CONVENTIONS.md",
+      "template": ".agent/CONVENTIONS.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/FILE_MAP.md",
+      "template": ".agent/FILE_MAP.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/PROJECT.md",
+      "template": ".agent/PROJECT.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/README.md",
+      "template": ".agent/README.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/SWITCH-PROMPTS.md",
+      "template": ".agent/SWITCH-PROMPTS.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/SYNC.md",
+      "template": ".agent/SYNC.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/WORKFLOWS.md",
+      "template": ".agent/WORKFLOWS.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/ZONES.md",
+      "template": ".agent/ZONES.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/architect-agent.md",
+      "template": ".agent/agents/architect-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/backend-agent.md",
+      "template": ".agent/agents/backend-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/data-agent.md",
+      "template": ".agent/agents/data-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/devops-agent.md",
+      "template": ".agent/agents/devops-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/docs-agent.md",
+      "template": ".agent/agents/docs-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/frontend-agent.md",
+      "template": ".agent/agents/frontend-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/security-agent.md",
+      "template": ".agent/agents/security-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/test-agent.md",
+      "template": ".agent/agents/test-agent.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/bootstrap/apply.js",
+      "template": ".agent/bootstrap/apply.js",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/adr-log.md",
+      "template": ".agent/context/adr-log.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/api-contracts.md",
+      "template": ".agent/context/api-contracts.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/api-patterns.md",
+      "template": ".agent/context/api-patterns.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/dependencies.md",
+      "template": ".agent/context/dependencies.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/known-issues.md",
+      "template": ".agent/context/known-issues.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/project-overview.md",
+      "template": ".agent/context/project-overview.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/handoff/CURRENT.md",
+      "template": ".agent/handoff/CURRENT.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/handoff/TEMPLATE.md",
+      "template": ".agent/handoff/TEMPLATE.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/handoff/sync/README.md",
+      "template": ".agent/handoff/sync/README.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/handoff/sync/registry.yaml",
+      "template": ".agent/handoff/sync/registry.yaml",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/handoff/task-template.md",
+      "template": ".agent/handoff/task-template.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/platform.json",
+      "template": ".agent/platform.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/playbooks/add-dependency.md",
+      "template": ".agent/playbooks/add-dependency.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/add-feature.md",
+      "template": ".agent/playbooks/add-feature.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/api-integration.md",
+      "template": ".agent/playbooks/api-integration.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/bug-fix.md",
+      "template": ".agent/playbooks/bug-fix.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/debug-pipeline.md",
+      "template": ".agent/playbooks/debug-pipeline.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/refactor.md",
+      "template": ".agent/playbooks/refactor.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/release.md",
+      "template": ".agent/playbooks/release.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/security-audit.md",
+      "template": ".agent/playbooks/security-audit.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/skills/caveman/README.md",
+      "template": ".agent/skills/caveman/README.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/skills/caveman/SKILL.md",
+      "template": ".agent/skills/caveman/SKILL.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/tools/check_locks.js",
+      "template": ".agent/tools/check_locks.js",
+      "kind": "tool"
+    },
+    {
+      "path": ".agent/tools/launch.mjs",
+      "template": ".agent/tools/launch.mjs",
+      "kind": "tool"
+    },
+    {
+      "path": ".agent/tools/launch.ps1",
+      "template": ".agent/tools/launch.ps1",
+      "kind": "tool"
+    },
+    {
+      "path": ".agent/tools/launch.sh",
+      "template": ".agent/tools/launch.sh",
+      "kind": "tool"
+    },
+    {
+      "path": ".agent/tools/prune_handoff.js",
+      "template": ".agent/tools/prune_handoff.js",
+      "kind": "tool"
+    },
+    {
+      "path": ".agents/FRAMEWORK.json",
+      "template": ".agents/FRAMEWORK.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agents/PRIVATE.md",
+      "template": ".agents/PRIVATE.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agents/prompts/session-end.md",
+      "template": ".agents/prompts/session-end.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agents/prompts/session-start.md",
+      "template": ".agents/prompts/session-start.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agents/rules/00-multi-framework-sync.md",
+      "template": ".agents/rules/00-multi-framework-sync.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agents/skills/caveman.md",
+      "template": ".agents/skills/caveman.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/FRAMEWORK.json",
+      "template": ".claude/FRAMEWORK.json",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/README.md",
+      "template": ".claude/README.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/commands/caveman-commit.md",
+      "template": ".claude/commands/caveman-commit.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/commands/caveman-compress.md",
+      "template": ".claude/commands/caveman-compress.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/commands/caveman-review.md",
+      "template": ".claude/commands/caveman-review.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/commands/caveman-stats.md",
+      "template": ".claude/commands/caveman-stats.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/commands/caveman.md",
+      "template": ".claude/commands/caveman.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/prompts/session-end.md",
+      "template": ".claude/prompts/session-end.md",
+      "kind": "template"
+    },
+    {
+      "path": ".claude/prompts/session-start.md",
+      "template": ".claude/prompts/session-start.md",
+      "kind": "template"
+    },
+    {
+      "path": ".codex/FRAMEWORK.json",
+      "template": ".codex/FRAMEWORK.json",
+      "kind": "template"
+    },
+    {
+      "path": ".codex/instructions.md",
+      "template": ".codex/instructions.md",
+      "kind": "template"
+    },
+    {
+      "path": ".codex/prompts/session-end.md",
+      "template": ".codex/prompts/session-end.md",
+      "kind": "template"
+    },
+    {
+      "path": ".codex/prompts/session-start.md",
+      "template": ".codex/prompts/session-start.md",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/FRAMEWORK.json",
+      "template": ".cursor/FRAMEWORK.json",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/README.md",
+      "template": ".cursor/README.md",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/prompts/session-end.md",
+      "template": ".cursor/prompts/session-end.md",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/prompts/session-start.md",
+      "template": ".cursor/prompts/session-start.md",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/rules/agent-sync.mdc",
+      "template": ".cursor/rules/agent-sync.mdc",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/rules/caveman.mdc",
+      "template": ".cursor/rules/caveman.mdc",
+      "kind": "template"
+    },
+    {
+      "path": ".cursor/rules/platform-core.mdc",
+      "template": ".cursor/rules/platform-core.mdc",
+      "kind": "template"
+    },
+    {
+      "path": "AGENTS.md",
+      "template": "AGENTS.md",
+      "kind": "template"
+    },
+    {
+      "path": "CLAUDE.md",
+      "template": "CLAUDE.md",
+      "kind": "template"
+    },
+    {
+      "path": "SYNC-POINTS.md",
+      "template": "SYNC-POINTS.md",
+      "kind": "template"
+    }
+  ]
+}

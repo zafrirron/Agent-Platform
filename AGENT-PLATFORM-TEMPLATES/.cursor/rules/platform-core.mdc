@@ -1,0 +1,7 @@
+---
+description: Platform core rules
+alwaysApply: true
+---
+# {{PROJECT_NAME}}
+
+Router: `AGENTS.md`. Shared hub: `.agent/`. Minimal diffs. Commits only when user asks.

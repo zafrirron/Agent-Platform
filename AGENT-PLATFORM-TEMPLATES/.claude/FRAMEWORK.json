@@ -1,0 +1,15 @@
+{
+  "framework_id": "claude",
+  "display_name": "Claude Code",
+  "private_root": ".claude",
+  "session_prompts": {
+    "start": ".claude/prompts/session-start.md",
+    "end": ".claude/prompts/session-end.md"
+  },
+  "shared_sync": {
+    "registry": ".agent/handoff/sync/registry.yaml",
+    "handoff": ".agent/handoff/CURRENT.md",
+    "protocol": ".agent/SYNC.md",
+    "index": "SYNC-POINTS.md"
+  }
+}

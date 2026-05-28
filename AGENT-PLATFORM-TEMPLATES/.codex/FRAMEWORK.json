@@ -1,0 +1,15 @@
+{
+  "framework_id": "codex",
+  "display_name": "Codex (VS Code)",
+  "private_root": ".codex",
+  "session_prompts": {
+    "start": ".codex/prompts/session-start.md",
+    "end": ".codex/prompts/session-end.md"
+  },
+  "shared_sync": {
+    "registry": ".agent/handoff/sync/registry.yaml",
+    "handoff": ".agent/handoff/CURRENT.md",
+    "protocol": ".agent/SYNC.md",
+    "index": "SYNC-POINTS.md"
+  }
+}

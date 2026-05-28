@@ -1,0 +1,43 @@
+schema_version: 1
+meta:
+  updated_at: "{{DATE}}T00:00:00Z"
+  updated_by: bootstrap
+  project: "{{PROJECT_NAME}}"
+
+frameworks:
+  cursor:
+    status: idle
+    started_at: null
+    last_active: null
+    agent_label: ""
+    task: ""
+    files: []
+  claude:
+    status: idle
+    started_at: null
+    last_active: null
+    agent_label: ""
+    task: ""
+    files: []
+  antigravity:
+    status: idle
+    started_at: null
+    last_active: null
+    agent_label: ""
+    task: ""
+    files: []
+  codex:
+    status: idle
+    started_at: null
+    last_active: null
+    agent_label: ""
+    task: ""
+    files: []
+
+protected_paths:
+  - "**/node_modules/**"
+  - "**/bin/**"
+  - "**/obj/**"
+  - "**/.git/**"
+
+locks: []

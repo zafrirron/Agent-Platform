@@ -1,0 +1,15 @@
+# Suggested .gitignore for a framework-only repository (rename to .gitignore when creating the new repo)
+
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Optional: if you dogfood bootstrap on this repo, ignore generated install output
+# .agent/
+# .cursor/
+# .claude/
+# .agents/
+# .codex/
+# AGENTS.md
+# SYNC-POINTS.md
+# CLAUDE.md
