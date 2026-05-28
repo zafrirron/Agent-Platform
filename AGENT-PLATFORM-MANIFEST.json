@@ -10,6 +10,8 @@
     "DATE",
     "HIGH_CONFLICT_PATHS",
     "TEST_RUNNER",
+    "COVERAGE_CMD",
+    "COVERAGE_THRESHOLD",
     "BOOTSTRAP_VERSION"
   ],
   "frameworks": [

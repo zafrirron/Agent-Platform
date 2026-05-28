@@ -20,3 +20,12 @@
 
 Structure every task with four parts:
 
+| Part | What to do |
+|------|-----------|
+| **1. Spec** | Write acceptance criteria and test skeleton before touching production code |
+| **2. Implement** | Smallest correct change; claim files in `registry.yaml` first |
+| **3. Test** | Run `{{TEST_RUNNER}}`; new code must have tests; coverage must not drop |
+| **4. Handoff** | Update `CURRENT.md`; all checklist items green; log any blockers |
+
+**Done means:** tests written, suite green, handoff updated. Never mark done without all three.
+

@@ -19,9 +19,14 @@
 
 ## Testing
 
-- Every bug fix must include a regression test
-- New critical path → test before marking done
-- Tests assert behavior, not implementation details
+- **Every bug fix** ships with a regression test — no exceptions
+- **Every new public function or module** gets at least one unit test before the task is marked done
+- **Every new API endpoint** gets at least one contract test
+- Tests assert behavior, not implementation details — test the what, not the how
+- A "critical path" is any code that: handles user input, crosses a service boundary, changes persistent state, or is called by more than one other module
+- `untested = unfinished` — do not mark a task done if new or changed code has no test coverage
+- Run `{{TEST_RUNNER}}` before every handoff; a red suite blocks handoff
+- Coverage must not drop below `{{COVERAGE_THRESHOLD}}` (fill during install)
 
 ## Git
 

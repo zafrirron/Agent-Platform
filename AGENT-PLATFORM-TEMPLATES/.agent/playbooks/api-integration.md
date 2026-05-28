@@ -9,6 +9,12 @@
 3. Add `.agent/context/api-patterns.md` rules to design
 4. Mock → stub → real upstream
 5. Implement with structured errors + auth from env
-6. Contract tests + update `api-contracts.md`
-7. Security agent: no secrets in source
-8. Session end + handoff
+6. **Test agent:** contract test per documented endpoint (happy path + at least one error path); run `{{TEST_RUNNER}}`; all green
+7. Update `api-contracts.md` with confirmed behavior
+8. Security agent: no secrets in source
+9. Session end + handoff
+
+## Rules
+- No endpoint ships without a contract test
+- Tests must cover: success response shape, at least one 4xx, at least one auth failure (if applicable)
+- If upstream is unavailable, mock it and document the mock in `CURRENT.md`

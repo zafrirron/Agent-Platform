@@ -52,7 +52,10 @@ Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
 2. `PROJECT_DESCRIPTION` — first README paragraph or generic fallback.
 3. Scan stack from files present (languages, build manifests).
 4. `HIGH_CONFLICT_PATHS` — large or high-churn files in **this** tree.
-5. If platform already installed → prefer `mode=upgrade` for new manifest entries.
+5. `TEST_RUNNER` — detect from build manifests (e.g. `pytest`, `jest`, `go test ./...`, `dotnet test`, `cargo test`). Fall back to `"<fill-in test runner>"`.
+6. `COVERAGE_CMD` — detect coverage command for the discovered runner (e.g. `pytest --cov`, `jest --coverage`). Fall back to `"<fill-in coverage command>"`.
+7. `COVERAGE_THRESHOLD` — default to `80` if not found in project config; record as a percentage.
+8. If platform already installed → prefer `mode=upgrade` for new manifest entries.
 
 ## Phase 1 — Verify pack
 
@@ -62,7 +65,7 @@ Require `AGENT-PLATFORM-MANIFEST.json` and `AGENT-PLATFORM-TEMPLATES/` at reposi
 
 Run `node AGENT-PLATFORM-APPLY.js` with the chosen mode.
 
-Substitute placeholders: `{{PROJECT_NAME}}`, `{{PROJECT_DESCRIPTION}}`, `{{DATE}}`, `{{HIGH_CONFLICT_PATHS}}`, `{{TEST_RUNNER}}`, `{{BOOTSTRAP_VERSION}}`.
+Substitute placeholders: `{{PROJECT_NAME}}`, `{{PROJECT_DESCRIPTION}}`, `{{DATE}}`, `{{HIGH_CONFLICT_PATHS}}`, `{{TEST_RUNNER}}`, `{{COVERAGE_CMD}}`, `{{COVERAGE_THRESHOLD}}`, `{{BOOTSTRAP_VERSION}}`.
 
 Do not modify paths outside the manifest.
 

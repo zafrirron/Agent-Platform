@@ -10,8 +10,15 @@ Run before every session end. All boxes must be checked or explicitly noted as N
 - [ ] `registry.yaml` updated → `idle`, `files` cleared
 - [ ] `CURRENT.md` entry added: status, files changed, tests, next agent
 
+## Testing
+- [ ] Test suite run and fully green: `{{TEST_RUNNER}}`
+- [ ] Every new public function / module has at least one unit test
+- [ ] Every bug fix has a regression test
+- [ ] Every new API endpoint has a contract test
+- [ ] Coverage not below `{{COVERAGE_THRESHOLD}}` (run `{{COVERAGE_CMD}}` to verify)
+- [ ] Any untestable code path logged with reason in `CURRENT.md`
+
 ## Code quality
-- [ ] New critical paths have tests
 - [ ] No TODO/FIXME left without a `CURRENT.md` note
 - [ ] Existing tests still pass (or noted as failing with reason)
 
