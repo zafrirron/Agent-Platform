@@ -300,7 +300,7 @@ The platform coordination layer is removed cleanly. Your AI agents improved your
 
 ## Version
 
-**v2.15.1** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.20.1** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 
