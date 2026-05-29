@@ -94,18 +94,74 @@ Repeat. The platform never stops improving.
 ## How it works
 
 ```
-npx github:zafrirron/Agent-Platform
-        │
-        ├─ Detects: project name, stack, test runner, coverage command
-        ├─ Installs: .agent/ .claude/ .cursor/ .agents/ .codex/
-        ├─ Fills: project-specific stubs from codebase scan
-        └─ Prints: capabilities list + single session-start command
-
-Every session:
-        ├─ Agent self-identifies its IDE (Claude/Cursor/Antigravity/Codex)
-        ├─ Checks for updates (max once per 7 days)
-        ├─ Displays full quick reference
-        └─ Ready. Tell me what you want to do.
+┌─────────────────────────────────────────────────────────────────────┐
+│  INSTALL  (once)                                                      │
+│  npx github:zafrirron/Agent-Platform                                 │
+│                                                                       │
+│  Detects stack · Installs .agent/ .claude/ .cursor/ .agents/ .codex/ │
+│  Backs up any existing AI configs · Gitignores platform files        │
+│  Prints: capability list + one session-start command                 │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  SESSION START  (every session, any IDE)                              │
+│  "Read .agent/session-start.md and execute it."                      │
+│                                                                       │
+│  · Conflict check — is another IDE already active?                   │
+│  · Cross-framework Critic offer — if switching from another IDE      │
+│  · Update check — once per 7 days, cached                           │
+│  · Full Quick Reference displayed — all commands for your active IDE │
+│  · "Ready. Tell me what you want to do."                             │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+                      You describe what you want
+                                   │
+              ┌────────────────────┴─────────────────────┐
+              │                                           │
+              ▼                                           ▼
+┌─────────────────────────┐             ┌───────────────────────────┐
+│  EXPERT AGENT           │             │  PLAYBOOK                 │
+│                         │             │                           │
+│  "add an endpoint"      │             │  "fix a bug"              │
+│    → Backend expert     │             │    → bug-fix.md           │
+│                         │             │                           │
+│  "review for security"  │             │  "add a feature"          │
+│    → Security expert    │             │    → add-feature.md       │
+│                         │             │                           │
+│  "find what's wrong"    │             │  "ready to ship"          │
+│    → Critic agent       │             │    → release.md           │
+└────────────┬────────────┘             └─────────────┬─────────────┘
+             └──────────────────┬──────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  WORK                                                                 │
+│                                                                       │
+│  Agent reads context files — api-contracts, adr-log, known-issues   │
+│  Agent follows rules — CONVENTIONS.md, BEST-PRACTICES.md            │
+│  Agent writes code, tests, documentation                             │
+│  Critic review gate (if playbook step requires it)                   │
+│  Test suite runs and passes                                          │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  SESSION END                                                          │
+│  "Read .agent/session-end.md and execute it."                        │
+│                                                                       │
+│  · Summarise work — files changed, behaviour, tests                  │
+│  · Pre-handoff checklist — tests green, no stubs, docs updated      │
+│  · Update CURRENT.md — goal, files, Critic reviewed: no             │
+│  · Mark framework idle in registry                                   │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+              ┌────────────────────┴─────────────────────┐
+              │                                           │
+              ▼                                           ▼
+   Same IDE next session                      Switch to another IDE
+   Back to SESSION START                      SESSION START in new IDE
+                                              + Critic reviews prior work
 ```
 
 ---

@@ -11,6 +11,75 @@
 
 ---
 
+## Platform lifecycle — the complete flow
+
+```
+INSTALL (once)
+──────────────────────────────────────────────────────────────────
+npx github:zafrirron/Agent-Platform
+  │
+  ├─ Backs up any existing AI configs (CLAUDE.md, Cursor rules, etc.)
+  ├─ Installs .agent/ .claude/ .cursor/ .agents/ .codex/
+  ├─ Fills stubs: project name, stack, test runner, coverage
+  ├─ Adds platform block to .gitignore
+  └─ Prints install summary with capability list + session-start command
+
+SESSION START (every session)
+──────────────────────────────────────────────────────────────────
+"Read .agent/session-start.md and execute it."
+  │
+  ├─ Conflict check — is another IDE already active on overlapping files?
+  ├─ Cross-framework Critic offer — if previous session was a different IDE
+  ├─ One-time setup — detect and configure test runner if not set
+  ├─ Update check — once per 7 days, cached, skips silently if offline
+  ├─ Display full Quick Reference — all commands for your active IDE
+  └─ "Ready. Tell me what you want to do."
+
+YOU DESCRIBE WHAT YOU WANT
+──────────────────────────────────────────────────────────────────
+        │
+        ├─── DOMAIN TASK ──────────────────────────────────────────
+        │    "add an endpoint"   → Read .agent/agents/backend-agent.md
+        │    "review for auth"   → Read .agent/agents/security-agent.md
+        │    "write tests"       → Read .agent/agents/test-agent.md
+        │    "find what's wrong" → Read .agent/agents/critic-agent.md
+        │    (+ 5 more experts)
+        │
+        └─── WORKFLOW TASK ────────────────────────────────────────
+             "fix a bug"         → Read .agent/playbooks/bug-fix.md
+             "add a feature"     → Read .agent/playbooks/add-feature.md
+             "ready to ship"     → Read .agent/playbooks/release.md
+             "something's wrong" → Read .agent/playbooks/debug-pipeline.md
+             (+ 4 more playbooks)
+
+WORK
+──────────────────────────────────────────────────────────────────
+  │
+  ├─ Agent reads context: api-contracts, adr-log, known-issues, deps
+  ├─ Agent follows: CONVENTIONS.md rules, BEST-PRACTICES.md golden rules
+  ├─ Agent writes: code + tests + docs
+  ├─ Critic review gate: if playbook step requires it (bug-fix, add-feature, release)
+  └─ Test suite: runs and must pass before handoff
+
+SESSION END
+──────────────────────────────────────────────────────────────────
+"Read .agent/session-end.md and execute it."
+  │
+  ├─ Summarise: files changed, behaviour, tests, blockers
+  ├─ Checklist: tests green, no stubs, docs updated
+  ├─ CURRENT.md: goal, files changed, Critic reviewed: no
+  ├─ registry.yaml: mark framework idle
+  └─ "Session ended. To continue in another IDE: Read .agent/session-start.md"
+
+NEXT SESSION
+──────────────────────────────────────────────────────────────────
+  ├─ Same IDE → back to SESSION START, picks up from CURRENT.md
+  └─ New IDE  → SESSION START offers cross-framework Critic review
+               of the previous IDE's work before proceeding
+```
+
+---
+
 ## Session workflow
 
 Every working session follows the same three steps regardless of which IDE you use.
