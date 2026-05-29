@@ -196,6 +196,20 @@ npx github:zafrirron/Agent-Platform
 
 **Zero changes to your existing code.** The installer adds only platform coordination folders (`.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`) and three root files (`AGENTS.md`, `SYNC-POINTS.md`, `CLAUDE.md`). All of these are added to `.gitignore` automatically — your `git status` stays clean and nothing is accidentally committed with your code.
 
+**Already using Claude Code, Cursor, or Copilot?** The installer scans for pre-existing AI artifacts before touching anything:
+
+| Found | What happens |
+|-------|-------------|
+| `CLAUDE.md` | Preserved (not overwritten) · backed up to `.agent/backup/` · `MIGRATION-NOTES.md` explains how to connect it |
+| `AGENTS.md` | Preserved · backed up · merge guidance provided |
+| `.cursor/rules/*.mdc` (your files) | Not touched — platform adds its own rules alongside |
+| `.cursorrules` | Detected and noted — not modified |
+| `.github/copilot-instructions.md` | Detected and noted — not modified |
+
+Install summary shows exactly what was found. `.agent/MIGRATION-NOTES.md` explains each detected file and what to do with it.
+
+**On uninstall:** all platform files are removed AND any backed-up originals are restored. Your project returns to its exact pre-install state.
+
 To share platform config with your team (optional), remove specific entries from the platform block in `.gitignore`.
 
 ---

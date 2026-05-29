@@ -142,11 +142,136 @@ function discover() {
   };
 }
 
+/* ── Pre-install artifact scan ────────────────────────────────────────────── */
+
+/** Files the platform installs at the repo root — may conflict with existing */
+const PLATFORM_ROOT_FILES = ['CLAUDE.md', 'AGENTS.md', 'SYNC-POINTS.md'];
+
+/** Third-party AI artifact patterns to detect (not modified, just reported) */
+const THIRD_PARTY_ARTIFACTS = [
+  { file: '.cursorrules',                     label: 'Cursor rules (legacy format)' },
+  { file: '.github/copilot-instructions.md',  label: 'GitHub Copilot instructions' },
+  { file: '.github/copilot-instructions.yml', label: 'GitHub Copilot instructions' },
+  { file: '.codeiumrc',                       label: 'Codeium config' },
+];
+
+function scanPreExistingArtifacts(root) {
+  const conflicting  = []; // platform owns these AND they already exist
+  const thirdParty   = []; // other AI tool configs found (not touched)
+  const userCursor   = []; // user's own .cursor/rules/*.mdc files
+
+  PLATFORM_ROOT_FILES.forEach(f => {
+    if (fs.existsSync(path.join(root, f))) conflicting.push(f);
+  });
+
+  THIRD_PARTY_ARTIFACTS.forEach(({ file, label }) => {
+    if (fs.existsSync(path.join(root, file))) thirdParty.push({ file, label });
+  });
+
+  // User's own .cursor/rules files (not platform-installed ones)
+  const platformCursorRules = new Set(['platform-core.mdc', 'caveman.mdc', 'agent-sync.mdc']);
+  const cursorRulesDir = path.join(root, '.cursor/rules');
+  if (fs.existsSync(cursorRulesDir)) {
+    fs.readdirSync(cursorRulesDir)
+      .filter(f => f.endsWith('.mdc') && !platformCursorRules.has(f))
+      .forEach(f => userCursor.push(`.cursor/rules/${f}`));
+  }
+
+  return { conflicting, thirdParty, userCursor };
+}
+
+function backupArtifacts(root, files) {
+  if (files.length === 0) return null;
+  const date      = new Date().toISOString().slice(0, 10);
+  const backupDir = path.join(root, `.agent/backup/pre-install-${date}`);
+  fs.mkdirSync(backupDir, { recursive: true });
+  files.forEach(f => {
+    const src = path.join(root, f);
+    const dst = path.join(backupDir, f.replace(/[\\/]/g, '_'));
+    fs.copyFileSync(src, dst);
+  });
+  return backupDir;
+}
+
+function writeMigrationNotes(root, artifacts, backupDir) {
+  const { conflicting, thirdParty, userCursor } = artifacts;
+  if (conflicting.length === 0 && thirdParty.length === 0 && userCursor.length === 0) return;
+
+  const lines = [`# Platform Migration Notes\n`,
+    `Generated: ${new Date().toISOString().slice(0, 10)}\n`,
+    `This file was created because pre-existing AI configuration files were found.\n`,
+    `Your files were NOT overwritten — they were preserved and backed up.\n`,
+    `Backup location: ${backupDir ? backupDir.replace(root + '/', '') : 'N/A'}\n`,
+    `\nTo remove this file when you're done: delete \`.agent/MIGRATION-NOTES.md\`\n`,
+    `\n---\n`,
+  ];
+
+  if (conflicting.includes('CLAUDE.md')) {
+    lines.push(`\n## CLAUDE.md — preserved\n`,
+      `Your CLAUDE.md existed before install and was NOT overwritten.\n`,
+      `The platform's minimal CLAUDE.md (which starts the session framework) was skipped.\n`,
+      `\n**Recommended action:** Add this line to your existing CLAUDE.md:\n`,
+      `\`\`\`\nRead .agent/session-start.md and execute it.\n\`\`\`\n`,
+      `This connects Claude Code to the platform session management while keeping your existing instructions.\n`,
+      `\nYour original: backed up to \`${backupDir ? path.basename(backupDir) : 'backup'}/CLAUDE.md\`\n`,
+    );
+  }
+
+  if (conflicting.includes('AGENTS.md')) {
+    lines.push(`\n## AGENTS.md — preserved\n`,
+      `Your AGENTS.md existed before install and was NOT overwritten.\n`,
+      `\n**Recommended action:** Review your existing AGENTS.md and merge relevant content into\n`,
+      `the platform's \`<!-- PROJECT:START -->\` sections in \`.agent/CONVENTIONS.md\` and the relevant expert files.\n`,
+      `The platform's AGENTS.md adds agent routing and expert activation — you can add your existing rules as additional sections.\n`,
+      `\nYour original: backed up to \`${backupDir ? path.basename(backupDir) : 'backup'}/AGENTS.md\`\n`,
+    );
+  }
+
+  if (conflicting.includes('SYNC-POINTS.md')) {
+    lines.push(`\n## SYNC-POINTS.md — preserved\n`,
+      `Your SYNC-POINTS.md was preserved. No action needed.\n`
+    );
+  }
+
+  if (thirdParty.length > 0) {
+    lines.push(`\n## Third-party AI configs detected (not modified)\n`,
+      `These files were detected but the platform does not touch them.\n`,
+      `They continue to work as before.\n\n`,
+    );
+    thirdParty.forEach(({ file, label }) => {
+      lines.push(`- \`${file}\` — ${label}\n`);
+    });
+  }
+
+  if (userCursor.length > 0) {
+    lines.push(`\n## Your Cursor rules (not modified)\n`,
+      `These Cursor rule files were found and are preserved. The platform adds its own rules\n`,
+      `(\`platform-core.mdc\`, \`caveman.mdc\`, \`agent-sync.mdc\`) alongside yours.\n\n`,
+    );
+    userCursor.forEach(f => lines.push(`- \`${f}\`\n`));
+  }
+
+  lines.push(`\n---\n`,
+    `\nTo remove the platform and restore your originals:\n`,
+    `\`\`\`\nnpx github:zafrirron/Agent-Platform --mode=uninstall --confirm\n\`\`\`\n`,
+    `\nThis removes all platform files AND restores your original CLAUDE.md, AGENTS.md, etc.\n`,
+  );
+
+  const notesPath = path.join(root, '.agent/MIGRATION-NOTES.md');
+  fs.mkdirSync(path.dirname(notesPath), { recursive: true });
+  fs.writeFileSync(notesPath, lines.join(''));
+}
+
 /* ── Apply ────────────────────────────────────────────────────────────────── */
 const vars    = discover();
 const created = [];
 const updated = [];
 const skipped = [];
+
+// Run pre-install scan on fresh install only
+const preArtifacts = (MODE === 'install') ? scanPreExistingArtifacts(INSTALL_ROOT) : { conflicting: [], thirdParty: [], userCursor: [] };
+const backupDir    = (MODE === 'install') ? backupArtifacts(INSTALL_ROOT, preArtifacts.conflicting) : null;
+if (MODE === 'install') writeMigrationNotes(INSTALL_ROOT, preArtifacts, backupDir);
 
 for (const entry of manifest.files) {
   const target = path.join(INSTALL_ROOT, entry.path);
@@ -262,6 +387,23 @@ if (MODE === 'uninstall') {
     process.exit(0);
   }
 
+  // Check for pre-install backup to restore
+  const backupsRoot = path.join(INSTALL_ROOT, '.agent/backup');
+  let restoreDir = null;
+  if (fs.existsSync(backupsRoot)) {
+    const backupDirs = fs.readdirSync(backupsRoot)
+      .filter(d => d.startsWith('pre-install-'))
+      .sort().reverse(); // most recent first
+    if (backupDirs.length > 0) restoreDir = path.join(backupsRoot, backupDirs[0]);
+  }
+
+  if (!CONFIRM) {
+    if (restoreDir) {
+      console.log('  ℹ  Pre-install backup found: ' + path.relative(INSTALL_ROOT, restoreDir));
+      console.log('     Original files will be restored after removal.');
+    }
+  }
+
   console.log('  Removing platform files from: ' + INSTALL_ROOT);
   console.log('');
   let removed = 0;
@@ -292,8 +434,25 @@ if (MODE === 'uninstall') {
     }
   }
 
+  // Restore original files from backup
+  let restored = 0;
+  if (restoreDir && fs.existsSync(restoreDir)) {
+    console.log('  Restoring your original files...');
+    fs.readdirSync(restoreDir).forEach(backupFile => {
+      // Convert backup filename back to original path (underscores back to slashes)
+      // Simple heuristic: files like 'CLAUDE.md', 'AGENTS.md', 'SYNC-POINTS.md'
+      const origName = backupFile; // root-level files use original name
+      const dest = path.join(INSTALL_ROOT, origName);
+      if (!fs.existsSync(dest)) { // only restore if not already there
+        fs.copyFileSync(path.join(restoreDir, backupFile), dest);
+        console.log('  ✔ Restored: ' + origName);
+        restored++;
+      }
+    });
+  }
+
   console.log('');
-  console.log(`  ✅ Done — ${removed} items removed.`);
+  console.log(`  ✅ Done — ${removed} platform items removed${restored > 0 ? `, ${restored} original file(s) restored` : ''}.`);
   console.log('  Your source code and git history are exactly as they were before install.');
   console.log(LINE);
   console.log('');
@@ -568,6 +727,31 @@ console.log('  ✔  Quick reference     displayed on every session start');
 console.log('  ✔  Update check        node .agent/tools/check-updates.mjs');
 console.log('  ✔  Context docs        api-contracts · adr-log · known-issues · dependencies');
 console.log('  ✔  Zero code impact     platform files gitignored — your source code is untouched');
+
+// Pre-existing artifact report
+const totalArtifacts = preArtifacts.conflicting.length + preArtifacts.thirdParty.length + preArtifacts.userCursor.length;
+if (totalArtifacts > 0) {
+  console.log('');
+  console.log('  Pre-existing AI configuration detected');
+  console.log(SEP);
+  if (preArtifacts.conflicting.length > 0) {
+    preArtifacts.conflicting.forEach(f => {
+      console.log(`  ⚠  ${f.padEnd(20)} preserved (not overwritten) — backed up to .agent/backup/`);
+    });
+    console.log('');
+    console.log('  See .agent/MIGRATION-NOTES.md for how to connect your existing config to the platform.');
+  }
+  if (preArtifacts.thirdParty.length > 0) {
+    preArtifacts.thirdParty.forEach(({ file, label }) => {
+      console.log(`  ℹ  ${file.padEnd(40)} ${label} — not modified`);
+    });
+  }
+  if (preArtifacts.userCursor.length > 0) {
+    preArtifacts.userCursor.forEach(f => {
+      console.log(`  ℹ  ${f.padEnd(40)} your Cursor rule — not modified`);
+    });
+  }
+}
 console.log('  ○  Enforcement guards  not installed — run: npx github:zafrirron/Agent-Platform --mode=install-guards');
 console.log('');
 console.log('  References');
