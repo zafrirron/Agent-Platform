@@ -123,23 +123,29 @@ Repeat. The platform never stops improving.
               ┌────────────────────┴─────────────────────┐
               │                                           │
               ▼                                           ▼
-┌─────────────────────────┐             ┌───────────────────────────┐
-│  EXPERT AGENT           │             │  PLAYBOOK                 │
-│  (WHO you are)          │             │  (WHAT steps to follow)   │
-│                         │             │                           │
-│  "review for security"  │             │  "fix a bug"              │
-│    → Security expert    │             │    → bug-fix.md           │
-│                         │             │                           │
-│  "find what's wrong"    │             │  "ready to ship"          │
-│    → Critic agent       │             │    → release.md           │
-│                         │      ┌──────┤                           │
-│  "add an endpoint"  ────┼──────┤      │  "add a feature"          │
-│    + add-feature.md     │COMBINE       │    + backend-agent.md     │
-│                         │      └──────┤                           │
-└────────────┬────────────┘             └─────────────┬─────────────┘
-             └──────────────────┬──────────────────────┘
-                  Expert rules apply at every playbook step
-              Playbook assigns different experts at specific steps
+┌─────────────────────────┐◄──── COMBINE ────►┌───────────────────────────┐
+│  EXPERT AGENT           │                   │  PLAYBOOK                 │
+│  WHO the agent is       │  Use alone  OR    │  WHAT steps to follow     │
+│                         │  load both        │                           │
+│  "review for security"  │  together for     │  "fix a bug"              │
+│    → Security expert    │  the most         │    → bug-fix.md           │
+│                         │  powerful result  │                           │
+│  "find what's wrong"    │                   │  "ready to ship"          │
+│    → Critic agent       │                   │    → release.md           │
+└────────────┬────────────┘                   └─────────────┬─────────────┘
+             └──────────────────┬──────────────────────────┘
+                                ▼
+              ┌──────────────────────────────────────────────────────────┐
+              │  COMBINED EXAMPLE: "fix the login bug"                    │
+              │                                                            │
+              │  Backend expert  +  bug-fix.md                            │
+              │  (WHO: API rules,   (WHAT: reproduce → root cause →       │
+              │  auth discipline,    fix → regression test → critic)      │
+              │  done-when gates)                                          │
+              │                                                            │
+              │  Expert rules govern every step.                          │
+              │  At Step 5b the playbook assigns the Critic agent.        │
+              └──────────────────────────────────────────────────────────┘
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐
