@@ -86,6 +86,21 @@ Activate: say `"caveman mode"` · Deactivate: say `"stop caveman"`
 
 At output token prices (~3× input), 650 saved output tokens = ~1,950 equivalent input tokens saved per response.
 
+### When to use caveman
+
+| Context | Recommendation | Why |
+|---------|---------------|-----|
+| Implementation sprints (Backend, Frontend) | ✅ Use it | You know the context; you need action, not explanation |
+| Rapid iteration / short feedback loops | ✅ Use it | Saves tokens across many responses |
+| Long sessions approaching context limits | ✅ Use it | Compression extends effective context window |
+| Critic reviews | ❌ Turn it off | Terse findings lose the reasoning that makes you fix them |
+| Security audits | ❌ Turn it off | Severity context and OWASP reasoning must be fully explained |
+| Architecture decisions | ❌ Turn it off | Trade-off reasoning is the whole point |
+| Docs expert writing documentation | ❌ Turn it off | The output IS the deliverable — terse docs ship as terse docs |
+| Platform session start / end | — Not applicable | These already output minimal text; nothing to compress |
+
+**The rule of thumb:** use caveman when you're in *doing* mode. Turn it off when you're in *deciding* or *documenting* mode.
+
 ---
 
 ## What the platform does NOT load

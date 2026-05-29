@@ -34,6 +34,10 @@
 - [ ] Keyboard navigation works on all interactive elements
 - [ ] No console errors or warnings
 - [ ] Existing tests still pass
+
+## Token tip
+In implementation mode, say `"caveman mode"` for ~65% shorter responses at the same accuracy.
+Turn it off when the Docs or Critic expert is active — full reasoning matters there.
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

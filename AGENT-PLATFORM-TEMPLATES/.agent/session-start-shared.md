@@ -93,7 +93,7 @@ Output this compact status block. Substitute all values inline — do not read a
   {{PROJECT_NAME}} · Agent Platform v{{BOOTSTRAP_VERSION}} · <fw>
   Last work : <one-line summary from CURRENT.md, or "no prior sessions">
   Updates   : <"✅ Up to date" | "⚠️ vX.Y.Z available — say 'upgrade platform'">
-  Reference : say "show quick reference" · "platform help" for full guide
+  Reference : "show quick reference" for commands · "caveman mode" to cut output ~65%
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
