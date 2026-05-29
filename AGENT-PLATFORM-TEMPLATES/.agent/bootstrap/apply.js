@@ -752,7 +752,7 @@ console.log('  ✔  Context docs        api-contracts · adr-log · known-issues
 console.log('  ✔  Zero code impact     platform files gitignored — your source code is untouched');
 
 // Pre-existing artifact report
-const totalArtifacts = preArtifacts.conflicting.length + preArtifacts.thirdParty.length + preArtifacts.userCursor.length;
+const totalArtifacts = preArtifacts.toBackup.length;
 if (totalArtifacts > 0) {
   console.log('');
   console.log('  Pre-existing AI configuration detected');
