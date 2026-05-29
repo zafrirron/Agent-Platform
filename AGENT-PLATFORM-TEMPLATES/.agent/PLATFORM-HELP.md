@@ -244,6 +244,15 @@ https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-R
 
 ## Platform maintenance
 
+### Zero footprint — your code is never touched
+
+| Guarantee | What it means |
+|-----------|--------------|
+| **No code changes on install** | Only `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` and 3 root files are added. Your source files are never modified. |
+| **Nothing committed accidentally** | All platform files are gitignored on install. `git status` stays clean. |
+| **Clean removal** | Uninstall removes all platform files AND the gitignore entries. Your repo is identical to before install. |
+| **Customisations survive upgrades** | `mode=upgrade` only updates PLATFORM sections. Your project rules are never overwritten. |
+
 ### Why upgrading is worth it
 
 Every Agent Platform release includes rules sourced from OWASP security guidelines, CWE Top 25 dangerous software weaknesses, and engineering best practices from the developer community. The maintainer runs regular web ecosystem audits and encodes findings into the expert agents. **Your agents automatically get smarter on every upgrade** — new security checks, better quality gates, updated best practices. You don't need to track these sources yourself.

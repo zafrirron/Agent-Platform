@@ -81,16 +81,24 @@ From **this repository's** scan, fill:
 
 ## Phase 4 — Gitignore
 
-Append if missing:
+`apply.js` automatically writes the platform gitignore block. Confirm it is present:
 
 ```gitignore
-.cursor/local/
-.claude/local/
-.agents/local/
-.codex/local/
-.agent/handoff/CURRENT.local.md
-.agent/handoff/sync/*.local.yaml
+# Agent Platform Bootstrap — START
+# Platform files are gitignored by default — nothing is committed with your code.
+# Remove entries from this block to track specific files in git (for team sharing).
+.agent/
+.claude/
+.cursor/
+.agents/
+.codex/
+AGENTS.md
+SYNC-POINTS.md
+CLAUDE.md
+# Agent Platform Bootstrap — END
 ```
+
+On `--mode=uninstall --confirm`, the entire block is removed from `.gitignore`, leaving no platform residue.
 
 ## Phase 5 — Report
 
@@ -118,4 +126,4 @@ Private IDE folders (`.cursor/`, `.claude/`, `.agents/`, `.codex/`), shared `.ag
 
 ---
 
-*v2.13.0 — orchestrator only; templates in AGENT-PLATFORM-TEMPLATES/ · see COPYING.md for pack contents*
+*v2.14.0 — orchestrator only; templates in AGENT-PLATFORM-TEMPLATES/ · see COPYING.md for pack contents*

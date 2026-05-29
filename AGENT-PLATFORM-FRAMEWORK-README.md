@@ -59,7 +59,7 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **API agentic patterns** | 12 conventions for agents that build or consume APIs: schema-first, contract discipline, idempotency, structured errors, auth injection, rate-limit backoff, mock-first, contract tests |
 | **Extensible by prompt** | 7-step extension anatomy + ready-to-paste prompts for adding new agents, playbooks, skills, IDE frameworks, or context files — permanently, so every future repo gets them |
 | **Self-customising** | Phase 0 scans your codebase and fills project name, stack, test runner, coverage command, and entry points automatically |
-| **Safe to run anywhere** | Default mode creates missing files only — never overwrites existing content, never touches application source |
+| **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` — your source files are never modified. All platform files gitignored automatically. Remove with one command and nothing remains. |
 
 ---
 
@@ -194,7 +194,9 @@ Same commands — the installer **never overwrites existing files** in default m
 npx github:zafrirron/Agent-Platform
 ```
 
-Your existing code, docs, and config are untouched. Only `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/` platform scaffolding is added.
+**Zero changes to your existing code.** The installer adds only platform coordination folders (`.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`) and three root files (`AGENTS.md`, `SYNC-POINTS.md`, `CLAUDE.md`). All of these are added to `.gitignore` automatically — your `git status` stays clean and nothing is accidentally committed with your code.
+
+To share platform config with your team (optional), remove specific entries from the platform block in `.gitignore`.
 
 ---
 

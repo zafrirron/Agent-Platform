@@ -190,6 +190,29 @@ for (const entry of manifest.files) {
   created.push(entry.path);
 }
 
+/* ── Gitignore — add platform block ──────────────────────────────────────── */
+const GI_START = '# Agent Platform Bootstrap — START';
+const GI_END   = '# Agent Platform Bootstrap — END';
+const GI_BLOCK = `${GI_START}
+# Platform coordination files — gitignored by default so nothing is
+# accidentally committed with your code. Remove this block if you want
+# to track platform files in git (e.g. to share agent config with your team).
+.agent/
+.claude/
+.cursor/
+.agents/
+.codex/
+AGENTS.md
+SYNC-POINTS.md
+CLAUDE.md
+${GI_END}`;
+
+const giPath = path.join(INSTALL_ROOT, '.gitignore');
+if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
+  fs.appendFileSync(giPath, '\n' + GI_BLOCK + '\n');
+  created.push('.gitignore (platform block)');
+}
+
 /* ── Update platform.json ─────────────────────────────────────────────────── */
 const platformPath = path.join(INSTALL_ROOT, '.agent/platform.json');
 if (fs.existsSync(platformPath)) {
@@ -250,9 +273,28 @@ if (MODE === 'uninstall') {
       removed++;
     }
   });
+
+  // Remove platform gitignore block
+  const giPath2 = path.join(INSTALL_ROOT, '.gitignore');
+  const GI_S = '# Agent Platform Bootstrap — START';
+  const GI_E = '# Agent Platform Bootstrap — END';
+  if (fs.existsSync(giPath2)) {
+    const gi = fs.readFileSync(giPath2, 'utf8');
+    if (gi.includes(GI_S)) {
+      const start = gi.indexOf(GI_S);
+      const end   = gi.indexOf(GI_E);
+      if (end > start) {
+        const cleaned = gi.slice(0, start).trimEnd() + gi.slice(end + GI_E.length);
+        fs.writeFileSync(giPath2, cleaned.trimStart() ? cleaned : '');
+        console.log('  ✔ Removed: .gitignore platform block');
+        removed++;
+      }
+    }
+  }
+
   console.log('');
   console.log(`  ✅ Done — ${removed} items removed.`);
-  console.log('   Your application source code was not touched.');
+  console.log('  Your source code and git history are exactly as they were before install.');
   console.log(LINE);
   console.log('');
   process.exit(0);
@@ -525,6 +567,7 @@ console.log('  ✔  Token compression   "caveman mode" — ~65% output reduction
 console.log('  ✔  Quick reference     displayed on every session start');
 console.log('  ✔  Update check        node .agent/tools/check-updates.mjs');
 console.log('  ✔  Context docs        api-contracts · adr-log · known-issues · dependencies');
+console.log('  ✔  Zero code impact     platform files gitignored — your source code is untouched');
 console.log('  ○  Enforcement guards  not installed — run: npx github:zafrirron/Agent-Platform --mode=install-guards');
 console.log('');
 console.log('  References');

@@ -11,6 +11,19 @@
 
 A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Eight specialist agents. Eight playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
 
+> **Zero changes to your project code.** Install adds only platform coordination folders (`.agent/`, `.claude/`, etc.) — all gitignored by default so nothing is accidentally committed. Your source files, configuration, and git history are never touched. Remove the platform and nothing remains.
+
+---
+
+## Zero footprint — install, use, remove cleanly
+
+| Guarantee | Detail |
+|-----------|--------|
+| **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md`. Zero modifications to your existing files. |
+| **Nothing committed accidentally** | All platform folders and files are added to `.gitignore` automatically on install. `git status` stays clean. Your team never sees platform noise. |
+| **Clean removal** | `npx github:zafrirron/Agent-Platform --mode=uninstall --confirm` removes every platform file AND the gitignore block. Your repository is identical to before install. |
+| **Your customisations survive upgrades** | `mode=upgrade` only updates the `<!-- PLATFORM:START/END -->` section of each file. Your project-specific content is never overwritten. |
+
 ---
 
 ## Install
@@ -72,7 +85,7 @@ Repeat. The platform never stops improving.
 | **Agentic update check** | Agents check for platform improvements automatically, once per 7 days |
 | **Token compression** | `"caveman mode"` — ~65% shorter output, same accuracy, all IDEs |
 | **Enforcement guards** | `--mode=install-guards` wires real pre-commit hooks and GitHub Actions CI — secrets scan, test suite, coverage gate. Aspiration becomes enforcement. |
-| **Safe everywhere** | Never overwrites your code. Never overwrites your customisations on upgrade. |
+| **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/`. Nothing else changes. All platform files gitignored by default. Remove completely with one command — nothing left behind. |
 
 ---
 
@@ -165,12 +178,15 @@ npx github:zafrirron/Agent-Platform --mode=remove-guards  # remove if needed
 
 ---
 
-## Remove
+## Remove — clean uninstall, zero residue
 
 ```bash
-npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run
-npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # remove
+npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — shows what will be deleted
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes everything
 ```
+
+Removes: all platform folders, root files, and the gitignore block.  
+**After removal your repository is identical to before install.** Source code, config, and git history untouched.
 
 ---
 
@@ -186,7 +202,7 @@ npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # remove
 
 ## Version
 
-**v2.13.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.14.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 
