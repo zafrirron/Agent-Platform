@@ -127,30 +127,24 @@ After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.
 2. Extract the most recent entry's one-line summary (goal or status line)
 3. Hold it for display in Step 4
 
-### Step 5 — Display quick reference
+### Step 5 — Display session status
 
-1. Read `.agent/QUICK-REF.md`
-2. Replace every `<fw>` in the file with the actual framework folder name
-3. Prepend this status header before the table output:
+Output this compact status block. Substitute all values inline — do not read any additional files for this step:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  {{PROJECT_NAME}} | Agent Platform v{{BOOTSTRAP_VERSION}} | Framework: <fw>
+  {{PROJECT_NAME}} · Agent Platform v{{BOOTSTRAP_VERSION}} · <fw>
   Last work : <one-line summary from CURRENT.md, or "no prior sessions">
-  Updates   : <last_update_status — "✅ Up to date" or "⚠️ Update available: vX.Y.Z — run: Read .agent/tools/upgrade.md and execute it.">
+  Updates   : <"✅ Up to date" | "⚠️ vX.Y.Z available — say 'upgrade platform'">
+  Reference : say "show quick reference" · "platform help" for full guide
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-4. Output the **complete** contents of `.agent/QUICK-REF.md` with `<fw>` substituted.
-   **IMPORTANT: Output every section in full. Do NOT summarise, truncate, collapse, or skip any section.**
-   The file contains these sections — all must be shown:
-   - Session
-   - Expert Agents (all 8 rows)
-   - Playbooks (all 8 rows)
-   - Project Knowledge (all 5 rows)
-   - Testing (all 3 rows)
-   - Token Compression / Caveman (all 3 rows)
-   - Platform (all rows)
+**Do NOT read or output QUICK-REF.md at session start.**
+It is displayed only when the user explicitly asks (see trigger below).
+
+> **Trigger — when the user says any of:** "show quick reference", "show help", "show commands", "what can you do", "platform help", "how does this work"
+> → Read `.agent/QUICK-REF.md`, replace every `<fw>` with the active framework name, output the full table.
 
 ### Step 6 — Log session start
 
