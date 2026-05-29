@@ -39,16 +39,66 @@ Read .agent/tools/upgrade.md and execute it.
 
 ## Upgrade matrix
 
-| You are on | → 2.3.0+ | Notes |
-|------------|----------|-------|
-| **2.2.0** | ✅ Supported | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
-| **2.1.0** (initial public) | ✅ Supported | npx upgrade — see [§ Upgrading 2.1 → 2.2](#upgrading-21--22) |
-| **2.0.x** (pre-public / private) | ✅ Supported | Full re-install recommended — see [§ Upgrading 2.0 → 2.2](#upgrading-20--22) |
-| **1.x** (legacy) | ⚠️ Manual | No automated path — see [§ Upgrading 1.x → 2.2](#upgrading-1x--22) |
+| You are on | → 2.4.0 | Notes |
+|------------|---------|-------|
+| **2.3.0** | ✅ One command | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
+| **2.2.0** | ✅ One command | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
+| **2.1.0** (initial public) | ✅ One command | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
+| **2.0.x** (pre-public) | ✅ Supported | Full re-install recommended |
+| **1.x** (legacy) | ⚠️ Manual | See [§ Upgrading 1.x → 2.x](#upgrading-1x--23) |
 | **< 1.0** | ❌ Not supported | Fresh install recommended |
 
 > **Safe by default:** `mode=install` and `mode=repair` never overwrite existing files.  
 > `mode=force` resets all templates — use only when you have no project-specific customisations to preserve.
+
+---
+
+## [2.4.0] — 2026-05-29
+
+### Added — Post-install summary & agentic quick reference
+
+| File | What it does |
+|------|-------------|
+| `.agent/QUICK-REF.md` | Framework-aware quick reference table — all capabilities in one place; `<fw>` placeholder replaced at session start with the active framework name; `{{TEST_RUNNER}}` and `{{COVERAGE_CMD}}` filled at install time |
+| `.agent/session-start-shared.md` | Single shared session-start logic for all 4 frameworks: conflict check, 7-day update check, last-work context, quick reference display, ready prompt |
+
+### Changed
+
+| File | What changed |
+|------|-------------|
+| `.claude/prompts/session-start.md` | Reduced to 2-line wrapper: declares `framework=claude`, calls `session-start-shared.md` |
+| `.cursor/prompts/session-start.md` | Reduced to 2-line wrapper: declares `framework=cursor`, calls shared file |
+| `.agents/prompts/session-start.md` | Reduced to 2-line wrapper: declares `framework=agents`, calls shared file |
+| `.codex/prompts/session-start.md` | Reduced to 2-line wrapper: declares `framework=codex`, calls shared file |
+| `apply.js` | Writes `test_runner`, `coverage_cmd`, `coverage_threshold`, `last_update_check`, `last_update_status` to `platform.json`; prints structured install summary with file counts, folder list, full guide link, repo URL, and per-framework session-start commands |
+| `platform.json` template | Added fields: `test_runner`, `coverage_cmd`, `coverage_threshold`, `last_update_check`, `last_update_status` |
+| `AGENT-PLATFORM-MANIFEST.json` | Added `QUICK-REF.md` and `session-start-shared.md` entries; bumped to 2.4.0 |
+
+### Behaviour after install
+
+**Install completion** — terminal shows:
+```
+══════════════════════════════════════════════════════════════
+  Agent Platform Bootstrap v2.4.0 — Installed on <project>
+  Files created: N   Updated: 0   Skipped: 0
+  Full guide  →  AGENT-PLATFORM-FRAMEWORK-README.md
+  Repository  →  https://github.com/zafrirron/Agent-Platform
+  Start: Read .<fw>/prompts/session-start.md and execute it.
+══════════════════════════════════════════════════════════════
+```
+
+**Every session start** — agent displays:
+- Status header (project, version, framework, last work, update status)
+- Full quick reference table (all commands for the active framework)
+- Update notice if last check > 7 days and a newer version exists
+- `Ready. Tell me what you want to do.`
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+Adds `QUICK-REF.md` and `session-start-shared.md`; updates the 4 session-start wrappers and `platform.json` template.
 
 ---
 

@@ -2,17 +2,8 @@
 
 **User command:** `Read .agents/prompts/session-start.md and execute it.`
 
-Read `.agents/PRIVATE.md` first. Project: {{PROJECT_NAME}}.
+My framework folder name is: `agents`
 
-## Steps
+Do not edit `.claude/`, `.cursor/`, or `.codex/` during this session.
 
-1. `SYNC-POINTS.md` → `.agent/SYNC.md` → registry + CURRENT.md
-2. Optional: `node .agent/tools/check_locks.js antigravity <files>`
-3. Conflict check vs cursor / claude / codex
-4. Set `frameworks.antigravity` → `active`
-5. Log `CURRENT.md` — `Framework: antigravity`
-6. Expert + playbook from `.agent/` as needed
-
-**`.agents/` = private · `.agent/` = shared**
-
-Proceed.
+Read `.agent/session-start-shared.md` and execute it, replacing every `<fw>` with `agents`.

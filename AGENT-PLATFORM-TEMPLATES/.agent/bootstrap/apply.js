@@ -162,15 +162,58 @@ const platformPath = path.join(INSTALL_ROOT, '.agent/platform.json');
 if (fs.existsSync(platformPath)) {
   try {
     const pj = JSON.parse(fs.readFileSync(platformPath, 'utf8'));
-    pj.bootstrap_version = manifest.bootstrap_version;
-    pj.updated_at        = new Date().toISOString();
-    pj.updated_by        = 'bootstrap-apply';
+    pj.bootstrap_version  = manifest.bootstrap_version;
+    pj.updated_at         = new Date().toISOString();
+    pj.updated_by         = 'bootstrap-apply';
+    pj.test_runner        = vars.TEST_RUNNER;
+    pj.coverage_cmd       = vars.COVERAGE_CMD;
+    pj.coverage_threshold = vars.COVERAGE_THRESHOLD;
+    // preserve last_update_check if already set
+    if (!pj.last_update_check) pj.last_update_check = null;
+    if (!pj.last_update_status) pj.last_update_status = null;
     fs.writeFileSync(platformPath, JSON.stringify(pj, null, 2) + '\n');
   } catch { /* ignore */ }
 }
 
-console.log(JSON.stringify(
-  { mode: MODE, pack: PACK_ROOT, target: INSTALL_ROOT, platform: process.platform,
-    created, updated, skipped_count: skipped.length, version: manifest.bootstrap_version },
-  null, 2
-));
+/* ── Install summary ──────────────────────────────────────────────────────── */
+const LINE = '═'.repeat(62);
+const line = '─'.repeat(62);
+const fw = ['claude', 'cursor', 'agents', 'codex'];
+const fwLabel = { claude: 'Claude Code', cursor: 'Cursor', agents: 'Antigravity', codex: 'Codex (VS Code)' };
+
+console.log('');
+console.log(LINE);
+console.log(`  Agent Platform Bootstrap v${manifest.bootstrap_version} — ${MODE === 'install' ? 'Installed' : MODE.charAt(0).toUpperCase() + MODE.slice(1) + 'd'} on ${vars.PROJECT_NAME}`);
+console.log(LINE);
+console.log('');
+console.log('  What was installed');
+console.log('  ' + line.slice(0, 20));
+console.log(`  .agent/          shared hub — conventions, playbooks, agents, context`);
+fw.forEach((f) => {
+  const dir = path.join(INSTALL_ROOT, `.${f}`);
+  if (fs.existsSync(dir)) {
+    console.log(`  .${f}/`.padEnd(18) + fwLabel[f]);
+  }
+});
+console.log(`  AGENTS.md        framework router`);
+console.log(`  SYNC-POINTS.md   cross-IDE switch cheat sheet`);
+console.log('');
+console.log(`  Files created: ${created.length}   Updated: ${updated.length}   Skipped: ${skipped.length}`);
+console.log('');
+console.log('  ' + line.slice(0, 20));
+console.log(`  Full guide  →  AGENT-PLATFORM-FRAMEWORK-README.md`);
+console.log(`  Repository  →  https://github.com/zafrirron/Agent-Platform`);
+console.log(`  Changelog   →  CHANGELOG.md`);
+console.log('');
+console.log('  Start your first session — paste one line into your agent:');
+console.log('');
+fw.forEach((f) => {
+  const dir = path.join(INSTALL_ROOT, `.${f}`);
+  if (fs.existsSync(dir)) {
+    console.log(`  ${fwLabel[f].padEnd(18)} →  Read .${f}/prompts/session-start.md and execute it.`);
+  }
+});
+console.log('');
+console.log('  The agent will display a full quick reference guide.');
+console.log(LINE);
+console.log('');
