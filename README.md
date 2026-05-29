@@ -22,8 +22,8 @@ A complete multi-agent development environment installed into any repository in 
 |-----------|--------|
 | **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md`. Zero modifications to your existing files. |
 | **Nothing committed accidentally** | All platform folders and files are added to `.gitignore` automatically on install. `git status` stays clean. Your team never sees platform noise. |
-| **Existing configs are preserved** | If you already have a `CLAUDE.md`, `AGENTS.md`, or Cursor rules from using Claude Code, Cursor, Antigravity, or Codex before installing, they are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
-| **Clean removal + original restore** | Uninstall removes all platform files AND restores any files that were backed up on install. Your repo returns to its exact pre-install state. |
+| **Existing AI configs are preserved** | Already using Claude Code, Cursor, Antigravity, or Codex? Your `CLAUDE.md`, `AGENTS.md`, Cursor rules, and any other AI config files are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
+| **Clean removal** | `--mode=uninstall` removes all platform AI coordination files and restores your original AI configs from backup. **Your source code, project files, and git history are never touched** — not during install, not during use, and not during removal. |
 | **Your customisations survive upgrades** | `mode=upgrade` only updates the `<!-- PLATFORM:START/END -->` section of each file. Your project-specific content is never overwritten. |
 
 ---
@@ -180,15 +180,17 @@ npx github:zafrirron/Agent-Platform --mode=remove-guards  # remove if needed
 
 ---
 
-## Remove — clean uninstall, zero residue
+## Remove
 
 ```bash
-npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — shows what will be deleted
-npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes everything
+npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — shows what will be removed
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes platform AI files
 ```
 
-Removes: all platform folders, root files, and the gitignore block.  
-**After removal your repository is identical to before install.** Source code, config, and git history untouched.
+Removes: all platform AI coordination folders (`.agent/`, `.claude/`, etc.), root files, and the gitignore block.  
+Restores: any AI config files you had before installing (CLAUDE.md, AGENTS.md, Cursor rules, etc.) from the backup.
+
+**Your source code, project files, and git history are never touched.** Only the AI coordination layer is removed.
 
 ---
 
