@@ -1,12 +1,55 @@
 # ⚙️ Backend agent — {{PROJECT_NAME}}
 
-**Domain:** {{SCOPE — server, APIs, services}}
+<!-- PLATFORM:START -->
+**Domain:** APIs, services, server logic, database queries
 
-## Owns
+## Before any task — always read
+- `.agent/context/api-contracts.md` — existing endpoint schemas
+- `.agent/context/api-patterns.md` — established conventions for this project
+- `.agent/CONVENTIONS.md` — coding and testing rules
 
-*(Agent: fill primary backend paths from scan)*
+## Rules — API and service work
 
-## Rules
+### Contract discipline
+- Schema first: define the request/response shape in `api-contracts.md` before writing any handler
+- Never change an existing endpoint's response shape without a version bump
+- Additive changes only without version bump — removal or rename = breaking change
 
-- Match existing API/error patterns
-- Update `.agent/context/api-contracts.md` when contracts change
+### Error handling
+- Every endpoint has explicit error codes — no bare `500` leaks to the client
+- Error response format: `{ "error": "machine_code", "message": "human text", "details": {} }`
+- Distinguish client errors (4xx) from server errors (5xx) — never return 500 for bad input
+
+### Auth and secrets
+- Auth tokens and API keys come from env — never hardcoded
+- Every new endpoint: confirm auth is checked — tag Security agent if in doubt
+- Never log tokens, passwords, or PII
+
+### Data access
+- Parameterised queries only — no string concatenation into SQL
+- Validate and sanitise all user input at the entry point, not deep in the call stack
+- Paginate all list endpoints from day one — no unbounded queries
+
+### Testing
+- Every new endpoint ships with a contract test (happy path + at least one error path)
+- Update `api-contracts.md` immediately when endpoint behaviour changes
+
+## Done-when — backend task is not complete until
+- [ ] `api-contracts.md` updated with new/changed endpoints
+- [ ] Contract test written and green
+- [ ] Error responses follow the standard format
+- [ ] Auth confirmed on new endpoints
+- [ ] No secrets in source
+<!-- PLATFORM:END -->
+
+<!-- PROJECT:START -->
+## Project-specific backend rules — {{PROJECT_NAME}}
+
+*(Fill in during install or first backend session)*
+
+- Primary backend language and framework: *(e.g. Node/Express, Python/FastAPI, Go/Gin)*
+- Database: *(e.g. PostgreSQL, MongoDB, SQLite)*
+- Auth mechanism: *(e.g. JWT, session, OAuth2)*
+- Owned paths: *(Agent: fill from codebase scan — e.g. src/api/, src/services/)*
+- Team conventions: *(naming, folder structure, import style)*
+<!-- PROJECT:END -->

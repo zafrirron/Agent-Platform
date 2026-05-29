@@ -64,6 +64,26 @@ function isStub(t) {
   return !t.trim() || /\(\s*fill\b|\*\(fill|none yet|<fill-in/i.test(t);
 }
 
+/**
+ * Replace only the <!-- PLATFORM:START --> … <!-- PLATFORM:END --> block
+ * in existingContent with the equivalent block from newContent.
+ * Returns the patched string, or null if either file lacks the markers.
+ */
+function patchPlatformSection(existingContent, newContent) {
+  const START = '<!-- PLATFORM:START -->';
+  const END   = '<!-- PLATFORM:END -->';
+
+  const eStart = existingContent.indexOf(START);
+  const eEnd   = existingContent.indexOf(END);
+  const nStart = newContent.indexOf(START);
+  const nEnd   = newContent.indexOf(END);
+
+  if (eStart < 0 || eEnd < 0 || nStart < 0 || nEnd < 0) return null;
+
+  const newBlock = newContent.slice(nStart, nEnd + END.length);
+  return existingContent.slice(0, eStart) + newBlock + existingContent.slice(eEnd + END.length);
+}
+
 /* ── Stack detection ──────────────────────────────────────────────────────── */
 function detectTestRunner(root) {
   if (fs.existsSync(path.join(root, 'pyproject.toml')) ||
@@ -143,6 +163,16 @@ for (const entry of manifest.files) {
         try { fs.chmodSync(target, 0o755); } catch { /* ignore on Windows FS */ }
       }
       updated.push(entry.path);
+    } else if (MODE === 'upgrade') {
+      // Smart upgrade: patch only the PLATFORM section, preserve PROJECT section
+      const existing = fs.readFileSync(target, 'utf8');
+      const patched  = patchPlatformSection(existing, content);
+      if (patched !== null) {
+        fs.writeFileSync(target, patched.endsWith('\n') ? patched : patched + '\n');
+        updated.push(entry.path);
+      } else {
+        skipped.push(entry.path); // no markers → skip (add-only, not overwrite)
+      }
     } else if (MODE === 'repair' && isStub(fs.readFileSync(target, 'utf8'))) {
       fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
       updated.push(entry.path);

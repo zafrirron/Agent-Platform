@@ -1,49 +1,63 @@
 # 🧪 Test agent — {{PROJECT_NAME}}
 
+<!-- PLATFORM:START -->
 **Domain:** Unit, integration, regression, contract tests, fixtures, quality gates
 
-## Owns
+## Runner commands
+```
+Test runner:    {{TEST_RUNNER}}
+Coverage:       {{COVERAGE_CMD}}
+Coverage gate:  {{COVERAGE_THRESHOLD}}%
+```
 
-`tests/` or equivalent test config paths · coverage config · test fixtures
-
-## When to invoke
-
-The test agent is **mandatory** after every task that produces or modifies code:
+## When to invoke — mandatory after every code-producing task
 
 | Trigger | Required test work |
 |---------|--------------------|
-| New feature | Unit tests for all new functions/modules; integration test for the happy path and at least one error path |
-| Bug fix | Regression test that would have caught the bug — no exceptions |
-| API integration | Contract test per documented endpoint behavior |
-| Refactor | Confirm full suite green before and after; no new tests required if coverage already exists |
-| Dependency update | Run full suite; note any new failures in `CURRENT.md` |
+| New feature | Unit tests for every new public function; integration test for happy path + ≥1 error path |
+| Bug fix | Regression test that FAILS before the fix and PASSES after — no exceptions |
+| API endpoint | Contract test: happy path + ≥1 error path + auth failure (if applicable) |
+| Refactor | Full suite green before AND after — no new tests needed if coverage exists |
+| Dependency update | Run full suite; log any new failures in `CURRENT.md` |
 
-## Test categories
+## Test quality rules
 
-| Category | Scope | When required |
-|----------|-------|---------------|
-| **Unit** | Single function / class in isolation | Every new public function or module |
-| **Integration** | Multiple components / real I/O | Every new feature that crosses a boundary |
-| **Regression** | Reproduces a specific past bug | Every bug fix |
-| **Contract** | API request/response shape | Every new or changed endpoint |
+### Regression tests (bug fixes)
+- The test must FAIL on the unfixed code — if it passes before the fix, it is not a regression test
+- The test must reproduce the exact input/condition that triggered the bug
+- Do not write a test that "covers the area" — write a test that catches THIS specific bug
 
-## Runner commands
+### Unit tests
+- Test one thing per test — one assertion or one behaviour
+- No production database, no network calls — mock or stub external dependencies
+- Test the behaviour (what the function does), not the implementation (how it does it)
+- Name: `should <do X> when <condition Y>` — unambiguous from the name alone
 
-*(Agent: fill during install from project scan)*
+### Contract tests (API endpoints)
+- Test the actual HTTP response shape — not just that the handler runs
+- Required cases: 200 success + correct response body, 4xx for invalid input, 4xx/401 for missing auth
 
-```
-Test runner:    {{TEST_RUNNER}}        # e.g. pytest / jest / go test ./... / dotnet test
-Coverage:       {{COVERAGE_CMD}}       # e.g. pytest --cov / jest --coverage
-Coverage gate:  {{COVERAGE_THRESHOLD}} # e.g. 80% line coverage minimum
-```
+### Coverage
+- Coverage must not drop below `{{COVERAGE_THRESHOLD}}%` on any task
+- If a code path cannot be tested (hardware, external service): log the reason in `CURRENT.md`
+- 100% coverage is not the goal — meaningful coverage of behaviour is
 
-## Rules
+## Done-when — test task is not complete until
+- [ ] All required test types written (see trigger table above)
+- [ ] Regression tests verified to FAIL before fix (if applicable)
+- [ ] `{{TEST_RUNNER}}` passes with 0 failures
+- [ ] Coverage at or above `{{COVERAGE_THRESHOLD}}%`
+- [ ] Untestable paths documented in `CURRENT.md`
+<!-- PLATFORM:END -->
 
-- Tests assert behavior, not implementation trivia — test what it does, not how
-- Every new public function or module ships with at least one unit test
-- Every bug fix ships with a regression test — no exceptions
-- Every API endpoint ships with at least one contract test
-- Coverage must not decrease below `{{COVERAGE_THRESHOLD}}` on any merge
-- Block release if any test in the critical path fails
-- Failing tests must be fixed before handoff — never mark done with red tests
-- If a test cannot be written (external service, hardware), log the reason in `CURRENT.md`
+<!-- PROJECT:START -->
+## Project-specific test rules — {{PROJECT_NAME}}
+
+*(Fill in during install or first test session)*
+
+- Test framework: *(e.g. Jest, pytest, Go testing, JUnit)*
+- Test file location convention: *(e.g. __tests__/, *.test.ts, *_test.go)*
+- Mock/stub library: *(e.g. jest.mock, unittest.mock, testify/mock)*
+- Integration test environment: *(e.g. Docker Compose, local DB, test containers)*
+- CI test command: *(e.g. npm run test:ci)*
+<!-- PROJECT:END -->
