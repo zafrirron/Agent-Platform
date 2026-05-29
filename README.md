@@ -19,14 +19,11 @@ curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/insta
 iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.ps1 | iex
 ```
 
-Then start your first session — paste one line into your agent:
+Then start your first session — one command, any IDE:
 
-| IDE | Command |
-|-----|---------|
-| Claude Code | `Read .claude/prompts/session-start.md and execute it.` |
-| Cursor | `Read .cursor/prompts/session-start.md and execute it.` |
-| Antigravity | `Read .agents/prompts/session-start.md and execute it.` |
-| Codex (VS Code) | `Read .codex/prompts/session-start.md and execute it.` |
+```
+Read .agent/session-start.md and execute it.
+```
 
 ---
 
@@ -65,6 +62,17 @@ After install, every session starts with a full capability quick reference — a
 
 ---
 
+## Remove
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — shows what will be deleted
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # actually deletes
+```
+
+Your application source is never touched — only the platform scaffolding is removed.
+
+---
+
 ## Upgrade
 
 ```bash
@@ -93,7 +101,7 @@ node .agent/tools/check-updates.mjs
 
 ## Version
 
-Current: **v2.4.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+Current: **v2.5.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

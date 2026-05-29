@@ -21,7 +21,8 @@ const modeArg   = process.argv.find((a) => a.startsWith('--mode='));
 const packArg   = process.argv.find((a) => a.startsWith('--pack='));
 const targetArg = process.argv.find((a) => a.startsWith('--target='));
 
-const MODE = modeArg ? modeArg.split('=')[1] : 'install';
+const MODE    = modeArg ? modeArg.split('=')[1] : 'install';
+const CONFIRM = process.argv.includes('--confirm');
 
 /* ── Root resolution ──────────────────────────────────────────────────────── */
 function findManifestDir() {
@@ -175,45 +176,109 @@ if (fs.existsSync(platformPath)) {
   } catch { /* ignore */ }
 }
 
+/* ── Uninstall mode ───────────────────────────────────────────────────────── */
+if (MODE === 'uninstall') {
+  const LINE = '═'.repeat(62);
+  const managedDirs  = ['.agent', '.claude', '.cursor', '.agents', '.codex'];
+  const managedFiles = ['AGENTS.md', 'SYNC-POINTS.md', 'CLAUDE.md'];
+  const all = [...managedDirs, ...managedFiles];
+
+  console.log('');
+  console.log(LINE);
+  console.log('  Agent Platform Bootstrap — Uninstall');
+  console.log(LINE);
+  console.log('');
+
+  if (!CONFIRM) {
+    console.log('  ⚠️  DRY RUN — nothing deleted. Add --confirm to proceed.');
+    console.log('');
+    console.log('  The following will be permanently removed from:');
+    console.log('  ' + INSTALL_ROOT);
+    console.log('');
+    all.forEach((p) => {
+      const full = path.join(INSTALL_ROOT, p);
+      if (fs.existsSync(full)) console.log('    ' + p);
+    });
+    console.log('');
+    console.log('  To confirm removal run:');
+    console.log('  npx github:zafrirron/Agent-Platform --mode=uninstall --confirm');
+    console.log(LINE);
+    console.log('');
+    process.exit(0);
+  }
+
+  console.log('  Removing platform files from: ' + INSTALL_ROOT);
+  console.log('');
+  let removed = 0;
+  all.forEach((p) => {
+    const full = path.join(INSTALL_ROOT, p);
+    if (fs.existsSync(full)) {
+      fs.rmSync(full, { recursive: true, force: true });
+      console.log('  ✔ Removed: ' + p);
+      removed++;
+    }
+  });
+  console.log('');
+  console.log(`  ✅ Done — ${removed} items removed.`);
+  console.log('   Your application source code was not touched.');
+  console.log(LINE);
+  console.log('');
+  process.exit(0);
+}
+
 /* ── Install summary ──────────────────────────────────────────────────────── */
-const LINE = '═'.repeat(62);
-const line = '─'.repeat(62);
+const LINE = '═'.repeat(66);
+const SEP  = '  ' + '─'.repeat(62);
 const fw = ['claude', 'cursor', 'agents', 'codex'];
 const fwLabel = { claude: 'Claude Code', cursor: 'Cursor', agents: 'Antigravity', codex: 'Codex (VS Code)' };
+const modeLabel = { install: 'Installed', upgrade: 'Upgraded', repair: 'Repaired', force: 'Reset' };
 
 console.log('');
 console.log(LINE);
-console.log(`  Agent Platform Bootstrap v${manifest.bootstrap_version} — ${MODE === 'install' ? 'Installed' : MODE.charAt(0).toUpperCase() + MODE.slice(1) + 'd'} on ${vars.PROJECT_NAME}`);
+console.log(`  Agent Platform Bootstrap v${manifest.bootstrap_version} — ${modeLabel[MODE] || 'Done'} on ${vars.PROJECT_NAME}`);
 console.log(LINE);
 console.log('');
 console.log('  What was installed');
-console.log('  ' + line.slice(0, 20));
-console.log(`  .agent/          shared hub — conventions, playbooks, agents, context`);
+console.log(SEP);
+console.log('  .agent/          shared hub — conventions, playbooks, agents, context');
 fw.forEach((f) => {
-  const dir = path.join(INSTALL_ROOT, `.${f}`);
-  if (fs.existsSync(dir)) {
+  if (fs.existsSync(path.join(INSTALL_ROOT, `.${f}`))) {
     console.log(`  .${f}/`.padEnd(18) + fwLabel[f]);
   }
 });
-console.log(`  AGENTS.md        framework router`);
-console.log(`  SYNC-POINTS.md   cross-IDE switch cheat sheet`);
+console.log('  AGENTS.md        framework router');
+console.log('  SYNC-POINTS.md   cross-IDE switch cheat sheet');
 console.log('');
 console.log(`  Files created: ${created.length}   Updated: ${updated.length}   Skipped: ${skipped.length}`);
 console.log('');
-console.log('  ' + line.slice(0, 20));
-console.log(`  Full guide  →  AGENT-PLATFORM-FRAMEWORK-README.md`);
-console.log(`  Repository  →  https://github.com/zafrirron/Agent-Platform`);
-console.log(`  Changelog   →  CHANGELOG.md`);
+console.log('  Capabilities');
+console.log(SEP);
+console.log('  ✔  4 IDE frameworks    Claude Code · Cursor · Antigravity · Codex');
+console.log('  ✔  8 expert agents     Architect · Backend · Frontend · DevOps');
+console.log('                         Test · Docs · Security · Data');
+console.log('  ✔  8 playbooks         add-feature · bug-fix · refactor · release');
+console.log('                         debug · security-audit · add-dependency · api-integration');
+console.log(`  ✔  Test enforcement    runner: ${vars.TEST_RUNNER}  |  coverage gate: ${vars.COVERAGE_THRESHOLD}%`);
+console.log('  ✔  Token compression   "caveman mode" — ~65% output reduction');
+console.log('  ✔  Quick reference     displayed on every session start');
+console.log('  ✔  Update check        node .agent/tools/check-updates.mjs');
+console.log('  ✔  Context docs        api-contracts · adr-log · known-issues · dependencies');
 console.log('');
-console.log('  Start your first session — paste one line into your agent:');
+console.log('  References');
+console.log(SEP);
+console.log('  Full guide  →  AGENT-PLATFORM-FRAMEWORK-README.md');
+console.log('  Repository  →  https://github.com/zafrirron/Agent-Platform');
+console.log('  Changelog   →  CHANGELOG.md');
 console.log('');
-fw.forEach((f) => {
-  const dir = path.join(INSTALL_ROOT, `.${f}`);
-  if (fs.existsSync(dir)) {
-    console.log(`  ${fwLabel[f].padEnd(18)} →  Read .${f}/prompts/session-start.md and execute it.`);
-  }
-});
+console.log('  Start your first session (any IDE):');
+console.log(SEP);
 console.log('');
-console.log('  The agent will display a full quick reference guide.');
+console.log('  Read .agent/session-start.md and execute it.');
+console.log('');
+console.log(SEP);
+console.log('  To remove all platform files:');
+console.log('');
+console.log('  npx github:zafrirron/Agent-Platform --mode=uninstall');
+console.log('');
 console.log(LINE);
 console.log('');

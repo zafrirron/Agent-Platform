@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.4.0",
+  "bootstrap_version": "2.5.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
@@ -232,6 +232,11 @@
       "kind": "template"
     },
     {
+      "path": ".agent/session-start.md",
+      "template": ".agent/session-start.md",
+      "kind": "template"
+    },
+    {
       "path": ".agent/QUICK-REF.md",
       "template": ".agent/QUICK-REF.md",
       "kind": "template"
@@ -240,6 +245,11 @@
       "path": ".agent/session-start-shared.md",
       "template": ".agent/session-start-shared.md",
       "kind": "template"
+    },
+    {
+      "path": ".agent/tools/uninstall.md",
+      "template": ".agent/tools/uninstall.md",
+      "kind": "tool"
     },
     {
       "path": ".agent/tools/check-updates.mjs",

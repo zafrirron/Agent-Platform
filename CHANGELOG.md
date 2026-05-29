@@ -53,6 +53,79 @@ Read .agent/tools/upgrade.md and execute it.
 
 ---
 
+## [2.5.0] — 2026-05-29
+
+### Added
+
+| File | What it does |
+|------|-------------|
+| `.agent/session-start.md` | Universal session-start entry point — one command works in any IDE; agent self-identifies its framework (claude/cursor/agents/codex) then calls `session-start-shared.md` |
+| `.agent/tools/uninstall.md` | Agent uninstall prompt — asks user to confirm, then runs `npx ... --mode=uninstall --confirm` |
+
+### Changed
+
+| File | What changed |
+|------|-------------|
+| `CLAUDE.md` template | Reduced to 2 lines: project name + `Read .agent/session-start.md and execute it.` — no more Claude-specific instructions cluttering a framework-agnostic install |
+| `apply.js` | Install summary now shows: capabilities list (8 agents, 8 playbooks, test enforcement, caveman, quick ref, update check), single universal start command, uninstall command. Added `--mode=uninstall` with dry-run (default) and `--confirm` flag for actual removal. |
+| `README.md` | Session start updated to single universal command; added Remove section |
+| `AGENT-PLATFORM-MANIFEST.json` | Added `session-start.md` and `uninstall.md` entries; bumped to 2.5.0 |
+
+### Install summary — what the user now sees
+
+```
+══════════════════════════════════════════════════════════════════
+  Agent Platform Bootstrap v2.5.0 — Installed on MyProject
+══════════════════════════════════════════════════════════════════
+
+  What was installed          Files created: 82   Updated: 0
+  ──────────────────────────────────────────────────────────────
+  .agent/          shared hub — conventions, playbooks, agents, context
+  .claude/         Claude Code
+  .cursor/         Cursor
+  .agents/         Antigravity
+  .codex/          Codex (VS Code)
+
+  Capabilities
+  ──────────────────────────────────────────────────────────────
+  ✔  4 IDE frameworks    Claude Code · Cursor · Antigravity · Codex
+  ✔  8 expert agents     Architect · Backend · Frontend · DevOps
+                         Test · Docs · Security · Data
+  ✔  8 playbooks         add-feature · bug-fix · refactor · release
+                         debug · security-audit · add-dependency · api-integration
+  ✔  Test enforcement    runner: npm test  |  coverage gate: 80%
+  ✔  Token compression   "caveman mode" — ~65% output reduction
+  ✔  Quick reference     displayed on every session start
+  ✔  Update check        node .agent/tools/check-updates.mjs
+  ✔  Context docs        api-contracts · adr-log · known-issues · dependencies
+
+  References
+  ──────────────────────────────────────────────────────────────
+  Full guide  →  AGENT-PLATFORM-FRAMEWORK-README.md
+  Repository  →  https://github.com/zafrirron/Agent-Platform
+
+  Start your first session (any IDE):
+  ──────────────────────────────────────────────────────────────
+
+  Read .agent/session-start.md and execute it.
+
+  ──────────────────────────────────────────────────────────────
+  To remove all platform files:
+
+  npx github:zafrirron/Agent-Platform --mode=uninstall
+══════════════════════════════════════════════════════════════════
+```
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+Adds `session-start.md`, `uninstall.md`; updates `CLAUDE.md` to minimal form.
+
+---
+
 ## [2.4.0] — 2026-05-29
 
 ### Added — Post-install summary & agentic quick reference
