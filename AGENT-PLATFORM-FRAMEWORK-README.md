@@ -786,36 +786,39 @@ Also create all the wiring files in this repo now.
 
 #### Add support for a new IDE / framework
 
+Adding a new framework touches 35 items across 23 files. Use the dedicated agentic playbook — do not attempt this manually.
+
+**Trigger (maintainer agent):**
 ```
-Edit AGENT-PLATFORM-TEMPLATES/ then rebuild manifest.
-
-Task: Add [FRAMEWORK-NAME] (folder: .[folder]/) as a 5th supported framework.
-
-Follow the extension anatomy (all 7 steps):
-1. Usage Guide §1 + §2 tables — add row for new framework start/end commands
-2. "What this installs" — update "4 IDE frameworks" row to "5 IDE frameworks"
-3. Templates tree — add:
-   .[folder]/
-   .[folder]/prompts/
-   .[folder]/rules/   (if applicable)
-   .[folder]/skills/
-   .[folder]/local/
-4. AGENT-PLATFORM-TEMPLATES/ — add FILE: templates for:
-   .[folder]/prompts/session-start.md
-   .[folder]/prompts/session-end.md
-   .[folder]/FRAMEWORK.json
-   .[folder]/local/.gitkeep
-   Wire all existing skills into .[folder]/skills/
-5. Phase 3 — no stub
-6. Manifest rebuild + version bump — add: [ ] .[folder]/prompts/session-start.md exists
-7. Registry template — add frameworks.[id]: idle block
-   SYNC-POINTS.md template — add row
-   AGENTS.md template §1 — add row
-   ZONES.md template Zone A — add row
-   .gitignore Phase 4 block — add .[folder]/local/
-
-Also create the .[folder]/ structure in this repo now.
+Read MAINTAINER/platform-maintainer-agent.md
+Read MAINTAINER/add-framework.md and execute it.
+Task: Add [FrameworkName] as a new supported framework
 ```
+
+The playbook asks for `FOLDER`, `DISPLAY`, `ID`, `RULES_FORMAT` then executes all 11 steps:
+
+| Step | What it does |
+|------|-------------|
+| 1 | Creates `.[folder]/`: `FRAMEWORK.json`, session-start/end wrappers, README, platform-core rules, caveman skill wiring |
+| 2 | Updates `apply.js`: framework arrays, gitignore block, display strings, uninstall list |
+| 3 | Adds all new file entries to `AGENT-PLATFORM-MANIFEST.json` |
+| 4 | Updates 8 shared templates: registry.yaml, ZONES.md, SYNC.md, session-start.md identification table, SYNC-POINTS.md, AGENTS.md |
+| 5 | Updates all existing frameworks' "do not edit" lists to include the new folder |
+| 6 | Updates all documentation: README, this guide, BOOTSTRAP.md, PLATFORM-HELP.md, QUICK-REF.md |
+| 7 | Updates metadata: package.json, COPYING.md, install.ps1 |
+| 8 | Updates pre-existing artifact detection |
+| 9 | Bumps version in all 5 locations |
+| 10 | Logs to `MAINTAINER/platform-improvements.md` |
+| 11 | Verifies in a scratch repo |
+
+**What the new framework gets automatically** (no extra wiring needed):
+- Cross-framework Critic review offer on every session switch
+- 7-day update check at session start
+- Full Quick Reference display with the framework name substituted
+- Handoff log with `Critic reviewed: no` field
+- Registry conflict detection
+
+**Recommended next frameworks:** Windsurf · Cline · Continue.dev
 
 ---
 
