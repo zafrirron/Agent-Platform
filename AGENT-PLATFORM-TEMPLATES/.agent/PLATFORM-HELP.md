@@ -250,7 +250,7 @@ https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-R
 |-----------|--------------|
 | **No code changes on install** | Only `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` and 3 root files are added. Your source files are never modified. |
 | **Nothing committed accidentally** | All platform files are gitignored on install. `git status` stays clean. |
-| **Clean removal** | `--mode=uninstall` removes all platform AI coordination files and restores your original AI configs (CLAUDE.md, Cursor rules, etc.) from backup. **Your source code is never touched.** |
+| **Clean removal** | `--mode=uninstall` removes the platform coordination layer and restores your original AI configs from backup. Your AI agents improved your code while you used the platform — those improvements are yours to keep. The scaffolding that guided them is what gets removed. |
 | **Customisations survive upgrades** | `mode=upgrade` only updates PLATFORM sections. Your project rules are never overwritten. |
 
 ### Why upgrading is worth it

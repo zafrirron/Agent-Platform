@@ -11,7 +11,7 @@
 
 A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). Eight playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
 
-> **Zero changes to your project code.** Install adds only platform coordination folders (`.agent/`, `.claude/`, etc.) — all gitignored by default so nothing is accidentally committed. Your source files, configuration, and git history are never touched.
+> **The platform coordination layer never modifies your source code.** It only adds `.agent/`, `.claude/`, etc. — all gitignored so nothing is accidentally committed. Your AI agents will write and improve your code through the platform. That's the point. The platform scaffolding itself stays completely out of your codebase.
 > **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
 
 ---
@@ -23,7 +23,7 @@ A complete multi-agent development environment installed into any repository in 
 | **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md`. Zero modifications to your existing files. |
 | **Nothing committed accidentally** | All platform folders and files are added to `.gitignore` automatically on install. `git status` stays clean. Your team never sees platform noise. |
 | **Existing AI configs are preserved** | Already using Claude Code, Cursor, Antigravity, or Codex? Your `CLAUDE.md`, `AGENTS.md`, Cursor rules, and any other AI config files are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
-| **Clean removal** | `--mode=uninstall` removes all platform AI coordination files and restores your original AI configs from backup. **Your source code, project files, and git history are never touched** — not during install, not during use, and not during removal. |
+| **Clean removal** | `--mode=uninstall` removes all platform AI coordination files and restores your original AI configs from backup. The platform coordination layer never modifies your source code — your AI agents write code for you, the platform just makes them smarter. |
 | **Your customisations survive upgrades** | `mode=upgrade` only updates the `<!-- PLATFORM:START/END -->` section of each file. Your project-specific content is never overwritten. |
 
 ---
@@ -190,7 +190,7 @@ npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes platfor
 Removes: all platform AI coordination folders (`.agent/`, `.claude/`, etc.), root files, and the gitignore block.  
 Restores: any AI config files you had before installing (CLAUDE.md, AGENTS.md, Cursor rules, etc.) from the backup.
 
-**Your source code, project files, and git history are never touched.** Only the AI coordination layer is removed.
+The platform coordination layer is removed cleanly. Your AI agents improved your code while you used the platform — those changes are yours. The platform scaffolding that made them smarter is what gets removed.
 
 ---
 

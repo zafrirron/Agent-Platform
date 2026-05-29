@@ -466,7 +466,7 @@ if (MODE === 'uninstall') {
 
   console.log('');
   console.log(`  ✅ Done — ${removed} platform AI coordination file(s) removed${restored > 0 ? `, ${restored} original AI config(s) restored` : ''}.`);
-  console.log('  Your source code, project files, and git history were never touched.');
+  console.log('  The platform coordination layer is removed. Your code improvements made with the platform are yours to keep.');
   console.log(LINE);
   console.log('');
   process.exit(0);

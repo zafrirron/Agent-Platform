@@ -6,7 +6,7 @@
 
 ⚠️ **This will permanently remove all platform files from this repository.**
 
-Your application source code is never touched — only the platform scaffolding is removed.
+The platform coordination scaffolding is removed. Your AI agents improved your codebase while you used the platform — those code changes are yours to keep. Only the coordination layer that guided them is removed.
 
 ## What will be deleted
 
