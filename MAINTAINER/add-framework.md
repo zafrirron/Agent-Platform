@@ -26,6 +26,27 @@ Confirm with maintainer before proceeding.
 
 ---
 
+## What the new framework gets for FREE (no steps needed)
+
+Because the new framework's session-start and session-end wrappers call the shared files
+(`session-start-shared.md` and `session-end-shared.md`) with `<fw>` substituted,
+the following capabilities are automatically included for the new framework with zero extra work:
+
+| Capability | Where it lives | Why it's automatic |
+|-----------|---------------|-------------------|
+| Cross-framework Critic review offer | `session-start-shared.md` Step 1b | Compares `meta.updated_by` vs current `<fw>` — works for any framework ID |
+| Conflict check and registry lock | `session-start-shared.md` Step 1 | Uses `<fw>` variable — works for any value |
+| 7-day update check | `session-start-shared.md` Step 4 | Platform-agnostic — reads platform.json |
+| Full Quick Reference display (with `<fw>` substituted) | `session-start-shared.md` Step 6 | `<fw>` in QUICK-REF.md substituted at runtime |
+| Test runner one-time setup | `session-start-shared.md` Step 2 | Stack detection is project-specific, not framework-specific |
+| Handoff log (`Critic reviewed: no` field) | `session-end-shared.md` Step 3 | Template uses `<fw>` — works for any framework |
+| `meta.updated_by` → `<fw>` set at session end | `session-end-shared.md` Step 4 | This is what triggers cross-framework critic on the next switch |
+| Pre-handoff checklist | `session-end-shared.md` Step 2 | Reads `.agent/CHECKLIST.md` — framework-agnostic |
+
+**Do NOT add separate steps for any of the above.** They work automatically from day one.
+
+---
+
 ## Step 1 — Create the framework private folder
 
 ### 1A — FRAMEWORK.json
@@ -48,6 +69,11 @@ Create `AGENT-PLATFORM-TEMPLATES/.<FOLDER>/FRAMEWORK.json`:
 ```
 
 ### 1B — session-start.md
+
+Before writing this file, read the existing session-start wrappers (e.g. `.claude/prompts/session-start.md`)
+to get the current list of ALL existing framework folders. The "Do not edit" line must list every framework
+folder that exists at the time of creation — not just the original 4.
+
 Create `AGENT-PLATFORM-TEMPLATES/.<FOLDER>/prompts/session-start.md`:
 ```
 # <DISPLAY> — session start
@@ -56,12 +82,20 @@ Create `AGENT-PLATFORM-TEMPLATES/.<FOLDER>/prompts/session-start.md`:
 
 My framework folder name is: `<FOLDER>`
 
-Do not edit `.claude/`, `.cursor/`, `.agents/`, `.codex/`, or any other framework's private folder during this session. (Add `.<FOLDER>/` exceptions for the future when more frameworks are added.)
+Do not edit `.claude/`, `.cursor/`, `.agents/`, `.codex/` [and any other framework folders that exist at time of creation] during this session.
 
 Read `.agent/session-start-shared.md` and execute it, replacing every `<fw>` with `<FOLDER>`.
 ```
 
+> **Note on what session-start-shared.md delivers automatically:**
+> The shared file handles: conflict check, cross-framework Critic offer, 7-day update check,
+> test runner setup, Quick Reference display, and session logging.
+> The wrapper's ONLY job is declaring the framework name and calling the shared file.
+
 ### 1C — session-end.md
+
+Before writing, read the current "Do not edit" pattern from `.claude/prompts/session-end.md`.
+
 Create `AGENT-PLATFORM-TEMPLATES/.<FOLDER>/prompts/session-end.md`:
 ```
 # <DISPLAY> — session end
@@ -70,10 +104,14 @@ Create `AGENT-PLATFORM-TEMPLATES/.<FOLDER>/prompts/session-end.md`:
 
 My framework folder name is: `<FOLDER>`
 
-Do not edit other frameworks' private folders during this session.
+Do not edit `.claude/`, `.cursor/`, `.agents/`, `.codex/` [and any other framework folders that exist] during this session.
 
 Read `.agent/session-end-shared.md` and execute it, replacing every `<fw>` with `<FOLDER>`.
 ```
+
+> **Note:** session-end-shared.md automatically sets `meta.updated_by → <FOLDER>` in registry.yaml
+> at session end. This is what triggers the cross-framework Critic offer when the NEXT framework
+> starts a session. No additional wiring needed.
 
 ### 1D — README.md
 Create `AGENT-PLATFORM-TEMPLATES/.<FOLDER>/README.md`:
