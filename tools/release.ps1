@@ -1,21 +1,27 @@
-# Agent Platform Bootstrap — release automation
+# Agent Platform Bootstrap — release script
 #
 # Usage:
 #   .\tools\release.ps1 -Version 2.21.0
 #
-# What it does (in order):
-#   1. Validates CHANGELOG.md has an entry for the version
-#   2. Bumps package.json + AGENT-PLATFORM-MANIFEST.json to the version
-#   3. Runs full test suite
-#   4. Commits the version bump
-#   5. Creates and pushes the git tag
-#   6. Pushes the branch
-#   7. Creates the GitHub release page from CHANGELOG content + template
+# This script is for RELEASE ONLY. It is not a substitute for git commit or git push.
+# Normal development workflow:
+#   git commit  (often, as you work)
+#   git push    (when you decide — independent of releasing)
+#   .\tools\release.ps1 -Version X.Y.Z  (only when ready to publish a release)
 #
-# Prerequisites:
-#   - CHANGELOG.md must already have a ## [X.Y.Z] entry for this version
-#   - gh CLI must be authenticated (gh auth status)
-#   - Working tree must be clean (or only have the version bump staged)
+# Pre-conditions (the script validates these and stops if not met):
+#   1. Working tree is clean — all your work is already committed and pushed
+#   2. CHANGELOG.md has a ## [X.Y.Z] entry for this version
+#   3. gh CLI is authenticated (gh auth status)
+#
+# What this script does:
+#   1. Validates preconditions
+#   2. Bumps package.json + AGENT-PLATFORM-MANIFEST.json to the version
+#   3. Runs the full test suite — blocks on failure
+#   4. Commits the version bump (single commit: "chore(release): bump to vX.Y.Z")
+#   5. Creates the git tag vX.Y.Z
+#   6. Pushes the version bump commit + tag to origin
+#   7. Creates the GitHub release page from TEMPLATE.md + CHANGELOG content
 
 param(
     [Parameter(Mandatory)]
@@ -23,58 +29,73 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$ROOT  = "e:\Agent Platfrom"
-$GH    = "C:\Program Files\GitHub CLI\gh.exe"
-$REPO  = "zafrirron/Agent-Platform"
+$ROOT = "e:\Agent Platfrom"
+$GH   = "C:\Program Files\GitHub CLI\gh.exe"
+$REPO = "zafrirron/Agent-Platform"
 
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function OK($msg)   { Write-Host "    OK  $msg" -ForegroundColor Green }
-function Fail($msg) { Write-Host "`n    FAIL  $msg" -ForegroundColor Red; exit 1 }
+function Fail($msg) { Write-Host "`n    BLOCKED  $msg" -ForegroundColor Red; exit 1 }
 
-# ── 1. Validate CHANGELOG has an entry ───────────────────────────────────────
+# ── 1. Clean working tree ──────────────────────────────────────────────────────
+
+Step "Checking working tree is clean"
+
+$dirty = git -C $ROOT status --porcelain
+if ($dirty) {
+    Write-Host ""
+    Write-Host "    Uncommitted changes found:" -ForegroundColor Yellow
+    $dirty | ForEach-Object { Write-Host "      $_" }
+    Fail "Commit and push your work before running a release."
+}
+
+$ahead = git -C $ROOT rev-list "@{u}..HEAD" 2>$null
+if ($ahead) {
+    Fail "Local commits not yet pushed to origin. Push first, then release."
+}
+OK "Working tree clean and up to date with origin"
+
+# ── 2. Validate CHANGELOG ──────────────────────────────────────────────────────
 
 Step "Checking CHANGELOG.md for v$Version"
 
 $changelog = Get-Content "$ROOT\CHANGELOG.md" -Raw
 if ($changelog -notmatch "\[${Version}\]") {
-    Fail "CHANGELOG.md has no entry for [$Version]. Add it first, then run this script."
+    Fail "CHANGELOG.md has no entry for [$Version]. Update CHANGELOG.md first."
 }
 OK "CHANGELOG.md covers v$Version"
 
-# ── 2. Extract "What's new" content from CHANGELOG ───────────────────────────
+# ── 3. Extract What's new from CHANGELOG ──────────────────────────────────────
 
 Step "Extracting release notes from CHANGELOG.md"
 
-# Find the section for this version: from ## [X.Y.Z] to the next --- separator
 $pattern = "(?s)## \[${Version}\][^\n]*\n(.+?)(?=\n---)"
 if ($changelog -match $pattern) {
     $whatsNew = $Matches[1].Trim()
-    OK "Extracted $(($whatsNew -split "`n").Count) lines of release notes"
+    OK "Extracted $(($whatsNew -split "`n").Count) lines"
 } else {
-    Fail "Could not extract content for [$Version] from CHANGELOG.md. Check the format."
+    Fail "Could not extract content for [$Version] from CHANGELOG.md. Check the section format."
 }
 
-# ── 3. Bump versions ──────────────────────────────────────────────────────────
+# ── 4. Bump versions ───────────────────────────────────────────────────────────
 
 Step "Bumping versions to $Version"
 
-# package.json
 $pkg = Get-Content "$ROOT\package.json" -Raw
-$currentPkg = if ($pkg -match '"version":\s*"([^"]+)"') { $Matches[1] } else { "unknown" }
+$currentPkg = if ($pkg -match '"version":\s*"([^"]+)"') { $Matches[1] } else { "?" }
 $pkg = $pkg -replace '"version":\s*"[^"]+"', """version"": ""$Version"""
 Set-Content "$ROOT\package.json" $pkg -NoNewline
 OK "package.json: $currentPkg → $Version"
 
-# AGENT-PLATFORM-MANIFEST.json
-$manifest = Get-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" -Raw
-$currentManifest = if ($manifest -match '"bootstrap_version":\s*"([^"]+)"') { $Matches[1] } else { "unknown" }
-$manifest = $manifest -replace '"bootstrap_version":\s*"[^"]+"', """bootstrap_version"": ""$Version"""
-Set-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" $manifest -NoNewline
-OK "AGENT-PLATFORM-MANIFEST.json: $currentManifest → $Version"
+$man = Get-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" -Raw
+$currentMan = if ($man -match '"bootstrap_version":\s*"([^"]+)"') { $Matches[1] } else { "?" }
+$man = $man -replace '"bootstrap_version":\s*"[^"]+"', """bootstrap_version"": ""$Version"""
+Set-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" $man -NoNewline
+OK "AGENT-PLATFORM-MANIFEST.json: $currentMan → $Version"
 
-# ── 4. Run tests ──────────────────────────────────────────────────────────────
+# ── 5. Run tests ───────────────────────────────────────────────────────────────
 
-Step "Running test suite"
+Step "Running full test suite"
 
 Push-Location $ROOT
 try {
@@ -85,83 +106,76 @@ try {
     Pop-Location
 }
 
-# ── 5. Commit ─────────────────────────────────────────────────────────────────
+# ── 6. Commit version bump ─────────────────────────────────────────────────────
 
 Step "Committing version bump"
 
 git -C $ROOT add package.json AGENT-PLATFORM-MANIFEST.json
-$status = git -C $ROOT status --porcelain
-if ($status) {
+
+$staged = git -C $ROOT diff --cached --name-only
+if ($staged) {
     git -C $ROOT commit -m "chore(release): bump to v$Version"
-    OK "Committed"
+    OK "Committed version bump"
 } else {
-    OK "Nothing to commit (versions already at $Version)"
+    OK "Versions already at $Version — nothing to commit"
 }
 
-# ── 6. Tag + push ─────────────────────────────────────────────────────────────
+# ── 7. Tag ─────────────────────────────────────────────────────────────────────
 
-Step "Tagging v$Version and pushing"
+Step "Creating tag v$Version"
 
 $existingTag = git -C $ROOT tag --list "v$Version"
 if ($existingTag) {
-    OK "Tag v$Version already exists — skipping tag creation"
+    Write-Host "    Tag v$Version already exists — skipping" -ForegroundColor Yellow
 } else {
     git -C $ROOT tag "v$Version"
     OK "Created tag v$Version"
 }
 
+# ── 8. Push version bump commit + tag ─────────────────────────────────────────
+
+Step "Pushing version bump commit and tag to origin"
+
 git -C $ROOT push
 git -C $ROOT push origin "v$Version"
-OK "Pushed branch and tag"
+OK "Pushed"
 
-# ── 7. GitHub release ─────────────────────────────────────────────────────────
+# ── 9. GitHub release page ─────────────────────────────────────────────────────
 
-Step "Creating GitHub release v$Version"
+Step "Creating GitHub release page for v$Version"
 
-# Check if release already exists
-$existing = & $GH release view "v$Version" --repo $REPO 2>$null
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "    Release v$Version already exists. Updating content..." -ForegroundColor Yellow
-    $action = "edit"
-} else {
-    $action = "create"
-}
+& $GH release view "v$Version" --repo $REPO 2>$null | Out-Null
+$action = if ($LASTEXITCODE -eq 0) { "edit" } else { "create" }
 
-# Build release notes from template
 $template = Get-Content "$ROOT\tools\release-notes-TEMPLATE.md" -Raw
-
-# Substitute placeholders
 $releaseNotes = $template `
     -replace "vX\.Y\.Z", "v$Version" `
     -replace "<!-- Describe the main changes here -->", $whatsNew
 
-# Write to temp file (gh requires a file or stdin — use temp, delete immediately)
-$tmpFile = [System.IO.Path]::GetTempFileName() + ".md"
-Set-Content $tmpFile $releaseNotes -Encoding UTF8
+$tmp = [System.IO.Path]::GetTempFileName() + ".md"
+Set-Content $tmp $releaseNotes -Encoding UTF8
 
 try {
     if ($action -eq "create") {
-        & $GH release create "v$Version" `
-            --repo $REPO `
+        & $GH release create "v$Version" --repo $REPO `
             --title "Agent Platform Bootstrap v$Version" `
-            --notes-file $tmpFile `
-            --latest
+            --notes-file $tmp --latest
     } else {
-        & $GH release edit "v$Version" `
-            --repo $REPO `
+        & $GH release edit "v$Version" --repo $REPO `
             --title "Agent Platform Bootstrap v$Version" `
-            --notes-file $tmpFile `
-            --latest
+            --notes-file $tmp --latest
     }
     if ($LASTEXITCODE -ne 0) { Fail "gh release $action failed." }
-    OK "GitHub release v$Version live at https://github.com/$REPO/releases/tag/v$Version"
+    OK "https://github.com/$REPO/releases/tag/v$Version"
 } finally {
-    Remove-Item $tmpFile -ErrorAction SilentlyContinue
+    Remove-Item $tmp -ErrorAction SilentlyContinue
 }
 
-# ── Done ──────────────────────────────────────────────────────────────────────
+# ── Done ───────────────────────────────────────────────────────────────────────
 
-Write-Host "`n══════════════════════════════════════════════════" -ForegroundColor Green
-Write-Host "  Released: Agent Platform Bootstrap v$Version" -ForegroundColor Green
+Write-Host ""
+Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
+Write-Host "  Released: Agent Platform Bootstrap v$Version"    -ForegroundColor Green
 Write-Host "  https://github.com/$REPO/releases/tag/v$Version" -ForegroundColor Green
-Write-Host "══════════════════════════════════════════════════`n" -ForegroundColor Green
+Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
+Write-Host ""
