@@ -309,8 +309,24 @@ Read `COPYING.md`. Add `.<FOLDER>/` to the framework private folders list.
 ### 7C — install.ps1
 Read `install.ps1`. Add `<DISPLAY>` session-start example to the output section.
 
-### 7D — apply.js gitignore pre-install artifact detection
-Read the `THIRD_PARTY_ARTIFACTS` section. If the new framework has a legacy config file pattern, add detection for it (e.g., `.windsurfrules` → `'<DISPLAY> legacy rules format'`).
+### 7D — apply.js: add new framework to artifact detection arrays
+
+Read `AGENT-PLATFORM-TEMPLATES/.agent/bootstrap/apply.js`. Make these two changes:
+
+**In `FW_RULE_PATTERNS`** — add an entry for the new framework's rule files (if it has a rules/instructions folder):
+```javascript
+{ folder: '.<FOLDER>/rules', ext: '.md',
+  platformFiles: new Set(['platform-core.md', 'caveman.md']),
+  label: '<DISPLAY> rule' },
+```
+Adjust `folder`, `ext`, and `platformFiles` to match the actual framework structure.
+
+**In `LEGACY_ROOT_FILES`** — add an entry if the framework has a legacy root-level config file (e.g., `.windsurfrules`):
+```javascript
+{ file: '.<FOLDER>rules', label: '<DISPLAY> rules (legacy root format)' },
+```
+
+If the framework has no legacy root file and no separate rules folder (e.g., its config is entirely inside `.<FOLDER>/`), skip both — no change needed to either array.
 
 ---
 

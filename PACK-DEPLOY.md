@@ -1,67 +1,85 @@
-# Deploying the pack to a consumer repository
+# Deploy reference
 
-Generic instructions. No specific product names.
-
----
-
-## 1. Copy the pack
-
-Copy from a framework release:
-
-- `AGENT-PLATFORM-BOOTSTRAP.md`
-- `AGENT-PLATFORM-MANIFEST.json`
-- `AGENT-PLATFORM-TEMPLATES/` (entire directory)
-- `AGENT-PLATFORM-APPLY.js`
-
-See [COPYING.md](COPYING.md).
+How to install Agent Platform Bootstrap on a consumer repository.
 
 ---
 
-## 2. Install (tell your agent)
-
-Open the consumer repo in Cursor, Claude Code, Antigravity, or Codex and paste:
-
-```
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
-```
-
-The agent runs discovery, apply, stubs, gitignore, and reports session-start commands. No manual shell steps required.
-
----
-
-## 3. Modes (tell your agent)
-
-| Mode | What to paste |
-|------|----------------|
-| First install | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.` |
-| Add new pack files | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade` |
-| Fill empty stubs | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair` |
-| Reset templates | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=force` |
-
-**Optional CLI** (if you have no agent): `node AGENT-PLATFORM-APPLY.js` with the same `--mode=` values.
-
----
-
-## 4. After install
-
-- Use session commands from generated `SYNC-POINTS.md`
-- Customize `.agent/PROJECT.md` and `.agent/WORKFLOWS.md` for that codebase
-- Set `.agent/platform.json` → `launch` for that project's run commands
-
----
-
-## 5. Uninstall
-
-Linux / macOS:
+## Recommended: one-command install (no manual steps)
 
 ```bash
-rm -rf .agent .cursor .claude .agents .codex
-rm -f AGENTS.md SYNC-POINTS.md CLAUDE.md AGENT-PLATFORM-*
+# Any OS with Node.js 18+
+npx github:zafrirron/Agent-Platform
+
+# Linux / macOS (no Node.js needed)
+curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
+
+# Windows PowerShell
+iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.ps1 | iex
 ```
 
-Windows (PowerShell):
+The installer downloads the pack from GitHub, applies it, prints a summary, and cleans up.
+No files need to be manually copied.
 
-```powershell
-Remove-Item -Recurse -Force .agent,.cursor,.claude,.agents,.codex
-Remove-Item -Force AGENTS.md,SYNC-POINTS.md,CLAUDE.md,AGENT-PLATFORM-*
+---
+
+## Install modes
+
+```bash
+npx github:zafrirron/Agent-Platform                     # install (default)
+npx github:zafrirron/Agent-Platform --mode=upgrade      # add new files, skip existing
+npx github:zafrirron/Agent-Platform --mode=repair       # fill empty stubs only
+npx github:zafrirron/Agent-Platform --mode=force        # reset all templates (confirm first)
+npx github:zafrirron/Agent-Platform --mode=install-guards  # install pre-commit + CI guards
+npx github:zafrirron/Agent-Platform --mode=uninstall    # dry run (shows what will be removed)
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm  # remove everything
 ```
+
+---
+
+## After install
+
+Start your first session — paste into your AI agent chat (not the terminal):
+
+```
+Read .agent/session-start.md and execute it.
+```
+
+Works in: Claude Code · Cursor · Antigravity · Codex
+
+---
+
+## Pin to a specific version
+
+```bash
+npx github:zafrirron/Agent-Platform#v2.15.2
+```
+
+---
+
+## Upgrade an existing install
+
+```bash
+# Check for updates
+node .agent/tools/check-updates.mjs
+
+# Apply upgrade (improves expert rules, adds new capabilities)
+npx github:zafrirron/Agent-Platform --mode=upgrade
+
+# Or let the agent handle it
+# Tell your agent: Read .agent/tools/upgrade.md and execute it.
+```
+
+---
+
+## Manual install (fallback — not recommended)
+
+If `npx` is unavailable:
+
+1. Clone or download the framework repo
+2. Copy these files to the consumer repo root:
+   - `AGENT-PLATFORM-BOOTSTRAP.md`
+   - `AGENT-PLATFORM-MANIFEST.json`
+   - `AGENT-PLATFORM-TEMPLATES/`
+   - `AGENT-PLATFORM-APPLY.js`
+3. Run: `node AGENT-PLATFORM-APPLY.js`
+4. Delete the pack files after install (they are not needed at runtime)

@@ -81,7 +81,7 @@ npx github:zafrirron/Agent-Platform
 npx github:zafrirron/Agent-Platform --mode=upgrade
 
 # Pin to a specific version
-npx github:zafrirron/Agent-Platform#v2.2.0
+npx github:zafrirron/Agent-Platform#vX.Y.Z  # pin to a specific version
 
 # Other modes
 npx github:zafrirron/Agent-Platform --mode=repair   # fill empty stubs only
@@ -106,7 +106,7 @@ curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/insta
 
 With options:
 ```bash
-AP_VERSION=v2.2.0 AP_MODE=upgrade \
+AP_VERSION=vX.Y.Z AP_MODE=upgrade \
   curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
 ```
 
@@ -117,7 +117,7 @@ iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/instal
 
 With options (save script first, then run with params):
 ```powershell
-.\install.ps1 -Version v2.2.0 -Mode upgrade
+.\install.ps1 -Version vX.Y.Z -Mode upgrade
 ```
 
 ---

@@ -117,9 +117,9 @@ After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.
    - If the date is within the last 7 days → skip (use cached `last_update_status`)
 3. If running the check:
    - Run `node .agent/tools/check-updates.mjs`
-   - Write today's date (YYYY-MM-DD) to `last_update_check` in `platform.json`
-   - Write result (`"up_to_date"` or `"update_available: vX.Y.Z"`) to `last_update_status` in `platform.json`
-4. Read `last_update_status` from `platform.json` for display in Step 4
+   - **If the check fails for any reason** (network unavailable, GitHub unreachable, Node.js error) — skip silently and continue. **Never block session start on a network call.**
+   - If successful: write today's date (YYYY-MM-DD) to `last_update_check` and write result (`"up_to_date"` or `"update_available: vX.Y.Z"`) to `last_update_status` in `platform.json`
+4. Read `last_update_status` from `platform.json` for display in Step 5
 
 ### Step 4 — Last work context
 

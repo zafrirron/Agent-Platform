@@ -200,8 +200,9 @@ function scanPreExistingArtifacts(root) {
 
 function backupArtifacts(root, toBackup) {
   if (toBackup.length === 0) return null;
-  const date      = new Date().toISOString().slice(0, 10);
-  const backupDir = path.join(root, `.agent/backup/pre-install-${date}`);
+  // Use datetime (not just date) — same-day reinstall must not overwrite prior backup
+  const ts        = new Date().toISOString().replace(/:/g, '-').slice(0, 19);
+  const backupDir = path.join(root, `.agent/backup/pre-install-${ts}`);
   fs.mkdirSync(backupDir, { recursive: true });
   // manifest.json records original path of each file for accurate restore
   const manifest = {};
@@ -257,10 +258,11 @@ function writeMigrationNotes(root, artifacts, backupDir) {
 }
 
 /* ── Apply ────────────────────────────────────────────────────────────────── */
-const vars    = discover();
-const created = [];
-const updated = [];
-const skipped = [];
+const vars        = discover();
+const created     = [];
+const updated     = [];
+const skipped     = [];
+const noMarkers   = []; // upgrade skipped because file has no PLATFORM:START/END
 
 // Run pre-install scan on fresh install only
 const preArtifacts = (MODE === 'install') ? scanPreExistingArtifacts(INSTALL_ROOT) : { toBackup: [], toNote: [] };
@@ -290,7 +292,8 @@ for (const entry of manifest.files) {
         fs.writeFileSync(target, patched.endsWith('\n') ? patched : patched + '\n');
         updated.push(entry.path);
       } else {
-        skipped.push(entry.path); // no markers → skip (add-only, not overwrite)
+        noMarkers.push(entry.path); // no PLATFORM markers → warn user
+        skipped.push(entry.path);
       }
     } else if (MODE === 'repair' && isStub(fs.readFileSync(target, 'utf8'))) {
       fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
@@ -328,7 +331,9 @@ ${GI_END}`;
 
 const giPath = path.join(INSTALL_ROOT, '.gitignore');
 if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
-  fs.appendFileSync(giPath, '\n' + GI_BLOCK + '\n');
+  const existing = fs.existsSync(giPath) ? fs.readFileSync(giPath, 'utf8') : '';
+  const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
+  fs.appendFileSync(giPath, separator + GI_BLOCK + '\n');
   created.push('.gitignore (platform block)');
 }
 
@@ -490,7 +495,9 @@ function ciSetupForRunner(runner) {
     return `      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'`;
-  return `      # Add your stack setup step here`;
+  return `      # WARNING: Stack not auto-detected. Add your dependency install step here
+      # before this workflow will work (e.g. actions/setup-node, pip install, etc.)
+      # Then remove this warning comment.`;
 }
 
 function generatePreCommitHook(runner, threshold) {
@@ -720,6 +727,14 @@ console.log('  AGENTS.md        framework router');
 console.log('  SYNC-POINTS.md   cross-IDE switch cheat sheet');
 console.log('');
 console.log(`  Files created: ${created.length}   Updated: ${updated.length}   Skipped: ${skipped.length}`);
+if (MODE === 'upgrade' && noMarkers.length > 0) {
+  console.log('');
+  console.log('  ⚠  Some files were skipped — installed before v2.7 (no PLATFORM markers):');
+  noMarkers.slice(0, 5).forEach(f => console.log('     ' + f));
+  if (noMarkers.length > 5) console.log(`     ... and ${noMarkers.length - 5} more`);
+  console.log('  To get the latest expert rules, run: npx github:zafrirron/Agent-Platform --mode=force');
+  console.log('  (force resets all templates — back up any project-specific content first)');
+}
 console.log('');
 console.log('  Capabilities');
 console.log(SEP);

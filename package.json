@@ -1,6 +1,6 @@
 {
   "name": "agent-platform-bootstrap",
-  "version": "2.15.0",
+  "version": "2.15.2",
   "type": "module",
   "description": "Multi-framework agent coordination platform — installs a complete agentic development environment into any repo.",
   "keywords": ["agent", "ai", "claude", "cursor", "codex", "multi-agent", "agentic"],
@@ -14,6 +14,7 @@
     "agent-platform": "bin/agent-platform.js"
   },
   "scripts": {
+    "test":         "node --test tests/apply-utils.test.mjs",
     "manifest":     "node tools/build-bootstrap-manifest.js",
     "readme":       "node tools/build-framework-readme.js",
     "apply":        "node AGENT-PLATFORM-APPLY.js",
