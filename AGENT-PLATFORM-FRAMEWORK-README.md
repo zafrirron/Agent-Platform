@@ -33,9 +33,9 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 ## Platform capabilities
 
-> **One pack. One command. A complete agentic development environment on any repository.**
+> **One command. A complete agentic development environment on any repository.**
 
-Copy the platform pack to any consumer repository root — new or existing — then tell your agent: **`Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.`** In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 8 software-expert agents you activate by name, 7 step-by-step playbooks for every common scenario, living project-knowledge docs, built-in token compression, and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 8 software-expert agents you activate by name, 8 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, living project-knowledge docs, built-in token compression, and a self-documenting extension system. Your existing code is never touched.
 
 ---
 
@@ -46,14 +46,17 @@ Copy the platform pack to any consumer repository root — new or existing — t
 | **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — each gets a private folder with session-start/end prompts and skill wiring |
 | **Cross-IDE coordination** | `registry.yaml` prevents two IDEs editing the same file simultaneously; `CURRENT.md` preserves full context across switches |
 | **8 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data — activate by name, chain across sessions |
-| **7 playbooks** | add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit — step-by-step with agent assignments |
-| **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff with explicit done-when), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
-| **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before the task is marked done; coverage gate auto-detected at install; red suite blocks handoff |
+| **8 playbooks** | add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration — step-by-step with agent assignments |
+| **Quick reference on every session start** | Agent displays a full capability table on every session start — framework-aware (`<fw>` substituted), includes update status and last work context. No memorisation required. |
+| **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
+| **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before done; coverage gate auto-detected at install; red suite blocks handoff |
 | **5 living context files** | api-contracts · adr-log (Architecture Decision Records) · known-issues · dependencies · project-overview — kept in sync as code evolves |
-| **🪨 Caveman skill** | ~65% output token savings; 5 slash commands (`/caveman`, `/caveman-commit`, `/caveman-review`, `/caveman-stats`, `/caveman-compress`); wired into all 4 frameworks |
+| **🪨 Caveman skill** | ~65% output token savings; activated with `"caveman mode"` across all 4 frameworks |
+| **Agentic update check** | `node .agent/tools/check-updates.mjs` — or tell the agent: `Read .agent/tools/upgrade.md and execute it.` Checks once per 7 days, caches result. |
+| **3 install paths** | npx · curl/iwr shell one-liner · agent-direct. No file copying. Version-pinnable. |
 | **API agentic patterns** | 12 conventions for agents that build or consume APIs: schema-first, contract discipline, idempotency, structured errors, auth injection, rate-limit backoff, mock-first, contract tests |
 | **Extensible by prompt** | 7-step extension anatomy + ready-to-paste prompts for adding new agents, playbooks, skills, IDE frameworks, or context files — permanently, so every future repo gets them |
-| **Self-customising** | Phase 3 scans your codebase and fills project-specific stubs (stack, components, entry points, contracts, deps) automatically |
+| **Self-customising** | Phase 0 scans your codebase and fills project name, stack, test runner, coverage command, and entry points automatically |
 | **Safe to run anywhere** | Default mode creates missing files only — never overwrites existing content, never touches application source |
 
 ---
@@ -157,37 +160,39 @@ Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
 |-------------|-------|
 | A git repository | `git init` if starting fresh |
 | Any agentic IDE | Claude Code, Cursor, Antigravity, or Codex (VS Code) |
-| Platform pack | See [COPYING.md](COPYING.md) |
-
-No other tools required. The agent does all the work.
+| Node.js 18+ | Required for `npx` path only; shell one-liners handle this automatically |
 
 ---
 
 ### Installing on a new repository
 
+**Option A — npx (recommended, any OS with Node.js 18+):**
+```bash
+npx github:zafrirron/Agent-Platform
 ```
-1.  Create or clone your repo
-2.  Copy the pack files from COPYING.md into the repo root
-3.  Open the repo in your agentic IDE
-4.  Tell the agent:
 
-    Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
+**Option B — shell one-liner:**
+```bash
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
 
-5.  The agent runs 5 phases automatically (see below)
-6.  When done, run your IDE's session-start command (agent will tell you which one)
+# Windows PowerShell
+iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.ps1 | iex
 ```
+
+The installer runs all 5 phases automatically, prints a summary with per-IDE session-start commands, and exits. No agent interaction needed for the install itself.
 
 ---
 
 ### Installing on an existing repository
 
-Same steps — the bootstrap **never overwrites existing files** in default mode. It only creates what is missing.
+Same commands — the installer **never overwrites existing files** in default mode. It only creates what is missing.
 
-```
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
+```bash
+npx github:zafrirron/Agent-Platform
 ```
 
-Your existing code, docs, and config are untouched. Only the `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/` platform scaffolding is added.
+Your existing code, docs, and config are untouched. Only `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/` platform scaffolding is added.
 
 ---
 
@@ -208,14 +213,15 @@ Total time: typically **30–90 seconds** depending on codebase size.
 
 ### Modes
 
-| You want to… | Tell the agent |
-|-------------|----------------|
-| Install (first time, or add missing files) | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.` |
-| Repair broken links / fill empty stubs | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair` |
-| Add files from a newer pack | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade` |
-| Reset templates to latest (⚠️ overwrites templates) | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=force` |
+| You want to… | Command |
+|-------------|---------|
+| Install (first time, or add missing files) | `npx github:zafrirron/Agent-Platform` |
+| Repair broken links / fill empty stubs | `npx github:zafrirron/Agent-Platform --mode=repair` |
+| Add files from a newer pack | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
+| Reset templates to latest (⚠️ overwrites templates) | `npx github:zafrirron/Agent-Platform --mode=force` |
+| Pin to a specific version | `npx github:zafrirron/Agent-Platform#v2.4.0` |
 
-`mode=force` requires explicit confirmation before overwriting. Application source is never touched.
+`--mode=force` requires explicit confirmation before overwriting. Application source is never touched.
 
 ---
 
@@ -229,16 +235,24 @@ repo-root/
 │
 ├── .agent/                           ← SHARED hub (all frameworks)
 │   ├── BEST-PRACTICES.md             ← 10 golden rules + protocols
+│   ├── QUICK-REF.md                  ← capability quick reference (shown every session start)
+│   ├── session-start-shared.md       ← shared session-start logic for all 4 frameworks
 │   ├── PROJECT.md, CONVENTIONS.md, WORKFLOWS.md, FILE_MAP.md
 │   ├── ZONES.md, SYNC.md, CHECKLIST.md
 │   ├── agents/                       ← 8 software-expert personas
 │   │   architect · backend · frontend · devops · test · docs · security · data
-│   ├── playbooks/                    ← 7 step-by-step workflows
+│   ├── playbooks/                    ← 8 step-by-step workflows
 │   │   add-feature · release · debug-pipeline · bug-fix · refactor
-│   │   add-dependency · security-audit
+│   │   add-dependency · security-audit · api-integration
 │   ├── context/                      ← 5 living reference files
-│   │   project-overview · api-contracts · adr-log · known-issues · dependencies
+│   │   project-overview · api-contracts · api-patterns · adr-log · known-issues · dependencies
 │   ├── skills/caveman/SKILL.md       ← 🪨 token-compression skill
+│   ├── tools/
+│   │   ├── check-updates.mjs         ← version check vs GitHub (7-day cache)
+│   │   ├── upgrade.md                ← agent self-upgrade prompt
+│   │   ├── check_locks.js            ← file conflict checker
+│   │   ├── prune_handoff.js          ← handoff log pruner
+│   │   └── launch.mjs / .sh / .ps1  ← app launcher
 │   └── handoff/
 │       ├── CURRENT.md                ← session log (newest first)
 │       └── sync/registry.yaml        ← active-framework lock
@@ -262,57 +276,33 @@ repo-root/
 
 ---
 
-### Copying to a different repository
+### Installing into a different repository
 
-Copy the **platform pack** (see [COPYING.md](COPYING.md)) to the new repo root and trigger install. Everything else is generated from it.
+Run the install command from inside the target repo. The installer detects the project name and stack from that directory automatically.
 
-```powershell
-# Example: copy bootstrap to another project
-# Copy pack per COPYING.md ..\other-project\
-# Then in that project's IDE tell the agent:
-# Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
+```bash
+cd /path/to/other-project
+npx github:zafrirron/Agent-Platform
 ```
 
-The generated files are project-aware — Phase 3 fills stubs from that repo's own codebase scan.
+Phase 3 fills all stubs from that repo's own codebase scan — the output is project-aware.
 
 ---
 
 ### Updating an existing installation
 
-When a new version of the bootstrap is available:
+```bash
+# Check what version is installed and whether an update is available
+node .agent/tools/check-updates.mjs
 
-1. Copy the new pack release (orchestrator + manifest + templates)
-2. Tell the agent: `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.`  
-   → adds any new files; skips existing ones
-3. `… mode=upgrade` for new manifest entries; `… mode=repair` for empty stubs; `… mode=force` resets templates (confirm first)
+# Add new files from the latest release (never overwrites existing content)
+npx github:zafrirron/Agent-Platform --mode=upgrade
 
-Your customised content (filled stubs, project-specific docs, ADRs, known-issues) is never overwritten in default or repair mode.
-
----
-
-### Upgrading from v2.x to v2.2
-
-v2.2 adds test enforcement (new placeholders, expanded rules). Existing installs need a targeted update:
-
-**Step 1 — Copy the 5 changed template files** from the new pack into your installed `.agent/` folder:
-
-| Source (pack) | Destination (your repo) |
-|---------------|------------------------|
-| `AGENT-PLATFORM-TEMPLATES/.agent/agents/test-agent.md` | `.agent/agents/test-agent.md` |
-| `AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md` | `.agent/CONVENTIONS.md` |
-| `AGENT-PLATFORM-TEMPLATES/.agent/CHECKLIST.md` | `.agent/CHECKLIST.md` |
-| `AGENT-PLATFORM-TEMPLATES/.agent/BEST-PRACTICES.md` | `.agent/BEST-PRACTICES.md` |
-| `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/api-integration.md` | `.agent/playbooks/api-integration.md` |
-
-**Step 2 — Fill the two new placeholders** in the files you just copied. Replace `{{COVERAGE_CMD}}` and `{{COVERAGE_THRESHOLD}}` with your project's values (e.g. `pytest --cov` and `80`).
-
-**Step 3 — Verify**:
+# Or let the agent handle it entirely
+Read .agent/tools/upgrade.md and execute it.
 ```
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair
-```
-This fills any remaining empty stubs without overwriting what you just set.
 
-> **Alternative (no customisations to preserve):** `mode=force` resets all templates in one command. Confirm before running — it overwrites project-specific content.
+Your customised content (filled stubs, project-specific docs, ADRs, known-issues) is never overwritten in upgrade mode. See [CHANGELOG.md](CHANGELOG.md) for version-specific upgrade guides.
 
 ---
 
@@ -391,32 +381,17 @@ The registry at `.agent/handoff/sync/registry.yaml` prevents two IDEs from editi
 
 ### 5 · 🪨 Caveman — token compression mode
 
-Caveman cuts AI output by ~65% while keeping full technical accuracy. Activate it any time.
-
-**Claude Code slash commands:**
+Caveman cuts AI output by ~65% while keeping full technical accuracy. Activate it any time using natural language — the same commands work across all 4 frameworks.
 
 ```
-/caveman              → full compression (default)
-/caveman lite         → remove filler, keep full sentences
-/caveman ultra        → maximum — abbreviate everything
-/caveman wenyan       → classical Chinese mode
-/caveman-commit       → conventional commit ≤50 chars
-/caveman-review       → one-line code review per issue
-/caveman-stats        → show session token savings
-/caveman-compress .agent/PROJECT.md   → compress a context file ~46%
+caveman mode          → full compression (default)
+caveman lite          → remove filler, keep full sentences
+caveman ultra         → maximum — abbreviate everything
+caveman compress <path> → compress a context file ~46%
 stop caveman          → return to normal
 ```
 
-**Cursor / Antigravity / Codex** — tell the agent in plain language:
-
-```
-caveman mode
-caveman lite
-caveman ultra
-stop caveman
-```
-
-The skill definition at `.agent/skills/caveman/SKILL.md` is the same across all frameworks.
+The skill definition at `.agent/skills/caveman/SKILL.md` is the single source of truth across all frameworks.
 
 ---
 
@@ -617,6 +592,9 @@ Full audit: `Read .agent/agents/security-agent.md` + `Read .agent/playbooks/secu
 
 ### Quick-reference card
 
+> The full quick reference is also displayed automatically at every session start.
+> `<fw>` = your active framework folder: `claude` · `cursor` · `agents` · `codex`
+
 ```
 SESSION START       Read .<fw>/prompts/session-start.md and execute it.
 SESSION END         Read .<fw>/prompts/session-end.md and execute it.
@@ -633,9 +611,10 @@ REFACTOR            Read .agent/playbooks/refactor.md
 SECURITY AUDIT      Read .agent/playbooks/security-audit.md
 ADD FEATURE         Read .agent/playbooks/add-feature.md
 RELEASE             Read .agent/playbooks/release.md
-CAVEMAN ON          /caveman  (Claude Code)  |  "caveman mode"  (others)
-CAVEMAN OFF         stop caveman
-COMPRESS FILE       /caveman-compress <path>
+API INTEGRATION     Read .agent/playbooks/api-integration.md
+CAVEMAN ON          "caveman mode"
+CAVEMAN OFF         "stop caveman"
+COMPRESS FILE       "caveman compress <path>"
 RUN TESTS           {{TEST_RUNNER}}
 CHECK COVERAGE      {{COVERAGE_CMD}}
 LOAD TEST EXPERT    Read .agent/agents/test-agent.md
@@ -951,9 +930,9 @@ Use this prompt verbatim — every part maps to a concrete location in the file.
 
 1. Edit `AGENT-PLATFORM-TEMPLATES/`
 2. `node tools/build-bootstrap-manifest.js`
-3. Bump `bootstrap_version` in manifest + orchestrator footer + README footer
+3. Bump `bootstrap_version` in manifest + orchestrator footer + README footer + `package.json`
 4. Update `CHANGELOG.md` — new version block + upgrade guide section
-5. Tag release; consumer repos copy the tagged pack
+5. Create a GitHub Release with the new tag — `npx github:zafrirron/Agent-Platform#vX.Y.Z` installs that exact version
 
 **CHANGELOG:** [`CHANGELOG.md`](CHANGELOG.md) — full version history, upgrade matrix, and per-path migration instructions.
 
