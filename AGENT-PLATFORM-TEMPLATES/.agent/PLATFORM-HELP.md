@@ -7,19 +7,7 @@
 > **Re-show this file any time:** say `"platform help"` or `"how does this work"`
 > **Re-show quick reference any time:** say `"show quick reference"` or `"show help"`
 
----
-
-## Navigation
-
-- [Session workflow](#session-workflow)
-- [Expert agents](#expert-agents)
-- [Playbooks](#playbooks)
-- [Project knowledge files](#project-knowledge-files)
-- [Testing enforcement](#testing-enforcement)
-- [Token compression — Caveman](#token-compression--caveman)
-- [Switching IDEs](#switching-ides)
-- [Extending the platform](#extending-the-platform)
-- [Platform maintenance](#platform-maintenance)
+**Sections:** Session workflow · Expert agents · Playbooks · Project knowledge · Testing · Caveman · Switching IDEs · Extending · Maintenance
 
 ---
 
