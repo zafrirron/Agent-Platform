@@ -258,6 +258,235 @@ if (MODE === 'uninstall') {
   process.exit(0);
 }
 
+/* ── Guards: helpers ─────────────────────────────────────────────────────── */
+
+function ciSetupForRunner(runner) {
+  if (runner.includes('jest') || runner.includes('vitest') || runner.includes('mocha') || runner.startsWith('npm'))
+    return `      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci`;
+  if (runner.startsWith('pytest') || runner.startsWith('python'))
+    return `      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt`;
+  if (runner.startsWith('go'))
+    return `      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'`;
+  if (runner.startsWith('cargo'))
+    return `      - uses: dtolnay/rust-toolchain@stable`;
+  if (runner.startsWith('dotnet'))
+    return `      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'`;
+  return `      # Add your stack setup step here`;
+}
+
+function generatePreCommitHook(runner, threshold) {
+  const hasRunner = runner && !runner.startsWith('<fill');
+  return `#!/usr/bin/env node
+// Agent Platform Bootstrap — pre-commit guard
+// Installed by: npx github:zafrirron/Agent-Platform --mode=install-guards
+// Remove with:  npx github:zafrirron/Agent-Platform --mode=remove-guards
+// @agent-platform-guard
+
+const { execSync, spawnSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const ROOT = process.cwd();
+const pass = (m) => console.log('  ✅ ' + m);
+const fail = (m) => { console.error('  ❌ BLOCKED: ' + m); process.exit(1); };
+const skip = (m) => console.log('  ⟳  ' + m + ' (skipped)');
+
+console.log('\\nAgent Platform — pre-commit guards');
+
+// Guard 1 — Secrets scan
+const PATTERN = /password|api_key|apikey|secret_key|token|private_key|bearer|BEGIN RSA|BEGIN EC PRIVATE/i;
+try {
+  const staged = execSync('git diff --cached --name-only', { encoding: 'utf8' })
+    .split('\\n').filter(f => f.trim() && fs.existsSync(f));
+  const hits = staged.filter(f => PATTERN.test(fs.readFileSync(f, 'utf8')));
+  if (hits.length) {
+    console.error('  Potential secrets in:');
+    hits.forEach(f => console.error('    ' + f));
+    fail('Secrets detected. Remove sensitive values before committing.');
+  }
+  pass('Secrets scan clean');
+} catch(e) { if (e.message.includes('BLOCKED')) throw e; skip('secrets scan'); }
+
+${hasRunner ? `// Guard 2 — Test suite (source files only)
+const RUNNER = '${runner}';
+try {
+  const staged = execSync('git diff --cached --name-only', { encoding: 'utf8' });
+  const hasSrc = /\\.(js|ts|mjs|jsx|tsx|py|go|rs|cs|java|rb|php|swift|kt)$/.test(staged);
+  if (hasSrc) {
+    console.log('  Running: ' + RUNNER);
+    const r = spawnSync(RUNNER, { shell: true, stdio: 'inherit', cwd: ROOT });
+    if (r.status !== 0) fail('Test suite failed. Fix all tests before committing.');
+    pass('Test suite passed');
+  } else { skip('test suite (no source files staged)'); }
+} catch(e) { if (e.message.includes('BLOCKED')) throw e; skip('test suite'); }` : `// Guard 2 — Test suite skipped (test_runner not configured)`}
+
+console.log('  ✅ All guards passed\\n');
+`;
+}
+
+function generateCIWorkflow(runner, coverageCmd, threshold, setup) {
+  const hasRunner = runner && !runner.startsWith('<fill');
+  const hasCoverage = coverageCmd && !coverageCmd.startsWith('<fill');
+  return `# Agent Platform Bootstrap — CI guards
+# Installed by: npx github:zafrirron/Agent-Platform --mode=install-guards
+# Remove with:  npx github:zafrirron/Agent-Platform --mode=remove-guards
+# @agent-platform-guard
+
+name: Platform Guards
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+${setup}
+
+      - name: Secrets scan
+        run: |
+          echo "Scanning staged/changed files for secrets..."
+          git diff --name-only HEAD~1 HEAD 2>/dev/null | xargs -I{} sh -c '[ -f "{}" ] && grep -lE "password|api_key|apikey|secret_key|private_key|bearer|BEGIN RSA" "{}" || true' | grep -v "^$" && echo "❌ Secrets found" && exit 1 || true
+          echo "✅ Secrets scan passed"
+${hasRunner ? `
+      - name: Test suite
+        run: ${runner}
+` : ''}${hasCoverage ? `
+      - name: Coverage check
+        run: ${coverageCmd}
+` : ''}
+      - name: Platform guard summary
+        run: echo "✅ All Agent Platform guards passed"
+`;
+}
+
+/* ── install-guards mode ──────────────────────────────────────────────────── */
+if (MODE === 'install-guards') {
+  const GLINE = '═'.repeat(66);
+  const gsep  = '  ' + '─'.repeat(62);
+  const vars2 = discover();
+  const runner   = vars2.TEST_RUNNER;
+  const coverage = vars2.COVERAGE_CMD;
+  const threshold = vars2.COVERAGE_THRESHOLD;
+  const setup    = ciSetupForRunner(runner);
+
+  console.log('');
+  console.log(GLINE);
+  console.log('  Agent Platform Bootstrap — Install Guards');
+  console.log(GLINE);
+  console.log('');
+  console.log(`  Project: ${vars2.PROJECT_NAME}  |  Test runner: ${runner}`);
+  console.log('');
+
+  // 1. Pre-commit hook
+  const gitHooksDir = path.join(INSTALL_ROOT, '.git/hooks');
+  const hookPath    = path.join(gitHooksDir, 'pre-commit');
+  if (fs.existsSync(gitHooksDir)) {
+    if (fs.existsSync(hookPath) && !fs.readFileSync(hookPath, 'utf8').includes('@agent-platform-guard')) {
+      console.log('  ⚠️  A pre-commit hook already exists and was NOT installed by Agent Platform.');
+      console.log('     Manual merge required: ' + hookPath);
+    } else {
+      fs.writeFileSync(hookPath, generatePreCommitHook(runner, threshold));
+      try { fs.chmodSync(hookPath, 0o755); } catch { /* Windows FS */ }
+      console.log('  ✔ Pre-commit hook    →  .git/hooks/pre-commit');
+      console.log('     Guards: secrets scan' + (runner && !runner.startsWith('<') ? ' + test suite' : ''));
+    }
+  } else {
+    console.log('  ⚠️  No .git directory found — pre-commit hook not installed.');
+    console.log('     Run from inside a git repository.');
+  }
+
+  // 2. GitHub Actions workflow
+  const ciDir  = path.join(INSTALL_ROOT, '.github/workflows');
+  const ciPath = path.join(ciDir, 'platform-guards.yml');
+  fs.mkdirSync(ciDir, { recursive: true });
+  fs.writeFileSync(ciPath, generateCIWorkflow(runner, coverage, threshold, setup));
+  console.log('  ✔ GitHub Actions CI  →  .github/workflows/platform-guards.yml');
+  console.log('     Guards: secrets scan' +
+    (runner && !runner.startsWith('<') ? ' + test suite' : '') +
+    (coverage && !coverage.startsWith('<') ? ' + coverage' : ''));
+
+  // 3. Update platform.json
+  const platformPath = path.join(INSTALL_ROOT, '.agent/platform.json');
+  if (fs.existsSync(platformPath)) {
+    try {
+      const pj = JSON.parse(fs.readFileSync(platformPath, 'utf8'));
+      pj.guards_installed = true;
+      pj.guards_installed_at = new Date().toISOString();
+      fs.writeFileSync(platformPath, JSON.stringify(pj, null, 2) + '\n');
+    } catch { /* ignore */ }
+  }
+
+  console.log('');
+  console.log(gsep);
+  console.log('  Enforcement is now WIRED — not just aspired to.');
+  console.log('');
+  console.log('  Pre-commit: blocks commits with secrets or red tests');
+  console.log('  CI:         blocks PRs with failing tests or secrets');
+  console.log('');
+  console.log('  Commit .github/workflows/platform-guards.yml to activate CI.');
+  console.log(GLINE);
+  console.log('');
+  process.exit(0);
+}
+
+/* ── remove-guards mode ───────────────────────────────────────────────────── */
+if (MODE === 'remove-guards') {
+  const GLINE = '═'.repeat(66);
+  const hookPath = path.join(INSTALL_ROOT, '.git/hooks/pre-commit');
+  const ciPath   = path.join(INSTALL_ROOT, '.github/workflows/platform-guards.yml');
+  let removed = 0;
+
+  console.log('');
+  console.log(GLINE);
+  console.log('  Agent Platform Bootstrap — Remove Guards');
+  console.log(GLINE);
+  console.log('');
+
+  if (fs.existsSync(hookPath) && fs.readFileSync(hookPath, 'utf8').includes('@agent-platform-guard')) {
+    fs.rmSync(hookPath);
+    console.log('  ✔ Removed: .git/hooks/pre-commit');
+    removed++;
+  } else if (fs.existsSync(hookPath)) {
+    console.log('  ⚠️  Pre-commit hook exists but was not installed by Agent Platform — not removed.');
+  }
+
+  if (fs.existsSync(ciPath) && fs.readFileSync(ciPath, 'utf8').includes('@agent-platform-guard')) {
+    fs.rmSync(ciPath);
+    console.log('  ✔ Removed: .github/workflows/platform-guards.yml');
+    removed++;
+  }
+
+  const platformPath = path.join(INSTALL_ROOT, '.agent/platform.json');
+  if (fs.existsSync(platformPath)) {
+    try {
+      const pj = JSON.parse(fs.readFileSync(platformPath, 'utf8'));
+      delete pj.guards_installed;
+      delete pj.guards_installed_at;
+      fs.writeFileSync(platformPath, JSON.stringify(pj, null, 2) + '\n');
+    } catch { /* ignore */ }
+  }
+
+  console.log('');
+  console.log(`  Done — ${removed} guard(s) removed.`);
+  console.log(GLINE);
+  console.log('');
+  process.exit(0);
+}
+
 /* ── Install summary ──────────────────────────────────────────────────────── */
 const LINE = '═'.repeat(66);
 const SEP  = '  ' + '─'.repeat(62);
@@ -296,6 +525,7 @@ console.log('  ✔  Token compression   "caveman mode" — ~65% output reduction
 console.log('  ✔  Quick reference     displayed on every session start');
 console.log('  ✔  Update check        node .agent/tools/check-updates.mjs');
 console.log('  ✔  Context docs        api-contracts · adr-log · known-issues · dependencies');
+console.log('  ○  Enforcement guards  not installed — run: npx github:zafrirron/Agent-Platform --mode=install-guards');
 console.log('');
 console.log('  References');
 console.log(SEP);

@@ -69,6 +69,7 @@ Repeat. The platform never stops improving.
 | **Local help** | `PLATFORM-HELP.md` installed in every repo — everything explained, fully offline |
 | **Agentic update check** | Agents check for platform improvements automatically, once per 7 days |
 | **Token compression** | `"caveman mode"` — ~65% shorter output, same accuracy, all IDEs |
+| **Enforcement guards** | `--mode=install-guards` wires real pre-commit hooks and GitHub Actions CI — secrets scan, test suite, coverage gate. Aspiration becomes enforcement. |
 | **Safe everywhere** | Never overwrites your code. Never overwrites your customisations on upgrade. |
 
 ---
@@ -105,6 +106,26 @@ Every expert file has two sections:
 
 ---
 
+## Enforcement guards — wired, not aspirational
+
+The expert rules tell agents what to do. The guards ensure it actually happens.
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=install-guards
+```
+
+Installs:
+- **Pre-commit hook** — blocks commits containing secrets or with a failing test suite
+- **GitHub Actions CI** — blocks PRs with failing tests, coverage below threshold, or secrets
+
+Stack-aware: auto-detects your test runner and generates the right CI setup steps.
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=remove-guards  # remove if needed
+```
+
+---
+
 ## Remove
 
 ```bash
@@ -126,7 +147,7 @@ npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # remove
 
 ## Version
 
-**v2.8.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.9.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

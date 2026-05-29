@@ -954,4 +954,4 @@ Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
 
 ---
 
-*Agent Platform Bootstrap v2.8 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.9 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*

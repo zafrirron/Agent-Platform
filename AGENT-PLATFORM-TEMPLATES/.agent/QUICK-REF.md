@@ -110,6 +110,8 @@
 | Local help | `Read .agent/PLATFORM-HELP.md` |
 | Check for updates | `node .agent/tools/check-updates.mjs` |
 | Agent self-upgrade | `Read .agent/tools/upgrade.md and execute it.` |
+| Install enforcement guards | `npx github:zafrirron/Agent-Platform --mode=install-guards` |
+| Remove guards | `npx github:zafrirron/Agent-Platform --mode=remove-guards` |
 | Remove platform | `npx github:zafrirron/Agent-Platform --mode=uninstall` |
 | Install | `npx github:zafrirron/Agent-Platform` |
 | Upgrade | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
