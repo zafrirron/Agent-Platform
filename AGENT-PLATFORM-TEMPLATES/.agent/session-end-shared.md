@@ -24,6 +24,22 @@ Read `.agent/CHECKLIST.md` and verify each item. For any item that is not satisf
 - The test suite is red
 - There are unfilled `{{placeholder}}` stubs
 
+### Step 2b — New doc file scan
+
+Scan for any `.md` files created or added during this session that are not yet in `.agent/context/docs-registry.md`:
+
+```
+git diff --cached --name-only --diff-filter=A -- "*.md"
+git status --short | grep "^?" | grep "\.md$"
+```
+
+For each unregistered file found:
+- Add a row to `docs-registry.md` immediately
+- Owner = the expert who created it (or ask if unclear)
+- Do not end the session with unregistered doc files
+
+If no new `.md` files were created: skip this step silently.
+
 ### Step 3 — Update handoff log
 
 Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:

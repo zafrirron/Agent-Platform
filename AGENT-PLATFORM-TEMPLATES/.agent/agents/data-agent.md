@@ -30,6 +30,7 @@
 - [ ] No data loss without explicit approval
 - [ ] ADR logged if migration is breaking
 - [ ] Pipeline is idempotent and failure-safe
+- [ ] `docs-registry.md` checked — Data-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

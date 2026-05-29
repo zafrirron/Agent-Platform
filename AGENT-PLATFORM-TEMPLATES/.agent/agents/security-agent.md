@@ -43,6 +43,7 @@
 - [ ] All new inputs validated at trust boundary
 - [ ] Dependency audit clean (or CVEs documented in known-issues.md with mitigations)
 - [ ] Findings logged in `.agent/context/known-issues.md` with severity rating
+- [ ] `docs-registry.md` checked — Security-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

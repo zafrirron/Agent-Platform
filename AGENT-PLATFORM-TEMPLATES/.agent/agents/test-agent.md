@@ -48,6 +48,7 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 - [ ] `{{TEST_RUNNER}}` passes with 0 failures
 - [ ] Coverage at or above `{{COVERAGE_THRESHOLD}}%`
 - [ ] Untestable paths documented in `CURRENT.md`
+- [ ] `docs-registry.md` checked — Test-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

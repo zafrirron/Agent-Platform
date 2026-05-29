@@ -37,10 +37,14 @@
    - Minor (x.N.0): new features, backward-compatible
    - Major (N.0.0): breaking changes — migration guide required
 
-4. **Changelog — Docs agent**
-   Confirm `CHANGELOG.md` has an entry for this version with:
-   - All user-visible changes (Added / Changed / Fixed / Removed)
-   - Breaking changes clearly marked with migration steps
+4. **Docs approval gate — Docs agent**
+   Load `docs-agent.md`. Run registry audit mode:
+   - Read `.agent/context/docs-registry.md`
+   - Check every row: is `Last reviewed` current relative to code changes since last tag?
+   - Check for any new `.md` files in the repo not yet in the registry
+   **BLOCKED if:** any row is stale OR any new doc file is unregistered.
+   Update stale docs or explicitly mark `N/A for this release` with a reason.
+   Confirm `CHANGELOG.md` has an entry for this version (Added / Changed / Fixed / Removed).
 
 5. **Build**
    DevOps agent: produce release artifact (binary / package / container image).

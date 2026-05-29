@@ -38,6 +38,10 @@
 ## Token tip
 In implementation mode, say `"caveman mode"` for ~65% shorter responses at the same accuracy.
 Turn it off when the Docs or Critic expert is active — full reasoning matters there.
+
+## Docs
+- Check `.agent/context/docs-registry.md` — update any Frontend-owned rows affected by this change
+- If you created any new `.md` files: add them to `docs-registry.md` before session end
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

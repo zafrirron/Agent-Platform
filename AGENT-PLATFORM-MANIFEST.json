@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.19.2",
+  "bootstrap_version": "2.20.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
@@ -139,6 +139,11 @@
     {
       "path": ".agent/context/api-contracts.md",
       "template": ".agent/context/api-contracts.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/docs-registry.md",
+      "template": ".agent/context/docs-registry.md",
       "kind": "template"
     },
     {

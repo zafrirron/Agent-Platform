@@ -5,6 +5,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.20.0] — 2026-05-30
+
+### Added — Docs governance model: registry, agent enforcement, release gate, new-doc detection
+
+Documentation completeness is now a first-class quality gate — not an afterthought.
+
+**`.agent/context/docs-registry.md`** — installed in every consumer repo. Single source of truth mapping every project doc to its owner expert, audience, update trigger, and last-reviewed date. Agents read this before marking tasks done.
+
+**Every expert agent — Done-when updated:**
+All 8 expert Done-when checklists now include:
+- Check `docs-registry.md` for owned rows and update them for this change
+- Register any new `.md` files created during the session
+
+**`docs-agent.md` — two new modes:**
+- *Registry audit mode* (triggered at release gate): reads registry, checks `Last reviewed` against last git tag, reports STALE / OK per row, blocks release if stale docs exist
+- *New doc registration mode*: when any expert creates a new `.md` file, adds it to the registry immediately with correct owner and audience
+
+**`release.md` playbook — docs approval gate (Step 4):**
+Docs agent runs a registry audit before the release is allowed to proceed. Any stale row or unregistered new doc file = BLOCKED. Agent offers to update stale docs or mark them N/A with a reason.
+
+**`session-end-shared.md` — Step 2b (new-doc scan):**
+At every session end, scans for new `.md` files created during the session that are not yet in `docs-registry.md`. Prompts to register them before closing the session.
+
+**Pre-commit guard (`--mode=install-guards`) — Guard 3:**
+Detects newly staged `.md` files outside `.agent/` not found in `docs-registry.md`.
+Soft warning (does not block commit) — tells the user which files to register.
+Hard gates (secrets, tests) are unaffected.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.19.2] — 2026-05-30
 
 ### Release — token optimization + caveman guidance + bug fixes

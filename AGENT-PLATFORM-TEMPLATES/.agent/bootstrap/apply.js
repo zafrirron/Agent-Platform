@@ -554,6 +554,25 @@ try {
   } else { skip('test suite (no source files staged)'); }
 } catch(e) { if (e.message.includes('BLOCKED')) throw e; skip('test suite'); }` : `// Guard 2 — Test suite skipped (test_runner not configured)`}
 
+// Guard 3 — New doc file registration (warn, does not block)
+try {
+  const newMd = execSync('git diff --cached --name-only --diff-filter=A', { encoding: 'utf8' })
+    .split('\\n')
+    .filter(f => f.endsWith('.md') && !f.startsWith('.agent/') && f.trim());
+  if (newMd.length > 0) {
+    const registryPath = path.join(ROOT, '.agent/context/docs-registry.md');
+    const registry = fs.existsSync(registryPath) ? fs.readFileSync(registryPath, 'utf8') : '';
+    const unregistered = newMd.filter(f => !registry.includes(path.basename(f)) && !registry.includes(f));
+    if (unregistered.length > 0) {
+      console.log('  ⚠️  New doc file(s) not in docs-registry.md:');
+      unregistered.forEach(f => console.log('       ' + f));
+      console.log('     Add them to .agent/context/docs-registry.md before your next release.');
+    } else {
+      pass('New doc files registered in docs-registry.md');
+    }
+  }
+} catch(e) { skip('doc registry check'); }
+
 console.log('  ✅ All guards passed\\n');
 `;
 }

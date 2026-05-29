@@ -31,6 +31,7 @@
 - [ ] `PROJECT.md` updated if architecture changed
 - [ ] `ZONES.md` updated if ownership changed
 - [ ] Design reviewed by user before implementation starts
+- [ ] `docs-registry.md` checked — Architect-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

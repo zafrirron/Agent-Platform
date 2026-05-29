@@ -35,6 +35,7 @@
 - [ ] No secrets in committed files
 - [ ] WORKFLOWS.md updated if commands changed
 - [ ] Rollback procedure exists for deployment changes
+- [ ] `docs-registry.md` checked — DevOps-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->
