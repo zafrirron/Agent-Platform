@@ -4,6 +4,23 @@
 
 ---
 
+## Why upgrading is worth it
+
+Every release of Agent Platform includes rules sourced from:
+- **OWASP** — latest web and API security vulnerabilities
+- **CWE Top 25** — most dangerous software weaknesses
+- **Engineering best practices** — current standards for testing, API design, DevOps, and data safety
+
+The platform maintainer runs regular web ecosystem audits and encodes findings into the expert agents' PLATFORM sections. When you upgrade:
+- Your Security expert knows about the latest OWASP API vulnerabilities
+- Your Backend expert knows current API design standards
+- Your Test expert knows current testing quality requirements
+- Your Critic agent knows what new failure patterns to look for
+
+You don't track these sources yourself — the platform evolves continuously and your agents evolve with it.
+
+---
+
 ## What to do
 
 ### Step 1 — Check current state

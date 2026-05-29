@@ -105,6 +105,14 @@ Every expert file has two sections:
 - **Platform section** — improved by this project, pushed on `--mode=upgrade`
 - **Project section** — your team's rules, never overwritten
 
+**Why upgrading is worth it:** Every release includes rules sourced from OWASP security guidelines, CWE Top 25 dangerous software weaknesses, and engineering best practices collected from the developer ecosystem. The platform runs regular web audits and encodes the findings into expert agents. When you upgrade:
+- Your **Security expert** knows the latest OWASP API vulnerabilities and CWE patterns
+- Your **Backend expert** knows current API design standards
+- Your **Test expert** knows current testing quality requirements
+- Your **Critic agent** knows what to look for in adversarial review
+
+You don't track these sources yourself — the platform does it for you, and every upgrade makes your agents smarter.
+
 ---
 
 ## Enforcement guards — wired, not aspirational

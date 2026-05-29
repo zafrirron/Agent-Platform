@@ -10,19 +10,35 @@
 This platform is developed using itself. The maintainer's AI agent (loaded from this folder) reads and improves the templates that consumer AI agents use. This creates a feedback loop:
 
 ```
-You observe a failure in a consumer repo
-        ↓
-Your AI partner (platform-maintainer-agent.md) helps you
-diagnose, audit, and write a better rule
-        ↓
-The rule ships in the next version
-        ↓
-Every consumer's agents are now smarter
-        ↓
-You observe the next gap — loop continues
+Two improvement sources feed the platform:
+
+Source 1 — Internal (Mode 1):           Source 2 — Web ecosystem (Mode 2):
+Observe failure in a consumer repo  OR   Monthly: OWASP + CWE + best practices
+        ↓                                Quarterly: + community + conference findings
+"Add rule to X: [rule]"                          ↓
+        ↓                                Structured findings report (F001-Fxxx + E001-Exxx)
+Agent auto-implements 7 steps                    ↓
+        ↓                                Maintainer selects what to add
+Rule ships in next version                       ↓
+        ↓                                Agent implements selected findings
+Every consumer's agents smarter                  ↓
+        ↓                                Rule ships in next version
+Loop continues
 ```
 
-**The platform gets smarter by encoding real failures into permanent rules.**
+**The platform gets smarter from two sources: real failures AND the global knowledge ecosystem.**
+
+---
+
+## Audit schedule
+
+| Frequency | Mode | Command | What it does |
+|-----------|------|---------|-------------|
+| Anytime | Mode 1 | `"Add rule to X: Y"` | Immediate targeted addition |
+| Monthly | Mode 2 Option B | `Read MAINTAINER/web-audit.md and execute it.` | OWASP + CWE + best practices |
+| Quarterly | Mode 2 Option C | `Read MAINTAINER/web-audit.md and execute it. scope=full` | + Community signals + conference findings |
+| After production incident | Mode 1 | `"Add rule to X: [failure-based rule]"` | Encode the specific failure |
+| After OWASP update | Mode 2 Phase 1 | Run Phase 1 only | Security sources only |
 
 ---
 
@@ -32,10 +48,12 @@ You observe the next gap — loop continues
 Agent Platform Bootstrap (framework repo)
 │
 ├── MAINTAINER/                    ← YOUR PRIVATE WORKSPACE — never deployed
-│   ├── platform-maintainer-agent.md  ← your AI partner
+│   ├── platform-maintainer-agent.md  ← your AI partner (Mode 1 + Mode 2 commands)
 │   ├── GUIDE.md                       ← this file
-│   ├── platform-audit.md              ← audit playbook
-│   └── platform-improvements.md       ← improvement log
+│   ├── platform-audit.md              ← Mode 1: internal consistency audit
+│   ├── web-audit.md                   ← Mode 2: web ecosystem audit (Option B + C)
+│   ├── web-audit-report-template.md   ← structured findings report format
+│   └── platform-improvements.md       ← improvement log (all rules traced to source)
 │
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
 │   ├── .agent/agents/             ← 8 expert agents (with PLATFORM/PROJECT sections)

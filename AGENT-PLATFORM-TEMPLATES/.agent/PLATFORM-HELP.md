@@ -233,6 +233,10 @@ https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-R
 
 ## Platform maintenance
 
+### Why upgrading is worth it
+
+Every Agent Platform release includes rules sourced from OWASP security guidelines, CWE Top 25 dangerous software weaknesses, and engineering best practices from the developer community. The maintainer runs regular web ecosystem audits and encodes findings into the expert agents. **Your agents automatically get smarter on every upgrade** — new security checks, better quality gates, updated best practices. You don't need to track these sources yourself.
+
 | Task | Command |
 |------|---------|
 | Check installed version | Read `.agent/platform.json` |
@@ -241,6 +245,11 @@ https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-R
 | Apply updates (terminal) | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
 | Repair empty stubs | `npx github:zafrirron/Agent-Platform --mode=repair` |
 | Remove all platform files | `npx github:zafrirron/Agent-Platform --mode=uninstall` |
+
+**What you get on upgrade:**
+- Improved expert rules (Security, Backend, Test, Critic, and others)
+- New PLATFORM section content sourced from OWASP, CWE, and best practice audits
+- Your PROJECT sections (your team's customisations) are never touched
 
 ---
 

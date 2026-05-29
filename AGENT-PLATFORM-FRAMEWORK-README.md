@@ -305,6 +305,8 @@ Read .agent/tools/upgrade.md and execute it.
 
 Your customised content (filled stubs, project-specific docs, ADRs, known-issues) is never overwritten in upgrade mode. See [CHANGELOG.md](CHANGELOG.md) for version-specific upgrade guides.
 
+**Why upgrades are valuable:** Every release includes rules sourced from OWASP security guidelines, CWE Top 25 weaknesses, and engineering best practices collected from the web ecosystem. The platform maintainer runs regular web audits and encodes the findings into the expert agents' PLATFORM sections. Your expert agents automatically become aware of new vulnerability classes, updated security standards, and current engineering practices — without you tracking those sources yourself. The more you upgrade, the smarter your agents become.
+
 ---
 
 ## Usage guide — after install

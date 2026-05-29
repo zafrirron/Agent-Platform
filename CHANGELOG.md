@@ -5,6 +5,55 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.12.0] — 2026-05-29
+
+### Added — Agentic maintainer audit system (two modes)
+
+**Mode 1 — Agentic manual commands** (`platform-maintainer-agent.md`):
+The maintainer states intent in plain language; the agent executes all 7 steps automatically:
+- `"add rule to <expert>: <rule>"` → duplicate check → format → write → log → bump
+- `"add quality gate to <playbook> step N"` → auto-insert BLOCKED condition
+- `"add step to <playbook>"` → format + renumber + log
+- `"add new expert for <domain>"` → full 7-step scaffold
+- `"check if <topic> is covered"` → cross-file PLATFORM search
+
+**Mode 2 Option B — Monthly web audit** (`web-audit.md`):
+- Phase 1: OWASP Top 10 (web + API), CWE Top 25, CVE patterns
+- Phase 2: Backend, Testing, DevOps, Data, Agentic best practices
+- Structured findings report (F001-Fxxx) — NOT COVERED / PARTIALLY COVERED
+- Maintainer selects: Add / Skip / Modify / Defer
+- Agent implements only what maintainer explicitly selects
+
+**Mode 2 Option C — Quarterly horizon scan** (`web-audit.md scope=full`):
+- All of Option B + Phase 3 (HackerNews signals, new tooling, Black Hat/DEF CON/ArXiv)
+- Additional finding type: `E-prefix` (EMERGING PRACTICE) — new practices, not gaps
+- Additional action: `"Create new expert from E001"` for broad emerging domains
+- Summary table includes Type column: Gap vs Emerging
+
+### Changed
+
+- `web-audit-report-template.md`: Emerging Practices section, E-prefix format, Type column
+- `platform-maintainer-agent.md`: Mode 1 command interface, Mode 2 scope=full trigger
+- `platform-audit.md`: Clarified as Mode 1 Internal Audit
+- `MAINTAINER/GUIDE.md`: Dual improvement loop diagram, audit schedule table, updated file list
+
+### User-facing updates — why upgrades matter
+
+- `README.md`: "Why upgrading is worth it" section explains OWASP/CWE-sourced rules
+- `AGENT-PLATFORM-FRAMEWORK-README.md`: Upgrade section explains the continuous improvement model
+- `PLATFORM-HELP.md` (deployed): Platform maintenance section explains upgrade value
+- `upgrade.md` (deployed): New "Why upgrading is worth it" section at top
+
+**The message to users:** Every upgrade delivers rules sourced from OWASP, CWE Top 25, and engineering best practices. Your Security expert knows the latest vulnerabilities. Your agents get smarter automatically. No tracking required on your side.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## Install — quick reference
 
 ```bash
