@@ -1,7 +1,11 @@
 # {{PROJECT_NAME}} — Agent Platform Help
 
-> **Quick reference:** `Read .agent/QUICK-REF.md` — all commands in one table.  
-> **This file:** explains what everything does and when to use it.
+> **When executing this as a user command:** display the FULL contents of this file.
+> Do NOT summarise or paraphrase — output every section, every table, every row.
+
+> **Quick reference (commands only):** `Read .agent/QUICK-REF.md`
+> **Re-show this file any time:** say `"platform help"` or `"how does this work"`
+> **Re-show quick reference any time:** say `"show quick reference"` or `"show help"`
 
 ---
 

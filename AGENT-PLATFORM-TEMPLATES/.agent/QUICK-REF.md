@@ -1,5 +1,9 @@
 # {{PROJECT_NAME}} — Agent Platform Quick Reference
 
+> **When executing this as a user command:** display the FULL table — every section, every row. Do NOT summarise.
+> **Re-show this any time:** say `"show quick reference"` or `"show help"`
+> **Full local help:** say `"platform help"` or `"how does this work"`
+
 | | |
 |---|---|
 | **Framework** | <fw> |
