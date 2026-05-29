@@ -928,11 +928,16 @@ Use this prompt verbatim — every part maps to a concrete location in the file.
 
 ## Framework repository — maintain and release
 
+> **Platform author documentation:** [`MAINTAINER/GUIDE.md`](MAINTAINER/GUIDE.md)
+> Full maintainer workflow, the improvement loop, expert/playbook checklists, and release process.
+> The `MAINTAINER/` folder is never deployed to consumer repos.
+
 1. Edit `AGENT-PLATFORM-TEMPLATES/`
-2. `node tools/build-bootstrap-manifest.js`
-3. Bump `bootstrap_version` in manifest + orchestrator footer + README footer + `package.json`
-4. Update `CHANGELOG.md` — new version block + upgrade guide section
-5. Create a GitHub Release with the new tag — `npx github:zafrirron/Agent-Platform#vX.Y.Z` installs that exact version
+2. Log the change in `MAINTAINER/platform-improvements.md`
+3. `node tools/build-bootstrap-manifest.js`
+4. Bump `bootstrap_version` in manifest + orchestrator footer + README footer + `package.json`
+5. Update `CHANGELOG.md` — new version block + upgrade guide section
+6. Create a GitHub Release with the new tag — `npx github:zafrirron/Agent-Platform#vX.Y.Z` installs that exact version
 
 **CHANGELOG:** [`CHANGELOG.md`](CHANGELOG.md) — full version history, upgrade matrix, and per-path migration instructions.
 
@@ -949,4 +954,4 @@ Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
 
 ---
 
-*Agent Platform Bootstrap v2.7 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.8 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
