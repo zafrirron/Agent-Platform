@@ -63,6 +63,7 @@ Repeat. The platform never stops improving.
 | **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — coordinated, no conflicts |
 | **9 expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name |
 | **Critic agent** | Adversarial reviewer — finds bugs, security issues, edge cases, and test gaps that implementing agents miss. Built into bug-fix, add-feature, and release playbooks. |
+| **Cross-framework critic review** | When you switch IDEs (e.g. Claude Code → Cursor), the new agent automatically offers to review the previous model's work. Different AI models have different blind spots — cross-model review catches what the first model missed. Zero extra setup. |
 | **8 playbooks** | add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
 | **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. |
@@ -91,6 +92,35 @@ Every session:
         ├─ Displays full quick reference
         └─ Ready. Tell me what you want to do.
 ```
+
+---
+
+## Cross-framework critic review — automatic multi-model code review
+
+When you switch IDEs, the platform turns the framework switch into a code review.
+
+```
+Claude Code session:
+  You implement a feature, end session.
+  CURRENT.md records: files changed, goal, Critic reviewed: no
+
+You open Cursor, run session-start:
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │  Cross-framework Critic review available                    │
+  │  Last session: Claude Code — "Add JWT refresh endpoint"     │
+  │  Files: src/api/auth.ts, src/api/auth.test.ts               │
+  │  Review before we proceed?  YES / NO                        │
+  └─────────────────────────────────────────────────────────────┘
+
+  YES → Cursor reviews Claude Code's work with fresh eyes.
+        No shared context. No shared assumptions.
+        Reports: findings by severity → you decide what to fix.
+```
+
+**Why it matters:** A different AI model (Claude vs GPT vs Gemini) has different reasoning patterns and blind spots. When Cursor reviews Claude Code's work, it approaches the code the way a second developer would — cold, without the assumptions the first model built up during implementation. This catches auth gaps, untested edge cases, and intent-vs-implementation mismatches that single-model review consistently misses.
+
+**Zero setup required.** It just happens automatically whenever `meta.updated_by` in the registry doesn't match the framework you're starting.
 
 ---
 

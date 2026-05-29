@@ -21,6 +21,8 @@
 | Start session | `Read .agent/session-start.md and execute it.` |
 | End session | `Read .agent/session-end.md and execute it.` |
 
+> **When switching IDEs:** session-start automatically offers a cross-framework Critic review of the previous IDE's work. Different AI models review each other's blind spots. Answer YES to run the review.
+
 ---
 
 ## Expert Agents — activate when your task has a clear domain

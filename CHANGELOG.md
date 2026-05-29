@@ -54,6 +54,42 @@ npx github:zafrirron/Agent-Platform --mode=upgrade
 
 ---
 
+## [2.13.0] — 2026-05-29
+
+### Added — Cross-framework critic review (automatic multi-model code review)
+
+**The feature:** When you start a session in IDE B after working in IDE A, the platform automatically offers to run the Critic agent on IDE A's work — using IDE B's model with no shared context.
+
+**Why it's valuable:** Different AI models (Claude, GPT, Gemini) have different reasoning patterns and blind spots. When Cursor reviews Claude Code's work, it has no memory of the implementation decisions — it approaches the code exactly as a second developer would in a real code review. This cross-model review consistently finds auth assumptions, untested edge cases, and intent-vs-implementation gaps that single-model review misses.
+
+**How it works:**
+1. IDE A ends session → `CURRENT.md` records files changed + `Critic reviewed: no`
+2. IDE B starts session → detects `meta.updated_by` ≠ current framework
+3. Shows boxed offer: last framework, goal, files changed, YES/NO
+4. YES → Critic loads the changed files cold, runs 6-dimension review
+5. User decides: fix Critical/High now, note and proceed, or proceed clean
+6. `CURRENT.md` updated: `Critic reviewed: yes — X Critical, Y High, Z Medium`
+7. Offered once per handoff — never repeats for the same session
+
+**Zero setup.** Just switch IDEs and answer YES.
+
+### Changed
+
+- `session-start-shared.md`: New Step 1b — cross-framework critic offer with boxed UI
+- `session-end-shared.md`: Explicit file-by-file change list + `Critic reviewed: no` field
+- `critic-agent.md`: Cross-framework review mode (cold review, intent vs implementation focus)
+- `PLATFORM-HELP.md`: Cross-framework review section with boxed example
+- `README.md`: Dedicated "Cross-framework critic review" section with flow diagram
+- `AGENT-PLATFORM-FRAMEWORK-README.md`: §4 expanded with cross-framework critic flow; "What you get" table updated; §3 expert table note
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## Install — quick reference
 
 ```bash

@@ -47,6 +47,7 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **Cross-IDE coordination** | `registry.yaml` prevents two IDEs editing the same file simultaneously; `CURRENT.md` preserves full context across switches |
 | **9 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name, chain across sessions |
 | **Critic agent** | Adversarial reviewer with 6-dimension analysis (correctness, security, test quality, completeness, design, edge cases). Severity-rated findings. Built into add-feature, bug-fix, and release playbooks as mandatory quality gates. |
+| **Cross-framework critic review** | When switching IDEs, the new framework automatically offers to run the Critic on the previous framework's work. Zero setup — different AI models reviewing each other's blind spots, every time you switch. |
 | **8 playbooks** | add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration — step-by-step with agent assignments |
 | **Quick reference on every session start** | Agent displays a full capability table on every session start — framework-aware (`<fw>` substituted), includes update status and last work context. No memorisation required. |
 | **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
@@ -365,19 +366,35 @@ Task: add rate-limiting middleware to the API
 
 You can chain experts in one session. Common chain: Architect → Backend → Test → **Critic** → Docs.
 
+**Cross-framework critic:** When starting a session in a different IDE than the last one, the Critic is offered automatically — see §4.
+
 ---
 
-### 4 · Switch between IDEs mid-task
+### 4 · Switch between IDEs — with automatic cross-framework critic review
 
-You can move a task from Cursor to Claude Code (or any combination) without losing context:
+You can move a task from Cursor to Claude Code (or any combination) without losing context. And when you switch, the platform turns the handoff into an automatic code review.
 
 ```
-# In Cursor — end session
+# In Cursor — end session (records files changed + Critic reviewed: no)
 Read .cursor/prompts/session-end.md and execute it.
 
-# In Claude Code — start session (picks up from handoff log)
+# In Claude Code — start session
 Read .claude/prompts/session-start.md and execute it.
 ```
+
+**What happens automatically on session start in a different framework:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Cross-framework Critic review available                        │
+│  Last session: cursor — [goal from handoff log]                 │
+│  Files changed: [file list]                                     │
+│  A different AI model did this work. Review before we proceed?  │
+│  YES / NO                                                       │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+If you answer YES, the new framework's agent reads the changed files cold — no shared context, no shared assumptions — and runs a full 6-dimension Critic review. Different AI models have different blind spots. This cross-model review catches what the first model consistently misses.
 
 The registry at `.agent/handoff/sync/registry.yaml` prevents two IDEs from editing the same files simultaneously. If a conflict is detected, the agent will tell you who owns what and what to do.
 
