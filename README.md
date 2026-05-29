@@ -61,7 +61,8 @@ Repeat. The platform never stops improving.
 | Capability | Description |
 |------------|-------------|
 | **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — coordinated, no conflicts |
-| **8 expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data — activate by name |
+| **9 expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name |
+| **Critic agent** | Adversarial reviewer — finds bugs, security issues, edge cases, and test gaps that implementing agents miss. Built into bug-fix, add-feature, and release playbooks. |
 | **8 playbooks** | add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
 | **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. |
@@ -147,7 +148,7 @@ npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # remove
 
 ## Version
 
-**v2.9.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.10.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

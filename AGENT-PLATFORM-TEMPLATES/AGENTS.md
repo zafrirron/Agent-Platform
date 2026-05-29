@@ -24,6 +24,8 @@
 | `"platform help"` or `"how does this work"` | Read `.agent/PLATFORM-HELP.md` and display it in full |
 | `"show agents"` or `"what agents are available"` | Display the expert agents table from QUICK-REF.md |
 | `"show playbooks"` or `"what playbooks are available"` | Display the playbooks table from QUICK-REF.md |
+| `"review this"` or `"critic review"` or `"find issues"` | Read `.agent/agents/critic-agent.md` and review the current work |
+| `"what could go wrong"` or `"adversarial review"` | Read `.agent/agents/critic-agent.md` and review the current work |
 
 ---
 
@@ -41,6 +43,7 @@ Eight domain specialists — definitions in `.agent/agents/`:
 | 📚 Docs | `docs-agent.md` | User & developer documentation |
 | 🔒 Security | `security-agent.md` | Secrets, auth, threat review |
 | 🗄 Data | `data-agent.md` | Schemas, migrations, pipelines |
+| 🔍 Critic | `critic-agent.md` | Adversarial review — find what's wrong before production does |
 
 **Activate:** `Read .agent/agents/<name>-agent.md` then describe your task.
 

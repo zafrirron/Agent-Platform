@@ -35,6 +35,7 @@
 | Docs | "update README", "changelog", "document this endpoint" | `Read .agent/agents/docs-agent.md` |
 | Security | "auth review", "check for secrets", "threat model", before a sensitive release | `Read .agent/agents/security-agent.md` |
 | Data | "schema change", "migration", "data pipeline", "transform data" | `Read .agent/agents/data-agent.md` |
+| **Critic** | **"review this", "find issues", "what could go wrong", after any implementation** | `Read .agent/agents/critic-agent.md` |
 
 ---
 

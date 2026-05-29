@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.9.0",
+  "bootstrap_version": "2.10.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
@@ -74,6 +74,11 @@
     {
       "path": ".agent/ZONES.md",
       "template": ".agent/ZONES.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/critic-agent.md",
+      "template": ".agent/agents/critic-agent.md",
       "kind": "template"
     },
     {

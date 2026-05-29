@@ -45,7 +45,8 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 |------------|-------------|
 | **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — each gets a private folder with session-start/end prompts and skill wiring |
 | **Cross-IDE coordination** | `registry.yaml` prevents two IDEs editing the same file simultaneously; `CURRENT.md` preserves full context across switches |
-| **8 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data — activate by name, chain across sessions |
+| **9 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name, chain across sessions |
+| **Critic agent** | Adversarial reviewer with 6-dimension analysis (correctness, security, test quality, completeness, design, edge cases). Severity-rated findings. Built into add-feature, bug-fix, and release playbooks as mandatory quality gates. |
 | **8 playbooks** | add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration — step-by-step with agent assignments |
 | **Quick reference on every session start** | Agent displays a full capability table on every session start — framework-aware (`<fw>` substituted), includes update status and last work context. No memorisation required. |
 | **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
@@ -358,8 +359,9 @@ Task: add rate-limiting middleware to the API
 | 📚 Docs | `Read .agent/agents/docs-agent.md` | READMEs, changelogs, API docs |
 | 🔒 Security | `Read .agent/agents/security-agent.md` | Secrets, auth, threat review |
 | 🗄 Data | `Read .agent/agents/data-agent.md` | Schemas, migrations, pipelines |
+| 🔍 Critic | `Read .agent/agents/critic-agent.md` | Adversarial review — find what's wrong before production does |
 
-You can chain experts in one session: start with Architect to design, then Backend to implement, then Test to verify.
+You can chain experts in one session. Common chain: Architect → Backend → Test → **Critic** → Docs.
 
 ---
 
@@ -954,4 +956,4 @@ Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
 
 ---
 
-*Agent Platform Bootstrap v2.9 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.10 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*

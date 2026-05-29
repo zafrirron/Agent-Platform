@@ -66,8 +66,44 @@ Expert agents give the AI a focused persona with specific rules, owned files, an
 | **Docs** | `Read .agent/agents/docs-agent.md` | README, changelog, API documentation, migration notes | Code changes |
 | **Security** | `Read .agent/agents/security-agent.md` | Auth review, secret scanning, threat modelling, before sensitive releases | General development |
 | **Data** | `Read .agent/agents/data-agent.md` | Schema design, migrations, data pipelines, transformations | UI or API logic |
+| **Critic** | `Read .agent/agents/critic-agent.md` | Adversarial review — finds bugs, security issues, edge cases, test gaps | Building things |
 
-**Chaining experts:** you can activate more than one in sequence. Common chain: Architect → Backend → Test → Docs.
+**Chaining experts:** you can activate more than one in sequence. Common chain: Architect → Backend → Test → **Critic** → Docs.
+
+---
+
+## Critic agent — adversarial quality gate
+
+The Critic is different from every other expert. Other experts build things. The Critic finds what's wrong with what was built.
+
+**Load after any implementation:**
+```
+Read .agent/agents/critic-agent.md
+Review the [feature/fix/endpoint] just implemented above.
+```
+
+**What it checks (all six dimensions):**
+1. **Correctness** — edge cases, null handling, boundary conditions, idempotency
+2. **Security** — injection, auth bypass, data exposure, secrets, JWT issues
+3. **Test quality** — does the regression test actually fail before the fix? are error paths covered?
+4. **Completeness** — all requirements met? docs updated? contracts updated?
+5. **Design** — simplest correct solution? unnecessary complexity? needs an ADR?
+6. **Edge cases** — empty input, external service down, concurrent access, boundary values
+
+**Severity levels:**
+- **Critical / High** → blocks the task. Must fix before handoff.
+- **Medium** → logged in CURRENT.md, fixed in a follow-up.
+- **Low** → noted, optional.
+
+**Built into three playbooks:**
+- `add-feature.md` Step 5b — critic reviews implementation + tests before docs
+- `bug-fix.md` Step 5b — critic confirms regression test quality + checks for new bugs
+- `release.md` Step 1b — critic reviews full diff since last release before version bump
+
+**Ask for a critic review any time:**
+```
+"review this" / "find issues" / "what could go wrong" / "adversarial review"
+```
 
 **Example:**
 ```

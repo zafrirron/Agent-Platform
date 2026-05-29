@@ -20,6 +20,19 @@
 
 ## Log
 
+### [v2.10.0] — 2026-05-29 — Critic agent + adversarial review in playbooks
+
+**Failure observed:** Implementing agents approve their own work. A single agent writing AND reviewing has a blind spot — it reviews based on its own assumptions and misses edge cases, security implications, and test quality issues it introduced.
+**Files changed:**
+- `AGENT-PLATFORM-TEMPLATES/.agent/agents/critic-agent.md` (new)
+- `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/bug-fix.md` (Step 5b added)
+- `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/release.md` (Step 1b added)
+- `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/add-feature.md` (Step 5b added)
+**Rule added:** Critic agent with 6-dimension review (correctness, security, test quality, completeness, design, edge cases). Severity levels Critical/High/Medium/Low. Critical/High findings block task completion. Built into 3 playbooks as mandatory gates.
+**Validated:** Pending
+
+---
+
 ### [v2.7.0] — 2026-05-29 — Backend agent done-when gate for api-contracts.md
 
 **Failure observed:** Backend agent shipped an endpoint without updating api-contracts.md. Downstream agents (Docs, Frontend) then worked from stale contracts.

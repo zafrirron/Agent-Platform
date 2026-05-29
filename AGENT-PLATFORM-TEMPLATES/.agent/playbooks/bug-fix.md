@@ -32,6 +32,16 @@
    - **Verify the test PASSES on fixed code**
    - If you cannot write this test, log the reason in `CURRENT.md` before continuing
 
+5b. **Critic review** ← adversarial gate
+   Load `critic-agent.md`. Give it: the fix from Step 4 + the regression test from Step 5.
+   The critic must check:
+   - Does the test actually fail on unfixed code? (confirm, don't assume)
+   - Did the fix introduce any new bugs in adjacent code?
+   - Are there edge cases the regression test doesn't cover?
+   - Any security implications of the change?
+   **BLOCKED if: any Critical or High finding is reported.**
+   Address all Critical/High findings before continuing to Step 6.
+
 6. **Full suite**
    Run `{{TEST_RUNNER}}`. All tests must pass. If any new failures appear, fix them before continuing — do not ship a fix that breaks other tests.
 

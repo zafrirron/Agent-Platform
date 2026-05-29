@@ -10,6 +10,12 @@
 3. **Spec** — write acceptance criteria or test skeleton before implementation
 4. **Implement** — domain expert(s); smallest correct change
 5. **Test** — Test agent: unit + integration; all tests green
+5b. **Critic review** ← adversarial gate
+   Load `critic-agent.md`. Give it the implementation + tests from Steps 4–5.
+   The critic must check all six dimensions: correctness, security, test quality,
+   completeness, design, edge cases.
+   **BLOCKED if: any Critical or High finding is reported.**
+   Address all findings before continuing to Step 6.
 6. **Docs** — if user-facing: Docs agent updates README / changelog
 7. **Handoff** — end session prompt; update `CURRENT.md` with outcome + next agent
 

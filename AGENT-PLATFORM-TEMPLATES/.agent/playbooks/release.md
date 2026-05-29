@@ -16,6 +16,17 @@
    Run `{{COVERAGE_CMD}}`. Coverage must be at or above `{{COVERAGE_THRESHOLD}}%`.
    If coverage dropped: add tests before releasing.
 
+1b. **Critic pre-release review** ← adversarial gate
+   Load `critic-agent.md`. Give it the full diff since the last release (`git diff vLAST..HEAD`).
+   The critic must check:
+   - Any breaking change not documented in the changelog?
+   - Any security regression introduced since the last release?
+   - Any changed code path that has no test coverage?
+   - Any new dependency that was not reviewed and documented?
+   - Any TODO/FIXME left in shipped code?
+   **BLOCKED if: any Critical or High finding is reported.**
+   Address all findings before continuing to Step 2.
+
 2. **Security check**
    Grep for secrets in staged files: `password|api_key|token|secret|private_key`
    Must return 0 hits. If any hits: STOP. Remove secrets before continuing.
