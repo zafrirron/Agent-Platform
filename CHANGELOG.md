@@ -5,46 +5,233 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
-## [2.12.0] — 2026-05-29
+## [2.19.2] — 2026-05-30
 
-### Added — Agentic maintainer audit system (two modes)
+### Release — token optimization + caveman guidance + bug fixes
 
-**Mode 1 — Agentic manual commands** (`platform-maintainer-agent.md`):
-The maintainer states intent in plain language; the agent executes all 7 steps automatically:
-- `"add rule to <expert>: <rule>"` → duplicate check → format → write → log → bump
-- `"add quality gate to <playbook> step N"` → auto-insert BLOCKED condition
-- `"add step to <playbook>"` → format + renumber + log
-- `"add new expert for <domain>"` → full 7-step scaffold
-- `"check if <topic> is covered"` → cross-file PLATFORM search
+Full changelog for the v2.18.1–v2.19.2 release stream.
 
-**Mode 2 Option B — Monthly web audit** (`web-audit.md`):
-- Phase 1: OWASP Top 10 (web + API), CWE Top 25, CVE patterns
-- Phase 2: Backend, Testing, DevOps, Data, Agentic best practices
-- Structured findings report (F001-Fxxx) — NOT COVERED / PARTIALLY COVERED
-- Maintainer selects: Add / Skip / Modify / Defer
-- Agent implements only what maintainer explicitly selects
+### Fixed
 
-**Mode 2 Option C — Quarterly horizon scan** (`web-audit.md scope=full`):
-- All of Option B + Phase 3 (HackerNews signals, new tooling, Black Hat/DEF CON/ArXiv)
-- Additional finding type: `E-prefix` (EMERGING PRACTICE) — new practices, not gaps
-- Additional action: `"Create new expert from E001"` for broad emerging domains
-- Summary table includes Type column: Gap vs Emerging
+- **Install crash** (`preArtifacts.conflicting undefined`) — every fresh install crashed at the post-install summary. `apply.js` was using stale property names from before a refactor. Fixed to use `toBackup.length`.
+- **Uninstall restore silently skipped** — backed-up files (e.g. original `CLAUDE.md`) were never restored because the backup lived inside `.agent/backup/`, which was deleted before the restore code ran. Now staged to `os.tmpdir()` before deletion. Also removed `!fs.existsSync(dest)` guard that prevented overwriting the platform version.
 
-### Changed
+### Added
 
-- `web-audit-report-template.md`: Emerging Practices section, E-prefix format, Type column
-- `platform-maintainer-agent.md`: Mode 1 command interface, Mode 2 scope=full trigger
-- `platform-audit.md`: Clarified as Mode 1 Internal Audit
-- `MAINTAINER/GUIDE.md`: Dual improvement loop diagram, audit schedule table, updated file list
+- **36 integration tests** (`tests/apply-integration.test.mjs`) — runs the real installer against temp directories. Covers clean install, install with pre-existing `CLAUDE.md`, upgrade, uninstall dry-run, uninstall confirm, and backup restore. Catches installer-level crashes that unit tests on pure functions cannot.
+- **`.agent/TOKEN-BUDGET.md`** — exact token cost of every platform file, installed into every consumer repo. Includes mandatory session cost, per-task lazy loading table, never-auto-loaded list, caveman savings, and "when to use / when to avoid" guidance.
+- **`.agent/tools/setup-test-runner.md`** — test runner detection logic extracted from `session-start-shared.md`. Loaded only once (when `test_runner` is still a placeholder), never again.
+- **Caveman mode surfaced at the right moments** — mentioned in every session start status block; explained in Backend and Frontend expert files at the moment the user is in implementation mode. Clear guidance: turn it off for Critic reviews, security audits, architecture decisions, Docs expert work.
 
-### User-facing updates — why upgrades matter
+### Performance — −49% mandatory session-start token cost
 
-- `README.md`: "Why upgrading is worth it" section explains OWASP/CWE-sourced rules
-- `AGENT-PLATFORM-FRAMEWORK-README.md`: Upgrade section explains the continuous improvement model
-- `PLATFORM-HELP.md` (deployed): Platform maintenance section explains upgrade value
-- `upgrade.md` (deployed): New "Why upgrading is worth it" section at top
+| Change | Tokens saved per session |
+|--------|--------------------------|
+| QUICK-REF table no longer streamed at session start (on-demand only) | −1,516 |
+| AGENTS.md prose and redundant reference sections removed | −845 |
+| Test-runner detection moved to separate file (loads once ever) | −566 |
+| **Total** | **−2,356 tokens/session** |
 
-**The message to users:** Every upgrade delivers rules sourced from OWASP, CWE Top 25, and engineering best practices. Your Security expert knows the latest vulnerabilities. Your agents get smarter automatically. No tracking required on your side.
+Session start now outputs a compact 4-line status block:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  my-project · Agent Platform v2.19.2 · claude
+  Last work : add user authentication
+  Updates   : ✅ Up to date
+  Reference : "show quick reference" for commands · "caveman mode" to cut output ~65%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Ready. Tell me what you want to do.
+```
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.19.1] — 2026-05-30
+
+### Performance — token optimizations (part 2)
+
+- `AGENTS.md`: removed meta-comments, verbose prose, redundant expert/playbook reference tables — 1,674 → 829 tokens (−845)
+- `session-start-shared.md` Step 2: test runner detection table extracted to `.agent/tools/setup-test-runner.md` — 2,208 → 1,642 tokens (−566)
+- `setup-test-runner.md` added to manifest — loaded once ever (first session only), never again after test runner is configured
+- `.agent/TOKEN-BUDGET.md` added to manifest — exact token cost breakdown deployed to every consumer repo
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.19.0] — 2026-05-30
+
+### Performance — QUICK-REF no longer streamed at session start
+
+- Session start Step 5 rewritten: no longer reads and streams the full QUICK-REF table (was 1,516 tokens every session)
+- Replaced with a compact 4-line status block: project · version · framework · last work · update status · reference hint
+- QUICK-REF displayed only on explicit request: "show quick reference", "show help", "show commands"
+- `QUICK-REF.md` header updated: "Displayed on demand only"
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.18.2] — 2026-05-29
+
+### Fixed — Uninstall restore silently skipped backed-up files
+
+Backup lived inside `.agent/backup/`, which was deleted before the restore code ran. Files were never restored.
+
+- Backed-up files now staged to `os.tmpdir()` **before** deleting `.agent/`
+- Restore runs after deletion from the temp staging dir, then cleans up
+- Removed `!fs.existsSync(dest)` guard — during uninstall, always overwrite the platform version with the user's original
+- `import os from 'os'` added to `apply.js`
+
+### Added — 36 integration tests
+
+- `tests/apply-integration.test.mjs`: 6 describe blocks covering the full install lifecycle
+- Scenarios: clean install, install with pre-existing CLAUDE.md (backup), upgrade, uninstall dry-run, uninstall confirm (user files intact), uninstall confirm with restore
+- `npm test` updated to run both unit and integration test files
+- Pre-commit hook now catches installer-level crashes, not just utility-function bugs
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.18.1] — 2026-05-29
+
+### Fixed — Install crash on every fresh install
+
+`apply.js` line 755 referenced `preArtifacts.conflicting`, `.thirdParty`, `.userCursor` — stale property names from before a refactor. `scanPreExistingArtifacts()` returns `{ toBackup, toNote }`. Every install crashed with `TypeError: Cannot read properties of undefined (reading 'length')` after successfully writing all 87 files.
+
+Fixed to use `preArtifacts.toBackup.length`.
+
+Also adds `tests/E2E-TEST-PLAN.md` — manual end-to-end test script covering install, session start, auto-routing, multi-expert, playbooks, cross-framework critic, and uninstall.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.18.0] — 2026-05-29
+
+### Added — Security declaration
+
+- **`SECURITY.md`** — clear declaration of what the platform does and does not do: only markdown/YAML/JSON files installed, no executable code, no network calls, no telemetry, no source code touched, every rule traceable to a failure it prevents.
+- **README trust section** — supply chain transparency: version-pinnable, open source, auditable, no runtime code injection, no npm registry dependencies beyond Node built-ins.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.17.0] — 2026-05-29
+
+### Added — Automatic expert + playbook routing
+
+**Before:** Users had to manually tell the agent which expert file to load.  
+**After:** The agent routes silently. You describe the goal — it figures out the rest.
+
+| You say | Agent does automatically |
+|---------|--------------------------|
+| "fix the login bug" | Loads backend expert + bug-fix playbook → begins Step 1 |
+| "add rate limiting" | Loads backend expert + add-feature playbook → begins Step 1 |
+| "review the auth" | Loads security expert → reviews using OWASP rules |
+| "ready to ship" | Loads devops expert + release playbook → runs gates |
+| "find what's wrong" | Loads critic agent → adversarial 6-dimension review |
+
+Three layers of activation ensure routing fires before you type anything. The user **never** tells the agent which file to read.
+
+- Full lifecycle flow diagram added to README and PLATFORM-HELP.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.16.0] — 2026-05-29
+
+### Added — 40 unit tests for core installer
+
+- **`apply-utils.mjs`** — pure functions extracted from `apply.js`: `sub`, `isStub`, `patchPlatformSection`, `detectTestRunner`, `detectCoverageCmd`, `scanPreExistingArtifacts`
+- **`tests/apply-utils.test.mjs`** — 40 tests across 6 describe blocks using `node:test` (no external deps)
+- **`npm test`** script added to `package.json`
+- **Pre-commit hook** blocks commits when tests fail
+
+### Fixed (11 Critic review findings)
+
+- Backup dir uses datetime not date — same-day reinstall no longer overwrites previous backup
+- Upgrade warns when file skipped due to missing PLATFORM markers
+- Session start update check: graceful failure instruction added
+- Unknown-stack CI workflow: WARNING comment added for unrecognised test runners
+- `build-bootstrap-manifest.js`: preserves existing kind values, reports new/removed files
+- `COPYING.md` + `PACK-DEPLOY.md`: rewritten to reflect npx install
+- gitignore append: ensures newline separator if file doesn't end with one
+- `add-framework.md`: explicit instructions for `FW_RULE_PATTERNS` and `LEGACY_ROOT_FILES`
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.15.2] — 2026-05-29
+
+### Fixed — Comprehensive backup/restore for all frameworks
+
+- `FW_RULE_PATTERNS` array: framework-agnostic rule file detection (auto-extends for future frameworks)
+- `LEGACY_ROOT_FILES` array: root-level legacy configs (`.cursorrules` etc.)
+- `backupArtifacts()` now writes `manifest.json` with original paths — restore is exact regardless of file location
+- Uninstall restore now uses `manifest.json` for accurate restoration, with legacy fallback for pre-v2.15.1 backups
+
+### Fixed — Wording (removed language that made users think their code would be deleted)
+
+- README: "Your repo returns to its exact pre-install state" → "Your source code, project files, and git history are never touched"
+- Uninstall confirmation: "source code and git history were never touched"
+- PLATFORM-HELP zero footprint table: explicit "Your source code is never touched"
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.15.1] — 2026-05-29
+
+### Fixed — Documentation audit (6 findings)
+
+- `CHANGELOG.md`: added missing v2.14.0 and v2.15.0 entries
+- `AGENT-PLATFORM-FRAMEWORK-README.md` footer: v2.10 → v2.15 (was 5 versions stale)
+- `AGENT-PLATFORM-FRAMEWORK-README.md`: "8 software-expert agents" → "9 software-expert agents (including Critic)"
+- `README.md`: "Eight specialist agents" → "Nine expert agents (including Critic)"
+- `session-start-shared.md`: fixed step numbering gap — steps jumped 2→4, renumbered sequentially
+- `PLATFORM-HELP.md`: "Sections:" header was missing "Critic agent"
 
 ### Upgrade path
 
@@ -125,6 +312,46 @@ npx github:zafrirron/Agent-Platform --mode=upgrade
 - `PLATFORM-HELP.md`: Cross-framework review section with boxed example
 - `README.md`: Dedicated "Cross-framework critic review" section with flow diagram
 - `AGENT-PLATFORM-FRAMEWORK-README.md`: §4 expanded with cross-framework critic flow; "What you get" table updated; §3 expert table note
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.12.0] — 2026-05-29
+
+### Added — Agentic maintainer audit system (two modes)
+
+**Mode 1 — Agentic manual commands** (`platform-maintainer-agent.md`):
+The maintainer states intent in plain language; the agent executes all 7 steps automatically:
+- `"add rule to <expert>: <rule>"` → duplicate check → format → write → log → bump
+- `"add quality gate to <playbook> step N"` → auto-insert BLOCKED condition
+- `"add step to <playbook>"` → format + renumber + log
+- `"add new expert for <domain>"` → full 7-step scaffold
+- `"check if <topic> is covered"` → cross-file PLATFORM search
+
+**Mode 2 Option B — Monthly web audit** (`web-audit.md`):
+- Phase 1: OWASP Top 10 (web + API), CWE Top 25, CVE patterns
+- Phase 2: Backend, Testing, DevOps, Data, Agentic best practices
+- Structured findings report (F001-Fxxx) — NOT COVERED / PARTIALLY COVERED
+- Maintainer selects: Add / Skip / Modify / Defer
+- Agent implements only what maintainer explicitly selects
+
+**Mode 2 Option C — Quarterly horizon scan** (`web-audit.md scope=full`):
+- All of Option B + Phase 3 (HackerNews signals, new tooling, Black Hat/DEF CON/ArXiv)
+- Additional finding type: `E-prefix` (EMERGING PRACTICE) — new practices, not gaps
+- Additional action: `"Create new expert from E001"` for broad emerging domains
+- Summary table includes Type column: Gap vs Emerging
+
+### Changed
+
+- `web-audit-report-template.md`: Emerging Practices section, E-prefix format, Type column
+- `platform-maintainer-agent.md`: Mode 1 command interface, Mode 2 scope=full trigger
+- `platform-audit.md`: Clarified as Mode 1 Internal Audit
+- `MAINTAINER/GUIDE.md`: Dual improvement loop diagram, audit schedule table, updated file list
 
 ### Upgrade path
 
