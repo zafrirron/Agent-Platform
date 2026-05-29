@@ -1,4 +1,4 @@
-## Agent Platform Bootstrap v2.20.1
+## Agent Platform Bootstrap v2.15.1
 
 **Built by agents. For agents. To build better agents.**
 
@@ -17,15 +17,16 @@ Read .agent/session-start.md and execute it.
 
 ---
 
-## What's new in v2.20.1
+## What's new in v2.15.1
 
-### Docs governance added to all user-facing platform descriptions
+### Documentation sync — 6 audit findings resolved
 
-The docs governance model (introduced in v2.20.0) is now prominently described in every place a user or evaluator reads about the platform:
-
-- **README.md** — new "Docs governance" row in the "What you get" capability table
-- **AGENT-PLATFORM-FRAMEWORK-README.md** — new "📋 Docs governance" table row; new dedicated section explaining the full enforcement chain with examples; capabilities summary paragraph updated
-- **PLATFORM-HELP.md** (installed in every consumer repo) — new "Docs governance" section between Testing and Caveman, with enforcement table and ready-to-paste commands for first session scan, release audit, and manual registry entry
+- `CHANGELOG.md`: added missing v2.14.0 and v2.15.0 entries
+- `AGENT-PLATFORM-FRAMEWORK-README.md` footer: updated from v2.10 to v2.15 (was 5 versions stale)
+- `AGENT-PLATFORM-FRAMEWORK-README.md`: agent count corrected — "9 software-expert agents (including Critic)"
+- `README.md`: agent count corrected — "Nine expert agents (including Critic)"
+- `session-start-shared.md`: fixed step numbering gap — steps were jumping 2→4, now sequential
+- `PLATFORM-HELP.md`: Critic agent added to the Sections header
 
 ---
 

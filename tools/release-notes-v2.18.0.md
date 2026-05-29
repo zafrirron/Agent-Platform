@@ -19,13 +19,13 @@ Read .agent/session-start.md and execute it.
 
 ## What's new in v2.18.0
 
-### 🔒 Security declaration — what this platform does and does not do
+### Security declaration — what this platform does and does not do
 
 A legitimate question: *does installing this platform risk my project's security or privacy?*
 
 **Answer: No. The platform installs markdown files. That is all.**
 
-New [SECURITY.md](https://github.com/zafrirron/Agent-Platform/blob/main/SECURITY.md) covers:
+New `SECURITY.md` covers:
 
 | Concern | Reality |
 |---------|---------|
@@ -36,19 +36,11 @@ New [SECURITY.md](https://github.com/zafrirron/Agent-Platform/blob/main/SECURITY
 | Commits anything without my knowledge | ❌ All platform files are gitignored |
 | Overwrites my security decisions | ❌ PROJECT sections are never touched |
 
-**Every expert rule is readable markdown.** Every rule traces to the failure it prevents. No rule instructs agents to exfiltrate data, add backdoors, or weaken security.
+Every expert rule is readable markdown. Every rule traces to the failure it prevents. No rule instructs agents to exfiltrate data, add backdoors, or weaken security.
 
-**No npm registry, no third-party dependencies.** `apply.js` uses only Node.js built-ins (`fs`, `path`). Nothing from the registry that could be compromised.
+No npm registry dependencies — `apply.js` uses only Node.js built-ins (`fs`, `path`). Nothing from the registry that could be compromised.
 
-**Supply chain:** version-pinnable, open source, auditable, no runtime code injection.
-
----
-
-## Previous release highlights
-
-**v2.17.0** — Automatic expert + playbook routing (you just describe the goal)
-
-**v2.16.0** — 40 unit tests, all 11 Critic findings resolved, comprehensive backup/restore
+Supply chain: version-pinnable, open source, auditable, no runtime code injection.
 
 ---
 
@@ -58,6 +50,8 @@ New [SECURITY.md](https://github.com/zafrirron/Agent-Platform/blob/main/SECURITY
 npx github:zafrirron/Agent-Platform --mode=upgrade
 ```
 
+Your agents get improved rules. Your project customisations are untouched.
+
 ## Uninstall
 
 ```bash
@@ -65,7 +59,7 @@ npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — show
 npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes everything
 ```
 
-Removes all platform AI coordination files and restores any AI config files (CLAUDE.md, Cursor rules, etc.) that existed before install. The platform scaffolding that guided your agents is removed — the code improvements your agents made are yours to keep.
+Removes all platform AI coordination files and restores any AI config files that existed before install.
 
 ---
 

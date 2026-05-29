@@ -19,18 +19,16 @@ Read .agent/session-start.md and execute it.
 
 ## What's new in v2.19.2
 
-### Token optimizations — −49% mandatory session-start cost
+### −49% mandatory session-start token cost
 
-Every session start now costs ~2,400 input tokens instead of ~4,756.
+| Change | Tokens saved per session |
+|--------|--------------------------|
+| QUICK-REF table no longer streamed at session start — on demand only | −1,516 |
+| AGENTS.md prose and redundant sections removed | −845 |
+| Test-runner detection moved to a separate file, loaded once ever | −566 |
+| **Total** | **−2,356 tokens/session** |
 
-| Change | Saving |
-|--------|--------|
-| QUICK-REF table no longer streamed at session start (on-demand only) | −1,516 tokens/session |
-| AGENTS.md prose and redundant reference sections removed | −845 tokens/session |
-| Test-runner detection moved to a separate file (loads once ever, then never again) | −566 tokens/session |
-| Session start outputs a compact 4-line status block instead of a full table | Faster, cleaner |
-
-**New session start looks like:**
+Session start now outputs a compact 4-line status block:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   my-project · Agent Platform v2.19.2 · claude
@@ -41,49 +39,42 @@ Every session start now costs ~2,400 input tokens instead of ~4,756.
 Ready. Tell me what you want to do.
 ```
 
-### Caveman mode — when to use it (now documented and surfaced)
+### Caveman mode — when to use it
 
-Caveman mode (~65% shorter output, same accuracy) is now:
+Caveman mode (~65% shorter output, same accuracy) is now surfaced at the right moments:
 - Mentioned in every session start status block
-- Explained in Backend and Frontend expert files at the moment you're most likely to need it
-- Documented with a clear when-to-use / when-to-avoid table in `.agent/TOKEN-BUDGET.md`
+- Explained in Backend and Frontend expert files
+- Documented with a when-to-use / when-to-avoid table in `.agent/TOKEN-BUDGET.md`
 
 **Rule of thumb:** use it in *doing* mode. Turn it off for Critic reviews, security audits, architecture decisions, and Docs expert work.
 
-### .agent/TOKEN-BUDGET.md — published token audit
+### `.agent/TOKEN-BUDGET.md`
 
-New file installed in every repo. Shows the exact token cost of every platform file:
-- What loads automatically and when
-- What loads per task (lazy, on demand)
-- What never auto-loads (PLATFORM-HELP, QUICK-REF, context files)
-- Caveman savings with pricing context
+Exact token cost breakdown installed in every consumer repo: mandatory session cost, per-task lazy loading, never-auto-loaded files, caveman savings with pricing context, and when-to-use guidance.
 
-Say `"show token budget"` or read `.agent/TOKEN-BUDGET.md` directly.
+### Bug fixes
 
-### Bug fixes (v2.18.1 / v2.18.2)
+- **Install crash fixed** — `preArtifacts.conflicting undefined` TypeError on every fresh install (v2.18.1)
+- **Uninstall restore fixed** — backed-up files silently skipped because backup lived inside `.agent/` which was deleted before restore ran (v2.18.2)
 
-- **Install crash fixed**: `preArtifacts.conflicting undefined` TypeError on every fresh install
-- **Uninstall restore fixed**: backed-up files (e.g. your original CLAUDE.md) were silently skipped on restore because the backup lived inside `.agent/` which was deleted before the restore ran. Now staged to `os.tmpdir()` before deletion.
+### 76 automated tests
 
-### Integration test suite (v2.18.2)
-
-76 automated tests now run on every commit (40 unit + 36 integration).
-Integration tests run the real installer against temp directories — catches installer-level crashes that unit tests on pure functions cannot.
+40 unit tests (pure functions) + 36 integration tests (real installer against temp directories). Pre-commit hook runs the full suite on every commit.
 
 ---
 
-## Upgrade existing install
+## Upgrade
 
 ```bash
 npx github:zafrirron/Agent-Platform --mode=upgrade
 ```
 
----
+Your agents get improved rules. Your project customisations are untouched.
 
 ## Uninstall
 
 ```bash
-npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run
+npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — shows what will be removed
 npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes everything
 ```
 

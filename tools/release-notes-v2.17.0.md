@@ -19,10 +19,10 @@ Read .agent/session-start.md and execute it.
 
 ## What's new in v2.17.0
 
-### 🚦 Automatic expert + playbook routing — you just describe the goal
+### Automatic expert + playbook routing — you just describe the goal
 
-**Before:** Users had to manually tell the agent which expert file to load.
-**After:** The agent routes silently. You describe the goal — it figures out the rest.
+Before: users had to manually tell the agent which expert file to load.
+After: the agent routes silently. You describe the goal — it figures out the rest.
 
 | You say | Agent does automatically |
 |---------|--------------------------|
@@ -32,34 +32,25 @@ Read .agent/session-start.md and execute it.
 | "ready to ship" | Loads devops expert + release playbook → runs gates |
 | "find what's wrong" | Loads critic agent → adversarial 6-dimension review |
 
-The user **never** tells the agent which file to read. Three layers of activation ensure routing fires before you type anything.
+The user never tells the agent which file to read. Three layers of activation ensure routing fires before you type anything.
 
-### 🔗 Expert + Playbook combined model
+### Expert + Playbook combined model
 
-Expert (WHO the agent is) and Playbook (WHAT steps to follow) are two independent dimensions that combine:
-- Expert rules govern every step of the playbook
-- Playbook assigns different experts at specific steps (e.g. Critic at review gate)
-- Use either alone, or both together for maximum power
+Expert (WHO the agent is) and Playbook (WHAT steps to follow) are two independent dimensions that combine. Expert rules govern every step of the playbook. Playbook assigns different experts at specific steps (e.g. Critic at review gate).
 
-### 📊 Full lifecycle flow diagram in README
+### Full lifecycle flow diagram
 
-Complete ASCII flow diagram: Install → Session Start → Auto-routing → Expert/Playbook → Work → Session End → loop/IDE switch.
+Complete ASCII flow diagram added to README and PLATFORM-HELP: Install → Session Start → Auto-routing → Expert/Playbook → Work → Session End → loop/IDE switch.
 
 ---
 
-## Also in this release stream (v2.16.0)
-
-- ✅ 40 unit tests for core installer — 100% pass
-- All 11 Critic review findings resolved
-- Comprehensive backup/restore covering all current and future frameworks
-
----
-
-## Upgrade existing install
+## Upgrade
 
 ```bash
 npx github:zafrirron/Agent-Platform --mode=upgrade
 ```
+
+Your agents get improved rules. Your project customisations are untouched.
 
 ## Uninstall
 
