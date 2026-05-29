@@ -117,22 +117,29 @@ Repeat. The platform never stops improving.
                                    │
                       You describe what you want
                                    │
+              Auto-routing: agent identifies task type and loads
+              the right expert + playbook silently — user just describes the goal
+                                   │
               ┌────────────────────┴─────────────────────┐
               │                                           │
               ▼                                           ▼
 ┌─────────────────────────┐             ┌───────────────────────────┐
 │  EXPERT AGENT           │             │  PLAYBOOK                 │
+│  (WHO you are)          │             │  (WHAT steps to follow)   │
 │                         │             │                           │
-│  "add an endpoint"      │             │  "fix a bug"              │
-│    → Backend expert     │             │    → bug-fix.md           │
-│                         │             │                           │
-│  "review for security"  │             │  "add a feature"          │
-│    → Security expert    │             │    → add-feature.md       │
+│  "review for security"  │             │  "fix a bug"              │
+│    → Security expert    │             │    → bug-fix.md           │
 │                         │             │                           │
 │  "find what's wrong"    │             │  "ready to ship"          │
 │    → Critic agent       │             │    → release.md           │
+│                         │      ┌──────┤                           │
+│  "add an endpoint"  ────┼──────┤      │  "add a feature"          │
+│    + add-feature.md     │COMBINE       │    + backend-agent.md     │
+│                         │      └──────┤                           │
 └────────────┬────────────┘             └─────────────┬─────────────┘
              └──────────────────┬──────────────────────┘
+                  Expert rules apply at every playbook step
+              Playbook assigns different experts at specific steps
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐

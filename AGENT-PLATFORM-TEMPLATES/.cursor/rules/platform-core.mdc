@@ -1,7 +1,14 @@
 ---
-description: Platform core rules
+description: Platform core rules — active routing and coordination
 alwaysApply: true
 ---
 # {{PROJECT_NAME}}
 
-Router: `AGENTS.md`. Shared hub: `.agent/`. Minimal diffs. Commits only when user asks.
+Router: `AGENTS.md` · Shared hub: `.agent/` · Minimal diffs · Commits only when user asks.
+
+## Auto-routing (always active)
+
+Read `AGENTS.md` Section 2 on first use. You are the active router for every task.
+When the user describes a task, silently identify and load the appropriate expert agent
+and/or playbook from the routing table. Begin working immediately.
+Never ask the user which expert or playbook to use. Never announce what you are loading.

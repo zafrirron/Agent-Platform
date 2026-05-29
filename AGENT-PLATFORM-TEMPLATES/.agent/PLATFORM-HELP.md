@@ -137,7 +137,42 @@ Expert agents give the AI a focused persona with specific rules, owned files, an
 | **Data** | `Read .agent/agents/data-agent.md` | Schema design, migrations, data pipelines, transformations | UI or API logic |
 | **Critic** | `Read .agent/agents/critic-agent.md` | Adversarial review — finds bugs, security issues, edge cases, test gaps | Building things |
 
-**Chaining experts:** you can activate more than one in sequence. Common chain: Architect → Backend → Test → **Critic** → Docs.
+## How routing works — automatic, not manual
+
+**You never need to tell the agent which expert or playbook to use.**
+
+The agent is primed as an active router from the moment a session starts. When you describe a task, it silently identifies the right expert and/or playbook and begins working. You just describe your goal in plain language.
+
+| You say | Agent automatically does |
+|---------|--------------------------|
+| "fix the login bug" | Loads backend-agent.md + bug-fix.md → begins bug-fix Step 1 |
+| "add rate limiting" | Loads backend-agent.md + add-feature.md → begins add-feature Step 1 |
+| "review the auth" | Loads security-agent.md → reviews using OWASP rules |
+| "ready to ship v2" | Loads devops-agent.md + release.md → begins release gates |
+| "find what's wrong" | Loads critic-agent.md → runs 6-dimension adversarial review |
+
+### Expert + Playbook combined
+
+An expert defines WHO the agent is (domain persona, rules, done-when criteria).
+A playbook defines WHAT steps to follow (process, quality gates, expert assignments).
+
+They are loaded together when both apply:
+- The expert's rules are enforced at every step of the playbook
+- The playbook assigns different experts at specific steps (e.g. Critic at review gate)
+- The agent switches expert persona at those steps, then returns
+
+```
+"fix the authentication bug"
+  → Backend expert (WHO: API, auth, security rules)
+  + bug-fix.md playbook (WHAT: reproduce → scope → fix → regression test → critic review)
+  
+  At Step 5b: switches to Critic expert → reviews the fix → switches back to Backend
+```
+
+**Chaining experts** for complex tasks:
+```
+Architect (design) → Backend (implement) → Test (verify) → Critic (review) → Docs (document)
+```
 
 ---
 

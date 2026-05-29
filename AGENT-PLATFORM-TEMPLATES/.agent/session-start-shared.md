@@ -161,7 +161,20 @@ Prepend a new entry to `.agent/handoff/CURRENT.md`:
 **Goal:** <ask user or leave as "pending — user has not stated a task yet">
 ```
 
-### Step 7 — Ready
+### Step 7 — Activate auto-routing
+
+Read `AGENTS.md` Section 2 (Auto-routing).
+
+From this point until session end, you are the active router:
+- When the user describes any task, silently identify and load the right expert and/or playbook
+- Begin working in the correct persona following the correct process
+- Never ask the user which file to read — you determine and load it automatically
+- Never announce "I will now load the Backend expert" — just load it and start
+- If a task genuinely spans domains, chain the appropriate experts in order
+
+This replaces the old model where users had to manually invoke experts and playbooks.
+
+### Step 8 — Ready
 
 Output exactly:
 ```
