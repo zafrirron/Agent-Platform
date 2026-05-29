@@ -13,6 +13,7 @@
  *   4. process.cwd()
  */
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -387,20 +388,34 @@ if (MODE === 'uninstall') {
   }
 
   // Check for pre-install backup to restore
+  // IMPORTANT: stage to os.tmpdir() BEFORE deleting .agent/ — the backup lives inside it.
   const backupsRoot = path.join(INSTALL_ROOT, '.agent/backup');
-  let restoreDir = null;
+  let staged = null; // { stagingDir, manifest } or { stagingDir, files[] } for legacy
   if (fs.existsSync(backupsRoot)) {
     const backupDirs = fs.readdirSync(backupsRoot)
       .filter(d => d.startsWith('pre-install-'))
       .sort().reverse(); // most recent first
-    if (backupDirs.length > 0) restoreDir = path.join(backupsRoot, backupDirs[0]);
+    if (backupDirs.length > 0) {
+      const backupDir  = path.join(backupsRoot, backupDirs[0]);
+      const stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ap-restore-'));
+      const manifestPath = path.join(backupDir, 'manifest.json');
+      if (fs.existsSync(manifestPath)) {
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        for (const backupName of Object.keys(manifest)) {
+          fs.copyFileSync(path.join(backupDir, backupName), path.join(stagingDir, backupName));
+        }
+        staged = { stagingDir, manifest };
+      } else {
+        // Legacy backup without manifest (pre-v2.15.1)
+        const files = fs.readdirSync(backupDir);
+        files.forEach(f => fs.copyFileSync(path.join(backupDir, f), path.join(stagingDir, f)));
+        staged = { stagingDir, files };
+      }
+    }
   }
 
-  if (!CONFIRM) {
-    if (restoreDir) {
-      console.log('  ℹ  Pre-install backup found: ' + path.relative(INSTALL_ROOT, restoreDir));
-      console.log('     Original files will be restored after removal.');
-    }
+  if (!CONFIRM && staged) {
+    console.log('  ℹ  Pre-install backup found — original files will be restored after removal.');
   }
 
   console.log('  Removing platform files from: ' + INSTALL_ROOT);
@@ -433,35 +448,29 @@ if (MODE === 'uninstall') {
     }
   }
 
-  // Restore original files from backup using manifest
+  // Restore original files from staging (safe — .agent/ already deleted above)
   let restored = 0;
-  if (restoreDir && fs.existsSync(restoreDir)) {
-    const manifestPath = path.join(restoreDir, 'manifest.json');
-    if (fs.existsSync(manifestPath)) {
-      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-      console.log('  Restoring your original AI configuration files...');
-      for (const [backupName, originalPath] of Object.entries(manifest)) {
+  if (staged) {
+    console.log('  Restoring your original AI configuration files...');
+    if (staged.manifest) {
+      for (const [backupName, originalPath] of Object.entries(staged.manifest)) {
         const dest = path.join(INSTALL_ROOT, originalPath);
-        if (!fs.existsSync(dest)) {
-          fs.mkdirSync(path.dirname(dest), { recursive: true });
-          fs.copyFileSync(path.join(restoreDir, backupName), dest);
-          console.log('  ✔ Restored: ' + originalPath);
-          restored++;
-        }
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+        fs.copyFileSync(path.join(staged.stagingDir, backupName), dest);
+        console.log('  ✔ Restored: ' + originalPath);
+        restored++;
       }
     } else {
-      // Legacy backup without manifest — flat files only (pre-v2.15.1 backups)
-      fs.readdirSync(restoreDir)
-        .filter(f => f !== 'manifest.json')
-        .forEach(backupFile => {
-          const dest = path.join(INSTALL_ROOT, backupFile);
-          if (!fs.existsSync(dest)) {
-            fs.copyFileSync(path.join(restoreDir, backupFile), dest);
-            console.log('  ✔ Restored: ' + backupFile);
-            restored++;
-          }
-        });
+      // Legacy: flat backup files, filename == original filename
+      staged.files.forEach(backupFile => {
+        const dest = path.join(INSTALL_ROOT, backupFile);
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+        fs.copyFileSync(path.join(staged.stagingDir, backupFile), dest);
+        console.log('  ✔ Restored: ' + backupFile);
+        restored++;
+      });
     }
+    fs.rmSync(staged.stagingDir, { recursive: true }); // clean up temp
   }
 
   console.log('');
