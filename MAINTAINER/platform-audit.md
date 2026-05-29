@@ -1,9 +1,13 @@
-# Playbook: Platform Audit
+# Mode 1 — Internal Platform Audit
+
+> **This is the INTERNAL audit** — checks consistency and quality of existing rules.
+> For web ecosystem updates, use: `Read MAINTAINER/web-audit.md and execute it.`
 
 > Load with maintainer agent: `Read MAINTAINER/platform-maintainer-agent.md`
 > Then: `Read MAINTAINER/platform-audit.md and execute it.`
 
 Produces a full capability matrix, identifies gaps, flags weak rules, and checks for duplicates.
+All findings use Mode 1 commands to fix: `"add rule to <expert>: <rule>"` etc.
 
 ---
 
