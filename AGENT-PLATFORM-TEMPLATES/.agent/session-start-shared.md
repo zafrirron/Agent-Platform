@@ -17,7 +17,43 @@
 3. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
 4. Set `meta.updated_by` → `<fw>`
 
-### Step 2 — Update check (max once every 7 days)
+### Step 2 — One-time setup check
+
+Read `.agent/platform.json`. Check the `test_runner` field.
+
+If `test_runner` is missing, empty, or starts with `<fill-in`:
+
+1. Tell the user:
+   > "Your test runner is not configured yet. What language and test framework is this project using?
+   > For example: JavaScript/Jest, Python/pytest, Go, .NET, Rust, or other."
+
+2. Wait for the user's answer.
+
+3. Based on the answer, set these values:
+
+   | Stack | test_runner | coverage_cmd |
+   |-------|------------|--------------|
+   | JavaScript / Jest | `npx jest` | `npx jest --coverage` |
+   | JavaScript / Vitest | `npx vitest` | `npx vitest --coverage` |
+   | JavaScript / Mocha | `npx mocha` | `npx nyc mocha` |
+   | Node.js (npm test) | `npm test` | `npm test -- --coverage` |
+   | Python / pytest | `pytest` | `pytest --cov` |
+   | Go | `go test ./...` | `go test -cover ./...` |
+   | Rust | `cargo test` | `cargo tarpaulin` |
+   | .NET | `dotnet test` | `dotnet test /p:CollectCoverage=true` |
+   | Other | Ask user for the exact commands | Ask user |
+
+4. Write the values to `.agent/platform.json`:
+   - `test_runner` → the detected command
+   - `coverage_cmd` → the detected coverage command
+
+5. Also update `.agent/CONVENTIONS.md` — find the `## Testing` section and replace the `{{TEST_RUNNER}}` and `{{COVERAGE_CMD}}` placeholders with the actual values.
+
+6. Confirm to the user: "✅ Test runner configured: `<command>`"
+
+If `test_runner` is already set (not a placeholder): skip this step entirely.
+
+### Step 4 — Update check (max once every 7 days)
 
 1. Read `.agent/platform.json`
 2. Check `last_update_check` field:
@@ -29,13 +65,13 @@
    - Write result (`"up_to_date"` or `"update_available: vX.Y.Z"`) to `last_update_status` in `platform.json`
 4. Read `last_update_status` from `platform.json` for display in Step 4
 
-### Step 3 — Last work context
+### Step 5 — Last work context
 
 1. Read `.agent/handoff/CURRENT.md`
 2. Extract the most recent entry's one-line summary (goal or status line)
 3. Hold it for display in Step 4
 
-### Step 4 — Display quick reference
+### Step 6 — Display quick reference
 
 1. Read `.agent/QUICK-REF.md`
 2. Replace every `<fw>` in the file with the actual framework folder name
@@ -60,7 +96,7 @@
    - Token Compression / Caveman (all 3 rows)
    - Platform (all rows)
 
-### Step 5 — Log session start
+### Step 7 — Log session start
 
 Prepend a new entry to `.agent/handoff/CURRENT.md`:
 
@@ -69,7 +105,7 @@ Prepend a new entry to `.agent/handoff/CURRENT.md`:
 **Goal:** <ask user or leave as "pending — user has not stated a task yet">
 ```
 
-### Step 6 — Ready
+### Step 8 — Ready
 
 Output exactly:
 ```
