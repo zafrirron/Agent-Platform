@@ -109,7 +109,7 @@ If no stack was detected from files, ask:
 
 After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.md`.
 
-### Step 4 — Update check (max once every 7 days)
+### Step 3 — Update check (max once every 7 days)
 
 1. Read `.agent/platform.json`
 2. Check `last_update_check` field:
@@ -121,13 +121,13 @@ After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.
    - Write result (`"up_to_date"` or `"update_available: vX.Y.Z"`) to `last_update_status` in `platform.json`
 4. Read `last_update_status` from `platform.json` for display in Step 4
 
-### Step 5 — Last work context
+### Step 4 — Last work context
 
 1. Read `.agent/handoff/CURRENT.md`
 2. Extract the most recent entry's one-line summary (goal or status line)
 3. Hold it for display in Step 4
 
-### Step 6 — Display quick reference
+### Step 5 — Display quick reference
 
 1. Read `.agent/QUICK-REF.md`
 2. Replace every `<fw>` in the file with the actual framework folder name
@@ -152,7 +152,7 @@ After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.
    - Token Compression / Caveman (all 3 rows)
    - Platform (all rows)
 
-### Step 7 — Log session start
+### Step 6 — Log session start
 
 Prepend a new entry to `.agent/handoff/CURRENT.md`:
 
@@ -161,7 +161,7 @@ Prepend a new entry to `.agent/handoff/CURRENT.md`:
 **Goal:** <ask user or leave as "pending — user has not stated a task yet">
 ```
 
-### Step 8 — Ready
+### Step 7 — Ready
 
 Output exactly:
 ```

@@ -7,7 +7,7 @@
 > **Re-show this file any time:** say `"platform help"` or `"how does this work"`
 > **Re-show quick reference any time:** say `"show quick reference"` or `"show help"`
 
-**Sections:** Session workflow · Expert agents · Playbooks · Project knowledge · Testing · Caveman · Switching IDEs · Extending · Maintenance
+**Sections:** Session workflow · Expert agents · Critic agent · Playbooks · Project knowledge · Testing · Caveman · Switching IDEs · Extending · Maintenance
 
 ---
 

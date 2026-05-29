@@ -35,7 +35,7 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 > **One command. A complete agentic development environment on any repository.**
 
-Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 8 software-expert agents you activate by name, 8 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, living project-knowledge docs, built-in token compression, and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, 8 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
 
 ---
 
@@ -993,4 +993,4 @@ Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
 
 ---
 
-*Agent Platform Bootstrap v2.10 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.15 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*

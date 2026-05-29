@@ -9,7 +9,7 @@
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Eight specialist agents. Eight playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). Eight playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
 
 > **Zero changes to your project code.** Install adds only platform coordination folders (`.agent/`, `.claude/`, etc.) — all gitignored by default so nothing is accidentally committed. Your source files, configuration, and git history are never touched.
 > **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
@@ -204,7 +204,7 @@ Removes: all platform folders, root files, and the gitignore block.
 
 ## Version
 
-**v2.15.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.15.1** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

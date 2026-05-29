@@ -54,6 +54,50 @@ npx github:zafrirron/Agent-Platform --mode=upgrade
 
 ---
 
+## [2.15.0] — 2026-05-29
+
+### Added — Pre-existing AI artifact detection + backup + restore
+
+When installing on a repo that already uses Claude Code, Cursor, Antigravity, or Codex:
+- **Pre-install scan** detects existing `CLAUDE.md`, `AGENTS.md`, `SYNC-POINTS.md`, `.cursorrules`
+- **Backup** of platform-owned files created at `.agent/backup/pre-install-YYYY-MM-DD/`
+- **`.agent/MIGRATION-NOTES.md`** generated — per-file guidance on connecting existing config to the platform
+- **Install summary** shows `⚠ preserved` / `ℹ detected` lines per artifact found
+- **Uninstall restores originals** — after removing all platform files, backed-up originals are restored to their original locations
+
+This removes the adoption barrier for developers who already have AI configurations in their repo.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.14.0] — 2026-05-29
+
+### Added — Zero footprint: all platform files gitignored by default
+
+- **`apply.js` gitignore step**: writes a marked block to `.gitignore` on every install:
+  ```
+  # Agent Platform Bootstrap — START
+  .agent/  .claude/  .cursor/  .agents/  .codex/  AGENTS.md  SYNC-POINTS.md  CLAUDE.md
+  # Agent Platform Bootstrap — END
+  ```
+- **`git status` stays clean** after install — nothing committed accidentally with your code
+- **Uninstall removes the block**: entire gitignore section removed by `START/END` markers
+- **Install summary**: new capability line `✔ Zero code impact — platform files gitignored`
+- **README + docs**: "Zero footprint" guarantee table added prominently
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.13.0] — 2026-05-29
 
 ### Added — Cross-framework critic review (automatic multi-model code review)
