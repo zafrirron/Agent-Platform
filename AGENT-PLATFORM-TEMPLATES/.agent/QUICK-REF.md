@@ -4,7 +4,7 @@
 |---|---|
 | **Framework** | <fw> |
 | **Version** | {{BOOTSTRAP_VERSION}} |
-| **Full guide** | `AGENT-PLATFORM-FRAMEWORK-README.md` |
+| **Full guide** | https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md |
 | **Repository** | https://github.com/zafrirron/Agent-Platform |
 
 ---
@@ -89,5 +89,5 @@
 | Install | `npx github:zafrirron/Agent-Platform` |
 | Upgrade | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
 | Repair | `npx github:zafrirron/Agent-Platform --mode=repair` |
-| Full guide | `AGENT-PLATFORM-FRAMEWORK-README.md` |
-| Extend platform | See Extending guide in `AGENT-PLATFORM-FRAMEWORK-README.md` |
+| Full guide | https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md |
+| Extend platform | https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md#extending-guide |

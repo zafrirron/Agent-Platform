@@ -4,7 +4,6 @@
  *
  * Supports two separate roots:
  *   PACK_ROOT    — where AGENT-PLATFORM-MANIFEST.json + templates live
- *                  (the framework package directory, or wherever the pack was extracted)
  *   INSTALL_ROOT — where files are written (the consumer repo)
  *
  * Resolution order for each root:
@@ -13,8 +12,11 @@
  *   3. Auto-detect (search for AGENT-PLATFORM-MANIFEST.json upward from CWD)
  *   4. process.cwd()
  */
-const fs   = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /* ── CLI args ─────────────────────────────────────────────────────────────── */
 const modeArg   = process.argv.find((a) => a.startsWith('--mode='));
@@ -267,9 +269,9 @@ console.log('  ✔  Context docs        api-contracts · adr-log · known-issues
 console.log('');
 console.log('  References');
 console.log(SEP);
-console.log('  Full guide  →  AGENT-PLATFORM-FRAMEWORK-README.md');
+console.log('  Full guide  →  https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md');
 console.log('  Repository  →  https://github.com/zafrirron/Agent-Platform');
-console.log('  Changelog   →  CHANGELOG.md');
+console.log('  Changelog   →  https://github.com/zafrirron/Agent-Platform/blob/main/CHANGELOG.md');
 console.log('');
 console.log('  Next step — open your AI agent and send this message:');
 console.log('');

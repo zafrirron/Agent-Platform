@@ -49,7 +49,16 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-4. Output the full quick reference table
+4. Output the **complete** contents of `.agent/QUICK-REF.md` with `<fw>` substituted.
+   **IMPORTANT: Output every section in full. Do NOT summarise, truncate, collapse, or skip any section.**
+   The file contains these sections — all must be shown:
+   - Session
+   - Expert Agents (all 8 rows)
+   - Playbooks (all 8 rows)
+   - Project Knowledge (all 5 rows)
+   - Testing (all 3 rows)
+   - Token Compression / Caveman (all 3 rows)
+   - Platform (all rows)
 
 ### Step 5 — Log session start
 

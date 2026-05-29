@@ -47,6 +47,10 @@ try {
   const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
     headers: { 'User-Agent': 'agent-platform-check-updates/1.0' },
   });
+  if (res.status === 404) {
+    console.log('✅ No releases published yet — you are on the latest code (main branch).\n');
+    process.exit(0);
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   release = await res.json();
 } catch (err) {

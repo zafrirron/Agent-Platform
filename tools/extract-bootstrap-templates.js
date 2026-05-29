@@ -2,33 +2,35 @@
  * One-time / maintenance: split AGENT-PLATFORM-BOOTSTRAP.md Appendix B into
  * AGENT-PLATFORM-TEMPLATES/ + AGENT-PLATFORM-MANIFEST.json
  */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const ROOT = path.join(__dirname, '..');
-const SOURCE = path.join(ROOT, 'AGENT-PLATFORM-BOOTSTRAP.md');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT          = path.join(__dirname, '..');
+const SOURCE        = path.join(ROOT, 'AGENT-PLATFORM-BOOTSTRAP.md');
 const TEMPLATES_DIR = path.join(ROOT, 'AGENT-PLATFORM-TEMPLATES');
 const MANIFEST_PATH = path.join(ROOT, 'AGENT-PLATFORM-MANIFEST.json');
 
-const raw = fs.readFileSync(SOURCE, 'utf8');
+const raw          = fs.readFileSync(SOURCE, 'utf8');
 const appendixStart = raw.indexOf('## Appendix B — File templates');
 if (appendixStart < 0) throw new Error('Appendix B not found');
 
-const appendix = raw.slice(appendixStart);
+const appendix  = raw.slice(appendixStart);
 const fileRegex = /(?:^### |^#### )FILE:\s+(.+?)\s*$/gm;
-const matches = [...appendix.matchAll(fileRegex)];
+const matches   = [...appendix.matchAll(fileRegex)];
 
 const files = [];
 for (let i = 0; i < matches.length; i++) {
   const targetPath = matches[i][1].trim();
-  const headerEnd = matches[i].index + matches[i][0].length;
-  const nextStart = i + 1 < matches.length ? matches[i + 1].index : appendix.length;
-  let chunk = appendix.slice(headerEnd, nextStart);
+  const headerEnd  = matches[i].index + matches[i][0].length;
+  const nextStart  = i + 1 < matches.length ? matches[i + 1].index : appendix.length;
+  let chunk        = appendix.slice(headerEnd, nextStart);
 
   const fenceStart = chunk.indexOf('```');
   if (fenceStart < 0) continue;
   const afterFence = chunk.indexOf('\n', fenceStart) + 1;
-  const fenceEnd = chunk.indexOf('\n```', afterFence);
+  const fenceEnd   = chunk.indexOf('\n```', afterFence);
   if (fenceEnd < 0) continue;
 
   let content = chunk.slice(afterFence, fenceEnd);
@@ -46,11 +48,7 @@ if (!fs.existsSync(TEMPLATES_DIR)) fs.mkdirSync(TEMPLATES_DIR, { recursive: true
 for (const f of files) {
   const out = path.join(TEMPLATES_DIR, f.template);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, contentFor(f), 'utf8');
-}
-
-function contentFor(f) {
-  return f.content.endsWith('\n') ? f.content : f.content + '\n';
+  fs.writeFileSync(out, f.content.endsWith('\n') ? f.content : f.content + '\n', 'utf8');
 }
 
 const manifest = {

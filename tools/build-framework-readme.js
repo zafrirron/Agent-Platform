@@ -1,10 +1,13 @@
 /**
  * Regenerate AGENT-PLATFORM-FRAMEWORK-README.md from git v1.3 human sections + v2 pack updates.
  */
-const fs = require('fs');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-const ROOT = require('path').join(__dirname, '..');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dirname, '..');
 const raw = execSync('git show 1f23646:AGENT-PLATFORM-BOOTSTRAP.md', { encoding: 'utf8', cwd: ROOT });
 const lines = raw.split(/\r?\n/);
 const endIdx = lines.findIndex((l) => l === '## What this installs');
@@ -54,14 +57,11 @@ body = body.replace(
 \`\`\``
 );
 
-// Keep agent activation strings — do NOT replace with CLI commands.
-
-// Extending prompts: point to templates not monolith
 body = body.replace(/^Read AGENT-PLATFORM-BOOTSTRAP\.md\n\nTask:/gm, 'Edit AGENT-PLATFORM-TEMPLATES/ then rebuild manifest.\n\nTask:');
 
 const header = `# Agent Platform Bootstrap — complete guide
 
-> **Human documentation** for the framework pack and for day-to-day use after install.  
+> **Human documentation** for the framework pack and for day-to-day use after install.
 > **Agent install:** [AGENT-PLATFORM-BOOTSTRAP.md](AGENT-PLATFORM-BOOTSTRAP.md) · **Copy list:** [COPYING.md](COPYING.md) · **Deploy:** [PACK-DEPLOY.md](PACK-DEPLOY.md)
 
 ---
@@ -75,8 +75,6 @@ const header = `# Agent Platform Bootstrap — complete guide
 
 **Do not mix:** application source does not belong in the framework repository.
 
-To create a **new framework-only project**, copy only the paths in [COPYING.md](COPYING.md). Use this file as the main \`README.md\` (or rename [README-FOR-FRAMEWORK-REPO.md](README-FOR-FRAMEWORK-REPO.md)).
-
 ---
 
 ## v2 pack model
@@ -86,9 +84,7 @@ To create a **new framework-only project**, copy only the paths in [COPYING.md](
 | Orchestrator | \`AGENT-PLATFORM-BOOTSTRAP.md\` | Short instructions for the executing agent |
 | Manifest | \`AGENT-PLATFORM-MANIFEST.json\` | Template paths + \`bootstrap_version\` |
 | Templates | \`AGENT-PLATFORM-TEMPLATES/\` | All installable file bodies |
-| Installer | \`AGENT-PLATFORM-APPLY.js\` | \`--mode=install\|repair\|upgrade\|force\` |
-
-Human guides (installation, usage, extending) are **in this file**. Templates are **on disk**, not embedded in the orchestrator.
+| Installer | \`AGENT-PLATFORM-APPLY.js\` | \`--mode=install|repair|upgrade|force\` |
 
 ---
 
@@ -103,22 +99,11 @@ const footer = `
 1. Edit \`AGENT-PLATFORM-TEMPLATES/\`
 2. \`node tools/build-bootstrap-manifest.js\`
 3. Bump \`bootstrap_version\` in manifest + orchestrator footer
-4. Tag release; consumer repos copy the tagged pack
-
-**Quality gate:** no consumer-product strings inside the pack (search product names and app folder names — zero hits).
+4. Tag release; consumer repos upgrade via \`npx github:zafrirron/Agent-Platform --mode=upgrade\`
 
 ---
 
-## Tell an agent what this project is
-
-\`\`\`
-Read AGENT-PLATFORM-FRAMEWORK-README.md for the full platform guide.
-Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
-\`\`\`
-
----
-
-*Agent Platform Bootstrap v2.1 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.5 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
 `;
 
 body = body.replace(
@@ -127,5 +112,5 @@ body = body.replace(
 );
 
 const out = header + body + footer;
-fs.writeFileSync(require('path').join(ROOT, 'AGENT-PLATFORM-FRAMEWORK-README.md'), out);
+fs.writeFileSync(path.join(ROOT, 'AGENT-PLATFORM-FRAMEWORK-README.md'), out);
 console.log('Wrote', out.split('\n').length, 'lines to AGENT-PLATFORM-FRAMEWORK-README.md');
