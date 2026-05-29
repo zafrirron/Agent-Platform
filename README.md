@@ -16,6 +16,29 @@ A complete multi-agent development environment installed into any repository in 
 
 ---
 
+## Security and trust — what this platform is and is not
+
+**The platform installs markdown files. That is all.**
+
+Expert rules and playbooks are plain-text instructions that tell AI agents how to write better, more secure code. They are not executable code. They do not run inside your project. They cannot exfiltrate data, add backdoors, or weaken your security posture.
+
+| Concern | Reality |
+|---------|---------|
+| Injects executable code into my project | ❌ Only markdown, YAML, and JSON files are installed |
+| Modifies my source code or config | ❌ Installer creates new files only — existing files skipped |
+| Makes network calls from my project | ❌ No runtime dependencies are added |
+| Collects telemetry or sends data anywhere | ❌ No analytics, no tracking, no callbacks |
+| Commits anything without my knowledge | ❌ All platform files are gitignored on install |
+| Overwrites my security decisions | ❌ Your PROJECT sections are never overwritten |
+
+**Every rule is readable and auditable.** Open any file in `.agent/agents/` — every instruction the platform gives your AI is visible markdown. Every rule traces to its source failure in `MAINTAINER/platform-improvements.md`.
+
+**No npm registry, no third-party dependencies.** `apply.js` uses only Node.js built-ins (`fs`, `path`). Nothing from the npm registry that could be compromised.
+
+→ Full security declaration: [SECURITY.md](SECURITY.md)
+
+---
+
 ## Zero footprint — install, use, remove cleanly
 
 | Guarantee | Detail |
@@ -268,6 +291,7 @@ The platform coordination layer is removed cleanly. Your AI agents improved your
 | Document | For |
 |----------|-----|
 | [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md) | **Users** — complete installation, usage, and extension guide |
+| [SECURITY.md](SECURITY.md) | **Trust** — what the platform does and does not do, how to audit it |
 | [CHANGELOG.md](CHANGELOG.md) | **Users** — version history and upgrade paths |
 | [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md) | **Platform author** — how to develop and improve the platform |
 
