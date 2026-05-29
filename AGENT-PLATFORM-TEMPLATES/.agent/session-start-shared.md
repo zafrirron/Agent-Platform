@@ -60,54 +60,11 @@
 
 ### Step 2 — One-time test runner setup
 
-Read `.agent/platform.json`. Check the `test_runner` field.
+Read `.agent/platform.json`. Check `test_runner`.
 
-**If `test_runner` is already set (not a placeholder): skip this step entirely.**
+**If already set (not `<fill-in...>`): skip this step entirely.**
 
-If `test_runner` is missing, empty, or starts with `<fill-in`:
-
-#### Phase A — Auto-detect from project files
-
-Scan the project root for these files and determine the stack:
-
-| File found | Detected stack | test_runner | coverage_cmd |
-|-----------|---------------|-------------|--------------|
-| `package.json` with `"jest"` in scripts or devDeps | JavaScript/Jest | `npx jest` | `npx jest --coverage` |
-| `package.json` with `"vitest"` in scripts or devDeps | JavaScript/Vitest | `npx vitest run` | `npx vitest run --coverage` |
-| `package.json` with `"mocha"` in scripts or devDeps | JavaScript/Mocha | `npx mocha` | `npx nyc mocha` |
-| `package.json` with any `test` script | Node.js | `npm test` | `npm test -- --coverage` |
-| `pyproject.toml` or `pytest.ini` or `setup.cfg` | Python/pytest | `pytest` | `pytest --cov` |
-| `go.mod` | Go | `go test ./...` | `go test -cover ./...` |
-| `Cargo.toml` | Rust | `cargo test` | `cargo tarpaulin` |
-| `.csproj` or `.sln` | .NET | `dotnet test` | `dotnet test /p:CollectCoverage=true` |
-| `Makefile` with a `test` target | Make | `make test` | `make coverage` |
-
-If detected:
-- Write `test_runner` and `coverage_cmd` to `.agent/platform.json`
-- Update `.agent/CONVENTIONS.md` `## Testing` section with the real values
-- Confirm: `"✅ Test runner auto-detected: <command>"`
-- Continue to the next step
-
-#### Phase B — Ask if detection failed
-
-If no stack was detected from files, ask:
-
-> "I couldn't detect a test runner for this project. Does this project have tests set up?
-> - **Yes** — tell me what language/framework (e.g. Jest, pytest, Go, .NET) and I'll configure it.
-> - **No** — I can help you set one up. What language is this project written in?"
-
-**If the user says Yes:** configure from their answer using the table above.
-
-**If the user says No — offer to set one up:**
-
-| Language | Offer to install |
-|---------|-----------------|
-| JavaScript/TypeScript | "I'll add Jest. Run: `npm install --save-dev jest` then I'll create a sample test." |
-| Python | "I'll set up pytest. Run: `pip install pytest pytest-cov` then I'll create a sample test." |
-| Go | "Go has built-in testing. I'll create a `_test.go` file to get started." |
-| Other | Ask what testing framework they prefer |
-
-After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.md`.
+If missing or placeholder: Read `.agent/tools/setup-test-runner.md` and execute it, then continue.
 
 ### Step 3 — Update check (max once every 7 days)
 

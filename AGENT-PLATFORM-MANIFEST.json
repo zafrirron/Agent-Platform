@@ -32,6 +32,11 @@
       "kind": "template"
     },
     {
+      "path": ".agent/TOKEN-BUDGET.md",
+      "template": ".agent/TOKEN-BUDGET.md",
+      "kind": "template"
+    },
+    {
       "path": ".agent/CHECKLIST.md",
       "template": ".agent/CHECKLIST.md",
       "kind": "template"
@@ -265,6 +270,11 @@
       "path": ".agent/session-start-shared.md",
       "template": ".agent/session-start-shared.md",
       "kind": "template"
+    },
+    {
+      "path": ".agent/tools/setup-test-runner.md",
+      "template": ".agent/tools/setup-test-runner.md",
+      "kind": "tool"
     },
     {
       "path": ".agent/tools/uninstall.md",
