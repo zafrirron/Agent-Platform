@@ -14,7 +14,8 @@ Task: [describe your platform improvement goal]
 
 **Available audit modes:**
 - **Mode 1 — Internal audit:** `Read MAINTAINER/platform-audit.md and execute it.`
-- **Mode 2 — Web ecosystem audit:** `Read MAINTAINER/web-audit.md and execute it.`
+- **Mode 2 — Web ecosystem audit (Option B, monthly):** `Read MAINTAINER/web-audit.md and execute it.`
+- **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
 
 ---
 
@@ -194,12 +195,14 @@ After the audit produces a report, the maintainer selects findings to add:
 
 | You say | Agent does |
 |---------|-----------|
-| `"Add F001, F003, F007"` | Implements those findings via Mode 1 add-rule workflow |
-| `"Add all High impact"` | Filters findings by impact, implements each |
+| `"Add F001, F003, F007"` | Implements those gap findings via Mode 1 add-rule workflow |
+| `"Add E002"` | Implements an emerging practice finding (scope=full only) |
+| `"Add all High impact"` | Filters F + E findings by impact, implements each |
 | `"Skip F002"` | Logs F002 as reviewed+skipped in platform-improvements.md |
 | `"Modify F004 to: [new text]"` | Uses modified rule text, implements |
 | `"Defer F005 to backlog"` | Adds F005 to improvements backlog section |
 | `"Explain F003"` | Fetches more context from the source URL and explains |
+| `"Create new expert from E001"` | Scaffolds a new expert agent for the emerging domain |
 | `"Skip all"` | Logs all findings as reviewed, nothing added |
 
 After processing all selections:

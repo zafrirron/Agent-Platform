@@ -100,19 +100,68 @@ Compare against ALL expert files — these are new patterns that may not be cove
 
 ---
 
-## Phase 3 — Build the findings report
+## Phase 3 — Full Ecosystem Horizon Scan *(Option C — run only when scope=full)*
+
+> Skip this phase for the default monthly audit.
+> Run when maintainer says: `"Run full scope web audit"` or `"include horizon scan"`
+
+### 3A — Emerging AI / Agentic patterns
+
+Search: `"agentic AI engineering patterns [current year]"`
+Search: `"multi-agent system architecture best practices [current year]"`
+Search: `"LLM prompt injection attack patterns [current year]"`
+Search: `"AI agent tool use security risks [current year]"`
+Search: `"LLM application security checklist [current year]"`
+
+Fetch top 5 results per query. Look for patterns that do NOT map to any existing expert rule. These are not gaps — they are new practices the community is developing.
+
+### 3B — Developer community signals
+
+Fetch: `https://news.ycombinator.com/best` (top 30 stories — filter to software engineering / security)
+Search: `"software engineering emerging practice [current year]"`
+Search: `"developer best practice changed [current year]"`
+
+Look for recurring themes across multiple top posts — patterns the community is converging on that the platform does not yet encode.
+
+### 3C — New tooling that changes best practices
+
+Search: `"new developer security tooling [current year]"`
+Search: `"deprecated security practice replaced [current year]"`
+Search: `"SBOM software bill of materials requirements [current year]"`
+Search: `"supply chain attack software [current year]"`
+
+Look for: tools that make old patterns obsolete, new standards replacing old ones, practices that used to be optional and are now required.
+
+### 3D — Conference and research findings
+
+Search: `"OWASP AppSec [current year] new vulnerability class"`
+Search: `"Black Hat [current year] web application new attack"`
+Search: `"DEF CON [current year] software security finding"`
+Search: `"arxiv agentic LLM security [current year]"`
+
+Look for: newly disclosed attack classes not yet reflected in OWASP top lists, academic research on AI/agent security that practitioners haven't encoded yet.
+
+> **Horizon scan findings** use the `E-prefix` (E001, E002...) and the `EMERGING PRACTICE` classification — see Phase 4.
+
+---
+
+## Phase 4 — Build the findings report
 
 For each finding, create an entry using the format from `MAINTAINER/web-audit-report-template.md`.
 
 ### Classify each finding
 
-| Classification | Meaning |
-|---------------|---------|
-| NOT COVERED | No existing PLATFORM rule addresses this |
-| PARTIALLY COVERED | A related rule exists but is too vague or incomplete |
-| CONTRADICTED | An existing rule conflicts with the finding |
+| Classification | Meaning | Prefix |
+|---------------|---------|--------|
+| NOT COVERED | No existing PLATFORM rule addresses this | F |
+| PARTIALLY COVERED | A related rule exists but is too vague or incomplete | F |
+| CONTRADICTED | An existing rule conflicts with the finding | F |
+| EMERGING PRACTICE | New pattern with no existing rule — practice itself is new, not a gap (Phase 3 only) | E |
 
 Skip findings that are FULLY COVERED by an existing specific rule.
+
+`F-prefixed` findings = gap analysis (Phases 1 + 2)
+`E-prefixed` findings = horizon discoveries (Phase 3 only — scope=full)
 
 ### Assign impact
 
@@ -134,31 +183,38 @@ For each finding, identify which expert file or playbook should receive the rule
 
 ---
 
-## Phase 4 — Present report and wait for selection
+## Phase 5 — Present report and wait for selection
 
 Output the complete findings report using the format from `MAINTAINER/web-audit-report-template.md`.
 
+If scope=full was run, the report has two sections:
+- **F-findings** (gap analysis from Phases 1+2) — normal findings
+- **E-findings** (horizon scan from Phase 3) — these offer an additional action: `"Create new expert for [domain]"` if the practice is broad enough to warrant a whole new expert
+
 After the report, output:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Audit complete: X findings (Y High, Z Medium, W Low)
-  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Audit complete: X gap findings (F001-Fxxx) + Y horizon findings (E001-Exxx)
+  High: N  ·  Medium: N  ·  Low: N
+
   To implement findings, tell me:
-  • "Add F001, F003" — add specific findings
+  • "Add F001, F003" — add specific gap findings
+  • "Add E002" — add an emerging practice finding
   • "Add all High" — add all High impact findings
   • "Modify F002 to: [new text]" — add with your modification
   • "Skip F005" — mark as reviewed, don't add
   • "Defer F007" — add to improvement backlog
   • "Explain F003" — fetch more context from source
+  • "Create new expert from E001" — scaffold a new expert for an emerging domain
   • "Skip all" — log all as reviewed, nothing added
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Do NOT implement anything until maintainer explicitly selects.**
 
 ---
 
-## Phase 5 — Implement selections
+## Phase 6 — Implement selections
 
 For each finding the maintainer selects to add:
 
@@ -180,9 +236,10 @@ After all selections processed:
 
 ## Recommended audit schedule
 
-| Frequency | Scope |
-|-----------|-------|
-| Monthly | Full audit (all phases) |
-| After a OWASP update | Phase 1 only (security sources) |
-| After a production incident | Mode 1 targeted addition (immediate) |
-| After major framework version | Phase 2E only (agentic patterns) |
+| Frequency | Command | Phases |
+|-----------|---------|--------|
+| Monthly | `Read MAINTAINER/web-audit.md and execute it.` | 1 + 2 (Option B) |
+| Quarterly | `Read MAINTAINER/web-audit.md and execute it. scope=full` | 1 + 2 + 3 (Option C) |
+| After OWASP update | `Read MAINTAINER/web-audit.md and execute it.` phase=1 | Phase 1 only |
+| After production incident | Mode 1 targeted addition (immediate) | N/A |
+| After major framework release | `Read MAINTAINER/web-audit.md and execute it.` phase=2E | Phase 2E only |

@@ -67,13 +67,44 @@
 
 ---
 
+---
+
+## Emerging Practices *(scope=full only — Phase 3 horizon scan findings)*
+
+> These are E-prefixed findings. They are new patterns from the ecosystem —
+> not gaps in existing rules, but new practices that may warrant new rules or new experts.
+
+### E001 — [HIGH / MEDIUM / LOW] — EMERGING PRACTICE
+
+**Source:** [Name] — [URL]
+**Origin:** [Community signal / Conference / Research / New tooling]
+**Pattern:** [What the community is converging on — 2-3 sentences]
+**Current status:** Not covered — this practice is newly established
+**Scope:** [How broad is this? Single rule / New expert domain / New playbook?]
+**Proposed addition:**
+```
+[If single rule: exact rule text]
+[If new expert: "Recommend new expert for [domain] — covers: X, Y, Z"]
+[If new playbook: "Recommend new playbook for [scenario]"]
+```
+**Maintainer action:** [ ] Add rule  [ ] Create new expert  [ ] Create new playbook  [ ] Skip  [ ] Defer
+
+---
+
+### E002 — [HIGH / MEDIUM / LOW] — EMERGING PRACTICE
+
+*(repeat format)*
+
+---
+
 ## Summary Table
 
-| ID | Impact | Category | Target | Status |
-|----|--------|---------|--------|--------|
-| F001 | High | Security | security-agent.md | Pending |
-| F002 | Medium | Security | backend-agent.md | Pending |
-| ... | | | | |
+| ID | Impact | Type | Category | Target | Status |
+|----|--------|------|---------|--------|--------|
+| F001 | High | Gap | Security | security-agent.md | Pending |
+| F002 | Medium | Gap | Security | backend-agent.md | Pending |
+| E001 | High | Emerging | Agentic | New expert? | Pending |
+| ... | | | | | |
 
 ---
 
