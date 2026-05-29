@@ -1,6 +1,9 @@
 # Claude Code — session end
 
-1. Summarize work; set `frameworks.claude` → `idle`
-2. Update `CURRENT.md` with tests + **Next agent**
-3. Optional: `node .agent/tools/prune_handoff.js`
-4. Point user to next framework start command in `SYNC-POINTS.md`
+**User command:** `Read .claude/prompts/session-end.md and execute it.`
+
+My framework folder name is: `claude`
+
+Do not edit `.cursor/`, `.agents/`, or `.codex/` during this session.
+
+Read `.agent/session-end-shared.md` and execute it, replacing every `<fw>` with `claude`.

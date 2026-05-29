@@ -101,7 +101,7 @@ node .agent/tools/check-updates.mjs
 
 ## Version
 
-Current: **v2.5.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+Current: **v2.6.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.5.0",
+  "bootstrap_version": "2.6.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
@@ -229,6 +229,21 @@
     {
       "path": ".agent/skills/caveman/SKILL.md",
       "template": ".agent/skills/caveman/SKILL.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/PLATFORM-HELP.md",
+      "template": ".agent/PLATFORM-HELP.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/session-end.md",
+      "template": ".agent/session-end.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/session-end-shared.md",
+      "template": ".agent/session-end-shared.md",
       "kind": "template"
     },
     {
