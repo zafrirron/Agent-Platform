@@ -35,7 +35,7 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 > **One command. A complete agentic development environment on any repository.**
 
-Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, 8 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, 8 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
 
 ---
 
@@ -53,6 +53,7 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
 | **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before done; coverage gate auto-detected at install; red suite blocks handoff |
 | **5 living context files** | api-contracts · adr-log (Architecture Decision Records) · known-issues · dependencies · project-overview — kept in sync as code evolves |
+| **📋 Docs governance** | Every project doc is registered with an owner expert, audience, and staleness threshold. All expert Done-when checklists require checking owned docs. Session end scans for new unregistered files. Release playbook blocked until Docs agent audits all docs current. Pre-commit guard warns on unregistered new doc files. |
 | **🪨 Caveman skill** | ~65% output token savings; activated with `"caveman mode"` across all 4 frameworks |
 | **Agentic update check** | `node .agent/tools/check-updates.mjs` — or tell the agent: `Read .agent/tools/upgrade.md and execute it.` Checks once per 7 days, caches result. |
 | **3 install paths** | npx · curl/iwr shell one-liner · agent-direct. No file copying. Version-pinnable. |
@@ -415,7 +416,35 @@ The registry at `.agent/handoff/sync/registry.yaml` prevents two IDEs from editi
 
 ---
 
-### 5 · 🪨 Caveman — token compression mode
+### 5 · 📋 Docs governance — documentation stays current automatically
+
+Most projects have the same problem: documentation drifts behind the code because no one enforces it. The platform solves this with a registry-driven enforcement chain that applies to every user project.
+
+**How it works:**
+
+```
+.agent/context/docs-registry.md
+  Every doc → owner expert → audience → update trigger → last reviewed
+```
+
+**Four enforcement points:**
+
+| When | What happens |
+|------|-------------|
+| Expert finishes a task | Done-when checklist: check owned docs, update any affected rows |
+| Expert creates a new doc file | Must add it to the registry before session ends |
+| Session end | Scans for new `.md` files not yet in the registry — prompts to register |
+| Release (release.md Step 4) | Docs agent audits every registry row — any stale or unregistered file = **BLOCKED** |
+
+**Pre-commit guard** (with `--mode=install-guards`): warns when newly staged `.md` files outside `.agent/` are missing from the registry.
+
+**First session on a new project:** the Docs agent scans the project for all existing doc files and populates the registry rows automatically.
+
+**The result:** every release ships with documentation that was explicitly reviewed by the expert who owns it. No more "we'll update the docs later."
+
+---
+
+### 6 · 🪨 Caveman — token compression mode
 
 Caveman cuts AI output by ~65% while keeping full technical accuracy. Activate it any time using natural language — the same commands work across all 4 frameworks.
 
@@ -431,7 +460,7 @@ The skill definition at `.agent/skills/caveman/SKILL.md` is the single source of
 
 ---
 
-### 6 · Check who is active / last handoff
+### 7 · Check who is active / last handoff
 
 ```
 # Ask any agent:
@@ -443,7 +472,7 @@ Read .agent/handoff/CURRENT.md
 
 ---
 
-### 7 · Run a multi-agent workflow
+### 8 · Run a multi-agent workflow
 
 Example: **add a new feature** using the recommended playbook.
 
@@ -469,7 +498,7 @@ Task: version bump and build artifact
 
 ---
 
-### 8 · Check for updates and upgrade
+### 9 · Check for updates and upgrade
 
 **Check from inside any consumer repo:**
 ```bash
@@ -491,7 +520,7 @@ npx github:zafrirron/Agent-Platform --mode=upgrade   # add new files from latest
 
 ---
 
-### 9 · Agentic development best practices
+### 10 · Agentic development best practices
 
 All generated files follow these rules. They live in `.agent/BEST-PRACTICES.md` — read them before any non-trivial task.
 

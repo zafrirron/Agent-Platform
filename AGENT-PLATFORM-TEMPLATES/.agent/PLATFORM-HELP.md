@@ -7,7 +7,7 @@
 > **Re-show this file any time:** say `"platform help"` or `"how does this work"`
 > **Re-show quick reference any time:** say `"show quick reference"` or `"show help"`
 
-**Sections:** Session workflow · Expert agents · Critic agent · Playbooks · Project knowledge · Testing · Caveman · Switching IDEs · Extending · Maintenance
+**Sections:** Session workflow · Expert agents · Critic agent · Playbooks · Project knowledge · Testing · Docs governance · Caveman · Switching IDEs · Extending · Maintenance
 
 ---
 
@@ -289,6 +289,42 @@ The platform requires tests for all new code. Agents cannot mark a task done if 
 ```
 Read .agent/agents/test-agent.md
 Task: write unit tests for the new auth middleware
+```
+
+---
+
+## Docs governance
+
+Documentation completeness is enforced as a quality gate — not left to good intentions.
+
+**The registry** — `.agent/context/docs-registry.md` — maps every project doc to an owner expert, audience, and update trigger. It is installed as a stub and populated by the Docs expert at first session.
+
+**How it stays current:**
+
+| When | Enforcement |
+|------|------------|
+| Any expert finishes a task | Done-when: check owned docs in registry, update `Last reviewed` |
+| Any expert creates a new `.md` file | Must register it before session ends |
+| Session end (Step 2b) | Scans for new `.md` files not yet in registry, prompts to register |
+| Release gate (release.md Step 4) | Docs agent audits every row — stale or unregistered = **BLOCKED** |
+| git commit (guards installed) | Warns if newly staged `.md` files are not in registry |
+
+**First session on this project:**
+```
+Read .agent/agents/docs-agent.md
+Task: scan the project for all existing doc files and populate docs-registry.md
+```
+
+**At release time:**
+```
+Read .agent/agents/docs-agent.md
+Task: run registry audit — check all rows for staleness before we release
+```
+
+**To add a new doc to the registry** (paste into chat):
+```
+Add this to .agent/context/docs-registry.md:
+| `path/to/doc.md` | <Expert> | <Audience> | <Update trigger> | today |
 ```
 
 ---

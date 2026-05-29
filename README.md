@@ -108,8 +108,9 @@ Repeat. The platform never stops improving.
 | **Quick reference** | Full capability guide displayed on every session start — no memorisation required |
 | **Local help** | `PLATFORM-HELP.md` installed in every repo — everything explained, fully offline |
 | **Agentic update check** | Agents check for platform improvements automatically, once per 7 days |
+| **Docs governance** | Every doc has a registered owner expert. Done-when checklists enforce updates. Session end catches new unregistered files. Release playbook blocked until Docs agent approves all docs current. New docs added by users are detected automatically and added to the registry. |
 | **Token compression** | `"caveman mode"` — ~65% shorter output, same accuracy, all IDEs |
-| **Enforcement guards** | `--mode=install-guards` wires real pre-commit hooks and GitHub Actions CI — secrets scan, test suite, coverage gate. Aspiration becomes enforcement. |
+| **Enforcement guards** | `--mode=install-guards` wires real pre-commit hooks and GitHub Actions CI — secrets scan, test suite, coverage gate, unregistered doc detection. Aspiration becomes enforcement. |
 | **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/`. Nothing else changes. All platform files gitignored by default. Remove completely with one command — nothing left behind. |
 
 ---

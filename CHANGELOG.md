@@ -5,6 +5,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.20.1] — 2026-05-30
+
+### Docs — docs governance added to all user-facing platform descriptions
+
+- `README.md` — new "Docs governance" row in "What you get" table; enforcement guards row updated to mention doc detection
+- `AGENT-PLATFORM-FRAMEWORK-README.md` — new "📋 Docs governance" table row; dedicated Section 5 explaining the full enforcement chain (registry → Done-when → session end → release gate → pre-commit guard); capabilities paragraph updated; sections renumbered 6–9 → 7–10
+- `.agent/PLATFORM-HELP.md` — new "Docs governance" section between Testing and Caveman, with quick-paste commands for first session, release audit, and manual registry updates; Sections header updated
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.20.0] — 2026-05-30
 
 ### Added — Docs governance model: registry, agent enforcement, release gate, new-doc detection
