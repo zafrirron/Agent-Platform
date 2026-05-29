@@ -11,6 +11,7 @@ It explains what the platform does, how to install and use it, how to extend it,
 | Document | Purpose |
 |----------|---------|
 | [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md) | **Complete guide** — capabilities, installation, usage, extending, best practices |
+| [CHANGELOG.md](CHANGELOG.md) | Version history, what changed, upgrade paths (1.x → 2.x → 2.2) |
 | [AGENT-PLATFORM-BOOTSTRAP.md](AGENT-PLATFORM-BOOTSTRAP.md) | Short orchestrator for agents running install |
 | [COPYING.md](COPYING.md) | Exact files to copy (framework repo vs consumer deploy) |
 | [PACK-DEPLOY.md](PACK-DEPLOY.md) | Deploy pack to a consumer repository |

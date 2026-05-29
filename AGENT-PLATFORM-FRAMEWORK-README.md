@@ -877,8 +877,11 @@ Use this prompt verbatim — every part maps to a concrete location in the file.
 
 1. Edit `AGENT-PLATFORM-TEMPLATES/`
 2. `node tools/build-bootstrap-manifest.js`
-3. Bump `bootstrap_version` in manifest + orchestrator footer
-4. Tag release; consumer repos copy the tagged pack
+3. Bump `bootstrap_version` in manifest + orchestrator footer + README footer
+4. Update `CHANGELOG.md` — new version block + upgrade guide section
+5. Tag release; consumer repos copy the tagged pack
+
+**CHANGELOG:** [`CHANGELOG.md`](CHANGELOG.md) — full version history, upgrade matrix, and per-path migration instructions.
 
 **Quality gate:** no consumer-product strings inside the pack (search product names and app folder names — zero hits).
 
