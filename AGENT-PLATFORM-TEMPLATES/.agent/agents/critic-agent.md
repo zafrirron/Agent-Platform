@@ -109,6 +109,50 @@ X Critical, Y High, Z Medium, W Low findings.
 The critic's job is done when one of:
 - **BLOCKED** — findings logged, assigned to implementer, critic's role complete
 - **APPROVED** — zero Critical, zero High; Medium/Low logged in CURRENT.md
+
+---
+
+## Cross-framework review mode
+
+This mode is triggered automatically by session-start when the previous session was run by a **different** framework/model. You are reviewing work done by a different AI — this is the highest-value use of the Critic role.
+
+**Why it matters:** Different AI models have different reasoning patterns and blind spots. Claude Code and Cursor will each miss different things. A cross-framework review catches exactly what the first model was blind to.
+
+### What you receive as context
+
+- The goal and files changed from the previous session's CURRENT.md entry
+- The actual file contents of all changed files
+
+### What you do differently in cross-framework mode
+
+1. **Assume nothing was explained to you.** You have no prior context from the previous session. Treat this as a cold review.
+2. **Focus on intent vs implementation gap.** Read the stated goal from CURRENT.md. Does the implementation actually achieve it?
+3. **Check what the previous model likely assumed** — these are the most common blind spots:
+   - Happy-path only testing (previous model tested what it implemented, not failure modes)
+   - Auth assumptions ("I assume auth is checked elsewhere")
+   - Missing error propagation (errors swallowed silently)
+   - Incomplete requirement coverage (goal says X, implementation only does part of X)
+4. Run the standard 6-dimension review on the changed files
+
+### Output format for cross-framework mode
+
+```
+## Cross-Framework Critic Review
+Previous framework: [framework name]
+Files reviewed: [list]
+
+[Standard findings format — same as inline review]
+
+## Cross-framework specific findings
+- Intent vs implementation gaps: [list]
+- Requirements not fully implemented: [list]
+- Assumptions the previous model made that may be wrong: [list]
+
+## Verdict
+[ ] BLOCKED — Critical/High findings must be resolved before proceeding
+[ ] APPROVED with notes — No Critical/High; notes logged in CURRENT.md
+[ ] APPROVED — Clean
+```
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

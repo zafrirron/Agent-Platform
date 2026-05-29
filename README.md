@@ -156,7 +156,7 @@ npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # remove
 
 ## Version
 
-**v2.12.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.13.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

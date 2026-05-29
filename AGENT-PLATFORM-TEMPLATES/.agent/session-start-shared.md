@@ -17,6 +17,47 @@
 3. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
 4. Set `meta.updated_by` → `<fw>`
 
+### Step 1b — Cross-framework Critic offer
+
+1. Read `meta.updated_by` from `registry.yaml` — this is the framework that last ended a session
+2. Read the most recent entry in `.agent/handoff/CURRENT.md`
+3. **If** `meta.updated_by` is a DIFFERENT framework than the current one
+   AND the most recent CURRENT.md entry has `Critic reviewed: no`:
+
+   Present this offer to the user:
+   ```
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  Cross-framework Critic review available                        │
+   │                                                                 │
+   │  Last session: [meta.updated_by] — [goal from CURRENT.md]      │
+   │  Files changed: [file list from CURRENT.md]                     │
+   │                                                                 │
+   │  A different AI model did this work. Would you like me to run   │
+   │  a Critic review before we proceed?                             │
+   │                                                                 │
+   │  Reply YES to review, NO to proceed directly.                   │
+   └─────────────────────────────────────────────────────────────────┘
+   ```
+
+4. **If user says YES:**
+   - Load `.agent/agents/critic-agent.md` (cross-framework review mode)
+   - Read all files listed under `Files changed:` in the CURRENT.md entry
+   - Also read the goal and notes from CURRENT.md for context
+   - Run the full 6-dimension review on those files
+   - Present findings with severity ratings
+   - Ask: "How would you like to proceed?
+     - Fix Critical/High findings in this session
+     - Note findings in CURRENT.md and proceed
+     - Proceed without changes"
+   - Update CURRENT.md: set `Critic reviewed: yes — [X Critical, Y High, Z Medium findings]`
+
+5. **If user says NO** (or frameworks are the same, or already reviewed):
+   - Continue to Step 2 — no critic review
+
+> **Why this matters:** A different AI model (e.g. Cursor vs Claude Code) has different
+> reasoning patterns and blind spots. A cross-framework critic catches what the first model
+> missed precisely because it approaches the work fresh, with no prior context.
+
 ### Step 2 — One-time test runner setup
 
 Read `.agent/platform.json`. Check the `test_runner` field.

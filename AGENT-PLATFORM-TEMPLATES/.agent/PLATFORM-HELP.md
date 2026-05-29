@@ -100,6 +100,17 @@ Review the [feature/fix/endpoint] just implemented above.
 - `bug-fix.md` Step 5b — critic confirms regression test quality + checks for new bugs
 - `release.md` Step 1b — critic reviews full diff since last release before version bump
 
+**Cross-framework automatic review:**
+When you start a session in IDE B after working in IDE A, the session start detects the framework switch and offers:
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ Cross-framework Critic review available                          │
+│ Last session: Claude Code — [goal]                               │
+│ Would you like me to review that work before we proceed?  YES/NO │
+└──────────────────────────────────────────────────────────────────┘
+```
+This is the highest-value critic use: a different model reviewing the previous model's work with no shared context or assumptions.
+
 **Ask for a critic review any time:**
 ```
 "review this" / "find issues" / "what could go wrong" / "adversarial review"

@@ -10,7 +10,7 @@
 ### Step 1 — Summarise work done
 
 Write a 2–4 line summary covering:
-- Files changed
+- Files changed (list each file explicitly — this is used for cross-framework critic review)
 - Behaviour added or fixed
 - Tests written or updated
 - Any blockers or known issues left open
@@ -26,11 +26,23 @@ Read `.agent/CHECKLIST.md` and verify each item. For any item that is not satisf
 
 ### Step 3 — Update handoff log
 
-Update the most recent entry in `.agent/handoff/CURRENT.md`:
-- Set `Status` → `done` or `blocked`
-- Fill in the summary from Step 1
-- Add `Tests:` line — what tests were added or confirmed green
-- Add `Next agent:` — which expert or framework should pick this up (if known)
+Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:
+
+```
+**Framework:** <fw> | **Status:** done | **Ended:** <today>
+**Goal:** <what was accomplished>
+**Files changed:**
+  - <file1> — <what changed>
+  - <file2> — <what changed>
+**Tests:** <tests added or confirmed green>
+**Critic reviewed:** no
+**Next agent:** <which expert or framework, if known>
+**Notes:** <blockers, known issues, or anything the next agent should know>
+```
+
+> **Important:** List every changed file explicitly. The next framework's session-start
+> will use this list to offer a cross-framework Critic review of your work.
+> Set `Critic reviewed: no` — the next framework's session-start will update this.
 
 ### Step 4 — Mark framework idle
 
