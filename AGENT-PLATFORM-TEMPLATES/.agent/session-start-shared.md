@@ -17,41 +17,56 @@
 3. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
 4. Set `meta.updated_by` → `<fw>`
 
-### Step 2 — One-time setup check
+### Step 2 — One-time test runner setup
 
 Read `.agent/platform.json`. Check the `test_runner` field.
 
+**If `test_runner` is already set (not a placeholder): skip this step entirely.**
+
 If `test_runner` is missing, empty, or starts with `<fill-in`:
 
-1. Tell the user:
-   > "Your test runner is not configured yet. What language and test framework is this project using?
-   > For example: JavaScript/Jest, Python/pytest, Go, .NET, Rust, or other."
+#### Phase A — Auto-detect from project files
 
-2. Wait for the user's answer.
+Scan the project root for these files and determine the stack:
 
-3. Based on the answer, set these values:
+| File found | Detected stack | test_runner | coverage_cmd |
+|-----------|---------------|-------------|--------------|
+| `package.json` with `"jest"` in scripts or devDeps | JavaScript/Jest | `npx jest` | `npx jest --coverage` |
+| `package.json` with `"vitest"` in scripts or devDeps | JavaScript/Vitest | `npx vitest run` | `npx vitest run --coverage` |
+| `package.json` with `"mocha"` in scripts or devDeps | JavaScript/Mocha | `npx mocha` | `npx nyc mocha` |
+| `package.json` with any `test` script | Node.js | `npm test` | `npm test -- --coverage` |
+| `pyproject.toml` or `pytest.ini` or `setup.cfg` | Python/pytest | `pytest` | `pytest --cov` |
+| `go.mod` | Go | `go test ./...` | `go test -cover ./...` |
+| `Cargo.toml` | Rust | `cargo test` | `cargo tarpaulin` |
+| `.csproj` or `.sln` | .NET | `dotnet test` | `dotnet test /p:CollectCoverage=true` |
+| `Makefile` with a `test` target | Make | `make test` | `make coverage` |
 
-   | Stack | test_runner | coverage_cmd |
-   |-------|------------|--------------|
-   | JavaScript / Jest | `npx jest` | `npx jest --coverage` |
-   | JavaScript / Vitest | `npx vitest` | `npx vitest --coverage` |
-   | JavaScript / Mocha | `npx mocha` | `npx nyc mocha` |
-   | Node.js (npm test) | `npm test` | `npm test -- --coverage` |
-   | Python / pytest | `pytest` | `pytest --cov` |
-   | Go | `go test ./...` | `go test -cover ./...` |
-   | Rust | `cargo test` | `cargo tarpaulin` |
-   | .NET | `dotnet test` | `dotnet test /p:CollectCoverage=true` |
-   | Other | Ask user for the exact commands | Ask user |
+If detected:
+- Write `test_runner` and `coverage_cmd` to `.agent/platform.json`
+- Update `.agent/CONVENTIONS.md` `## Testing` section with the real values
+- Confirm: `"✅ Test runner auto-detected: <command>"`
+- Continue to the next step
 
-4. Write the values to `.agent/platform.json`:
-   - `test_runner` → the detected command
-   - `coverage_cmd` → the detected coverage command
+#### Phase B — Ask if detection failed
 
-5. Also update `.agent/CONVENTIONS.md` — find the `## Testing` section and replace the `{{TEST_RUNNER}}` and `{{COVERAGE_CMD}}` placeholders with the actual values.
+If no stack was detected from files, ask:
 
-6. Confirm to the user: "✅ Test runner configured: `<command>`"
+> "I couldn't detect a test runner for this project. Does this project have tests set up?
+> - **Yes** — tell me what language/framework (e.g. Jest, pytest, Go, .NET) and I'll configure it.
+> - **No** — I can help you set one up. What language is this project written in?"
 
-If `test_runner` is already set (not a placeholder): skip this step entirely.
+**If the user says Yes:** configure from their answer using the table above.
+
+**If the user says No — offer to set one up:**
+
+| Language | Offer to install |
+|---------|-----------------|
+| JavaScript/TypeScript | "I'll add Jest. Run: `npm install --save-dev jest` then I'll create a sample test." |
+| Python | "I'll set up pytest. Run: `pip install pytest pytest-cov` then I'll create a sample test." |
+| Go | "Go has built-in testing. I'll create a `_test.go` file to get started." |
+| Other | Ask what testing framework they prefer |
+
+After setup, write the values to `.agent/platform.json` and `.agent/CONVENTIONS.md`.
 
 ### Step 4 — Update check (max once every 7 days)
 
