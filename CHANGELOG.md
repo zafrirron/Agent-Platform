@@ -5,17 +5,79 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## Install — quick reference
+
+```bash
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
+
+# Windows PowerShell
+iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.ps1 | iex
+
+# Any OS with Node.js 18+
+npx github:zafrirron/Agent-Platform
+```
+
+Upgrade, repair, or force-reset:
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+npx github:zafrirron/Agent-Platform --mode=repair
+npx github:zafrirron/Agent-Platform --mode=force
+```
+
+Check for updates from inside any consumer repo:
+```bash
+node .agent/tools/check-updates.mjs
+```
+
+Let the agent self-upgrade:
+```
+Read .agent/tools/upgrade.md and execute it.
+```
+
+---
+
 ## Upgrade matrix
 
-| You are on | → 2.2.0 | Notes |
-|------------|---------|-------|
-| **2.1.0** (initial public) | ✅ Supported | 5-file copy + 2 placeholder fills — see [§ Upgrading 2.1 → 2.2](#upgrading-21--22) |
+| You are on | → 2.3.0+ | Notes |
+|------------|----------|-------|
+| **2.2.0** | ✅ Supported | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
+| **2.1.0** (initial public) | ✅ Supported | npx upgrade — see [§ Upgrading 2.1 → 2.2](#upgrading-21--22) |
 | **2.0.x** (pre-public / private) | ✅ Supported | Full re-install recommended — see [§ Upgrading 2.0 → 2.2](#upgrading-20--22) |
 | **1.x** (legacy) | ⚠️ Manual | No automated path — see [§ Upgrading 1.x → 2.2](#upgrading-1x--22) |
 | **< 1.0** | ❌ Not supported | Fresh install recommended |
 
 > **Safe by default:** `mode=install` and `mode=repair` never overwrite existing files.  
 > `mode=force` resets all templates — use only when you have no project-specific customisations to preserve.
+
+---
+
+## [2.3.0] — 2026-05-29
+
+### Added — Professional installation system
+
+| What | Detail |
+|------|--------|
+| **`bin/agent-platform.js`** | npx entry point — `npx github:zafrirron/Agent-Platform` installs directly from GitHub with no file copying |
+| **`install.sh`** | Bash one-liner: `curl -fsSL .../install.sh \| bash` — auto-detects latest release, downloads, applies, cleans up |
+| **`install.ps1`** | PowerShell equivalent for Windows: `iwr -useb .../install.ps1 \| iex` — same flow |
+| **`.agent/tools/check-updates.mjs`** | Deployed to consumer repos; compares installed `bootstrap_version` against GitHub Releases API; prints upgrade instructions |
+| **`.agent/tools/upgrade.md`** | Agent upgrade prompt: `Read .agent/tools/upgrade.md and execute it.` — agent checks version, runs npx upgrade, fills placeholders, runs repair |
+
+### Changed
+
+- **`apply.js`** (core installer): split `PACK_ROOT` (templates source) from `INSTALL_ROOT` (consumer repo target); supports `--pack=<dir>` and `--target=<dir>` CLI args and `AP_PACK` / `AP_TARGET` env vars; improved stack detection (reads `package.json` scripts to distinguish jest/vitest/mocha)
+- **`package.json`**: added `bin`, `repository`, `keywords`, `author`, `license`; removed `private`; bumped to 2.3.0 — enables `npx github:zafrirron/Agent-Platform`
+- **`AGENT-PLATFORM-MANIFEST.json`**: added `check-updates.mjs` and `upgrade.md` tool entries
+- **Framework README**: replaced "Activate" section with three-path "Install" section (npx / shell / agent-direct); updated §8 with check-updates and agent upgrade commands; updated quick-ref card
+- **`CHANGELOG.md`**: added install quick-reference block at top
+
+### Upgrade path
+
+For existing consumer repos — upgrade to get `check-updates.mjs` and `upgrade.md` deployed:
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
 
 ---
 
@@ -116,20 +178,31 @@ api-contracts · api-patterns · adr-log · known-issues · dependencies · proj
 
 ---
 
-### Upgrading 2.1 → 2.2
+### Upgrading 2.1 → 2.3
 
-**What changed:** 5 template files updated, 2 new placeholders added.  
-**Risk:** Low — only template files change; no new directories or file moves.
+**What changed:** 5 template files updated (testing enforcement), 2 new placeholders, + full installer system.  
+**Risk:** Low — only `.agent/` template files change; no new directories or file moves.
 
-**Step 1 — Update the pack files in your framework repo** (or skip if you are a consumer):
-
+**Recommended (npx — no files to copy):**
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
 ```
-Copy the new AGENT-PLATFORM-BOOTSTRAP.md, AGENT-PLATFORM-MANIFEST.json,
-and AGENT-PLATFORM-TEMPLATES/ from the v2.2.0 release.
+This adds new files (`check-updates.mjs`, `upgrade.md`) and leaves existing content untouched.
+
+Then fill the 2 new placeholders in `.agent/CONVENTIONS.md`, `.agent/CHECKLIST.md`, and `.agent/agents/test-agent.md`:
+
+| Placeholder | Example values |
+|-------------|---------------|
+| `{{COVERAGE_CMD}}` | `pytest --cov` · `jest --coverage` · `go test -cover ./...` · `dotnet test /p:CollectCoverage=true` |
+| `{{COVERAGE_THRESHOLD}}` | `80` (default) — adjust to your project's baseline |
+
+Then repair any remaining stubs:
+```bash
+npx github:zafrirron/Agent-Platform --mode=repair
 ```
 
-**Step 2 — In each consumer repo, copy the 5 changed templates:**
-
+**Manual path (no Node.js):**  
+Copy these 5 files from the new pack to your `.agent/` folder and fill the placeholders above:
 ```
 AGENT-PLATFORM-TEMPLATES/.agent/agents/test-agent.md   → .agent/agents/test-agent.md
 AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md         → .agent/CONVENTIONS.md
@@ -137,59 +210,41 @@ AGENT-PLATFORM-TEMPLATES/.agent/CHECKLIST.md           → .agent/CHECKLIST.md
 AGENT-PLATFORM-TEMPLATES/.agent/BEST-PRACTICES.md      → .agent/BEST-PRACTICES.md
 AGENT-PLATFORM-TEMPLATES/.agent/playbooks/api-integration.md → .agent/playbooks/api-integration.md
 ```
-
-> If your `.agent/CONVENTIONS.md` has project-specific content at the bottom (under `## Project-specific`), preserve that section — it is safe to overwrite everything above it.
-
-**Step 3 — Fill the 2 new placeholders** in the copied files:
-
-| Placeholder | Example values |
-|-------------|---------------|
-| `{{COVERAGE_CMD}}` | `pytest --cov` · `jest --coverage` · `go test -cover ./...` · `dotnet test /p:CollectCoverage=true` |
-| `{{COVERAGE_THRESHOLD}}` | `80` (default) — adjust to your project's baseline |
-
-**Step 4 — Verify:**
-
-```
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair
-```
-
-This fills any remaining `{{placeholder}}` stubs without overwriting what you set.
+> Preserve the `## Project-specific` section at the bottom of `CONVENTIONS.md` — it contains your project's custom rules.
 
 ---
 
-### Upgrading 2.0 → 2.2
+### Upgrading 2.0 → 2.3
 
-**What changed:** 2.0.x was a pre-public private build; the manifest version was `2.0.0` but the templates were functionally equivalent to 2.1.0.  
+**What changed:** 2.0.x was a pre-public private build with manifest version `2.0.0` but templates equivalent to 2.1.0.  
 **Risk:** Low-medium — if you have project-specific content in stubs, preserve it manually.
 
-**Recommended path:** treat as a fresh install with `mode=upgrade`, then apply the 2.1 → 2.2 steps above.
-
-```
-# 1. Copy the v2.2.0 pack to your consumer repo root
-# 2. Tell your agent:
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade
-# 3. Then follow the "Upgrading 2.1 → 2.2" Step 3 and Step 4 above
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
 ```
 
-`mode=upgrade` adds any files that are in the manifest but missing from your repo without touching existing files.
+This adds any files in the new manifest that are missing from your repo without touching existing files.
+Then follow the placeholder fill step from the 2.1 → 2.3 guide above.
 
 ---
 
-### Upgrading 1.x → 2.2
+### Upgrading 1.x → 2.3
 
-**What changed:** The v2 pack is a full rebuild — new directory structure (`.agent/` shared hub), multi-framework architecture, manifest-driven installer.  
-**Risk:** High — no automated migration path exists.
+**What changed:** v2 is a full rebuild — new directory structure, multi-framework architecture, manifest-driven installer.  
+**Risk:** High — no automated migration path.
 
-**Recommended path:** fresh install, then manually migrate your project-specific content.
+```bash
+# 1. Back up your existing agent folder
+# 2. Run fresh install into your repo root
+npx github:zafrirron/Agent-Platform
 
-```
-# 1. Back up your existing .agent/ or equivalent folder
-# 2. Copy the v2.2.0 pack to your repo root
-# 3. Tell your agent:
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
-# 4. After Phase 3 completes, compare your backup against the new stubs
-#    and re-apply project-specific content (CONVENTIONS.md ## Project-specific,
-#    WORKFLOWS.md, FILE_MAP.md, ZONES.md, context/ files)
+# 3. After install completes, tell your agent to fill stubs:
+#    Read .agent/README.md and fill all stub files for this project.
+
+# 4. Manually re-apply project-specific content from your backup:
+#    .agent/CONVENTIONS.md  →  ## Project-specific section
+#    .agent/WORKFLOWS.md, FILE_MAP.md, ZONES.md
+#    .agent/context/ files (api-contracts, known-issues, dependencies, adr-log)
 ```
 
 Key structural differences from 1.x:

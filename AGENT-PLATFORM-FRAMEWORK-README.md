@@ -58,28 +58,90 @@ Copy the platform pack to any consumer repository root — new or existing — t
 
 ---
 
-## Activate
+## Install
 
-**This platform is installed by telling your agentic IDE what to read.** You do not run shell commands yourself unless you choose the optional CLI path below.
+Three equally supported install paths — pick whichever fits your workflow.
 
-**Install on any repo (new or existing)** — paste into Cursor, Claude Code, Antigravity, or Codex:
+---
 
+### Path A — npx (recommended)
+
+No file copying. Works on any OS with Node.js 18+. The pack stays in a temp directory; nothing extra lands in your repo.
+
+```bash
+# First install
+npx github:zafrirron/Agent-Platform
+
+# Upgrade existing install (adds new files, skips existing)
+npx github:zafrirron/Agent-Platform --mode=upgrade
+
+# Pin to a specific version
+npx github:zafrirron/Agent-Platform#v2.2.0
+
+# Other modes
+npx github:zafrirron/Agent-Platform --mode=repair   # fill empty stubs only
+npx github:zafrirron/Agent-Platform --mode=force    # reset all templates (confirm first)
+```
+
+After npx completes, tell your agent to fill project stubs:
+```
+Read .agent/README.md and fill all stub files for this project.
+```
+
+---
+
+### Path B — shell one-liner
+
+Downloads the latest release, runs the apply script, cleans up. Nothing installed into your repo.
+
+**Linux / macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
+```
+
+With options:
+```bash
+AP_VERSION=v2.2.0 AP_MODE=upgrade \
+  curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.ps1 | iex
+```
+
+With options (save script first, then run with params):
+```powershell
+.\install.ps1 -Version v2.2.0 -Mode upgrade
+```
+
+---
+
+### Path C — agent-direct (no terminal needed)
+
+For agentic IDEs where the agent has shell access.
+
+**Claude Code** — paste into chat:
+```
+Run: curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
+Then fill all project stubs from the codebase.
+```
+
+**Fallback (pack files already present in repo root):**
 ```
 Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
 ```
 
-**Modes** — append to the same line:
+---
 
-| You want | Tell the agent |
-|----------|----------------|
-| First install (default) | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.` |
-| Repair broken refs / empty stubs | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair` |
-| Add new pack files only | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade` |
-| Reset templates (confirm first) | `Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=force` |
+### Install mode reference
 
-The agent reads the orchestrator, runs the five phases, and may call `node AGENT-PLATFORM-APPLY.js` on your machine when needed.
-
-**Optional (no agent):** `node AGENT-PLATFORM-APPLY.js` with `--mode=install|repair|upgrade|force` — same result, not the primary workflow.
+| Mode | What it does |
+|------|-------------|
+| `install` | Create missing files only — never overwrites (default) |
+| `upgrade` | Same as install; processes new manifest entries added in this release |
+| `repair` | Overwrites only files whose content is still an unfilled stub |
+| `force` | Overwrites all template files — confirm first; your project source is never touched |
 
 ---
 
@@ -129,7 +191,7 @@ Your existing code, docs, and config are untouched. Only the `.agent/`, `.claude
 
 ---
 
-### What the agent does — the 5 phases
+### What gets installed — the 5 phases
 
 | Phase | What happens |
 |-------|-------------|
@@ -396,14 +458,24 @@ Task: version bump and build artifact
 
 ---
 
-### 8 · Repair or re-run the platform
+### 8 · Check for updates and upgrade
 
-If files get out of sync, stubs are empty, or you've copied the bootstrap to a new repo:
-
+**Check from inside any consumer repo:**
+```bash
+node .agent/tools/check-updates.mjs
 ```
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair
-Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade
+Prints current vs latest version, release notes preview, and upgrade instructions.
+
+**Let the agent handle it:**
+```
+Read .agent/tools/upgrade.md and execute it.
+```
+The agent checks the version, runs `npx github:zafrirron/Agent-Platform --mode=upgrade`, fills new placeholders, and repairs stubs automatically.
+
+**Repair or re-run without upgrading:**
+```bash
+npx github:zafrirron/Agent-Platform --mode=repair    # fill empty stubs
+npx github:zafrirron/Agent-Platform --mode=upgrade   # add new files from latest
 ```
 
 ---
@@ -567,9 +639,11 @@ COMPRESS FILE       /caveman-compress <path>
 RUN TESTS           {{TEST_RUNNER}}
 CHECK COVERAGE      {{COVERAGE_CMD}}
 LOAD TEST EXPERT    Read .agent/agents/test-agent.md
-INSTALL PLATFORM    Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
-REPAIR PLATFORM     Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=repair
-UPGRADE PLATFORM    Read AGENT-PLATFORM-BOOTSTRAP.md and execute it. mode=upgrade
+INSTALL PLATFORM    npx github:zafrirron/Agent-Platform
+UPGRADE PLATFORM    npx github:zafrirron/Agent-Platform --mode=upgrade
+REPAIR PLATFORM     npx github:zafrirron/Agent-Platform --mode=repair
+CHECK FOR UPDATES   node .agent/tools/check-updates.mjs
+AGENT UPGRADE       Read .agent/tools/upgrade.md and execute it.
 EXTEND PLATFORM     See Extending guide in this file (AGENT-PLATFORM-FRAMEWORK-README.md)
 ```
 
@@ -896,4 +970,4 @@ Read AGENT-PLATFORM-BOOTSTRAP.md only when installing on a consumer repository.
 
 ---
 
-*Agent Platform Bootstrap v2.2 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*
+*Agent Platform Bootstrap v2.3 — complete human guide · templates in AGENT-PLATFORM-TEMPLATES/*

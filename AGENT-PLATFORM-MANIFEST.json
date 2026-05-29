@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.2.0",
+  "bootstrap_version": "2.3.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
@@ -230,6 +230,16 @@
       "path": ".agent/skills/caveman/SKILL.md",
       "template": ".agent/skills/caveman/SKILL.md",
       "kind": "template"
+    },
+    {
+      "path": ".agent/tools/check-updates.mjs",
+      "template": ".agent/tools/check-updates.mjs",
+      "kind": "tool"
+    },
+    {
+      "path": ".agent/tools/upgrade.md",
+      "template": ".agent/tools/upgrade.md",
+      "kind": "tool"
     },
     {
       "path": ".agent/tools/check_locks.js",

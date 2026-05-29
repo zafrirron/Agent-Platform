@@ -118,4 +118,4 @@ Private IDE folders (`.cursor/`, `.claude/`, `.agents/`, `.codex/`), shared `.ag
 
 ---
 
-*v2.2.0 — orchestrator only; templates in AGENT-PLATFORM-TEMPLATES/ · see COPYING.md for pack contents*
+*v2.3.0 — orchestrator only; templates in AGENT-PLATFORM-TEMPLATES/ · see COPYING.md for pack contents*

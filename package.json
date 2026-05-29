@@ -1,14 +1,23 @@
 {
   "name": "agent-platform-bootstrap",
-  "version": "2.1.0",
-  "private": true,
-  "description": "Multi-framework agent platform pack (orchestrator + manifest + templates). Not an application.",
+  "version": "2.2.0",
+  "description": "Multi-framework agent coordination platform — installs a complete agentic development environment into any repo.",
+  "keywords": ["agent", "ai", "claude", "cursor", "codex", "multi-agent", "agentic"],
+  "author": "zafrirron",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zafrirron/Agent-Platform.git"
+  },
+  "bin": {
+    "agent-platform": "bin/agent-platform.js"
+  },
   "scripts": {
-    "manifest": "node tools/build-bootstrap-manifest.js",
-    "readme": "node tools/build-framework-readme.js",
-    "apply": "node AGENT-PLATFORM-APPLY.js",
-    "apply:upgrade": "node AGENT-PLATFORM-APPLY.js --mode=upgrade",
-    "check-tools": "node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/check_locks.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/prune_handoff.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/launch.mjs"
+    "manifest":     "node tools/build-bootstrap-manifest.js",
+    "readme":       "node tools/build-framework-readme.js",
+    "apply":        "node AGENT-PLATFORM-APPLY.js",
+    "apply:upgrade":"node AGENT-PLATFORM-APPLY.js --mode=upgrade",
+    "check-tools":  "node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/check_locks.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/prune_handoff.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/launch.mjs"
   },
   "engines": {
     "node": ">=18"
