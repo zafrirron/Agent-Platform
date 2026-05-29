@@ -12,7 +12,7 @@
 A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Eight specialist agents. Eight playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
 
 > **Zero changes to your project code.** Install adds only platform coordination folders (`.agent/`, `.claude/`, etc.) — all gitignored by default so nothing is accidentally committed. Your source files, configuration, and git history are never touched.
-> **Already using Claude Code, Cursor, or Copilot?** Your existing `CLAUDE.md`, `AGENTS.md`, and rules files are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
+> **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
 
 ---
 
@@ -22,7 +22,7 @@ A complete multi-agent development environment installed into any repository in 
 |-----------|--------|
 | **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md`. Zero modifications to your existing files. |
 | **Nothing committed accidentally** | All platform folders and files are added to `.gitignore` automatically on install. `git status` stays clean. Your team never sees platform noise. |
-| **Existing AI configs are preserved** | If you already have a `CLAUDE.md`, `AGENTS.md`, Cursor rules, or Copilot instructions, they are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
+| **Existing configs are preserved** | If you already have a `CLAUDE.md`, `AGENTS.md`, or Cursor rules from using Claude Code, Cursor, Antigravity, or Codex before installing, they are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
 | **Clean removal + original restore** | Uninstall removes all platform files AND restores any files that were backed up on install. Your repo returns to its exact pre-install state. |
 | **Your customisations survive upgrades** | `mode=upgrade` only updates the `<!-- PLATFORM:START/END -->` section of each file. Your project-specific content is never overwritten. |
 

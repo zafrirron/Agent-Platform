@@ -147,12 +147,9 @@ function discover() {
 /** Files the platform installs at the repo root — may conflict with existing */
 const PLATFORM_ROOT_FILES = ['CLAUDE.md', 'AGENTS.md', 'SYNC-POINTS.md'];
 
-/** Third-party AI artifact patterns to detect (not modified, just reported) */
+/** Legacy/other AI artifact patterns to detect (not modified, just reported) */
 const THIRD_PARTY_ARTIFACTS = [
-  { file: '.cursorrules',                     label: 'Cursor rules (legacy format)' },
-  { file: '.github/copilot-instructions.md',  label: 'GitHub Copilot instructions' },
-  { file: '.github/copilot-instructions.yml', label: 'GitHub Copilot instructions' },
-  { file: '.codeiumrc',                       label: 'Codeium config' },
+  { file: '.cursorrules', label: 'Cursor rules (legacy format — platform uses .cursor/rules/*.mdc instead)' },
 ];
 
 function scanPreExistingArtifacts(root) {
@@ -234,8 +231,8 @@ function writeMigrationNotes(root, artifacts, backupDir) {
   }
 
   if (thirdParty.length > 0) {
-    lines.push(`\n## Third-party AI configs detected (not modified)\n`,
-      `These files were detected but the platform does not touch them.\n`,
+    lines.push(`\n## Legacy AI config detected (not modified)\n`,
+      `These files were detected but are not touched by the platform.\n`,
       `They continue to work as before.\n\n`,
     );
     thirdParty.forEach(({ file, label }) => {
