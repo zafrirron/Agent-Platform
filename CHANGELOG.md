@@ -5,6 +5,39 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.23.0] — 2026-05-30
+
+### Added — Zero-manual-step install for projects with pre-existing AI configs
+
+**Auto-migration of pre-existing AI configs (all frameworks):**
+The installer now automatically handles any existing AI configuration files — from Claude Code, Cursor, Codex, Antigravity, Cline, or any other framework — with zero user action required:
+- `CLAUDE.md`: session-start trigger injected at top; original content preserved below it
+- `AGENTS.md`: platform routing table always installed (overwriting user's, which is backed up); routing was broken when preserved
+- `.cursorrules`, `.cursor/rules/*.mdc`, `.codex/instructions.md`, `.clinerules`: detected and backed up
+- `.claude/commands/*.md`, `.agents/prompts/*.md`: pre-existing user commands detected and noted
+- First session start: agent reads ALL backed-up files (via `manifest.json`), evaluates every rule regardless of source framework, migrates valuable ones to appropriate expert PROJECT sections, deletes `MIGRATION-NOTES.md` — no user action needed
+
+**Explicit routing — agents now READ expert + playbook files:**
+The routing table in `AGENTS.md` now shows full file paths and uses imperative "MUST READ" language. Session-start Step 7 explicitly says "immediately READ the expert file AND the playbook file". Eliminates the pattern where agents behaved like experts without following playbook steps.
+
+**Linux compatibility:**
+- `.gitattributes` enforces LF line endings on all `.sh` files — fixes Critical bug where `launch.sh` failed on Linux/macOS due to CRLF
+- `tools/release.ps1`: `$ROOT` and `$GH` now auto-detected (no hardcoded Windows paths); Linux/pwsh usage documented
+- `tests/E2E-TEST-PLAN.md`: all `E:\Test` hardcoded paths replaced with `<TEST_DIR>`; bash + PowerShell commands shown side-by-side
+
+**UX fixes (discovered during E2E testing):**
+- Status block output as plain text (not code block) — markdown links now render as clickable in IDE chat
+- `/quick-ref` slash command outputs one clickable link, not the full file content in chat
+- `AGENTS.md` and `SYNC-POINTS.md` always installed even when pre-existing (were silently skipped before, breaking routing)
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.22.0] — 2026-05-30
 
 ### Added — Web audit: 15 OWASP/CWE/LLM security and best-practice rules across 6 expert agents

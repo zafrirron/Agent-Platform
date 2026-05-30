@@ -34,7 +34,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ROOT = git -C $PSScriptRoot rev-parse --show-toplevel
-$GH   = (Get-Command gh -ErrorAction Stop).Source
+$GH   = try { (Get-Command gh -ErrorAction Stop).Source } catch {
+    @("C:\Program Files\GitHub CLI\gh.exe","$env:ProgramFiles\GitHub CLI\gh.exe") |
+    Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+if (-not $GH) { Fail "gh CLI not found. Install from https://cli.github.com or add to PATH." }
 $REPO = "zafrirron/Agent-Platform"
 
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
