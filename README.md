@@ -5,6 +5,8 @@
 > *The meta-platform: an AI agent maintains the rules that your AI agents follow.
 > Every upgrade makes every agent smarter. Agents building the platform that builds better agents.*
 
+**[📊 View Interactive Presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)** — 18 slides · what it is · how it works · live demo · enterprise features
+
 ---
 
 ## What it is
@@ -295,10 +297,10 @@ The platform coordination layer is removed cleanly. Your AI agents improved your
 
 **👉 [View the interactive platform presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)**
 
-18 slides covering: what it is · how it works · expert agents · playbooks · before/after demo · enterprise governance · zero code impact.
+18 slides · what it is · how it works · expert agents · playbooks · before/after demo · enterprise governance · zero code impact.
 Navigate with arrow keys or swipe. Works on mobile.
 
-> Alternative link (no GitHub Pages required): [htmlpreview](https://htmlpreview.github.io/?https://github.com/zafrirron/Agent-Platform/blob/main/presentation/agent-platform-beta.html)
+> If the link above doesn't work yet (GitHub Pages propagating): [open via htmlpreview](https://htmlpreview.github.io/?https://github.com/zafrirron/Agent-Platform/blob/main/presentation/agent-platform-beta.html)
 
 ---
 
