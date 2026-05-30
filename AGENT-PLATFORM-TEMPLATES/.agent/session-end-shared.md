@@ -43,19 +43,29 @@ For each unregistered file found:
 
 If no new `.md` files were created: skip this step silently.
 
-### Step 2c — Commit all uncommitted changes
+### Step 2c — Check for uncommitted changes
 
 Run `git status --short` to check for uncommitted work.
 
-**If there are uncommitted changes:**
-1. Stage all modified and new project files: `git add -A`
-2. Commit with a meaningful message summarising the session work:
-   `git commit -m "<one-line summary of what was done this session>"`
-3. Confirm the working tree is clean after commit
+**If there are uncommitted changes — STOP and tell the user:**
 
-**If working tree is already clean:** skip silently.
+```
+⚠️  Uncommitted changes detected:
+[list the files]
 
-> **Why this matters:** The next IDE or framework reads the committed state. Uncommitted changes are invisible to the next agent and cannot be reviewed by the cross-framework Critic.
+Commit your work before ending the session so the next IDE can see it.
+Run in terminal:
+  git add -A
+  git commit -m "your message"
+
+Then run "End session." again.
+```
+
+**Do NOT proceed to Step 3 until the working tree is clean.**
+
+**If working tree is already clean:** continue silently.
+
+> **Why:** The next IDE reads committed state. Uncommitted changes are invisible to the cross-framework Critic and the next agent.
 
 ### Step 3 — Update handoff log
 
