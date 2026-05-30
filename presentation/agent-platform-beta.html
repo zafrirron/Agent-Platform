@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Platform Bootstrap — Beta Preview</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #c9d1d9;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; overflow:hidden; }
+
+  /* ── Slides ── */
+  .deck { width:100vw; height:100vh; position:relative; }
+  .slide { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:48px 64px; opacity:0; pointer-events:none; transition:opacity .4s ease; }
+  .slide.active { opacity:1; pointer-events:all; }
+
+  /* ── Nav ── */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:100; }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--border); cursor:pointer; transition:.2s; }
+  .dot.active { background:var(--accent); transform:scale(1.4); }
+  .arrows { position:fixed; top:50%; transform:translateY(-50%); width:100vw; display:flex; justify-content:space-between; padding:0 16px; z-index:100; pointer-events:none; }
+  .arrow { width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid var(--border); cursor:pointer; display:flex; align-items:center; justify-content:center; pointer-events:all; transition:.2s; font-size:18px; color:var(--text2); }
+  .arrow:hover { background:rgba(88,166,255,.15); color:var(--accent); }
+  .slide-num { position:fixed; top:20px; right:28px; font-size:13px; color:var(--text2); z-index:100; }
+
+  /* ── Typography ── */
+  h1 { font-size:clamp(32px,4vw,56px); font-weight:700; line-height:1.15; }
+  h2 { font-size:clamp(24px,3vw,40px); font-weight:700; line-height:1.2; }
+  h3 { font-size:clamp(16px,2vw,22px); font-weight:600; }
+  p  { font-size:clamp(14px,1.4vw,18px); line-height:1.7; color:var(--text3); }
+  .kicker { font-size:13px; text-transform:uppercase; letter-spacing:.12em; color:var(--accent); font-weight:600; margin-bottom:16px; }
+  .tagline { font-size:clamp(16px,1.8vw,22px); color:var(--text2); margin-top:16px; font-style:italic; }
+  .mono { font-family:'Fira Code','Cascadia Code',monospace; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px 20px; font-size:clamp(14px,1.4vw,18px); color:var(--accent2); }
+
+  /* ── Layout helpers ── */
+  .cols { display:grid; gap:32px; width:100%; }
+  .cols-2 { grid-template-columns:1fr 1fr; }
+  .cols-3 { grid-template-columns:1fr 1fr 1fr; }
+  .cols-4 { grid-template-columns:repeat(4,1fr); }
+  .center { text-align:center; }
+  .gap { margin-top:32px; }
+  .gap-sm { margin-top:16px; }
+
+  /* ── Cards ── */
+  .card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:24px; }
+  .card-accent { border-color:var(--accent); }
+  .card-green  { border-color:var(--accent2); }
+  .card-red    { border-color:var(--accent3); }
+  .card-purple { border-color:var(--accent4); }
+  .card-orange { border-color:var(--accent5); }
+  .card h3 { margin-bottom:8px; }
+  .card p  { font-size:14px; }
+  .card .icon { font-size:28px; margin-bottom:12px; }
+
+  /* ── Highlight ── */
+  .hl { color:var(--accent); }
+  .hl-green  { color:var(--accent2); }
+  .hl-red    { color:var(--accent3); }
+  .hl-purple { color:var(--accent4); }
+  .hl-orange { color:var(--accent5); }
+
+  /* ── Badge ── */
+  .badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+  .badge-blue   { background:rgba(88,166,255,.15); color:var(--accent); border:1px solid rgba(88,166,255,.3); }
+  .badge-green  { background:rgba(63,185,80,.15);  color:var(--accent2); border:1px solid rgba(63,185,80,.3); }
+  .badge-red    { background:rgba(247,129,102,.15); color:var(--accent3); border:1px solid rgba(247,129,102,.3); }
+  .badge-purple { background:rgba(210,168,255,.15); color:var(--accent4); border:1px solid rgba(210,168,255,.3); }
+
+  /* ── Stat big ── */
+  .stat-big { font-size:clamp(40px,5vw,72px); font-weight:800; line-height:1; }
+  .stat-label { font-size:13px; color:var(--text2); margin-top:6px; text-transform:uppercase; letter-spacing:.08em; }
+
+  /* ── Bar chart ── */
+  .bar-group { display:flex; flex-direction:column; gap:12px; width:100%; }
+  .bar-row { display:flex; align-items:center; gap:12px; }
+  .bar-label { font-size:13px; color:var(--text2); width:120px; text-align:right; flex-shrink:0; }
+  .bar-track { flex:1; background:var(--bg3); border-radius:4px; height:28px; overflow:hidden; border:1px solid var(--border); }
+  .bar-fill { height:100%; border-radius:4px; display:flex; align-items:center; padding-left:10px; font-size:13px; font-weight:700; transition:width 1s cubic-bezier(.4,0,.2,1); }
+  .bar-fill-blue   { background:linear-gradient(90deg,#1f4e8c,var(--accent)); color:#fff; }
+  .bar-fill-green  { background:linear-gradient(90deg,#1a4d25,var(--accent2)); color:#fff; }
+  .bar-fill-orange { background:linear-gradient(90deg,#6b3800,var(--accent5)); color:#fff; }
+  .bar-fill-purple { background:linear-gradient(90deg,#3d1f6e,var(--accent4)); color:#fff; }
+
+  /* ── Flow diagram ── */
+  .flow { display:flex; align-items:center; gap:0; flex-wrap:wrap; justify-content:center; }
+  .flow-box { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:14px 20px; text-align:center; min-width:110px; }
+  .flow-box .icon { font-size:22px; }
+  .flow-box span  { display:block; font-size:12px; color:var(--text2); margin-top:4px; }
+  .flow-arrow { font-size:20px; color:var(--border); padding:0 6px; }
+
+  /* ── Timeline ── */
+  .timeline { display:flex; flex-direction:column; gap:0; width:100%; }
+  .tl-item { display:flex; gap:20px; }
+  .tl-line { display:flex; flex-direction:column; align-items:center; }
+  .tl-dot  { width:12px; height:12px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:4px; }
+  .tl-connector { width:2px; flex:1; background:var(--border); margin:4px 0; }
+  .tl-content { padding-bottom:20px; }
+  .tl-content h3 { font-size:15px; }
+  .tl-content p  { font-size:13px; margin-top:4px; }
+
+  /* ── Before/After ── */
+  .ba { display:grid; grid-template-columns:1fr 1fr; gap:24px; width:100%; }
+  .ba-col { border-radius:12px; padding:24px; }
+  .ba-before { background:rgba(247,129,102,.07); border:1px solid rgba(247,129,102,.3); }
+  .ba-after  { background:rgba(63,185,80,.07);   border:1px solid rgba(63,185,80,.3); }
+  .ba-title  { font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px; }
+  .ba-before .ba-title { color:var(--accent3); }
+  .ba-after  .ba-title { color:var(--accent2); }
+  .ba-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .ba-list li { font-size:13px; color:var(--text3); display:flex; align-items:flex-start; gap:8px; line-height:1.5; }
+  .ba-list li::before { font-size:12px; flex-shrink:0; margin-top:2px; }
+  .ba-before .ba-list li::before { content:'✗'; color:var(--accent3); }
+  .ba-after  .ba-list li::before { content:'✓'; color:var(--accent2); }
+
+  /* ── Code block ── */
+  .code { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:20px 24px; font-family:'Fira Code','Cascadia Code',monospace; font-size:clamp(13px,1.2vw,16px); line-height:1.6; color:var(--text3); width:100%; }
+  .code .c { color:var(--text2); }
+  .code .kw { color:var(--accent4); }
+  .code .str { color:var(--accent2); }
+  .code .fn { color:var(--accent); }
+
+  /* ── Agent grid ── */
+  .agent-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:100%; }
+  .agent-card { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:16px; display:flex; align-items:center; gap:12px; transition:.2s; }
+  .agent-card:hover { border-color:var(--accent); background:var(--bg3); }
+  .agent-card .icon { font-size:24px; }
+  .agent-card h3 { font-size:14px; font-weight:600; }
+  .agent-card p  { font-size:12px; color:var(--text2); margin-top:2px; }
+
+  /* ── Title slide ── */
+  #s1 { background:radial-gradient(ellipse at 60% 40%, rgba(88,166,255,.08) 0%, transparent 60%), var(--bg); }
+  #s1 h1 { background:linear-gradient(135deg,var(--accent),var(--accent4)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+  /* ── Slide backgrounds ── */
+  #s2 { background:radial-gradient(ellipse at 30% 60%, rgba(247,129,102,.06) 0%, transparent 50%), var(--bg); }
+  #s5 { background:radial-gradient(ellipse at 70% 30%, rgba(63,185,80,.06) 0%, transparent 50%), var(--bg); }
+
+  /* ── Responsive ── */
+  @media(max-width:900px) {
+    .cols-3,.cols-4,.agent-grid { grid-template-columns:1fr 1fr; }
+    .ba { grid-template-columns:1fr; }
+  }
+  @media(max-width:600px) {
+    .cols-2,.cols-3,.cols-4 { grid-template-columns:1fr; }
+    .slide { padding:32px 24px; }
+  }
+
+  /* ── Animated counter ── */
+  .counter { display:inline-block; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- ─── SLIDE 1 · Title ─── -->
+<div class="slide active" id="s1">
+  <div class="center" style="max-width:800px">
+    <div class="kicker">Beta Preview · v2.23.0</div>
+    <h1>Agent Platform Bootstrap</h1>
+    <p class="tagline">Built by agents. For agents. To build better agents.</p>
+    <div class="gap-sm"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px">
+      <span class="badge badge-blue">4 IDE Frameworks</span>
+      <span class="badge badge-green">9 Expert Agents</span>
+      <span class="badge badge-purple">8 Playbooks</span>
+      <span class="badge badge-red">Zero Config</span>
+    </div>
+    <div class="gap"></div>
+    <div class="mono">npx github:zafrirron/Agent-Platform</div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 2 · The Problem ─── -->
+<div class="slide" id="s2">
+  <div style="max-width:900px;width:100%">
+    <div class="kicker">The Problem</div>
+    <h2>AI agents are powerful — but undisciplined</h2>
+    <div class="gap"></div>
+    <div class="cols cols-2">
+      <div class="card card-red">
+        <div class="icon">🎲</div>
+        <h3>Inconsistent quality</h3>
+        <p>Same task, different session — completely different results. No standards. No process. No gates.</p>
+      </div>
+      <div class="card card-red">
+        <div class="icon">🔀</div>
+        <h3>Multi-IDE chaos</h3>
+        <p>Claude Code, Cursor, Codex — each works in isolation. No coordination. File conflicts. Lost context between switches.</p>
+      </div>
+      <div class="card card-red">
+        <div class="icon">🔁</div>
+        <h3>Context re-explaining</h3>
+        <p>Every new session: re-explain the stack, the rules, the patterns. Hours of setup for minutes of work.</p>
+      </div>
+      <div class="card card-red">
+        <div class="icon">🔓</div>
+        <h3>No quality enforcement</h3>
+        <p>Agents skip tests. Ignore security. Miss edge cases. No playbook. No critic. No proof of correctness.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 3 · What It Is ─── -->
+<div class="slide" id="s3">
+  <div style="max-width:900px;width:100%">
+    <div class="kicker">The Solution</div>
+    <h2>A coordination layer that makes AI agents <span class="hl">disciplined</span></h2>
+    <p class="gap-sm">Installs a complete agentic development environment into any repository. One command.</p>
+    <div class="gap"></div>
+    <div class="cols cols-3">
+      <div class="card card-accent">
+        <div class="icon">📐</div>
+        <h3>Platform rules</h3>
+        <p>Encoded best practices, OWASP security, test enforcement — every agent follows them automatically.</p>
+      </div>
+      <div class="card card-green">
+        <div class="icon">🔗</div>
+        <h3>Cross-IDE coordination</h3>
+        <p>Registry prevents conflicts. Handoff preserves context. Critic reviews across model boundaries.</p>
+      </div>
+      <div class="card card-purple">
+        <div class="icon">⚡</div>
+        <h3>Auto-routing</h3>
+        <p>Describe what you want. The right expert + playbook load silently. No memorisation required.</p>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="center">
+      <p><span class="hl-green">✓</span> Zero code impact &nbsp;·&nbsp; <span class="hl-green">✓</span> All platform files gitignored &nbsp;·&nbsp; <span class="hl-green">✓</span> Uninstall leaves nothing behind</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 4 · How It Works ─── -->
+<div class="slide" id="s4">
+  <div style="max-width:960px;width:100%">
+    <div class="kicker">How It Works</div>
+    <h2>From install to production-quality code</h2>
+    <div class="gap"></div>
+    <div class="flow">
+      <div class="flow-box"><div class="icon">📦</div><span>Install<br>once</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box" style="border-color:var(--accent)"><div class="icon">🚀</div><span>Session<br>Start</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box"><div class="icon">💬</div><span>Describe<br>your task</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box" style="border-color:var(--accent4)"><div class="icon">🧠</div><span>Auto-route<br>expert+playbook</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box" style="border-color:var(--accent2)"><div class="icon">⚙️</div><span>Work<br>+ gates</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box"><div class="icon">🔒</div><span>Session<br>End</span></div>
+    </div>
+    <div class="gap"></div>
+    <div class="cols cols-4">
+      <div class="card center">
+        <div style="font-size:32px;font-weight:800;color:var(--accent)">4</div>
+        <div class="stat-label">IDE Frameworks</div>
+        <p style="font-size:12px;margin-top:8px">Claude · Cursor · Codex · Antigravity</p>
+      </div>
+      <div class="card center">
+        <div style="font-size:32px;font-weight:800;color:var(--accent4)">9</div>
+        <div class="stat-label">Expert Agents</div>
+        <p style="font-size:12px;margin-top:8px">Each with OWASP-sourced rules</p>
+      </div>
+      <div class="card center">
+        <div style="font-size:32px;font-weight:800;color:var(--accent2)">8</div>
+        <div class="stat-label">Playbooks</div>
+        <p style="font-size:12px;margin-top:8px">Step-by-step with quality gates</p>
+      </div>
+      <div class="card center">
+        <div style="font-size:32px;font-weight:800;color:var(--accent5)">15</div>
+        <div class="stat-label">OWASP Rules</div>
+        <p style="font-size:12px;margin-top:8px">Added from CWE/API Security 2024</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 5 · Expert Agents ─── -->
+<div class="slide" id="s5">
+  <div style="max-width:960px;width:100%">
+    <div class="kicker">Expert Agents</div>
+    <h2>9 specialists — auto-loaded, never announced</h2>
+    <p class="gap-sm">Describe your task. The platform reads the right expert file silently and begins.</p>
+    <div class="gap"></div>
+    <div class="agent-grid">
+      <div class="agent-card"><span class="icon">🏛</span><div><h3 class="hl-purple">Architect</h3><p>Design, ADRs, cross-cutting decisions</p></div></div>
+      <div class="agent-card"><span class="icon">⚙️</span><div><h3 class="hl">Backend</h3><p>APIs, services, DB, auth, SSRF/CSRF gates</p></div></div>
+      <div class="agent-card"><span class="icon">🎨</span><div><h3 class="hl">Frontend</h3><p>Components, state, accessibility, CSP</p></div></div>
+      <div class="agent-card"><span class="icon">🔧</span><div><h3 class="hl-orange">DevOps</h3><p>CI/CD, SBOM, artifact signing, OIDC</p></div></div>
+      <div class="agent-card"><span class="icon">🧪</span><div><h3 class="hl-green">Test</h3><p>Unit, integration, contract, mutation</p></div></div>
+      <div class="agent-card"><span class="icon">📚</span><div><h3 class="hl">Docs</h3><p>OpenAPI/Swagger, README, changelog</p></div></div>
+      <div class="agent-card"><span class="icon">🔒</span><div><h3 class="hl-red">Security</h3><p>OWASP, LLM injection, threat model</p></div></div>
+      <div class="agent-card"><span class="icon">📊</span><div><h3 class="hl-purple">Data</h3><p>Schema, migrations, pipelines</p></div></div>
+      <div class="agent-card" style="border-color:var(--accent3)"><span class="icon">🎯</span><div><h3 class="hl-red">Critic</h3><p>6-dimension adversarial review — catches what implementors miss</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 6 · Todo App Intro ─── -->
+<div class="slide" id="s6">
+  <div style="max-width:900px;width:100%">
+    <div class="kicker">Live Demo · Todo REST API</div>
+    <h2>We built a production-grade API — <span class="hl">in one session</span></h2>
+    <p class="gap-sm">Starting point: a bare Express.js Todo app. 3 files. No tests. No auth. No security.</p>
+    <div class="gap"></div>
+    <div class="ba">
+      <div class="ba-col ba-before">
+        <div class="ba-title">⚠ Starting point</div>
+        <ul class="ba-list">
+          <li>3 source files (~60 lines)</li>
+          <li>No input validation</li>
+          <li>No authentication</li>
+          <li>Zero tests</li>
+          <li>No security measures</li>
+          <li>No API documentation</li>
+          <li>No error standards</li>
+        </ul>
+      </div>
+      <div class="ba-col ba-after">
+        <div class="ba-title">✅ After one platform session</div>
+        <ul class="ba-list">
+          <li>9+ files — auth, middleware, store</li>
+          <li>Input validation (required, 1-200 chars, trim)</li>
+          <li>JWT auth — todos scoped per user</li>
+          <li>41+ tests with coverage report</li>
+          <li>OWASP: CORS, rate limiting, bcrypt, CSRF</li>
+          <li>OpenAPI 3.0 spec — publish-ready</li>
+          <li>Standard error format across all endpoints</li>
+        </ul>
+      </div>
+    </div>
+    <div class="gap-sm center">
+      <p><span class="hl-green">Zero manual steps.</span> One conversation. Experts auto-routed. Playbook steps followed automatically.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 7 · Impact Charts ─── -->
+<div class="slide" id="s7">
+  <div style="max-width:960px;width:100%">
+    <div class="kicker">Impact Metrics · Todo App</div>
+    <h2>What the platform built — measured</h2>
+    <div class="gap"></div>
+    <div class="cols cols-2" style="align-items:start">
+      <div>
+        <h3 style="margin-bottom:20px;font-size:15px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em">Files &amp; Code</h3>
+        <div class="bar-group">
+          <div class="bar-row">
+            <span class="bar-label">Source files</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:0" data-w="90%">9 files</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Before</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:0" data-w="20%">3 files</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Test cases</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-green" style="width:0" data-w="85%">41 tests</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Before</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:0" data-w="2%">0</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:20px;font-size:15px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em">Security &amp; Quality</h3>
+        <div class="bar-group">
+          <div class="bar-row">
+            <span class="bar-label">Security fixes</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-purple" style="width:0" data-w="90%">9 resolved</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">OWASP rules</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:0" data-w="75%">15 applied</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">API endpoints</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-green" style="width:0" data-w="60%">6 documented</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Experts used</span>
+            <div class="bar-track"><div class="bar-fill bar-fill-purple" style="width:0" data-w="70%">7 agents</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="cols cols-4 center">
+      <div><div class="stat-big hl">41</div><div class="stat-label">Tests written</div></div>
+      <div><div class="stat-big hl-green">9</div><div class="stat-label">Security fixes</div></div>
+      <div><div class="stat-big hl-purple">7</div><div class="stat-label">Experts activated</div></div>
+      <div><div class="stat-big hl-orange">1</div><div class="stat-label">Session</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 8 · What Was Built ─── -->
+<div class="slide" id="s8">
+  <div style="max-width:960px;width:100%">
+    <div class="kicker">What the platform built · automatically</div>
+    <h2>Every improvement — zero manual implementation</h2>
+    <div class="gap"></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-line"><div class="tl-dot" style="background:var(--accent3)"></div><div class="tl-connector"></div></div>
+        <div class="tl-content"><h3>🐛 Bug fix + regression test</h3><p>Backend expert read <code>bug-fix.md</code> playbook. Title validation added. Test written that fails before fix, passes after — automatically.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-line"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-connector"></div></div>
+        <div class="tl-content"><h3>✨ Add-feature with security gate</h3><p>Due-date field added. Security expert auto-triggered at Step 5a — reviewed new code before Critic. No user prompt needed.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-line"><div class="tl-dot" style="background:var(--accent2)"></div><div class="tl-connector"></div></div>
+        <div class="tl-content"><h3>🔒 OWASP security audit</h3><p>Security expert ran full OWASP Top 10 audit. 9 findings resolved: CORS, rate limiting, HTTPS redirect, bcrypt hashing, input sanitisation.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-line"><div class="tl-dot" style="background:var(--accent4)"></div><div class="tl-connector"></div></div>
+        <div class="tl-content"><h3>🔐 JWT authentication</h3><p>Architect logged ADR-001. Backend built JWT auth, per-user scoping, 403 on wrong owner. Test + Security experts reviewed automatically.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-line"><div class="tl-dot" style="background:var(--accent5)"></div></div>
+        <div class="tl-content"><h3>📄 OpenAPI 3.0 spec</h3><p>Docs expert generated a publish-ready <code>openapi.json</code> from api-contracts.md. No swagger package needed.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 9 · Cross-Framework ─── -->
+<div class="slide" id="s9">
+  <div style="max-width:900px;width:100%">
+    <div class="kicker">Cross-Framework Collaboration</div>
+    <h2>Different AI models reviewing each other's work</h2>
+    <div class="gap"></div>
+    <div class="cols cols-2" style="align-items:start">
+      <div>
+        <div class="card card-accent" style="margin-bottom:16px">
+          <h3>🖥 Claude Code session</h3>
+          <p style="margin-top:8px">Implemented JWT auth, security hardening, 41 tests. Session ended. All work committed.</p>
+          <div style="margin-top:12px"><span class="badge badge-blue">claude → idle</span></div>
+        </div>
+        <div class="arrow-down center" style="font-size:28px;color:var(--text2);margin:8px 0">↓</div>
+        <div class="card card-purple">
+          <h3>🔮 Antigravity session starts</h3>
+          <p style="margin-top:8px">Platform detects framework switch. Cross-framework Critic offer fires automatically.</p>
+          <div style="margin-top:12px"><span class="badge badge-purple">previous_framework: claude</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-color:var(--accent5);background:rgba(255,166,87,.05)">
+          <h3 class="hl-orange">🎯 Critic offer — appeared automatically</h3>
+          <div class="code" style="margin-top:12px;font-size:12px;line-height:1.8">
+            Cross-framework Critic available<br><br>
+            Last session: <span style="color:var(--accent)">claude</span><br>
+            Goal: JWT auth + security hardening<br>
+            Files: todos.js, auth.js, requireAuth.js...<br><br>
+            A different AI model did this work.<br>
+            Reply <span style="color:var(--accent2)">YES</span> to review, <span style="color:var(--accent3)">NO</span> to proceed.
+          </div>
+        </div>
+        <div class="gap-sm"></div>
+        <div class="card card-green">
+          <h3 class="hl-green">Review result</h3>
+          <p style="margin-top:8px">0 Critical &nbsp;·&nbsp; 2 High (resolved) &nbsp;·&nbsp; 2 Medium</p>
+          <p style="margin-top:8px;font-size:13px">Different model, different blind spots. Caught edge cases the first model missed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 10 · Framework Takeover ─── -->
+<div class="slide" id="s10">
+  <div style="max-width:900px;width:100%">
+    <div class="kicker">Emergency IDE Switching</div>
+    <h2>Out of credits? <span class="hl">Switch — don't lose work</span></h2>
+    <div class="gap"></div>
+    <div class="cols cols-3">
+      <div class="card" style="text-align:center">
+        <div class="icon" style="font-size:40px">😰</div>
+        <h3 style="margin-top:12px">Codex runs out of credits mid-session</h3>
+        <p style="margin-top:8px">Work uncommitted. Session stuck open. No way to end it properly.</p>
+      </div>
+      <div class="card card-accent" style="text-align:center">
+        <div class="icon" style="font-size:40px">🚀</div>
+        <h3 style="margin-top:12px">Open Claude Code — start session</h3>
+        <p style="margin-top:8px">Platform detects stuck session and offers takeover automatically.</p>
+        <div style="margin-top:12px">
+          <span class="badge badge-blue">1. Take over</span><br>
+          <span style="font-size:12px;color:var(--text2);margin-top:6px;display:block">2. Wait (if still running)</span>
+        </div>
+      </div>
+      <div class="card card-green" style="text-align:center">
+        <div class="icon" style="font-size:40px">✅</div>
+        <h3 style="margin-top:12px">Takeover completes</h3>
+        <p style="margin-top:8px">Stuck session committed. Old framework set idle. Cross-framework Critic offered. Continue seamlessly.</p>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="center">
+      <p style="font-size:15px"><span class="hl-green">One reason to run multi-framework:</span> when one IDE runs out of budget, switch to another — no work lost, full context preserved.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 11 · Zero Manual Steps ─── -->
+<div class="slide" id="s11">
+  <div style="max-width:900px;width:100%">
+    <div class="kicker">Zero-Manual-Step Install</div>
+    <h2>Already using Claude, Cursor, or Codex?<br><span class="hl">Your configs are safe.</span></h2>
+    <div class="gap"></div>
+    <div class="cols cols-2">
+      <div>
+        <h3 style="margin-bottom:16px;font-size:15px">What the installer does — automatically</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-line"><div class="tl-dot" style="background:var(--accent2)"></div><div class="tl-connector"></div></div>
+            <div class="tl-content"><h3>Detects existing AI configs</h3><p>CLAUDE.md, .cursorrules, Codex instructions, Cline rules — all found and backed up</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-connector"></div></div>
+            <div class="tl-content"><h3>Injects session trigger</h3><p>Adds one line to your CLAUDE.md — your instructions stay intact below it</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line"><div class="tl-dot" style="background:var(--accent4)"></div></div>
+            <div class="tl-content"><h3>First session: auto-migration</h3><p>Agent reads every backed-up config. Evaluates rules. Migrates valuable ones to expert PROJECT sections. Deletes migration notes. Done.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <h3 class="hl-green" style="margin-bottom:16px">Backed-up configs automatically migrated from:</h3>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🤖</span><div><strong>Claude Code</strong><br><span style="font-size:12px;color:var(--text2)">CLAUDE.md custom rules</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🖱</span><div><strong>Cursor</strong><br><span style="font-size:12px;color:var(--text2)">.cursorrules, .mdc rule files</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">📦</span><div><strong>Codex</strong><br><span style="font-size:12px;color:var(--text2)">instructions.md</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🔮</span><div><strong>Antigravity</strong><br><span style="font-size:12px;color:var(--text2)">Custom prompts</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🔌</span><div><strong>Cline &amp; others</strong><br><span style="font-size:12px;color:var(--text2)">.clinerules, commands</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SLIDE 12 · Get Started ─── -->
+<div class="slide" id="s12">
+  <div style="max-width:800px;width:100%;text-align:center">
+    <div class="kicker">Get Started · Beta</div>
+    <h2>One command. Any repo. Any OS.</h2>
+    <div class="gap"></div>
+    <div class="mono" style="font-size:clamp(16px,2vw,22px)">npx github:zafrirron/Agent-Platform</div>
+    <div class="gap"></div>
+    <div class="cols cols-3" style="text-align:left">
+      <div class="card">
+        <div class="icon">⚡</div>
+        <h3>Install</h3>
+        <p>Run the command. Detects your stack. Backs up existing configs. Done in 30s.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="icon">🚀</div>
+        <h3>First session</h3>
+        <p>Tell your agent: <em>"Read .agent/session-start.md and execute it."</em></p>
+      </div>
+      <div class="card card-green">
+        <div class="icon">🎯</div>
+        <h3>Just work</h3>
+        <p>Describe what you want. Experts, playbooks, and quality gates activate automatically.</p>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <span class="badge badge-blue">Node.js 18+ required</span>
+      <span class="badge badge-green">Works on Linux · macOS · Windows</span>
+      <span class="badge badge-purple">v2.23.0 · E2E tested</span>
+    </div>
+    <div class="gap"></div>
+    <p style="font-size:14px;color:var(--text2)">github.com/zafrirron/Agent-Platform</p>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ─── Navigation ─── -->
+<div class="arrows">
+  <button class="arrow" id="prev">←</button>
+  <button class="arrow" id="next">→</button>
+</div>
+<div class="nav" id="nav"></div>
+<div class="slide-num" id="snum"></div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const nav    = document.getElementById('nav');
+const snum   = document.getElementById('snum');
+let cur = 0;
+
+// Build dots
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => go(i);
+  nav.appendChild(d);
+});
+
+function go(n) {
+  slides[cur].classList.remove('active');
+  nav.children[cur].classList.remove('active');
+  cur = Math.max(0, Math.min(n, slides.length-1));
+  slides[cur].classList.add('active');
+  nav.children[cur].classList.add('active');
+  snum.textContent = (cur+1) + ' / ' + slides.length;
+  animateBars();
+}
+
+document.getElementById('prev').onclick = () => go(cur-1);
+document.getElementById('next').onclick = () => go(cur+1);
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(cur+1);
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') go(cur-1);
+});
+
+// Touch swipe
+let tx=0;
+document.addEventListener('touchstart', e => tx=e.touches[0].clientX);
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx)>50) go(dx<0?cur+1:cur-1);
+});
+
+// Animate bars when slide 7 is active
+function animateBars() {
+  const active = slides[cur];
+  active.querySelectorAll('.bar-fill').forEach(b => {
+    const w = b.dataset.w || '0';
+    setTimeout(() => b.style.width = w, 100);
+  });
+}
+
+go(0);
+animateBars();
+</script>
+</body>
+</html>
