@@ -133,16 +133,14 @@ If missing or placeholder: Read `.agent/tools/setup-test-runner.md` and execute 
 
 Output this compact status block. Substitute all values inline — do not read any additional files for this step.
 
-Output the border and first three lines as a code block, then the Reference line as a separate markdown line OUTSIDE the code block so the link is clickable:
+Output this status block as plain text (no code block) so markdown links render as clickable:
 
-```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  {{PROJECT_NAME}} · Agent Platform v{{BOOTSTRAP_VERSION}} · <fw>
-  Last work : <one-line summary from CURRENT.md, or "no prior sessions">
-  Updates   : <"✅ Up to date" | "⚠️ vX.Y.Z available — say 'upgrade platform'">
+**{{PROJECT_NAME}} · Agent Platform v{{BOOTSTRAP_VERSION}} · <fw>**
+Last work : <one-line summary from CURRENT.md, or "no prior sessions">
+Updates   : <"✅ Up to date" | "⚠️ vX.Y.Z available — say 'upgrade platform'">
+Reference : 📄 [.agent/QUICK-REF.md](.agent/QUICK-REF.md) · say `"caveman mode"` to cut output ~65%
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-📄 [.agent/QUICK-REF.md](.agent/QUICK-REF.md) — full capability guide · say `"caveman mode"` to cut output ~65%
 
 **Do NOT read or output QUICK-REF.md at session start.**
 It is displayed only when the user explicitly asks (see trigger below).
