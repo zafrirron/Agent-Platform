@@ -12,9 +12,53 @@
 
 1. Read `.agent/handoff/sync/registry.yaml`
 2. **Capture** `meta.updated_by` as `previous_framework` before writing anything — this is needed for Step 1b
-3. Check if any other framework has `status: active` with overlapping `files`
-   - If conflict found: stop, report which framework owns which files, ask user to end that session first
-   - If no conflict: continue
+3. Check registry for any active sessions — two cases:
+
+   **Case A — Another framework is active** (e.g. Codex active, you are starting Claude):
+   ```
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  [stuck_framework] has an open session                          │
+   │                                                                 │
+   │  Task : [task from registry]                                    │
+   │  Files: [files list from registry]                              │
+   │                                                                 │
+   │  1. Take over — commit uncommitted work, close it, continue     │
+   │     here. Use when that IDE ran out of credits or is gone.      │
+   │  2. Wait — end the other session first if it is still running.  │
+   │                                                                 │
+   │  Reply 1 or 2.                                                  │
+   └─────────────────────────────────────────────────────────────────┘
+   ```
+
+   **Case B — This framework already has an active session** (e.g. Claude crashed, new chat opened):
+   ```
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  You already have an open [current_framework] session           │
+   │                                                                 │
+   │  Task : [task from registry]                                    │
+   │  Files: [files list from registry]                              │
+   │                                                                 │
+   │  1. Continue — close the previous session and start fresh here  │
+   │     (uncommitted work will be committed first)                  │
+   │  2. Cancel — if another window of this IDE is still running.    │
+   │                                                                 │
+   │  Reply 1 or 2.                                                  │
+   └─────────────────────────────────────────────────────────────────┘
+   ```
+
+   **If user replies 2 (either case):** Stop. Do not continue.
+
+   **If user replies 1 (either case) — Takeover sequence:**
+   a. Run `git status --short` to check for uncommitted work
+   b. If uncommitted changes exist:
+      - Run `git add -A`
+      - Run `git commit -m "WIP: [framework] session interrupted — [task from registry]"`
+      - Confirm commit succeeded
+   c. In `registry.yaml`: set `frameworks.[stuck_framework].status` → `idle`, `files` → `[]`
+   d. For Case A only: keep `meta.updated_by` as `[stuck_framework]` so Step 1b correctly offers cross-framework Critic review
+   e. Continue to Step 1.4
+
+   **If no active sessions found:** continue directly to Step 1.4
 4. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
 5. Set `meta.updated_by` → `<fw>`
 

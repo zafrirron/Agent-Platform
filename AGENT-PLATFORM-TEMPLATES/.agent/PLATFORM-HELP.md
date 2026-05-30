@@ -377,9 +377,10 @@ Works the same in all IDEs. The skill definition is at `.agent/skills/caveman/SK
 
 You can move any task between IDEs without losing context. The handoff log (`CURRENT.md`) and registry preserve full state.
 
+**Normal switch (both IDEs available):**
 ```
 # Step 1 — end session in current IDE
-Read .agent/session-end.md and execute it.
+End session.
 
 # Step 2 — open the other IDE, start session
 Read .agent/session-start.md and execute it.
@@ -387,7 +388,28 @@ Read .agent/session-start.md and execute it.
 
 The new session picks up from where the last one left off via `CURRENT.md`.
 
-**Cross-IDE conflict prevention:** if you try to start a session while another IDE is still active on overlapping files, the agent stops and tells you what to do.
+**Emergency switch (previous IDE unavailable — out of credits, crashed, etc.):**
+
+Just start a session in the new IDE:
+```
+Read .agent/session-start.md and execute it.
+```
+
+Session start detects the stuck open session and offers a **takeover**:
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  [framework] has an open session                                │
+│  Task : [what it was doing]                                     │
+│  Files: [files it had claimed]                                  │
+│                                                                 │
+│  1. Take over — commit uncommitted work, close it, continue     │
+│  2. Wait — end the other session first if it is still running   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+Reply **1** — the new IDE commits any uncommitted work from the stuck session, closes it cleanly, and continues. No manual file editing required. Cross-framework Critic review is then offered automatically.
+
+> **This is one of the key reasons to use a multi-framework platform.** When one IDE's credits run out mid-task, switch to another and continue without losing any work or context.
 
 ---
 
