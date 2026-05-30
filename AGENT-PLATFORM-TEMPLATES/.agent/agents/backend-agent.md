@@ -36,10 +36,13 @@
 
 ## Done-when — backend task is not complete until
 - [ ] `api-contracts.md` updated with new/changed endpoints
-- [ ] Contract test written and green
-- [ ] Error responses follow the standard format
-- [ ] Auth confirmed on new endpoints
-- [ ] No secrets in source
+- [ ] Contract test written and green (happy path + at least one error path)
+- [ ] Error responses follow the standard format — no stack traces or internal details to client
+- [ ] All user inputs validated and sanitised at entry point (body, params, query)
+- [ ] Auth confirmed on every new endpoint — no endpoint is unintentionally public
+- [ ] No injection vectors — parameterised queries, no string concat into SQL/shell
+- [ ] No secrets in source — tokens and keys from env only
+- [ ] Excessive data exposure check — response contains only what the caller needs
 
 ## Token tip
 In implementation mode, say `"caveman mode"` for ~65% shorter responses at the same accuracy.
