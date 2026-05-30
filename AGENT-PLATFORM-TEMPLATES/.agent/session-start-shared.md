@@ -131,22 +131,24 @@ If missing or placeholder: Read `.agent/tools/setup-test-runner.md` and execute 
 
 ### Step 5 — Display session status
 
-Output this compact status block. Substitute all values inline — do not read any additional files for this step:
+Output this compact status block. Substitute all values inline — do not read any additional files for this step.
+
+Output the border and first three lines as a code block, then the Reference line as a separate markdown line OUTSIDE the code block so the link is clickable:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {{PROJECT_NAME}} · Agent Platform v{{BOOTSTRAP_VERSION}} · <fw>
   Last work : <one-line summary from CURRENT.md, or "no prior sessions">
   Updates   : <"✅ Up to date" | "⚠️ vX.Y.Z available — say 'upgrade platform'">
-  Reference : open .agent/QUICK-REF.md · "caveman mode" to cut output ~65%
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+📄 [.agent/QUICK-REF.md](.agent/QUICK-REF.md) — full capability guide · say `"caveman mode"` to cut output ~65%
 
 **Do NOT read or output QUICK-REF.md at session start.**
 It is displayed only when the user explicitly asks (see trigger below).
 
 > **Trigger — when the user says any of:** "show quick reference", "show help", "show commands", "what can you do", "platform help", "how does this work"
-> → Output exactly: `Quick reference: open .agent/QUICK-REF.md in your editor.`
+> → Output exactly: 📄 [.agent/QUICK-REF.md](.agent/QUICK-REF.md) — open in your editor for the full capability guide.
 > Do NOT read or output the file contents into chat.
 
 ### Step 6 — Log session start

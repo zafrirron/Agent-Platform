@@ -61,12 +61,12 @@
 
 | File | Contains |
 |------|---------|
-| `.agent/handoff/CURRENT.md` | Last session: goal, files changed, Critic review status |
-| `.agent/handoff/sync/registry.yaml` | Which IDE is active, file ownership, conflict prevention |
-| `.agent/context/adr-log.md` | Architecture decisions that are hard to reverse |
-| `.agent/context/known-issues.md` | Known bugs and limitations to fix later |
-| `.agent/BEST-PRACTICES.md` | Project-specific coding rules and golden rules |
-| `.agent/context/docs-registry.md` | Registered docs, owners, freshness status |
+| [.agent/handoff/CURRENT.md](.agent/handoff/CURRENT.md) | Last session: goal, files changed, Critic review status |
+| [.agent/handoff/sync/registry.yaml](.agent/handoff/sync/registry.yaml) | Which IDE is active, file ownership, conflict prevention |
+| [.agent/context/adr-log.md](.agent/context/adr-log.md) | Architecture decisions that are hard to reverse |
+| [.agent/context/known-issues.md](.agent/context/known-issues.md) | Known bugs and limitations to fix later |
+| [.agent/BEST-PRACTICES.md](.agent/BEST-PRACTICES.md) | Project-specific coding rules and golden rules |
+| [.agent/context/docs-registry.md](.agent/context/docs-registry.md) | Registered docs, owners, freshness status |
 
 ---
 
