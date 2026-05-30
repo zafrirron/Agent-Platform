@@ -358,66 +358,6 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
   </div>
 </div>
 
-<!-- ═══ S4b EXPERT + PLAYBOOK COMBINE ═══ -->
-<div class="slide" id="s4b">
-  <div class="mw">
-    <div class="kicker">Architecture · Expert + Playbook</div>
-    <h2>WHO the agent is &nbsp;+&nbsp; WHAT steps to follow — <span class="hl">combined</span></h2>
-    <div class="gap"></div>
-    <!-- COMBINE diagram -->
-    <div style="display:flex;gap:16px;align-items:stretch;width:100%">
-      <!-- Expert column -->
-      <div style="flex:1;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.4);border-radius:12px;padding:18px">
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:12px">🧠 EXPERT AGENT — WHO</div>
-        <p style="font-size:13px;margin-bottom:10px">Domain identity, rules, done-when gates</p>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"review for security" → <span class="hl">Security expert</span></div>
-          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"add an endpoint" → <span class="hl">Backend expert</span></div>
-          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"find what's wrong" → <span class="hr">Critic agent</span></div>
-        </div>
-      </div>
-      <!-- COMBINE middle -->
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:90px">
-        <div style="font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em">Use alone</div>
-        <div style="font-size:22px;color:var(--border)">OR</div>
-        <div style="background:rgba(255,166,87,.15);border:1px solid rgba(255,166,87,.4);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--org);text-align:center">COMBINE<br>both</div>
-        <div style="font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em">for max power</div>
-        <div style="font-size:22px;color:var(--border)">↔</div>
-      </div>
-      <!-- Playbook column -->
-      <div style="flex:1;background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.4);border-radius:12px;padding:18px">
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--grn);margin-bottom:12px">📋 PLAYBOOK — WHAT</div>
-        <p style="font-size:13px;margin-bottom:10px">Numbered steps with quality gates</p>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"fix a bug" → <span class="hg">bug-fix.md</span></div>
-          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"new feature" → <span class="hg">add-feature.md</span></div>
-          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"ready to ship" → <span class="hg">release.md</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="gap"></div>
-    <!-- Combined example -->
-    <div style="background:rgba(255,166,87,.07);border:1px solid rgba(255,166,87,.3);border-radius:12px;padding:18px">
-      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--org);margin-bottom:10px">Combined example — "fix the login bug"</div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:start">
-        <div style="flex:1;min-width:200px">
-          <p style="font-size:13px;font-weight:600;color:var(--acc)">Backend expert (WHO)</p>
-          <p style="font-size:12px;margin-top:4px">API rules · auth discipline · OWASP gates · done-when checklist</p>
-        </div>
-        <div style="font-size:20px;color:var(--border);align-self:center">+</div>
-        <div style="flex:1;min-width:200px">
-          <p style="font-size:13px;font-weight:600;color:var(--grn)">bug-fix.md (WHAT)</p>
-          <p style="font-size:12px;margin-top:4px">Step 1: Reproduce → Step 3: Root cause → Step 4: Fix → Step 5: Regression test → Step 5b: Critic review</p>
-        </div>
-        <div style="flex:1;min-width:200px">
-          <p style="font-size:13px;font-weight:600;color:var(--org)">Result</p>
-          <p style="font-size:12px;margin-top:4px">Expert rules govern every playbook step. Critic assigned at Step 5b automatically. Cannot mark done until all gates pass.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ S5 EXPERT AGENTS ═══ -->
 <div class="slide" id="s5">
   <div class="mw">
@@ -446,66 +386,18 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
     <h2>8 step-by-step workflows — <span class="hg">with quality gates</span></h2>
     <p class="gs">Describe the situation. The right playbook loads silently and enforces every step.</p>
     <div class="gap"></div>
-    <div class="cols c2">
-      <div class="card ca">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">✨</div><h3>Add Feature</h3></div>
-          <span class="b bb">add-feature.md</span>
-        </div>
-        <p style="margin-top:8px">Design → Spec → Implement → <span style="color:var(--red);font-size:12px">Security gate (Step 5a)</span> → Test → Critic → Docs</p>
-      </div>
-      <div class="card cr">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">🐛</div><h3>Bug Fix</h3></div>
-          <span class="b br">bug-fix.md</span>
-        </div>
-        <p style="margin-top:8px">Reproduce → Root cause → Fix → <span style="color:var(--grn);font-size:12px">Regression test that FAILS before fix</span> → Critic</p>
-      </div>
-      <div class="card co">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">🚀</div><h3>Release</h3></div>
-          <span class="b bo">release.md</span>
-        </div>
-        <p style="margin-top:8px">Docs gate → Security review → Critic → Version bump → Tag → GitHub release page</p>
-      </div>
-      <div class="card cp">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">🏗</div><h3>Refactor</h3></div>
-          <span class="b bp">refactor.md</span>
-        </div>
-        <p style="margin-top:8px">Tests must exist first → Safe incremental change → Suite green before AND after → Critic gate</p>
-      </div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">🔍</div><h3>Debug Pipeline</h3></div>
-          <span class="b bb">debug-pipeline.md</span>
-        </div>
-        <p style="margin-top:8px">Systematic diagnosis when "something's wrong but I don't know why"</p>
-      </div>
-      <div class="card cr">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">🔒</div><h3>Security Audit</h3></div>
-          <span class="b br">security-audit.md</span>
-        </div>
-        <p style="margin-top:8px">OWASP Top 10 · findings with severity · file:line references · fix confirmation gate</p>
-      </div>
-      <div class="card cg">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">📦</div><h3>Add Dependency</h3></div>
-          <span class="b bg">add-dependency.md</span>
-        </div>
-        <p style="margin-top:8px">Vets package · license check · CVE scan · installs · validates · docs updated</p>
-      </div>
-      <div class="card ca">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div><div class="ic">🔗</div><h3>API Integration</h3></div>
-          <span class="b bb">api-integration.md</span>
-        </div>
-        <p style="margin-top:8px">Contract first · auth pattern · error handling · retry logic · contract tests</p>
-      </div>
+    <div class="agrid">
+      <div class="acard" style="border-color:var(--acc)"><span class="ic">✨</span><div><h3 class="hl">Add Feature</h3><p>Design → Security gate → Test → Critic → Docs</p></div></div>
+      <div class="acard" style="border-color:var(--red)"><span class="ic">🐛</span><div><h3 class="hr">Bug Fix</h3><p>Reproduce → Root cause → Fix → Regression test → Critic</p></div></div>
+      <div class="acard" style="border-color:var(--org)"><span class="ic">🚀</span><div><h3 class="ho">Release</h3><p>Docs gate → Security review → Critic → Tag → GitHub release</p></div></div>
+      <div class="acard" style="border-color:var(--pur)"><span class="ic">🏗</span><div><h3 class="hp">Refactor</h3><p>Tests must exist first → Incremental → Green before AND after</p></div></div>
+      <div class="acard"><span class="ic">🔍</span><div><h3>Debug Pipeline</h3><p>Systematic diagnosis — "something's wrong but I don't know why"</p></div></div>
+      <div class="acard" style="border-color:var(--red)"><span class="ic">🔒</span><div><h3 class="hr">Security Audit</h3><p>OWASP Top 10 · severity ratings · file:line findings · fix gate</p></div></div>
+      <div class="acard" style="border-color:var(--grn)"><span class="ic">📦</span><div><h3 class="hg">Add Dependency</h3><p>Vets · license · CVE scan · installs · validates · docs updated</p></div></div>
+      <div class="acard" style="border-color:var(--acc)"><span class="ic">🔗</span><div><h3 class="hl">API Integration</h3><p>Contract first · auth pattern · error handling · contract tests</p></div></div>
     </div>
     <div class="gap center">
-      <p style="font-size:13px"><span class="hr">★</span> Add-feature includes an automatic <strong>Security gate at Step 5a</strong> — fires before Critic for any feature touching endpoints, auth, or data input. No user action needed.</p>
+      <p style="font-size:12px"><span class="hr">★</span> Add-feature has an automatic <strong>Security gate (Step 5a)</strong> — fires before Critic for any feature touching endpoints, auth, or data. No user action needed.</p>
     </div>
   </div>
 </div>
@@ -963,7 +855,7 @@ const snum   = document.getElementById('snum');
 const stitle = document.getElementById('stitle');
 const titles = [
   'Title','The Problem','What It Is','Full Platform Lifecycle Diagram',
-  'How It Works — Lifecycle','Expert + Playbook: COMBINE','Expert Agents','Playbooks',
+  'How It Works — Lifecycle','Expert Agents','Playbooks',
   'Agent Artifacts','Dual Rules Model','Caveman Mode','Enterprise Governance',
   'Platform Evolution','Todo App: Before / After','Impact Metrics',
   'Cross-Framework Critic','Zero Code Impact','Get Started'
