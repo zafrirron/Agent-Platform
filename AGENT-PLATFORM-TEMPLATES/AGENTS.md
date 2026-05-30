@@ -15,26 +15,31 @@
 
 ## 2 · Auto-routing
 
-You are the active router. When the user describes a task: silently load the right expert and/or playbook and begin. Never ask which file to load. Never announce what you are loading.
+You are the active router. When the user describes a task, immediately and silently:
+1. Identify the matching row in the table below
+2. **READ the expert file** listed in the "Expert file" column
+3. **READ the playbook file** listed in the "Playbook file" column (if one is listed)
+4. Begin working — follow the playbook steps in order, applying the expert rules at every step
+5. Never announce what you are reading. Never ask which file to load.
 
-| User says something like… | Load expert | Load playbook |
+| User says something like… | Expert file | Playbook file |
 |--------------------------|-------------|---------------|
-| "add a feature", "implement X", "new endpoint" | Backend or Frontend | `add-feature.md` |
-| "fix a bug", "broken", "crash", "not working" | Relevant domain | `bug-fix.md` |
-| "refactor", "clean up", "rename", "simplify" | Relevant domain | `refactor.md` |
-| "deploy", "release", "ship", "version bump" | DevOps | `release.md` |
-| "security review", "auth", "vulnerability", "secrets" | Security | `security-audit.md` |
-| "add library", "install package", "new dependency" | Relevant domain | `add-dependency.md` |
-| "integrate API", "external service", "connect to" | Backend | `api-integration.md` |
-| "debug", "investigate", "why is", "trace" | Relevant domain | `debug-pipeline.md` |
-| "write tests", "test coverage", "quality gate" | Test | *(none)* |
-| "update docs", "README", "changelog", "document" | Docs | *(none)* |
-| "schema", "migration", "database", "data pipeline" | Data | *(none)* |
-| "design", "architecture", "should we use X or Y" | Architect | *(none)* |
-| "CI/CD", "build pipeline", "Docker", "infra" | DevOps | *(none)* |
-| "review this", "find issues", "what could go wrong" | Critic | *(none)* |
+| "add a feature", "implement X", "new endpoint" | `.agent/agents/backend-agent.md` or `frontend-agent.md` | `.agent/playbooks/add-feature.md` |
+| "fix a bug", "broken", "crash", "not working", "validate", "missing check" | relevant `*-agent.md` | `.agent/playbooks/bug-fix.md` |
+| "refactor", "clean up", "rename", "simplify" | relevant `*-agent.md` | `.agent/playbooks/refactor.md` |
+| "deploy", "release", "ship", "version bump" | `.agent/agents/devops-agent.md` | `.agent/playbooks/release.md` |
+| "security review", "auth", "vulnerability", "secrets" | `.agent/agents/security-agent.md` | `.agent/playbooks/security-audit.md` |
+| "add library", "install package", "new dependency" | relevant `*-agent.md` | `.agent/playbooks/add-dependency.md` |
+| "integrate API", "external service", "connect to" | `.agent/agents/backend-agent.md` | `.agent/playbooks/api-integration.md` |
+| "debug", "investigate", "why is", "trace" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
+| "write tests", "test coverage", "quality gate" | `.agent/agents/test-agent.md` | *(none)* |
+| "update docs", "README", "changelog", "document" | `.agent/agents/docs-agent.md` | *(none)* |
+| "schema", "migration", "database", "data pipeline" | `.agent/agents/data-agent.md` | *(none)* |
+| "design", "architecture", "should we use X or Y" | `.agent/agents/architect-agent.md` | *(none)* |
+| "CI/CD", "build pipeline", "Docker", "infra" | `.agent/agents/devops-agent.md` | *(none)* |
+| "review this", "find issues", "what could go wrong" | `.agent/agents/critic-agent.md` | *(none)* |
 
-When both an expert and a playbook apply, load both. Expert rules govern every playbook step; switch experts within steps as the playbook instructs.
+**When a playbook is listed: you MUST read it and follow its numbered steps exactly.** The expert rules govern every step — do not skip steps or summarise them.
 
 For cross-domain tasks, chain experts: `Architect → Backend/Frontend → Test → Critic → Docs`
 

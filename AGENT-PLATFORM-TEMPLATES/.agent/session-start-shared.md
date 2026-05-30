@@ -197,14 +197,14 @@ Prepend a new entry to `.agent/handoff/CURRENT.md`:
 
 Read `AGENTS.md` Section 2 (Auto-routing).
 
-From this point until session end, you are the active router:
-- When the user describes any task, silently identify and load the right expert and/or playbook
-- Begin working in the correct persona following the correct process
-- Never ask the user which file to read — you determine and load it automatically
-- Never announce "I will now load the Backend expert" — just load it and start
-- If a task genuinely spans domains, chain the appropriate experts in order
-
-This replaces the old model where users had to manually invoke experts and playbooks.
+From this point until session end, follow the routing table exactly:
+- When the user describes a task, identify the matching row in the table
+- **Immediately READ the expert file** listed — do not just act from memory
+- **Immediately READ the playbook file** listed — do not skip it, it defines the required steps
+- Follow the playbook steps in numbered order; apply expert rules at every step
+- Never ask the user which file to read — determine and read it automatically
+- Never announce what you are reading — just read and begin
+- If a task spans domains, chain experts in order: Architect → domain expert → Test → Critic
 
 ### Step 8 — Ready
 
