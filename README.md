@@ -291,6 +291,17 @@ The platform coordination layer is removed cleanly. Your AI agents improved your
 
 ---
 
+## Presentation
+
+**👉 [View the interactive platform presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)**
+
+18 slides covering: what it is · how it works · expert agents · playbooks · before/after demo · enterprise governance · zero code impact.
+Navigate with arrow keys or swipe. Works on mobile.
+
+> Alternative link (no GitHub Pages required): [htmlpreview](https://htmlpreview.github.io/?https://github.com/zafrirron/Agent-Platform/blob/main/presentation/agent-platform-beta.html)
+
+---
+
 ## Documentation
 
 | Document | For |
