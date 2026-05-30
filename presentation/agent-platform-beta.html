@@ -195,47 +195,106 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
   </div>
 </div>
 
-<!-- ═══ S4 HOW IT WORKS DIAGRAM ═══ -->
+<!-- ═══ S4 HOW IT WORKS — LIFECYCLE ═══ -->
 <div class="slide" id="s4">
   <div class="mw">
-    <div class="kicker">Architecture</div>
+    <div class="kicker">Architecture · Session Lifecycle</div>
     <h2>From install to production-quality code</h2>
     <div class="gap"></div>
     <div class="hiw">
-      <div class="hiwbox" style="border-color:var(--border)">
+      <div class="hiwbox">
         <span class="ic">📦</span><h3>INSTALL</h3>
-        <p>Detects stack · Installs .agent/ .claude/ .cursor/ .agents/ .codex/ · Backs up AI configs · Gitignores platform files</p>
+        <p>Detects stack · Installs all platform folders · Backs up AI configs · Gitignores everything</p>
         <div style="margin-top:8px"><span class="b bb">once</span></div>
       </div>
       <div class="hiwarr">→</div>
       <div class="hiwbox" style="border-color:var(--acc)">
         <span class="ic">🚀</span><h3>SESSION START</h3>
-        <p>Conflict check · Cross-framework Critic offer · Compact status block · Auto-routing activated</p>
+        <p>Conflict check · Cross-framework Critic offer · Status block · Auto-routing activated</p>
         <div style="margin-top:8px"><code style="font-size:10px;color:var(--grn)">session-start.md</code></div>
       </div>
       <div class="hiwarr">→</div>
       <div class="hiwbox" style="border-color:var(--pur)">
-        <span class="ic">🧠</span><h3>AUTO-ROUTING</h3>
-        <p>Reads AGENTS.md · Identifies expert + playbook · Reads both files silently · Begins working</p>
-        <div style="margin-top:8px"><span class="b bp">silent</span></div>
+        <span class="ic">💬</span><h3>DESCRIBE TASK</h3>
+        <p>User describes goal in plain language. Platform identifies expert + playbook silently.</p>
+        <div style="margin-top:8px"><span class="b bp">auto-routed</span></div>
       </div>
       <div class="hiwarr">→</div>
       <div class="hiwbox" style="border-color:var(--grn)">
-        <span class="ic">⚙️</span><h3>WORK</h3>
-        <p>Expert rules enforced · Playbook steps followed · Security gate · Critic review · Tests pass</p>
+        <span class="ic">⚙️</span><h3>WORK + GATES</h3>
+        <p>Expert rules enforced · Playbook steps followed · Security gate · Critic · Tests</p>
         <div style="margin-top:8px"><span class="b bg">gated</span></div>
       </div>
       <div class="hiwarr">→</div>
-      <div class="hiwbox" style="border-color:var(--border)">
+      <div class="hiwbox">
         <span class="ic">🔒</span><h3>SESSION END</h3>
-        <p>Derives summary from context · Commits work · Updates CURRENT.md · Marks framework idle</p>
+        <p>Derives summary · Commits work · Updates CURRENT.md · Framework idle</p>
         <div style="margin-top:8px"><code style="font-size:10px;color:var(--grn)">session-end.md</code></div>
       </div>
     </div>
     <div class="gap"></div>
-    <!-- Cross-framework row -->
-    <div style="background:rgba(210,168,255,.07);border:1px solid rgba(210,168,255,.3);border-radius:10px;padding:16px;text-align:center;">
-      <span style="font-size:13px;color:var(--pur)">⟳ &nbsp; Switch IDE → Session start in new IDE → Critic offer → Reviews prior work from a fresh model perspective → Continue</span>
+    <div style="background:rgba(210,168,255,.07);border:1px solid rgba(210,168,255,.3);border-radius:10px;padding:14px;text-align:center;">
+      <span style="font-size:13px;color:var(--pur)">⟳ &nbsp; Switch IDE → New session → Critic reviews prior work cold → Continue with fresh model perspective</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S4b EXPERT + PLAYBOOK COMBINE ═══ -->
+<div class="slide" id="s4b">
+  <div class="mw">
+    <div class="kicker">Architecture · Expert + Playbook</div>
+    <h2>WHO the agent is &nbsp;+&nbsp; WHAT steps to follow — <span class="hl">combined</span></h2>
+    <div class="gap"></div>
+    <!-- COMBINE diagram -->
+    <div style="display:flex;gap:16px;align-items:stretch;width:100%">
+      <!-- Expert column -->
+      <div style="flex:1;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.4);border-radius:12px;padding:18px">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:12px">🧠 EXPERT AGENT — WHO</div>
+        <p style="font-size:13px;margin-bottom:10px">Domain identity, rules, done-when gates</p>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"review for security" → <span class="hl">Security expert</span></div>
+          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"add an endpoint" → <span class="hl">Backend expert</span></div>
+          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"find what's wrong" → <span class="hr">Critic agent</span></div>
+        </div>
+      </div>
+      <!-- COMBINE middle -->
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:90px">
+        <div style="font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em">Use alone</div>
+        <div style="font-size:22px;color:var(--border)">OR</div>
+        <div style="background:rgba(255,166,87,.15);border:1px solid rgba(255,166,87,.4);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--org);text-align:center">COMBINE<br>both</div>
+        <div style="font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em">for max power</div>
+        <div style="font-size:22px;color:var(--border)">↔</div>
+      </div>
+      <!-- Playbook column -->
+      <div style="flex:1;background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.4);border-radius:12px;padding:18px">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--grn);margin-bottom:12px">📋 PLAYBOOK — WHAT</div>
+        <p style="font-size:13px;margin-bottom:10px">Numbered steps with quality gates</p>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"fix a bug" → <span class="hg">bug-fix.md</span></div>
+          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"new feature" → <span class="hg">add-feature.md</span></div>
+          <div style="background:var(--bg2);border-radius:6px;padding:8px;font-size:12px">"ready to ship" → <span class="hg">release.md</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <!-- Combined example -->
+    <div style="background:rgba(255,166,87,.07);border:1px solid rgba(255,166,87,.3);border-radius:12px;padding:18px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--org);margin-bottom:10px">Combined example — "fix the login bug"</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:start">
+        <div style="flex:1;min-width:200px">
+          <p style="font-size:13px;font-weight:600;color:var(--acc)">Backend expert (WHO)</p>
+          <p style="font-size:12px;margin-top:4px">API rules · auth discipline · OWASP gates · done-when checklist</p>
+        </div>
+        <div style="font-size:20px;color:var(--border);align-self:center">+</div>
+        <div style="flex:1;min-width:200px">
+          <p style="font-size:13px;font-weight:600;color:var(--grn)">bug-fix.md (WHAT)</p>
+          <p style="font-size:12px;margin-top:4px">Step 1: Reproduce → Step 3: Root cause → Step 4: Fix → Step 5: Regression test → Step 5b: Critic review</p>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <p style="font-size:13px;font-weight:600;color:var(--org)">Result</p>
+          <p style="font-size:12px;margin-top:4px">Expert rules govern every playbook step. Critic assigned at Step 5b automatically. Cannot mark done until all gates pass.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -257,6 +316,77 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
       <div class="acard"><span class="ic">🔒</span><div><h3 class="hr">Security</h3><p>OWASP Top 10, LLM injection, audit logging, CSRF</p></div></div>
       <div class="acard"><span class="ic">📊</span><div><h3 class="hp">Data</h3><p>Schema, migrations, pipelines, zero-downtime patterns</p></div></div>
       <div class="acard" style="border-color:var(--red)"><span class="ic">🎯</span><div><h3 class="hr">Critic</h3><p>6-dimension adversarial review — catches what implementors miss. Cold review across frameworks.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S5b PLAYBOOKS ═══ -->
+<div class="slide" id="s5b">
+  <div class="mw">
+    <div class="kicker">Playbooks</div>
+    <h2>8 step-by-step workflows — <span class="hg">with quality gates</span></h2>
+    <p class="gs">Describe the situation. The right playbook loads silently and enforces every step.</p>
+    <div class="gap"></div>
+    <div class="cols c2">
+      <div class="card ca">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">✨</div><h3>Add Feature</h3></div>
+          <span class="b bb">add-feature.md</span>
+        </div>
+        <p style="margin-top:8px">Design → Spec → Implement → <span style="color:var(--red);font-size:12px">Security gate (Step 5a)</span> → Test → Critic → Docs</p>
+      </div>
+      <div class="card cr">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">🐛</div><h3>Bug Fix</h3></div>
+          <span class="b br">bug-fix.md</span>
+        </div>
+        <p style="margin-top:8px">Reproduce → Root cause → Fix → <span style="color:var(--grn);font-size:12px">Regression test that FAILS before fix</span> → Critic</p>
+      </div>
+      <div class="card co">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">🚀</div><h3>Release</h3></div>
+          <span class="b bo">release.md</span>
+        </div>
+        <p style="margin-top:8px">Docs gate → Security review → Critic → Version bump → Tag → GitHub release page</p>
+      </div>
+      <div class="card cp">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">🏗</div><h3>Refactor</h3></div>
+          <span class="b bp">refactor.md</span>
+        </div>
+        <p style="margin-top:8px">Tests must exist first → Safe incremental change → Suite green before AND after → Critic gate</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">🔍</div><h3>Debug Pipeline</h3></div>
+          <span class="b bb">debug-pipeline.md</span>
+        </div>
+        <p style="margin-top:8px">Systematic diagnosis when "something's wrong but I don't know why"</p>
+      </div>
+      <div class="card cr">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">🔒</div><h3>Security Audit</h3></div>
+          <span class="b br">security-audit.md</span>
+        </div>
+        <p style="margin-top:8px">OWASP Top 10 · findings with severity · file:line references · fix confirmation gate</p>
+      </div>
+      <div class="card cg">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">📦</div><h3>Add Dependency</h3></div>
+          <span class="b bg">add-dependency.md</span>
+        </div>
+        <p style="margin-top:8px">Vets package · license check · CVE scan · installs · validates · docs updated</p>
+      </div>
+      <div class="card ca">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><div class="ic">🔗</div><h3>API Integration</h3></div>
+          <span class="b bb">api-integration.md</span>
+        </div>
+        <p style="margin-top:8px">Contract first · auth pattern · error handling · retry logic · contract tests</p>
+      </div>
+    </div>
+    <div class="gap center">
+      <p style="font-size:13px"><span class="hr">★</span> Add-feature includes an automatic <strong>Security gate at Step 5a</strong> — fires before Critic for any feature touching endpoints, auth, or data input. No user action needed.</p>
     </div>
   </div>
 </div>
@@ -713,7 +843,8 @@ const nav    = document.getElementById('nav');
 const snum   = document.getElementById('snum');
 const stitle = document.getElementById('stitle');
 const titles = [
-  'Title','The Problem','What It Is','How It Works','Expert Agents',
+  'Title','The Problem','What It Is','How It Works — Lifecycle',
+  'Expert + Playbook: COMBINE','Expert Agents','Playbooks',
   'Agent Artifacts','Dual Rules Model','Caveman Mode','Enterprise Governance',
   'Platform Evolution','Todo App: Before / After','Impact Metrics',
   'Cross-Framework Critic','Zero Code Impact','Get Started'

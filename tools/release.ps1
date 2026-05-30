@@ -107,6 +107,16 @@ $readme = $readme -replace '\*\*v[0-9]+\.[0-9]+\.[0-9]+\*\*', "**v$Version**"
 Set-Content "$ROOT\README.md" $readme -NoNewline
 OK "README.md: $currentReadme → $Version"
 
+$pres = Get-Content "$ROOT\presentation\agent-platform-beta.html" -Raw -ErrorAction SilentlyContinue
+if ($pres) {
+    $currentPres = if ($pres -match 'v([0-9]+\.[0-9]+\.[0-9]+)') { $Matches[1] } else { "?" }
+    $pres = $pres -replace 'v[0-9]+\.[0-9]+\.[0-9]+', "v$Version"
+    Set-Content "$ROOT\presentation\agent-platform-beta.html" $pres -NoNewline
+    OK "presentation/agent-platform-beta.html: $currentPres → $Version"
+} else {
+    OK "presentation/agent-platform-beta.html: not found — skipped"
+}
+
 # ── 5. Run tests ───────────────────────────────────────────────────────────────
 
 Step "Running full test suite"
@@ -124,7 +134,7 @@ try {
 
 Step "Committing version bump"
 
-git -C $ROOT add package.json AGENT-PLATFORM-MANIFEST.json README.md
+git -C $ROOT add package.json AGENT-PLATFORM-MANIFEST.json README.md presentation/agent-platform-beta.html
 
 $staged = git -C $ROOT diff --cached --name-only
 if ($staged) {

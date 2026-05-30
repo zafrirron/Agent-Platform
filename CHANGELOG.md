@@ -5,6 +5,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.24.0] — 2026-05-30
+
+### Added — Beta presentation (17 slides) + release script auto-updates presentation version
+
+**Presentation (`presentation/agent-platform-beta.html`):**
+- 17 professional slides with dark theme, animated bar charts, and keyboard/swipe navigation
+- New: Expert + Playbook COMBINE diagram — WHO the agent is vs WHAT steps to follow, with the "fix the login bug" combined example
+- New: Playbooks slide — all 8 playbooks with trigger scenarios, key steps, and security gate callout
+- New: Agent-Generated Artifacts — Coverage HTML report (Test expert) + OpenAPI spec (Docs expert)
+- New: Enterprise Governance — centralized rules, one upgrade propagates to all team repos
+- New: Platform Evolution — maintainer commands table, improvement loop diagram
+- New: Dual Rules Model — PLATFORM vs PROJECT sections with live code example
+- New: Caveman Mode — bar chart, when to use/avoid, cross-IDE commands
+- New: Zero Code Impact + Factory Reset — gitignored, uninstall restores everything
+- New: How It Works lifecycle diagram — professional flow boxes for Install → Session Start → Auto-routing → Work → Session End
+
+**release.ps1:** automatically bumps version markers in `presentation/agent-platform-beta.html` on every release
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.23.0] — 2026-05-30
 
 ### Added — Zero-manual-step install for projects with pre-existing AI configs
