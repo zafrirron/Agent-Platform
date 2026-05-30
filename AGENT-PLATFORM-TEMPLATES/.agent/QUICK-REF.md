@@ -1,121 +1,124 @@
 # {{PROJECT_NAME}} — Agent Platform Quick Reference
 
-> **Displayed on demand only** — say `"show quick reference"`, `"show help"`, or `"show commands"` to display this.
-> When displaying: show the FULL table — every section, every row. Do NOT summarise or truncate.
-> **Full local help:** say `"platform help"` or `"how does this work"`
+> Open this file in your editor any time you need it.
+> Say `"show quick reference"` to your agent and it will point you here.
 
 | | |
 |---|---|
 | **Framework** | <fw> |
 | **Version** | {{BOOTSTRAP_VERSION}} |
-| **Local help** | `Read .agent/PLATFORM-HELP.md` |
-| **Full guide** | https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md |
-| **Repository** | https://github.com/zafrirron/Agent-Platform |
+| **Full guide** | `.agent/PLATFORM-HELP.md` |
+| **Online guide** | https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md |
 
 ---
 
 ## Session
 
-| Action | Command |
-|--------|---------|
+| Action | Say to your agent |
+|--------|------------------|
 | Start session | `Read .agent/session-start.md and execute it.` |
 | End session | `Read .agent/session-end.md and execute it.` |
 
-> **When switching IDEs:** session-start automatically offers a cross-framework Critic review of the previous IDE's work. Different AI models review each other's blind spots. Answer YES to run the review.
+> **Switching IDEs?** Session start automatically offers a Critic review of the previous IDE's work — different AI models catch each other's blind spots. Say YES to run it.
 
 ---
 
-## Expert Agents — activate when your task has a clear domain
+## Expert Agents
+**Auto-routing is always on — just describe your task. The right expert loads silently.**
 
-| Agent | Say this or start a task like… | Command |
-|-------|-------------------------------|---------|
-| Architect | "design a new feature", "should we use X or Y", "new component", cross-cutting change | `Read .agent/agents/architect-agent.md` |
-| Backend | "add an endpoint", "fix the API", "write a service", server or database logic | `Read .agent/agents/backend-agent.md` |
-| Frontend | "update the UI", "new component", "client state", styling or UX | `Read .agent/agents/frontend-agent.md` |
-| DevOps | "set up CI", "fix the build", "deployment", Docker, infra scripts | `Read .agent/agents/devops-agent.md` |
-| Test | "write tests", "coverage is low", "regression test", quality gate | `Read .agent/agents/test-agent.md` |
-| Docs | "update README", "changelog", "document this endpoint" | `Read .agent/agents/docs-agent.md` |
-| Security | "auth review", "check for secrets", "threat model", before a sensitive release | `Read .agent/agents/security-agent.md` |
-| Data | "schema change", "migration", "data pipeline", "transform data" | `Read .agent/agents/data-agent.md` |
-| **Critic** | **"review this", "find issues", "what could go wrong", after any implementation** | `Read .agent/agents/critic-agent.md` |
+| Expert | Your task sounds like… |
+|--------|----------------------|
+| Architect | "design this feature", "should we use X or Y", cross-cutting change, new component |
+| Backend | "add an endpoint", "fix the API", "write a service", server or DB logic |
+| Frontend | "update the UI", "new component", "fix the styling", client state |
+| DevOps | "set up CI", "fix the build", "deployment", Docker, infra scripts |
+| Test | "write tests", "coverage is low", "regression test", quality gate |
+| Docs | "update README", "document this endpoint", "write the changelog" |
+| Security | "auth review", "check for vulnerabilities", "threat model", pre-release check |
+| Data | "schema change", "migration", "data pipeline", "transform data" |
+| **Critic** | **"review this", "find issues", "what could go wrong", after any implementation** |
 
 ---
 
-## Playbooks — step-by-step workflows with agent assignments
+## Playbooks
+**Describe the situation — the right playbook loads automatically.**
 
-| Trigger | Playbook | Command |
-|---------|---------|---------|
-| Starting new feature work | Add feature | `Read .agent/playbooks/add-feature.md` |
-| Something is broken | Bug fix | `Read .agent/playbooks/bug-fix.md` |
-| "clean up this area" (tests must exist first) | Refactor | `Read .agent/playbooks/refactor.md` |
-| "something's wrong but I don't know why" | Debug | `Read .agent/playbooks/debug-pipeline.md` |
-| Ready to ship a version | Release | `Read .agent/playbooks/release.md` |
-| Security review before release | Security audit | `Read .agent/playbooks/security-audit.md` |
-| "I need to add [package/library]" | Add dependency | `Read .agent/playbooks/add-dependency.md` |
-| Integrating an external API or service | API integration | `Read .agent/playbooks/api-integration.md` |
+| Your situation | Playbook |
+|---------------|---------|
+| Starting new feature work | Add feature — scopes, designs, implements, tests, Critic reviews |
+| Something is broken | Bug fix — reproduces, root-causes, fixes, regression test |
+| "clean up this area" (tests must exist first) | Refactor — safe incremental refactor with Critic gate |
+| "something's wrong but I don't know why" | Debug pipeline — systematic diagnosis |
+| Ready to ship a version | Release — docs gate, security review, tag, release notes |
+| Security review before release | Security audit — OWASP Top 10, findings with severity |
+| "I need to add [package/library]" | Add dependency — vets, installs, validates |
+| Integrating an external API or service | API integration — contract, auth, error handling, tests |
 
 ---
 
 ## Project Knowledge
+**Open these files in your editor to read or update. Your agent reads them automatically when relevant.**
 
-| Action | When to use | Command |
-|--------|------------|---------|
-| Best practices | Before any non-trivial task | `Read .agent/BEST-PRACTICES.md` |
-| Check registry | Confirm no other IDE is editing overlapping files | `Read .agent/handoff/sync/registry.yaml` |
-| See handoff log | Pick up where the last session left off | `Read .agent/handoff/CURRENT.md` |
-| Log ADR | Recording a hard-to-reverse design decision | `Read .agent/context/adr-log.md` |
-| Log known issue | Noting a bug or limitation to fix later | `Read .agent/context/known-issues.md` |
+| File | Contains |
+|------|---------|
+| `.agent/handoff/CURRENT.md` | Last session: goal, files changed, Critic review status |
+| `.agent/handoff/sync/registry.yaml` | Which IDE is active, file ownership, conflict prevention |
+| `.agent/context/adr-log.md` | Architecture decisions that are hard to reverse |
+| `.agent/context/known-issues.md` | Known bugs and limitations to fix later |
+| `.agent/BEST-PRACTICES.md` | Project-specific coding rules and golden rules |
+| `.agent/context/docs-registry.md` | Registered docs, owners, freshness status |
 
 ---
 
 ## Testing
+**Tell your agent — it handles the rest.**
 
-| Action | Command |
-|--------|---------|
-| Run tests | `{{TEST_RUNNER}}` |
-| Check coverage | `{{COVERAGE_CMD}}` |
-| Load test expert | `Read .agent/agents/test-agent.md` |
-
-> If commands show `<fill-in …>` — set your test runner in `.agent/CONVENTIONS.md` under `## Testing`.
+| Your task | Say to agent |
+|-----------|-------------|
+| Write tests for a component | "write tests for [component name]" |
+| Improve test coverage | "coverage is low — what's missing?" |
+| Regression test after a fix | Happens automatically via bug-fix playbook |
+| Full test suite + quality gate | "run the test suite and check coverage" |
 
 ---
 
 ## Token Compression (Caveman)
 
-| Action | Command | Effect |
-|--------|---------|--------|
-| Caveman on | `"caveman mode"` | ~65% shorter agent output, same accuracy |
-| Caveman off | `"stop caveman"` | Return to normal output |
-| Compress file | `"caveman compress <path>"` | Compress a context file ~46% |
+| Action | Say to agent | Effect |
+|--------|-------------|--------|
+| Enable | "caveman mode" | ~65% shorter output, same accuracy |
+| Disable | "stop caveman" | Return to normal output |
+| Compress a file | "caveman compress [path]" | Compress a context file ~46% |
+
+> Use caveman for long implementation sessions or when context is getting large.
+> Your normal work output is unaffected — it is always your choice.
 
 ---
 
 ## Extend This Platform
 
-| What you can add | Where it goes | How |
-|-----------------|---------------|-----|
-| New expert agent | `.agent/agents/<name>-agent.md` | Tell the agent: "Add a new expert agent for [domain]" |
-| New playbook | `.agent/playbooks/<name>.md` | Tell the agent: "Add a new playbook for [scenario]" |
-| New shared skill | `.agent/skills/<name>/` | Tell the agent: "Add a new skill called [name] that [does X]" |
-| New context file | `.agent/context/<name>.md` | Tell the agent: "Add a context file tracking [what]" |
-| 5th IDE framework | `.<name>/` private folder | Tell the agent: "Add [Windsurf/Cline/etc.] as a 5th framework" |
-| New best practice | `.agent/BEST-PRACTICES.md` | Tell the agent: "Add a new golden rule: [rule]" |
-| API conventions | `.agent/context/api-patterns.md` | Tell the agent: "Add API pattern: [convention]" |
+| What you can add | Where it goes | Say to agent |
+|-----------------|---------------|-------------|
+| New expert agent | `.agent/agents/<name>-agent.md` | "Add a new expert agent for [domain]" |
+| New playbook | `.agent/playbooks/<name>.md` | "Add a new playbook for [scenario]" |
+| New shared skill | `.agent/skills/<name>/` | "Add a new skill called [name] that [does X]" |
+| New context file | `.agent/context/<name>.md` | "Add a context file tracking [what]" |
+| 5th IDE framework | `.<name>/` private folder | "Add [Windsurf/Cline/etc.] as a 5th framework" |
+| New best practice | `.agent/BEST-PRACTICES.md` | "Add a new golden rule: [rule]" |
+| API conventions | `.agent/context/api-patterns.md` | "Add API pattern: [convention]" |
 
-> For all extensions: tell your agent the request above, then follow the 7-step extension anatomy in the full guide.
+> For all extensions: describe what you want — your agent handles the implementation and registers it correctly.
 
 ---
 
-## Platform
+## Platform Operations
+**Terminal commands — run in your project root.**
 
 | Action | Command |
 |--------|---------|
-| Local help | `Read .agent/PLATFORM-HELP.md` |
-| Check for updates | `node .agent/tools/check-updates.mjs` |
-| Agent self-upgrade | `Read .agent/tools/upgrade.md and execute it.` |
+| Check for updates | Tell agent: "check for platform updates" |
+| Upgrade | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
 | Install enforcement guards | `npx github:zafrirron/Agent-Platform --mode=install-guards` |
 | Remove guards | `npx github:zafrirron/Agent-Platform --mode=remove-guards` |
-| Remove platform | `npx github:zafrirron/Agent-Platform --mode=uninstall` |
-| Install | `npx github:zafrirron/Agent-Platform` |
-| Upgrade | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
 | Repair | `npx github:zafrirron/Agent-Platform --mode=repair` |
+| Remove platform | `npx github:zafrirron/Agent-Platform --mode=uninstall` |

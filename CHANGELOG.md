@@ -5,6 +5,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.21.0] — 2026-05-30
+
+### Changed — QUICK-REF redesign: user-facing reference, not internal mechanics
+
+**Problem:** QUICK-REF was printed in the agent chat on demand, exposing internal `Read .agent/...` commands to users and filling the conversation with a wall of text.
+
+**Changes:**
+- `"show quick reference"` trigger now outputs a single line: `Quick reference: open .agent/QUICK-REF.md in your editor.` — no more chat dumps
+- `QUICK-REF.md` fully rewritten for users, not agents:
+  - Expert agents: removed "Command" column — auto-routing note added, trigger phrases only
+  - Playbooks: removed "Command" column — scenario → playbook name + what it covers
+  - Project Knowledge: rewritten as "open in editor" file list — no agent instructions
+  - Testing: rewritten as agentic prompts ("write tests for X", "check coverage") — not raw CLI commands
+  - Extend: unchanged — already the gold standard ("Tell the agent: ...")
+  - Platform: Local help points to file path; "check for updates" and "upgrade" rewritten as agent phrases or npx terminal commands
+- `release.ps1` now bumps `README.md` version alongside `package.json` and manifest
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.20.1] — 2026-05-30
 
 ### Docs — docs governance added to all user-facing platform descriptions

@@ -101,7 +101,8 @@ Output this compact status block. Substitute all values inline — do not read a
 It is displayed only when the user explicitly asks (see trigger below).
 
 > **Trigger — when the user says any of:** "show quick reference", "show help", "show commands", "what can you do", "platform help", "how does this work"
-> → Read `.agent/QUICK-REF.md`, replace every `<fw>` with the active framework name, output the full table.
+> → Output exactly: `Quick reference: open .agent/QUICK-REF.md in your editor.`
+> Do NOT read or output the file contents into chat.
 
 ### Step 6 — Log session start
 
