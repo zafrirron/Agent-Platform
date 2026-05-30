@@ -174,11 +174,26 @@ const LEGACY_ROOT_FILES = [
 ];
 
 /**
- * Framework config folders — entire files backed up if they contain user content.
- * Platform-owned files within these folders are excluded.
+ * Individual framework config files — backed up if they exist.
+ * Platform-owned files within these folders are excluded by the manifest during install.
  */
 const FW_CONFIG_FILES = [
-  { file: '.codex/instructions.md',  label: 'Codex instructions' },
+  { file: '.codex/instructions.md',     label: 'Codex instructions' },
+  { file: '.claude/settings.local.json',label: 'Claude Code local settings' },
+];
+
+/**
+ * Folders that the platform will install into — scan for pre-existing USER content.
+ * Files listed here are noted (not backed up individually) so Step 1c can migrate them.
+ * Platform-owned filenames are excluded.
+ */
+const PLATFORM_FOLDER_SCANS = [
+  { folder: '.claude/commands', ext: '.md',
+    platformFiles: new Set(['caveman.md','caveman-commit.md','caveman-compress.md','caveman-review.md','caveman-stats.md','quick-ref.md']),
+    label: 'Claude Code custom command' },
+  { folder: '.agents/prompts', ext: '.md',
+    platformFiles: new Set(['session-start.md','session-end.md']),
+    label: 'Antigravity prompt' },
 ];
 
 function scanPreExistingArtifacts(root) {
@@ -205,9 +220,18 @@ function scanPreExistingArtifacts(root) {
       .forEach(f => toBackup.push({ file: folder + '/' + f, label: label + ': ' + f }));
   });
 
-  // Individual framework config files (e.g. Codex instructions)
+  // Individual framework config files (e.g. Codex instructions, Claude settings)
   FW_CONFIG_FILES.forEach(({ file, label }) => {
     if (fs.existsSync(path.join(root, file))) toBackup.push({ file, label });
+  });
+
+  // Platform destination folders — scan for pre-existing user content before we install into them
+  PLATFORM_FOLDER_SCANS.forEach(({ folder, ext, platformFiles, label }) => {
+    const dir = path.join(root, folder);
+    if (!fs.existsSync(dir)) return;
+    fs.readdirSync(dir)
+      .filter(f => f.endsWith(ext) && !platformFiles.has(f))
+      .forEach(f => toNote.push({ file: folder + '/' + f, label: label + ': ' + f }));
   });
 
   return { toBackup, toNote };
