@@ -1,155 +1,176 @@
 # Agent Platform — End-to-End Test Plan v2
 
-Tests the full platform lifecycle using two AI frameworks: **Claude Code** and **Antigravity**.
-Covers: install with pre-existing AI configs · session start/end · auto-routing · multi-expert ·
-security gate · cross-framework Critic · framework takeover · upgrade two-section model · uninstall.
+Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and **Antigravity**.
+Covers: install with pre-existing AI configs · backup/restore · session start/end · auto-routing ·
+multi-expert · security gate · cross-framework Critic · framework takeover · upgrade two-section
+model · uninstall.
 
 ---
 
-## Setup — one command
+## Before you start
 
-```powershell
-# From the platform repo root — resets E:\Test to clean state with pre-existing AI configs
-.\tests\setup-test-folder.ps1
+Choose a clean empty folder as your test directory. Examples:
+
+```bash
+# Linux / macOS
+export TEST_DIR=/tmp/platform-e2e
+
+# Windows PowerShell
+$TEST_DIR = "$env:TEMP\platform-e2e"
 ```
 
-This clears E:\Test, copies the todo-app source files (including pre-existing CLAUDE.md and AGENTS.md),
-initialises git, commits, and clears the npx cache. Run this before every E2E test run.
+All steps below use `<TEST_DIR>` — substitute your chosen path.
+
+The todo-app source files are in `tests/todo-app/` in this repo. Copy them to your test folder
+in Phase 0.
 
 ---
 
-## Phase 0 — Verify clean state
+## Phase 0 — Clean slate
 
-```powershell
-Test-Path "E:\Test\CLAUDE.md"           # True  — pre-existing (will be backed up)
-Test-Path "E:\Test\AGENTS.md"           # True  — pre-existing (will be backed up)
-Test-Path "E:\Test\.agent"              # False — platform not installed yet
-Test-Path "E:\Test\src\app.js"         # True  — todo app source
-git -C "E:\Test" log --oneline          # 1 commit: "chore: initial todo app (pre-platform)"
+```bash
+# Create test folder and copy todo-app source
+mkdir <TEST_DIR>
+cp -r tests/todo-app/. <TEST_DIR>/    # Linux/macOS
+# or: Copy-Item tests\todo-app\* <TEST_DIR>\ -Recurse  # Windows
+
+# Initialise git
+cd <TEST_DIR>
+git init
+git add -A
+git commit -m "chore: initial todo app (pre-platform)"
+
+# Clear npx cache so latest version installs
+# Linux/macOS:
+rm -rf ~/.npm/_npx
+# Windows:
+Remove-Item "$env:LOCALAPPDATA\npm-cache\_npx" -Recurse -Force -ErrorAction SilentlyContinue
 ```
+
+**Verify starting state:**
+- `CLAUDE.md` present → pre-existing (will be backed up by installer)
+- `AGENTS.md` present → pre-existing (will be backed up by installer)
+- `.agent/` absent → platform not installed yet
+- `src/app.js` present → todo app source
 
 ---
 
 ## Phase 1 — Install (fresh install with pre-existing AI configs)
 
-```powershell
-cd E:\Test
+```bash
+cd <TEST_DIR>
 npx github:zafrirron/Agent-Platform
 ```
 
 ### Verify install summary shows:
 - [ ] Version: v2.22.0
-- [ ] Jest detected as test runner
+- [ ] `npx jest` detected as test runner
 - [ ] Pre-existing CLAUDE.md and AGENTS.md noted as backed up
 - [ ] MIGRATION-NOTES.md created
 
 ### Verify key files:
-```powershell
-Test-Path "E:\Test\.agent\session-start.md"          # True
-Test-Path "E:\Test\.agent\QUICK-REF.md"              # True
-Test-Path "E:\Test\.agent\platform.json"             # True
-Test-Path "E:\Test\.agent\handoff\CURRENT.md"        # True
-Test-Path "E:\Test\.agent\context\docs-registry.md" # True
-Test-Path "E:\Test\CLAUDE.md"                        # True  — platform version installed
-Test-Path "E:\Test\AGENTS.md"                        # True  — platform version installed
-Test-Path "E:\Test\.agent\MIGRATION-NOTES.md"        # True
+```bash
+# Linux/macOS — check exits 0
+test -f <TEST_DIR>/.agent/session-start.md   && echo "OK: session-start.md"
+test -f <TEST_DIR>/.agent/QUICK-REF.md       && echo "OK: QUICK-REF.md"
+test -f <TEST_DIR>/.agent/platform.json      && echo "OK: platform.json"
+test -f <TEST_DIR>/.agent/handoff/CURRENT.md && echo "OK: CURRENT.md"
+test -f <TEST_DIR>/.agent/context/docs-registry.md && echo "OK: docs-registry.md"
+test -f <TEST_DIR>/.agent/MIGRATION-NOTES.md && echo "OK: MIGRATION-NOTES.md"
 ```
 
-### Verify backup created:
 ```powershell
-Get-ChildItem "E:\Test\.agent\backup" -Recurse | Select-Object Name
-# Must show: pre-install-* folder containing original CLAUDE.md and AGENTS.md
+# Windows
+Test-Path "<TEST_DIR>\.agent\session-start.md"          # True
+Test-Path "<TEST_DIR>\.agent\QUICK-REF.md"              # True
+Test-Path "<TEST_DIR>\.agent\platform.json"             # True
+Test-Path "<TEST_DIR>\.agent\handoff\CURRENT.md"        # True
+Test-Path "<TEST_DIR>\.agent\context\docs-registry.md"  # True
+Test-Path "<TEST_DIR>\.agent\MIGRATION-NOTES.md"        # True
 ```
 
-### Verify pre-existing content backed up (not lost):
-```powershell
-$backup = Get-ChildItem "E:\Test\.agent\backup\pre-install-*" | Select-Object -First 1
-Get-Content (Get-ChildItem $backup.FullName | Where-Object { $_.Name -like "*CLAUDE*" }).FullName
-# Must show original content: "This is a pre-existing CLAUDE.md..."
+### Verify backup created — original AI configs preserved:
+```bash
+ls <TEST_DIR>/.agent/backup/          # must show pre-install-* folder
 ```
+Read the backed-up file and confirm it contains the original pre-existing content
+("This is a pre-existing CLAUDE.md to test platform backup and restore").
 
-### Verify gitignore block:
-```powershell
-Select-String "Agent Platform Bootstrap" "E:\Test\.gitignore"
-# Must show START and END markers
-```
-
-### Verify two-section model in backend-agent.md:
-```powershell
-Select-String "PLATFORM:START|PROJECT:START" "E:\Test\.agent\agents\backend-agent.md"
-# Must show both markers
+### Verify two-section model installed correctly:
+```bash
+grep -c "PLATFORM:START\|PROJECT:START" <TEST_DIR>/.agent/agents/backend-agent.md
+# must return 2 (both markers present)
 ```
 
 ### Verify platform.json:
-```powershell
-$p = Get-Content "E:\Test\.agent\platform.json" | ConvertFrom-Json
-"version: $($p.bootstrap_version)"   # 2.22.0
-"test_runner: $($p.test_runner)"     # npx jest
+```bash
+node -e "const p=require('<TEST_DIR>/.agent/platform.json'); console.log(p.bootstrap_version, p.test_runner)"
+# 2.22.0  npx jest
+```
+
+### Verify gitignore block written:
+```bash
+grep "Agent Platform Bootstrap" <TEST_DIR>/.gitignore
+# must show the START/END markers
 ```
 
 ---
 
 ## Phase 2 — Session Start (Claude Code)
 
-Open Claude Code in `E:\Test`. New chat. Paste:
+Open Claude Code in `<TEST_DIR>`. New chat. Paste:
 ```
 Read .agent/session-start.md and execute it.
 ```
 
 ### Verify:
-- [ ] Step 1: registry.yaml — claude set to active
-- [ ] Step 1b: No Critic offer (first session — nothing to review)
+- [ ] Step 1: registry.yaml — claude set to active, no conflict
+- [ ] Step 1b: No Critic offer (first session — nothing prior to review)
 - [ ] Step 2: test runner already set (npx jest) — setup-test-runner skipped silently
-- [ ] Step 3: Update check runs or is skipped
-- [ ] Step 5: Compact 4-line status block shown (NOT the full QUICK-REF table)
-- [ ] Step 5: Reference line shows clickable `📄 .agent/QUICK-REF.md` link outside the code block
+- [ ] Step 5: Compact 4-line status block — NOT the full QUICK-REF table
+- [ ] Step 5: `📄 .agent/QUICK-REF.md` link appears **outside** the code block
 - [ ] Step 7: Auto-routing activated silently
 - [ ] Step 8: `Ready. Tell me what you want to do.`
 
-### Test /quick-ref slash command (Claude Code only):
+### Test `/quick-ref` slash command (Claude Code):
 Type `/quick-ref` in the chat.
-- [ ] Agent reads and displays `.agent/QUICK-REF.md` in full
+- [ ] Full QUICK-REF.md displayed
 
 ### Test "show quick reference" trigger:
 Type `show quick reference`
-- [ ] Agent outputs one line pointing to the file — does NOT dump the full table in chat
+- [ ] Agent outputs one line pointing to the file — does NOT dump full table in chat
 
 ---
 
 ## Phase 3 — Auto-routing (6 prompts)
 
-Type each prompt. Agent must route silently — no announcement of which file it loaded.
+Type each prompt. Agent routes silently — no announcement of which file was loaded.
 
-| Prompt | Expected routing | Pass? |
-|--------|-----------------|-------|
-| `fix the create todo endpoint — it doesn't validate the title` | Backend + bug-fix | |
-| `add a due date field to todos` | Backend + add-feature | |
-| `check if the API is secure` | Security + security-audit | |
-| `write tests for the todos router` | Test expert | |
-| `document the API` | Docs expert → Swagger/OpenAPI | |
-| `I'm ready to cut a release` | DevOps + release playbook | |
-
-**For each:** agent starts working in the correct persona without asking which file to load.
+| Prompt | Expected routing |
+|--------|-----------------|
+| `fix the create todo endpoint — it doesn't validate the title` | Backend + bug-fix |
+| `add a due date field to todos` | Backend + add-feature |
+| `check if the API is secure` | Security + security-audit |
+| `write tests for the todos router` | Test expert |
+| `document the API` | Docs expert → OpenAPI/Swagger |
+| `I'm ready to cut a release` | DevOps + release playbook |
 
 ---
 
 ## Phase 4 — Security gate (add-feature Step 5a)
 
-Paste this as one message:
 ```
 Add user authentication — each todo should belong to a user.
 Users authenticate with a token in the Authorization header.
 ```
 
-### Verify the playbook chains automatically:
-- [ ] Architect expert: cross-cutting scope noted, ADR created before any code
-- [ ] Backend expert: implements auth (JWT sub claim, owner field, 404 on wrong owner)
-- [ ] **Step 5a fires automatically**: Security expert reviews new auth code (no user prompt needed)
-  - Checks: input validation, auth enforcement, data exposure, injection vectors
-  - BLOCKED if Critical/High finding — must be addressed before continuing
-- [ ] Test expert: writes tests for auth logic
+### Verify automatic expert chaining:
+- [ ] Architect: cross-cutting scope noted, ADR before code
+- [ ] Backend: implements JWT auth (sub claim, owner field, 404 on wrong owner)
+- [ ] **Step 5a fires automatically**: Security expert reviews new auth code
+- [ ] Test expert: tests for auth logic
 - [ ] Critic: 6-dimension adversarial review
-- [ ] Agent does NOT hand off until all gates pass
+- [ ] No handoff until all gates pass
 
 ---
 
@@ -159,126 +180,111 @@ Users authenticate with a token in the Authorization header.
 End session.
 ```
 
-### Verify agent derives everything from context (no user recap needed):
-- [ ] Agent summarises goal and files from session context — does NOT ask user what changed
-- [ ] **Step 2c: Agent checks for uncommitted changes**
-  - If uncommitted work exists: agent runs `git add -A` and `git commit -m "..."` using shell tools
-  - Working tree confirmed clean before proceeding
-- [ ] Step 2b: New .md files scan — any unregistered docs flagged
-- [ ] CURRENT.md updated:
-  - Goal derived from session context
-  - Files changed listed explicitly
-  - `Commit:` field populated with commit hash
-  - `Critic reviewed: no`
-- [ ] registry.yaml: claude → idle, `meta.updated_by: claude`
+### Verify:
+- [ ] Agent derives goal and file list from session context — does NOT ask user to recap
+- [ ] Step 2c: Agent checks `git status` and commits any uncommitted changes using shell tools
+- [ ] Working tree confirmed clean before proceeding
+- [ ] CURRENT.md updated: goal · files · `Commit:` hash · `Critic reviewed: no`
+- [ ] registry.yaml: claude → idle · `meta.updated_by: claude`
 - [ ] Output: `Session ended. Framework: claude → idle.`
 
 ---
 
 ## Phase 6 — Cross-framework Critic (switch to Antigravity)
 
-Open `E:\Test` in **Antigravity**. New session. Paste:
+Open `<TEST_DIR>` in **Antigravity**. New session. Paste:
 ```
 Read .agent/session-start.md and execute it.
 ```
 
-### Verify Step 1b fires the Critic offer:
+### Verify Step 1b fires the Critic offer box:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Cross-framework Critic review available                        │
-│                                                                 │
 │  Last session: claude — [goal from CURRENT.md]                  │
 │  Files changed: [list from CURRENT.md]                          │
-│                                                                 │
 │  A different AI model did this work. Would you like me to run   │
 │  a Critic review before we proceed?                             │
-│                                                                 │
 │  Reply YES to review, NO to proceed directly.                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Key check:** This box must appear. If it doesn't, the `previous_framework` capture bug has returned.
+**Key check:** If this box does NOT appear, the `previous_framework` capture bug has returned.
 
 Say **YES**. Verify:
-- [ ] Critic loads in cross-framework cold review mode
-- [ ] Reviews files listed in CURRENT.md
-- [ ] Full 6-dimension review: correctness · security · edge cases · intent vs implementation · test coverage · handoff quality
+- [ ] Critic runs cold 6-dimension review on files from CURRENT.md
 - [ ] Findings shown with severity ratings
 - [ ] CURRENT.md updated: `Critic reviewed: yes — X Critical, Y High, Z Medium`
-- [ ] Offer NOT shown again in the same session (one-time per handoff)
+- [ ] Offer not shown again in this session
 
 ---
 
-## Phase 7 — Framework takeover test
+## Phase 7 — Framework takeover
 
 ### Setup: simulate a stuck session
-In Antigravity terminal, edit `E:\Test\.agent\handoff\sync\registry.yaml`:
-Set `claude: status: active` with a task (simulating Claude ran out of credits mid-session).
+Manually edit `<TEST_DIR>/.agent/handoff/sync/registry.yaml`:
+Set claude `status: active` with a task description (simulating it ran out of credits).
 
-Then in Antigravity, start a NEW session:
+Then in Antigravity, start a new session:
 ```
 Read .agent/session-start.md and execute it.
 ```
 
-### Verify takeover offer appears:
+### Verify takeover offer:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  claude has an open session                                     │
 │  Task : [task from registry]                                    │
-│  Files: [files list]                                            │
-│                                                                 │
 │  1. Take over — commit uncommitted work, close it, continue     │
 │  2. Wait — end the other session first if still running         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-Say **1 (Take over)**. Verify:
-- [ ] Agent checks `git status`
-- [ ] If uncommitted changes: agent commits them
+Say **1**. Verify:
+- [ ] Agent checks `git status` and commits if uncommitted changes exist
 - [ ] registry.yaml: claude set to idle
-- [ ] Antigravity session starts normally
-- [ ] Cross-framework Critic offer follows (claude was the previous framework)
+- [ ] Antigravity session starts
+- [ ] Cross-framework Critic offer follows
 
 ---
 
-## Phase 8 — Upgrade two-section model test
+## Phase 8 — Upgrade two-section model
 
-### Step A: Add content to PROJECT section (simulate user customisation)
-In Antigravity, ask agent to add a custom backend rule:
+### Step A: Add a project-specific rule (simulates user customisation)
+In Antigravity session, ask:
 ```
-Add a project-specific backend rule: all our endpoints must return responses in under 200ms
+Add a project-specific backend rule: all our endpoints must respond in under 200ms
 ```
-Agent should add this to the PROJECT section of backend-agent.md (not PLATFORM).
+The agent adds this to the PROJECT section of backend-agent.md.
 
 Verify before upgrade:
-```powershell
-Select-String "200ms" "E:\Test\.agent\agents\backend-agent.md"
-# Must find the rule in the PROJECT section
+```bash
+grep "200ms" <TEST_DIR>/.agent/agents/backend-agent.md   # must find it in PROJECT section
 ```
 
-### Step B: End session in Antigravity, then run upgrade
+### Step B: End session and run upgrade
 ```
 End session.
 ```
 Then in terminal:
-```powershell
-Remove-Item "$env:LOCALAPPDATA\npm-cache\_npx" -Recurse -Force -ErrorAction SilentlyContinue
+```bash
+# Clear npx cache first
+rm -rf ~/.npm/_npx   # Linux/macOS
+# or: Remove-Item "$env:LOCALAPPDATA\npm-cache\_npx" -Recurse -Force  # Windows
+
 npx github:zafrirron/Agent-Platform --mode=upgrade
 ```
 
 ### Step C: Verify after upgrade
-```powershell
+```bash
 # PROJECT section preserved (user rule still there)
-Select-String "200ms" "E:\Test\.agent\agents\backend-agent.md"
-# Must still find the rule
+grep "200ms" <TEST_DIR>/.agent/agents/backend-agent.md   # must still find it
 
-# PLATFORM section updated (check a rule added by web audit)
-Select-String "mass assignment" "E:\Test\.agent\agents\backend-agent.md" -CaseSensitive:$false
-# Must find the web-audit F003 rule
+# PLATFORM section updated (F003 mass-assignment rule from web audit)
+grep -i "mass assignment" <TEST_DIR>/.agent/agents/backend-agent.md   # must find it
 
-# Pure platform files fully replaced (session-start-shared.md has new Reference line)
-Select-String "open .agent/QUICK-REF.md in your editor" "E:\Test\.agent\session-start-shared.md"
-# Must find the new trigger text (confirms pure-file upgrade works)
+# Pure platform file fully replaced (session-start-shared.md has new trigger text)
+grep "open .agent/QUICK-REF.md in your editor" <TEST_DIR>/.agent/session-start-shared.md   # must find it
 ```
 
 ---
@@ -286,45 +292,37 @@ Select-String "open .agent/QUICK-REF.md in your editor" "E:\Test\.agent\session-
 ## Phase 9 — Uninstall
 
 ### Dry run (no changes):
-```powershell
+```bash
 npx github:zafrirron/Agent-Platform --mode=uninstall
 ```
-Verify output lists all platform folders and files to be removed — zero changes made.
+Verify output lists all platform folders — zero changes made.
 
 ### Real uninstall:
-```powershell
+```bash
 npx github:zafrirron/Agent-Platform --mode=uninstall --confirm
 ```
 
 ### Verify after uninstall:
-```powershell
-Test-Path "E:\Test\.agent"              # False — removed
-Test-Path "E:\Test\.claude"             # False — removed
-Test-Path "E:\Test\.cursor"             # False — removed
-Test-Path "E:\Test\.agents"             # False — removed
-Test-Path "E:\Test\.codex"             # False — removed
-Test-Path "E:\Test\CLAUDE.md"           # True  — RESTORED from backup (original pre-existing content)
-Test-Path "E:\Test\AGENTS.md"           # True  — RESTORED from backup (original pre-existing content)
-Test-Path "E:\Test\src\app.js"         # True  — user source untouched
-Test-Path "E:\Test\src\routes\todos.js"# True  — user source untouched
-```
+```bash
+# Platform folders gone
+test ! -d <TEST_DIR>/.agent   && echo "OK: .agent removed"
+test ! -d <TEST_DIR>/.claude  && echo "OK: .claude removed"
+test ! -d <TEST_DIR>/.cursor  && echo "OK: .cursor removed"
+test ! -d <TEST_DIR>/.agents  && echo "OK: .agents removed"
+test ! -d <TEST_DIR>/.codex   && echo "OK: .codex removed"
 
-### Verify restored content is original (not platform version):
-```powershell
-Select-String "pre-existing CLAUDE.md" "E:\Test\CLAUDE.md"
-# Must find the original content — confirms restore worked
-```
+# Pre-existing AI configs RESTORED from backup
+grep "pre-existing CLAUDE.md" <TEST_DIR>/CLAUDE.md   # original content restored
+grep "pre-existing AGENTS.md" <TEST_DIR>/AGENTS.md   # original content restored
 
-### Verify gitignore block removed:
-```powershell
-Select-String "Agent Platform Bootstrap" "E:\Test\.gitignore"
-# Must return nothing — block removed
-```
+# User source untouched
+test -f <TEST_DIR>/src/app.js   && echo "OK: src intact"
 
-### Verify git history intact:
-```powershell
-git -C "E:\Test" log --oneline
-# Must show full history — nothing lost
+# Platform gitignore block removed
+grep -c "Agent Platform Bootstrap" <TEST_DIR>/.gitignore   # must return 0
+
+# Git history intact
+git -C <TEST_DIR> log --oneline   # must show full history
 ```
 
 ---
@@ -334,13 +332,13 @@ git -C "E:\Test" log --oneline
 | Phase | Test | Pass condition |
 |-------|------|----------------|
 | 0 | Clean state | Pre-existing CLAUDE.md + AGENTS.md present, .agent/ absent |
-| 1 | Install | v2.22.0, jest detected, backup created, two-section markers present |
-| 2 | Session start | Compact status block, clickable QUICK-REF link, /quick-ref works |
+| 1 | Install | v2.22.0, jest detected, backup created, MIGRATION-NOTES.md exists, two-section markers present |
+| 2 | Session start | Compact 4-line block, QUICK-REF link clickable outside code block, /quick-ref works |
 | 3 | Auto-routing | 6 prompts routed silently to correct expert/playbook |
 | 4 | Security gate | add-feature Step 5a fires automatically for auth feature |
-| 5 | Session end | Agent derives summary, commits work, CURRENT.md has commit hash |
-| 6 | Cross-framework Critic | Offer box appears in Antigravity, YES triggers cold 6-dim review |
-| 7 | Framework takeover | Offer appears when stuck session detected, takeover completes |
-| 8 | Upgrade two-section | PROJECT section preserved, PLATFORM updated, pure files replaced |
-| 9 | Uninstall dry-run | Lists all files, zero changes |
+| 5 | Session end | Agent derives summary, commits work via shell, CURRENT.md has commit hash |
+| 6 | Cross-framework Critic | Offer box appears in Antigravity, YES triggers 6-dim cold review |
+| 7 | Framework takeover | Offer appears for stuck session, takeover completes cleanly |
+| 8 | Upgrade two-section | PROJECT section preserved, PLATFORM updated, pure platform files replaced |
+| 9 | Uninstall dry-run | Lists all files, zero changes made |
 | 9 | Uninstall confirm | Platform gone, original CLAUDE.md + AGENTS.md restored, src/ intact |

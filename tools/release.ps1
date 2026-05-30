@@ -1,7 +1,11 @@
 # Agent Platform Bootstrap — release script
 #
+# Cross-platform: runs on Windows PowerShell and Linux/macOS with PowerShell Core (pwsh).
+# Install pwsh on Linux: https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux
+#
 # Usage:
-#   .\tools\release.ps1 -Version 2.21.0
+#   .\tools\release.ps1 -Version 2.21.0       # Windows
+#   pwsh ./tools/release.ps1 -Version 2.21.0  # Linux / macOS
 #
 # This script is for RELEASE ONLY. It is not a substitute for git commit or git push.
 # Normal development workflow:
@@ -29,8 +33,8 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$ROOT = "e:\Agent Platfrom"
-$GH   = "C:\Program Files\GitHub CLI\gh.exe"
+$ROOT = git -C $PSScriptRoot rev-parse --show-toplevel
+$GH   = (Get-Command gh -ErrorAction Stop).Source
 $REPO = "zafrirron/Agent-Platform"
 
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
