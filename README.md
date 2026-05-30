@@ -106,7 +106,7 @@ Repeat. The platform never stops improving.
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
 | **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see exactly which lines aren't covered. Coverage and Swagger artifacts are your project files — keep, commit, or gitignore them as you see fit. |
 | **API documentation** | Docs expert generates OpenAPI/Swagger docs from `api-contracts.md`. Say "document the API" and get a publish-ready spec. |
-| **Quick reference** | Full capability guide displayed on every session start — no memorisation required |
+| **Quick reference** | Compact status block on every session start (last work, update status). Full capability guide at `.agent/QUICK-REF.md` — open in editor any time. No memorisation required. |
 | **Local help** | `PLATFORM-HELP.md` installed in every repo — everything explained, fully offline |
 | **Agentic update check** | Agents check for platform improvements automatically, once per 7 days |
 | **Docs governance** | Every doc has a registered owner expert. Done-when checklists enforce updates. Session end catches new unregistered files. Release playbook blocked until Docs agent approves all docs current. New docs added by users are detected automatically and added to the registry. |
@@ -136,7 +136,7 @@ Repeat. The platform never stops improving.
 │  · Conflict check — is another IDE already active?                   │
 │  · Cross-framework Critic offer — if switching from another IDE      │
 │  · Update check — once per 7 days, cached                           │
-│  · Full Quick Reference displayed — all commands for your active IDE │
+│  · Compact status block — last work, update status, quick ref path  │
 │  · "Ready. Tell me what you want to do."                             │
 └──────────────────────────────────┬──────────────────────────────────┘
                                    │
@@ -179,8 +179,9 @@ Repeat. The platform never stops improving.
 │  Agent reads context files — api-contracts, adr-log, known-issues   │
 │  Agent follows rules — CONVENTIONS.md, BEST-PRACTICES.md            │
 │  Agent writes code, tests, documentation                             │
-│  Critic review gate (if playbook step requires it)                   │
-│  Test suite runs and passes                                          │
+│  Security gate — automatic for new endpoints/auth (add-feature 5a)  │
+│  Critic review gate (mandatory quality gate in every playbook)       │
+│  Test suite runs and passes · Coverage report generated              │
 └──────────────────────────────────┬──────────────────────────────────┘
                                    │
                                    ▼
@@ -188,9 +189,10 @@ Repeat. The platform never stops improving.
 │  SESSION END                                                          │
 │  "Read .agent/session-end.md and execute it."                        │
 │                                                                       │
-│  · Summarise work — files changed, behaviour, tests                  │
+│  · Summarise work — derived from context, no user recap needed       │
 │  · Pre-handoff checklist — tests green, no stubs, docs updated      │
-│  · Update CURRENT.md — goal, files, Critic reviewed: no             │
+│  · Commit all uncommitted changes — clean handoff to next IDE        │
+│  · Update CURRENT.md — goal, files, commit hash, Critic reviewed: no│
 │  · Mark framework idle in registry                                   │
 └──────────────────────────────────┬──────────────────────────────────┘
                                    │

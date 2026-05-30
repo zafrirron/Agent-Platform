@@ -290,10 +290,16 @@ for (const entry of manifest.files) {
       const existing = fs.readFileSync(target, 'utf8');
       const patched  = patchPlatformSection(existing, content);
       if (patched !== null) {
+        // File has PLATFORM markers — smart patch, PROJECT section preserved
         fs.writeFileSync(target, patched.endsWith('\n') ? patched : patched + '\n');
         updated.push(entry.path);
+      } else if (!content.includes('<!-- PLATFORM:START -->')) {
+        // No markers in template = pure platform file (session-start-shared, session-end-shared, etc.)
+        // Safe to fully replace — nothing user-customizable to preserve
+        fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
+        updated.push(entry.path);
       } else {
-        noMarkers.push(entry.path); // no PLATFORM markers → warn user
+        noMarkers.push(entry.path); // template has markers but installed file doesn't → warn user
         skipped.push(entry.path);
       }
     } else if (MODE === 'repair' && isStub(fs.readFileSync(target, 'utf8'))) {
