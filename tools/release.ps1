@@ -93,6 +93,12 @@ $man = $man -replace '"bootstrap_version":\s*"[^"]+"', """bootstrap_version"": "
 Set-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" $man -NoNewline
 OK "AGENT-PLATFORM-MANIFEST.json: $currentMan → $Version"
 
+$readme = Get-Content "$ROOT\README.md" -Raw
+$currentReadme = if ($readme -match '\*\*v([0-9]+\.[0-9]+\.[0-9]+)\*\*') { $Matches[1] } else { "?" }
+$readme = $readme -replace '\*\*v[0-9]+\.[0-9]+\.[0-9]+\*\*', "**v$Version**"
+Set-Content "$ROOT\README.md" $readme -NoNewline
+OK "README.md: $currentReadme → $Version"
+
 # ── 5. Run tests ───────────────────────────────────────────────────────────────
 
 Step "Running full test suite"
@@ -110,7 +116,7 @@ try {
 
 Step "Committing version bump"
 
-git -C $ROOT add package.json AGENT-PLATFORM-MANIFEST.json
+git -C $ROOT add package.json AGENT-PLATFORM-MANIFEST.json README.md
 
 $staged = git -C $ROOT diff --cached --name-only
 if ($staged) {
