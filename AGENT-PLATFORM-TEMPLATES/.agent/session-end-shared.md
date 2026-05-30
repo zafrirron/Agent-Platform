@@ -43,29 +43,24 @@ For each unregistered file found:
 
 If no new `.md` files were created: skip this step silently.
 
-### Step 2c — Check for uncommitted changes
+### Step 2c — Commit all session work
 
-Run `git status --short` to check for uncommitted work.
+**This step is mandatory. Do not skip it.**
 
-**If there are uncommitted changes — STOP and tell the user:**
+Run `git status --short`.
 
-```
-⚠️  Uncommitted changes detected:
-[list the files]
+**If there are uncommitted changes:**
+1. Run `git add -A`
+2. Run `git commit -m "<use the one-line summary from Step 1 as the commit message>"`
+3. Run `git status --short` to confirm the working tree is clean
+4. If the commit was blocked by a hook or error — report it to the user and stop
 
-Commit your work before ending the session so the next IDE can see it.
-Run in terminal:
-  git add -A
-  git commit -m "your message"
+You have terminal/shell tools available. Use them now to run these commands directly.
+Do not proceed to Step 3 until `git status` shows a clean working tree.
 
-Then run "End session." again.
-```
+**If working tree is already clean:** continue to Step 3 silently.
 
-**Do NOT proceed to Step 3 until the working tree is clean.**
-
-**If working tree is already clean:** continue silently.
-
-> **Why:** The next IDE reads committed state. Uncommitted changes are invisible to the cross-framework Critic and the next agent.
+> **Why:** The next IDE reads committed state. Uncommitted changes are invisible to the cross-framework Critic and the next agent. An agentic platform commits its own work.
 
 ### Step 3 — Update handoff log
 
