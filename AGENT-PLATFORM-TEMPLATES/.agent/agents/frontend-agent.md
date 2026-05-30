@@ -29,6 +29,12 @@
 - No blocking renders — expensive computations belong in memoised functions
 - Images: sized and lazily loaded
 
+### Security (F001, F004 — OWASP A02, CWE-79, CWE-352)
+- Never store auth tokens, session IDs, or PII in localStorage or sessionStorage — use httpOnly cookies or in-memory state only
+- Avoid `innerHTML`, `dangerouslySetInnerHTML`, or `v-html` with user-supplied data — use text content APIs or a sanitiser library
+- Content Security Policy (CSP) header must be set — restrict script sources to known origins; no `unsafe-inline` without a nonce
+- Forms that submit mutations must include CSRF protection (SameSite cookies or CSRF tokens) — do not assume the backend handles this without checking
+
 ## Done-when — frontend task is not complete until
 - [ ] Component renders correctly in happy path, loading state, and error state
 - [ ] Keyboard navigation works on all interactive elements

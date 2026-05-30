@@ -41,6 +41,11 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 - Coverage must not drop below `{{COVERAGE_THRESHOLD}}%` on any task
 - If a code path cannot be tested (hardware, external service): log the reason in `CURRENT.md`
 - 100% coverage is not the goal — meaningful coverage of behaviour is
+- Coverage percentage alone is insufficient — a suite can be 90% covered and catch almost no bugs. For critical modules, consider mutation testing to verify the suite actually detects faults (F012 — 2025 best practice)
+
+### Contract testing across service boundaries (F013 — distributed systems)
+- For services consumed by other teams or systems, use consumer-driven contract tests (e.g. Pact) — these validate that the provider implementation satisfies the consumer's expectations independently of integration environments
+- Distinguish: a contract test within a single service (HTTP response shape testing) from a cross-service consumer-driven contract — both are required in distributed architectures
 
 ## Done-when — test task is not complete until
 - [ ] All required test types written (see trigger table above)

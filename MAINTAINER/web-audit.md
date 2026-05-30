@@ -229,8 +229,8 @@ For deferred findings:
 - Add to `MAINTAINER/platform-improvements.md` backlog section with the proposed rule text
 
 After all selections processed:
-- Bump version if any rules were added
-- Report summary: "X rules added, Y skipped, Z deferred. Log updated."
+- If any rules were added: remind the maintainer to update CHANGELOG.md and run `.\tools\release.ps1 -Version X.Y.Z`
+- Report summary: "X rules added, Y skipped, Z deferred. Log updated. Run release when ready."
 
 ---
 

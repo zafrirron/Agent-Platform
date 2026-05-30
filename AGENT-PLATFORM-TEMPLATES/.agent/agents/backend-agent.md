@@ -29,6 +29,17 @@
 - Parameterised queries only — no string concatenation into SQL
 - Validate and sanitise all user input at the entry point, not deep in the call stack
 - Paginate all list endpoints from day one — no unbounded queries
+- Mass assignment: never bind all client-supplied fields directly to a model/ORM — use explicit field allowlists on every write operation (F003 — OWASP API3:2023)
+- Third-party API responses are untrusted input — validate and sanitise before use, never pass raw external data to downstream systems or clients (F011 — OWASP API10:2023)
+
+### SSRF and server-side fetches (F007 — OWASP A10)
+- Any server-side HTTP fetch to a user-supplied or externally-derived URL must validate the destination against an allowlist
+- Block private IP ranges and cloud-metadata endpoints (169.254.x.x, 10.x.x.x, 172.16-31.x.x) in URL validation
+- Use idempotency keys on mutation endpoints (POST for payments, order creation, notifications) to safely handle network retries without double-applying operations (F018)
+
+### Rate limiting
+- Auth endpoints (login, password reset, token refresh): hard rate limit required
+- Compute-heavy endpoints (search, bulk export, AI inference, file processing): per-user and global rate limits; return 429 with Retry-After header (F009 — OWASP API4:2023)
 
 ### Testing
 - Every new endpoint ships with a contract test (happy path + at least one error path)

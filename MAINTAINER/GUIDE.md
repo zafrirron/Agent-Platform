@@ -7,7 +7,7 @@
 
 ## The meta-philosophy
 
-This platform is developed using itself. The maintainer's AI agent (loaded from this folder) reads and improves the templates that consumer AI agents use. This creates a feedback loop:
+This platform is developed using itself. You work with your AI partner (the maintainer agent) the same way users work with their agents — describe what you want, the agent implements it.
 
 ```
 Two improvement sources feed the platform:
@@ -30,15 +30,26 @@ Loop continues
 
 ---
 
+## Starting a maintainer session
+
+```
+Read MAINTAINER/platform-maintainer-agent.md
+Task: [your goal — e.g. "audit the security expert for gaps", "add a new rule for X"]
+```
+
+The maintainer agent knows the full framework structure, the two-section model, the extension anatomy, and the release process. You do not need to explain any of this.
+
+---
+
 ## Audit schedule
 
-| Frequency | Mode | Command | What it does |
-|-----------|------|---------|-------------|
-| Anytime | Mode 1 | `"Add rule to X: Y"` | Immediate targeted addition |
-| Monthly | Mode 2 Option B | `Read MAINTAINER/web-audit.md and execute it.` | OWASP + CWE + best practices |
-| Quarterly | Mode 2 Option C | `Read MAINTAINER/web-audit.md and execute it. scope=full` | + Community signals + conference findings |
-| After production incident | Mode 1 | `"Add rule to X: [failure-based rule]"` | Encode the specific failure |
-| After OWASP update | Mode 2 Phase 1 | Run Phase 1 only | Security sources only |
+| Frequency | Mode | What to say |
+|-----------|------|-------------|
+| Anytime | Mode 1 | `"Add rule to [expert]: [rule]"` |
+| Monthly | Mode 2 Option B | `Read MAINTAINER/web-audit.md and execute it.` |
+| Quarterly | Mode 2 Option C | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
+| After production incident | Mode 1 | `"Add rule to [expert]: [failure-based rule]"` |
+| After OWASP update | Mode 2 Phase 1 | Run Phase 1 only |
 
 ---
 
@@ -56,7 +67,7 @@ Agent Platform Bootstrap (framework repo)
 │   └── platform-improvements.md       ← improvement log (all rules traced to source)
 │
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
-│   ├── .agent/agents/             ← 8 expert agents (with PLATFORM/PROJECT sections)
+│   ├── .agent/agents/             ← 9 expert agents (with PLATFORM/PROJECT sections)
 │   ├── .agent/playbooks/          ← 8 playbooks (with PLATFORM section)
 │   ├── .agent/CONVENTIONS.md      ← coding conventions (with PLATFORM/PROJECT sections)
 │   └── ... (all other installed files)
@@ -65,20 +76,10 @@ Agent Platform Bootstrap (framework repo)
 ├── AGENT-PLATFORM-APPLY.js        ← installer entry point
 ├── bin/agent-platform.js          ← npx entry point
 ├── AGENT-PLATFORM-FRAMEWORK-README.md  ← USER documentation
-├── CHANGELOG.md                   ← version history (user-visible)
-└── tools/                         ← build scripts (manifest, readme)
+├── CHANGELOG.md                   ← version history (MUST be updated before release)
+├── tests/                         ← 76 integration + unit tests (run on every commit)
+└── tools/release.ps1              ← single command for versioning + tagging + GitHub release
 ```
-
----
-
-## Starting a maintainer session
-
-```
-Read MAINTAINER/platform-maintainer-agent.md
-Task: [your goal — e.g. "audit the security expert for gaps", "add a new rule for X"]
-```
-
-The maintainer agent knows the full framework structure, the two-section model, the extension anatomy, and the release process. You do not need to explain these to it.
 
 ---
 
@@ -101,14 +102,12 @@ NEVER touched by any upgrade mode.
 **What this enables:** you improve expert rules, and every user gets the improvement on next upgrade — without losing their project customisations.
 
 **What `mode=upgrade` does:**
-- Finds `<!-- PLATFORM:START/END -->` markers in the existing file
-- Replaces only that block with the new template version
-- Leaves everything outside those markers untouched
-- Files without markers: skipped (not overwritten)
+- Files WITH markers → patches only the `PLATFORM` block, leaves `PROJECT` section untouched
+- Files WITHOUT markers → fully replaced (pure platform files: session-start-shared, session-end-shared, QUICK-REF, etc.)
 
 ---
 
-## The improvement loop — step by step
+## The improvement loop — fully agentic
 
 ### 1. Observe a failure
 A consumer reports (or you discover): "The Backend agent shipped an endpoint without updating api-contracts.md."
@@ -120,73 +119,56 @@ Task: The Backend agent shipped an endpoint without updating api-contracts.md.
 I want to add a done-when gate. First check for duplicates.
 ```
 
-### 3. Audit for duplicates
-The agent searches existing rules and reports what's already there.
+### 3. Agent audits, implements, and logs
+The agent:
+- Searches existing rules for duplicates
+- Adds the rule to the correct PLATFORM section
+- Logs the entry in `MAINTAINER/platform-improvements.md`
+- Updates `CHANGELOG.md` with the change
 
-### 4. Write the rule
-Add to the PLATFORM section of the relevant file:
-```markdown
-## Done-when
-- [ ] api-contracts.md updated with new/changed endpoints
+### 4. Tests run automatically
+The pre-commit hook runs all 76 tests before every commit. If tests fail, the commit is blocked.
+To run tests manually: `npm test`
+
+### 5. Ship it
+```powershell
+.\tools\release.ps1 -Version X.Y.Z
 ```
 
-### 5. Log it
-```
-Read MAINTAINER/platform-improvements.md
-Add entry: failure, rule added, version, file changed
-```
-
-### 6. Test it
-Install in a scratch repo:
-```bash
-mkdir /tmp/test-repo && cd /tmp/test-repo && git init
-npx github:zafrirron/Agent-Platform  # or run locally from this repo
-```
-Start a session, ask the backend expert to do something — verify the new rule appears and the agent follows it.
-
-### 7. Ship it
-```bash
-# Bump version in: AGENT-PLATFORM-MANIFEST.json, AGENT-PLATFORM-BOOTSTRAP.md,
-# AGENT-PLATFORM-FRAMEWORK-README.md, package.json, README.md
-git add -A
-git commit -m "feat(backend-agent): add done-when gate for api-contracts.md update (v2.X.0)"
-git push
-```
+The release script:
+- Validates CHANGELOG.md has an entry for this version (blocks if not)
+- Bumps version in `package.json`, `AGENT-PLATFORM-MANIFEST.json`, and `README.md`
+- Runs the full test suite (blocks on failure)
+- Commits the version bump, creates the git tag, pushes, creates the GitHub release page
 
 ---
 
-## Adding a new expert — checklist
+## Adding a new expert or playbook
 
-- [ ] File: `AGENT-PLATFORM-TEMPLATES/.agent/agents/<name>-agent.md`
-- [ ] Has `<!-- PLATFORM:START/END -->` markers
-- [ ] Has `<!-- PROJECT:START/END -->` placeholder section
-- [ ] Domain clearly stated
-- [ ] "Before any task" reading list (which context files to read)
-- [ ] At minimum 5 specific, verifiable rules
-- [ ] Done-when checklist (2-5 items)
-- [ ] Added to `AGENT-PLATFORM-MANIFEST.json`
-- [ ] Added to `AGENTS.md` template expert table
-- [ ] Added to `QUICK-REF.md` template expert table
-- [ ] Added to `PLATFORM-HELP.md` template expert section
-- [ ] CHANGELOG entry written
-- [ ] `MAINTAINER/platform-improvements.md` entry written
+Tell the maintainer agent:
+```
+Add a new expert agent for [domain]
+```
+or
+```
+Add a new playbook for [scenario]
+```
+
+The agent follows the 7-step extension anatomy and handles all file creation, manifest registration, and cross-file updates (AGENTS.md, QUICK-REF.md, PLATFORM-HELP.md, CHANGELOG.md, platform-improvements.md) automatically.
 
 ---
 
-## Adding a new playbook — checklist
+## E2E testing
 
-- [ ] File: `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/<name>.md`
-- [ ] Has `<!-- PLATFORM:START/END -->` markers
-- [ ] Has a Pre-conditions checklist
-- [ ] Steps are numbered, specific, expert-assigned where relevant
-- [ ] At least one hard quality gate (STOP / blocked if condition not met)
-- [ ] Rules section with at least 3 hard rules
-- [ ] Added to `AGENT-PLATFORM-MANIFEST.json`
-- [ ] Added to `AGENTS.md` template playbooks table
-- [ ] Added to `QUICK-REF.md` template playbooks table
-- [ ] Added to `PLATFORM-HELP.md` template playbooks table
-- [ ] CHANGELOG entry written
-- [ ] `MAINTAINER/platform-improvements.md` entry written
+The full test plan lives at `tests/E2E-TEST-PLAN.md`. It covers:
+- Install → session start → auto-routing → multi-expert → security audit → session end → cross-framework critic → uninstall
+
+To run automated tests:
+```
+npm test
+```
+
+To run the full E2E test manually: follow `tests/E2E-TEST-PLAN.md` using a scratch folder.
 
 ---
 
@@ -199,19 +181,22 @@ git push
 | New install mode or infrastructure change | Minor (2.x.0) |
 | Breaking change to file structure or markers | Major (x.0.0) |
 
+**Always update `CHANGELOG.md` BEFORE running the release script.** The script will block if the version has no CHANGELOG entry.
+
 ---
 
-## Quality gate before any release
+## Git workflow
 
-```bash
-# 1. Install in a clean scratch repo
-mkdir /tmp/ap-test && cd /tmp/ap-test && git init
-node /path/to/Agent-Platform/AGENT-PLATFORM-APPLY.js --pack=/path/to/Agent-Platform --target=.
-
-# 2. Verify: correct files created, no unfilled {{placeholders}} in critical files
-grep -r "{{" .agent/agents/ .agent/playbooks/ .agent/CONVENTIONS.md
-
-# 3. Start a session — confirm quick reference appears correctly
-# 4. Confirm new rules appear in the relevant expert file
-# 5. Confirm PROJECT sections are empty (not pre-filled with platform content)
 ```
+# Commit often during development — tests run automatically on every commit
+git add [specific files]
+git commit -m "feat/fix/chore: description"
+
+# Push when ready
+git push
+
+# Release when the feature set is complete and CHANGELOG is updated
+.\tools\release.ps1 -Version X.Y.Z
+```
+
+Never manually bump versions, create tags, or edit GitHub release pages. The release script does all of that from `CHANGELOG.md`.

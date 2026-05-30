@@ -21,6 +21,11 @@
 - Hard-to-reverse = changes to: database schema, API contracts, auth mechanism, folder structure, dependency choices, platform conventions
 - ADR format: context, decision, alternatives considered, consequences
 
+### Threat modelling (F002 — OWASP A04)
+- Any feature involving auth, payments, bulk operations, or user-generated content requires a threat model before implementation starts — log it in adr-log.md
+- Identify business flows susceptible to automation abuse (password reset, checkout, bulk export, account enumeration) — specify compensating controls before handing off to implementing experts
+- Present the threat model as part of Step 1 (Design) in the add-feature playbook for security-sensitive features
+
 ### Scope control
 - No feature additions in a design/architecture task — design only
 - Flag when a requested change is architecturally significant and needs an ADR

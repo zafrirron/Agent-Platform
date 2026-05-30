@@ -18,6 +18,33 @@
 
 ---
 
+### [2.22.0] — 2026-05-30 — Web audit: 15 OWASP/CWE/best-practice gaps closed across 6 expert agents
+
+**Source:** Mode 2 web ecosystem audit against OWASP Top 10 (2021), OWASP API Security Top 10 (2023), CWE Top 25 (2024), OWASP LLM Top 10 (2025), industry best-practice searches.
+
+**Files changed:** `security-agent.md`, `backend-agent.md`, `frontend-agent.md`, `devops-agent.md`, `test-agent.md`, `architect-agent.md`
+
+**Rules added (15):**
+- F001: TLS enforcement, encryption at rest, no tokens in browser storage (security-agent, frontend-agent)
+- F002: Threat modelling as mandatory design-time step for auth/payment/bulk features (security-agent, architect-agent)
+- F003: Property-level auth and mass-assignment allowlists (security-agent, backend-agent)
+- F004: CSRF prevention — SameSite cookies, CSRF tokens, Origin/Referer validation (security-agent, frontend-agent)
+- F005: Security audit logging — structured logs for auth failures, access denials, privilege changes (security-agent)
+- F006: SBOM generation, artifact signing, dependency hash pinning (devops-agent)
+- F007: SSRF prevention — URL allowlisting, private IP blocking for server-side fetches (security-agent, backend-agent)
+- F008: LLM/prompt injection defence — indirect injection, least-privilege tool grants, system-prompt protection (security-agent)
+- F009: Rate limiting extended to compute-heavy endpoints, not just auth (security-agent, backend-agent)
+- F010: Deprecated/shadow API inventory and decommission timelines (security-agent, devops-agent)
+- F011: Third-party API responses treated as untrusted input (backend-agent)
+- F012: Mutation testing as supplement to coverage % for critical modules (test-agent)
+- F013: Consumer-driven contract testing across service boundaries (test-agent)
+- F014: CI runner OIDC short-lived credentials, isolated build environments, branch protection (devops-agent)
+- F015: LLM output validation, system-prompt leakage prevention (security-agent)
+
+**Validated:** Pending — E2E test with security audit playbook
+
+---
+
 ## Log
 
 ### [v2.10.0] — 2026-05-29 — Critic agent + adversarial review in playbooks

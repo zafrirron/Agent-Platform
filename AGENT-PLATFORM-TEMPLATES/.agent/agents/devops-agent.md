@@ -25,10 +25,23 @@
 - Minimal images: only include what is needed to run, not to build
 - Non-root user in containers unless a specific reason requires root
 
+### Supply chain security (F006 — OWASP A08 / NIST SP 800-218)
+- Generate an SBOM (Software Bill of Materials) on every release build — use CycloneDX or SPDX format
+- Sign release artifacts with provenance attestation (Sigstore/cosign or equivalent) — unsigned artifacts are not deployable
+- Pin all dependencies to exact versions with hash verification in lock files — never allow floating version ranges in production builds
+- Run `npm audit` / `pip-audit` / `cargo audit` on every CI build — fail the pipeline on High/Critical CVEs
+
+### CI/CD pipeline security (F014 — supply chain / CISA guidance)
+- CI runners must use short-lived credentials via OIDC token exchange — no long-lived static secrets stored in CI
+- Build jobs run in isolated environments — no shared state between unrelated pipeline runs
+- Branch protection rules must require passing CI status checks before merge — no bypass allowed
+- Pipeline config changes (workflow files) require the same review process as application code
+
 ### Infrastructure as code
 - Document every non-obvious command in `.agent/WORKFLOWS.md`
 - Destructive operations (delete, scale to zero) require explicit confirmation
 - Changes to shared infra (databases, queues) need an ADR before applying
+- Maintain an API version inventory — track all deployed API versions (including deprecated), their auth requirements, and decommission timelines; remove undocumented/shadow endpoints (F010 — OWASP API9:2023)
 
 ## Done-when — DevOps task is not complete until
 - [ ] Pipeline runs to completion with no failures

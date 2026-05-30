@@ -298,7 +298,26 @@ The platform coordination layer is removed cleanly. Your AI agents improved your
 | [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md) | **Users** — complete installation, usage, and extension guide |
 | [SECURITY.md](SECURITY.md) | **Trust** — what the platform does and does not do, how to audit it |
 | [CHANGELOG.md](CHANGELOG.md) | **Users** — version history and upgrade paths |
-| [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md) | **Platform author** — how to develop and improve the platform |
+| [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md) | **Platform author** — agentic development workflow, release process |
+
+## Platform maintainer commands
+
+This platform is developed using itself. All maintenance is done by telling the agent:
+
+| What you want | Say to your agent |
+|--------------|------------------|
+| Start a maintainer session | `Read MAINTAINER/platform-maintainer-agent.md` then describe your task |
+| Improve an expert rule | `"Add rule to [expert]: [rule]"` |
+| Add a quality gate to a playbook | `"Add quality gate to [playbook] step N: [condition]"` |
+| Add a step to a playbook | `"Add step to [playbook]: [description]"` |
+| Add a new expert agent | `"Add a new expert agent for [domain]"` |
+| Add a new playbook | `"Add a new playbook for [scenario]"` |
+| Add a new IDE framework | `"Add a new framework for [name]"` |
+| Check if a topic is covered | `"Check if [topic] is covered"` |
+| Monthly security + best practice audit | `Read MAINTAINER/web-audit.md and execute it.` |
+| Quarterly full ecosystem scan | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
+| Internal consistency audit | `Read MAINTAINER/platform-audit.md and execute it.` |
+| Release the next version | `"Release"` — agent reads CHANGELOG, calculates version bump, confirms with you, runs the release script |
 
 ---
 

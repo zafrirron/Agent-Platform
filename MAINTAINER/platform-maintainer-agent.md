@@ -136,6 +136,51 @@ Execution:
 
 ---
 
+### Command: "release" / "release as minor" / "release as patch"
+
+```
+Execution:
+1. Read package.json → get current version
+2. Read CHANGELOG.md → find the topmost unreleased or next version entry
+3. Determine bump type from change content:
+   - New file added to manifest OR new capability → Minor (2.x.0)
+   - Existing PLATFORM section improved / bug fix → Patch (2.7.x)
+   - Breaking change to file structure or markers → Major (x.0.0)
+   - (If user said "release as minor/patch/major" → use that)
+4. Calculate next version (e.g. 2.20.1 → 2.21.0 for minor)
+5. Confirm with user: "Next version will be vX.Y.Z — proceed?"
+6. If confirmed: run .\tools\release.ps1 -Version X.Y.Z
+7. Report: "Released vX.Y.Z — tag created, GitHub release page published."
+```
+
+**Example trigger:**
+> "Release" or "Release the next version" or "Release as patch"
+
+---
+
+### Command: "add new framework for <name>"
+
+```
+Execution:
+1. Read an existing framework folder (e.g. AGENT-PLATFORM-TEMPLATES/.claude/) as a template
+2. Create new folder: AGENT-PLATFORM-TEMPLATES/.<name>/
+3. Populate with:
+   - FRAMEWORK.json (framework metadata)
+   - README.md (framework-specific guide)
+   - prompts/session-start.md (calls .agent/session-start-shared.md)
+   - prompts/session-end.md (calls .agent/session-end-shared.md)
+   - Any framework-specific skill files (e.g. rules/, commands/)
+4. Add all new files to AGENT-PLATFORM-MANIFEST.json
+5. Add the framework to registry.yaml template
+6. Add to AGENTS.md template framework table
+7. Add to PLATFORM-HELP.md Switching IDEs section
+8. Add to README.md and FRAMEWORK-README.md capability tables
+9. Log + bump version
+10. Report: "New framework .<name>/ created. All cross-references updated. Ready to commit."
+```
+
+---
+
 ### Command: "add new expert for <domain>"
 
 ```

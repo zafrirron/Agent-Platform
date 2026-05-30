@@ -5,6 +5,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.22.0] — 2026-05-30
+
+### Added — Web audit: 15 OWASP/CWE/LLM security and best-practice rules across 6 expert agents
+
+Mode 2 web ecosystem audit against OWASP Top 10 (2021), OWASP API Security Top 10 (2023), CWE Top 25 (2024), OWASP LLM Top 10 (2025).
+
+**security-agent.md** — 5 new rule sections:
+- Data protection: TLS enforcement, encryption at rest, no tokens in browser storage (F001)
+- CSRF prevention: SameSite cookies, CSRF tokens, Origin/Referer validation (F004)
+- SSRF prevention: URL allowlisting, private IP range blocking for server-side HTTP fetches (F007)
+- Security audit logging: structured event logs, alerting thresholds, log integrity (F005)
+- LLM/agentic security: prompt injection defence, indirect injection, least-privilege tool grants, system-prompt protection, output validation (F008, F015)
+- Extended rate limiting to compute-heavy endpoints (F009); deprecated API inventory (F010); threat modelling trigger (F002); property-level auth and mass-assignment (F003)
+
+**backend-agent.md** — mass-assignment allowlists, third-party API response validation, SSRF URL validation, idempotency keys, extended rate limiting (F003, F007, F009, F011, F018)
+
+**frontend-agent.md** — no tokens in localStorage, avoid innerHTML with user data, CSP header requirement, CSRF token on mutation forms (F001, F004)
+
+**devops-agent.md** — SBOM generation, artifact signing, dependency hash pinning, CI runner OIDC short-lived credentials, isolated build environments, API version inventory (F006, F014, F010)
+
+**test-agent.md** — mutation testing for critical modules, consumer-driven contract testing across service boundaries (F012, F013)
+
+**architect-agent.md** — threat modelling as mandatory design-time step for auth/payment/bulk features (F002)
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.21.0] — 2026-05-30
 
 ### Changed — QUICK-REF redesign: user-facing reference, not internal mechanics
