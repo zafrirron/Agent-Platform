@@ -80,6 +80,9 @@
 | Regression test after a fix | Happens automatically via bug-fix playbook |
 | Full test suite + quality gate | "run the test suite and check coverage" |
 
+> **Coverage report** — after any coverage run, open `coverage/lcov-report/index.html` in your browser.
+> Line-by-line view: green = covered, red = not covered. Generated automatically by the Test expert.
+
 ---
 
 ## Token Compression (Caveman)

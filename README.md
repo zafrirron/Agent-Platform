@@ -104,7 +104,8 @@ Repeat. The platform never stops improving.
 | **Cross-framework critic review** | When you switch IDEs (e.g. Claude Code → Cursor), the new agent automatically offers to review the previous model's work. Different AI models have different blind spots — cross-model review catches what the first model missed. Zero extra setup. |
 | **8 playbooks** | add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
-| **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. |
+| **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see exactly which lines aren't covered. Coverage and Swagger artifacts are your project files — keep, commit, or gitignore them as you see fit. |
+| **API documentation** | Docs expert generates OpenAPI/Swagger docs from `api-contracts.md`. Say "document the API" and get a publish-ready spec. |
 | **Quick reference** | Full capability guide displayed on every session start — no memorisation required |
 | **Local help** | `PLATFORM-HELP.md` installed in every repo — everything explained, fully offline |
 | **Agentic update check** | Agents check for platform improvements automatically, once per 7 days |

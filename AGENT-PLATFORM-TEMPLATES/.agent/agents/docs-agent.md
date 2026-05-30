@@ -13,7 +13,7 @@
 ### What belongs where
 - User-facing docs: `docs/` or repo root README
 - Agent/platform docs: `.agent/` only — never mix with user docs
-- API docs: generated from `api-contracts.md` or inline from code — single source of truth
+- API docs: generate OpenAPI/Swagger spec from `api-contracts.md` — output to `openapi.json` or `swagger/` in the project root. This is a project artifact the user owns; it is not gitignored by default.
 
 ### Writing quality
 - Document behaviour, not implementation — "what it does", not "how it works internally"

@@ -38,9 +38,11 @@
 - [ ] `api-contracts.md` updated with new/changed endpoints
 - [ ] Contract test written and green (happy path + at least one error path)
 - [ ] Error responses follow the standard format — no stack traces or internal details to client
+- [ ] Error shape is consistent across ALL endpoints in the file (not just new ones) — `{ error, message }` everywhere
 - [ ] All user inputs validated and sanitised at entry point (body, params, query)
 - [ ] Auth confirmed on every new endpoint — no endpoint is unintentionally public
 - [ ] No injection vectors — parameterised queries, no string concat into SQL/shell
+- [ ] No orphaned files — no dead code or unused modules introduced during this session
 - [ ] No secrets in source — tokens and keys from env only
 - [ ] Excessive data exposure check — response contains only what the caller needs
 
