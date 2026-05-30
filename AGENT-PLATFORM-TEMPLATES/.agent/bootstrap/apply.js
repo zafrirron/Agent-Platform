@@ -168,8 +168,17 @@ const FW_RULE_PATTERNS = [
  * ADD AN ENTRY HERE when a new framework with root-level configs is added.
  */
 const LEGACY_ROOT_FILES = [
-  { file: '.cursorrules', label: 'Cursor rules (legacy root format)' },
-  // { file: '.windsurfrules', label: 'Windsurf rules (legacy root format)' },
+  { file: '.cursorrules',         label: 'Cursor rules (legacy root format)' },
+  { file: '.clinerules',          label: 'Cline rules' },
+  // { file: '.windsurfrules',    label: 'Windsurf rules (legacy root format)' },
+];
+
+/**
+ * Framework config folders — entire files backed up if they contain user content.
+ * Platform-owned files within these folders are excluded.
+ */
+const FW_CONFIG_FILES = [
+  { file: '.codex/instructions.md',  label: 'Codex instructions' },
 ];
 
 function scanPreExistingArtifacts(root) {
@@ -194,6 +203,11 @@ function scanPreExistingArtifacts(root) {
     fs.readdirSync(dir)
       .filter(f => f.endsWith(ext) && !platformFiles.has(f))
       .forEach(f => toBackup.push({ file: folder + '/' + f, label: label + ': ' + f }));
+  });
+
+  // Individual framework config files (e.g. Codex instructions)
+  FW_CONFIG_FILES.forEach(({ file, label }) => {
+    if (fs.existsSync(path.join(root, file))) toBackup.push({ file, label });
   });
 
   return { toBackup, toNote };
@@ -233,15 +247,15 @@ function writeMigrationNotes(root, artifacts, backupDir) {
 
   toBackup.forEach(({ file, label }) => {
     if (file === 'CLAUDE.md') {
-      lines.push(`\n## CLAUDE.md — preserved\n`,
-        `Your CLAUDE.md was kept as-is (the platform version was skipped).\n`,
-        `**To connect it to the platform**, add this line to your CLAUDE.md:\n`,
-        `\`\`\`\nRead .agent/session-start.md and execute it.\n\`\`\`\n`,
-        `This activates platform session management while keeping your existing instructions.\n`);
+      lines.push(`\n## CLAUDE.md — updated automatically\n`,
+        `Your CLAUDE.md was kept intact. The platform injected the session-start trigger at the top.\n`,
+        `Your existing instructions are preserved below it.\n`,
+        `On first session start, the platform agent will automatically review your original rules and migrate any that are worth keeping.\n`);
     } else if (file === 'AGENTS.md') {
-      lines.push(`\n## AGENTS.md — preserved\n`,
-        `Your AGENTS.md was kept as-is.\n`,
-        `To merge: copy custom rules into the \`<!-- PROJECT:START -->\` sections of the relevant expert files.\n`);
+      lines.push(`\n## AGENTS.md — replaced (your original backed up)\n`,
+        `AGENTS.md is the platform's routing control file — it must be in the platform's format for auto-routing and expert chaining to work.\n`,
+        `Your original AGENTS.md has been backed up to \`.agent/backup/${backupName}/\`.\n`,
+        `To preserve your custom rules: move them into the \`<!-- PROJECT:START -->\` sections of the relevant expert agent files in \`.agent/agents/\`.\n`);
     } else {
       lines.push(`\n## ${label} — preserved\n`,
         `Backed up. Continues to work alongside the platform.\n`);
@@ -277,8 +291,14 @@ for (const entry of manifest.files) {
 
   let content = sub(fs.readFileSync(src, 'utf8'), vars);
 
+  // Platform control files that must always be installed even when pre-existing.
+  // These are routing/coordination files with no user-customizable content —
+  // user rules belong in expert PROJECT sections, not here.
+  const ALWAYS_INSTALL = new Set(['AGENTS.md', 'SYNC-POINTS.md']);
+  const alwaysInstall  = ALWAYS_INSTALL.has(path.basename(entry.path));
+
   if (fs.existsSync(target)) {
-    if (MODE === 'force') {
+    if (MODE === 'force' || (MODE === 'install' && alwaysInstall)) {
       fs.mkdirSync(path.dirname(target), { recursive: true });
       fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
       if (entry.path.endsWith('launch.sh')) {
@@ -300,6 +320,16 @@ for (const entry of manifest.files) {
         updated.push(entry.path);
       } else {
         noMarkers.push(entry.path); // template has markers but installed file doesn't → warn user
+        skipped.push(entry.path);
+      }
+    } else if (MODE === 'install' && path.basename(entry.path) === 'CLAUDE.md') {
+      // CLAUDE.md exists — don't overwrite, but inject the session-start trigger if missing
+      const existing = fs.readFileSync(target, 'utf8');
+      if (!existing.includes('session-start.md')) {
+        const trigger = 'Read `.agent/session-start.md` and execute it.\n\n';
+        fs.writeFileSync(target, trigger + existing);
+        updated.push(entry.path + ' (session-start trigger injected)');
+      } else {
         skipped.push(entry.path);
       }
     } else if (MODE === 'repair' && isStub(fs.readFileSync(target, 'utf8'))) {

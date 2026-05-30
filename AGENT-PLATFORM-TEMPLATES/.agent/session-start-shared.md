@@ -103,6 +103,41 @@
 > reasoning patterns and blind spots. A cross-framework critic catches what the first model
 > missed precisely because it approaches the work fresh, with no prior context.
 
+### Step 1c — One-time migration of pre-existing AI configs (runs once, then never again)
+
+Check if `.agent/MIGRATION-NOTES.md` exists.
+
+**If it does not exist:** skip this step entirely.
+
+**If it exists:** the user had pre-existing AI config files from one or more frameworks before installing the platform. Automatically migrate any valuable rules — regardless of which IDE or framework they came from.
+
+**Migration procedure:**
+
+1. Read `.agent/MIGRATION-NOTES.md` — find the backup folder path (e.g. `.agent/backup/pre-install-*/`)
+2. Read `manifest.json` in that backup folder — it maps every backed-up filename to its original path
+3. For EVERY backed-up file (all frameworks — Claude, Cursor, Codex, Antigravity, any others):
+   - Read the file content
+   - Identify which framework it came from by its original path:
+     - `CLAUDE.md` → Claude Code instructions
+     - `AGENTS.md` → previous agent rules
+     - `.cursorrules` or `.cursor/rules/*.mdc` → Cursor rules
+     - `.codex/instructions.md` → Codex instructions
+     - Any other AI config file → read and evaluate
+4. For each rule or instruction found across ALL backed-up files, evaluate:
+   - **Domain coding rule** (backend, frontend, security, data, testing, DevOps) → add to the PROJECT section of the appropriate expert agent in `.agent/agents/`
+   - **General coding convention** (naming, formatting, git, style) → add to `.agent/CONVENTIONS.md` PROJECT section
+   - **Project-specific constraint** (e.g. "always use TypeScript", "max line length 100") → add to `.agent/CONVENTIONS.md` PROJECT section
+   - **Session-start instruction or platform trigger** → skip (already handled by the platform)
+   - **Boilerplate, placeholder, or zero-content rule** → skip
+   - **Duplicate of an existing platform rule** → skip
+5. For each rule migrated, output one line: `✅ Migrated: "[rule text]" → [target file]`
+6. For each rule skipped, output one line: `⏭ Skipped: "[rule text]" (reason)`
+7. If nothing was migrated: output `ℹ No custom rules found worth migrating.`
+8. Delete `.agent/MIGRATION-NOTES.md` — migration is complete, this step will never run again
+
+> **Framework-agnostic by design:** It does not matter which IDE the user came from. All backed-up AI configs are read, evaluated, and merged into the platform in one automatic pass.
+> **The user does nothing.** No manual copying, no file editing, no prompts.
+
 ### Step 2 — One-time test runner setup
 
 Read `.agent/platform.json`. Check `test_runner`.
