@@ -216,9 +216,10 @@ Run a security audit on this todo app.
 
 Tell the agent:
 ```
-End session. I made changes to src/routes/todos.js and src/models/todo.js.
-Goal was: add due date field to todos.
+End session.
 ```
+
+The agent must derive goal and files changed from its own session context — it must NOT ask the user to recap.
 
 **Verify `CURRENT.md` was updated with:**
 - [ ] Goal recorded

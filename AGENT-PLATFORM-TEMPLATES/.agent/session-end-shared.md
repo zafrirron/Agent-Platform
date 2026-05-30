@@ -9,6 +9,9 @@
 
 ### Step 1 — Summarise work done
 
+Derive this entirely from your session context — do NOT ask the user what changed.
+You have full context of everything done since session start: files read, files written, tasks completed.
+
 Write a 2–4 line summary covering:
 - Files changed (list each file explicitly — this is used for cross-framework critic review)
 - Behaviour added or fixed
@@ -40,6 +43,20 @@ For each unregistered file found:
 
 If no new `.md` files were created: skip this step silently.
 
+### Step 2c — Commit all uncommitted changes
+
+Run `git status --short` to check for uncommitted work.
+
+**If there are uncommitted changes:**
+1. Stage all modified and new project files: `git add -A`
+2. Commit with a meaningful message summarising the session work:
+   `git commit -m "<one-line summary of what was done this session>"`
+3. Confirm the working tree is clean after commit
+
+**If working tree is already clean:** skip silently.
+
+> **Why this matters:** The next IDE or framework reads the committed state. Uncommitted changes are invisible to the next agent and cannot be reviewed by the cross-framework Critic.
+
 ### Step 3 — Update handoff log
 
 Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:
@@ -51,6 +68,7 @@ Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:
   - <file1> — <what changed>
   - <file2> — <what changed>
 **Tests:** <tests added or confirmed green>
+**Commit:** <git commit hash from Step 2c, or "none — no changes">
 **Critic reviewed:** no
 **Next agent:** <which expert or framework, if known>
 **Notes:** <blockers, known issues, or anything the next agent should know>

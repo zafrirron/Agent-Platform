@@ -11,17 +11,18 @@
 ### Step 1 — Conflict check and registry
 
 1. Read `.agent/handoff/sync/registry.yaml`
-2. Check if any other framework has `status: active` with overlapping `files`
+2. **Capture** `meta.updated_by` as `previous_framework` before writing anything — this is needed for Step 1b
+3. Check if any other framework has `status: active` with overlapping `files`
    - If conflict found: stop, report which framework owns which files, ask user to end that session first
    - If no conflict: continue
-3. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
-4. Set `meta.updated_by` → `<fw>`
+4. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
+5. Set `meta.updated_by` → `<fw>`
 
 ### Step 1b — Cross-framework Critic offer
 
-1. Read `meta.updated_by` from `registry.yaml` — this is the framework that last ended a session
+1. Use `previous_framework` captured in Step 1.2 — do NOT re-read `meta.updated_by` from registry (it now shows the current framework)
 2. Read the most recent entry in `.agent/handoff/CURRENT.md`
-3. **If** `meta.updated_by` is a DIFFERENT framework than the current one
+3. **If** `previous_framework` is a DIFFERENT framework than the current one
    AND the most recent CURRENT.md entry has `Critic reviewed: no`:
 
    Present this offer to the user:
@@ -29,7 +30,7 @@
    ┌─────────────────────────────────────────────────────────────────┐
    │  Cross-framework Critic review available                        │
    │                                                                 │
-   │  Last session: [meta.updated_by] — [goal from CURRENT.md]      │
+   │  Last session: [previous_framework] — [goal from CURRENT.md]    │
    │  Files changed: [file list from CURRENT.md]                     │
    │                                                                 │
    │  A different AI model did this work. Would you like me to run   │
