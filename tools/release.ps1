@@ -109,7 +109,8 @@ OK "README.md: $currentReadme → $Version"
 
 $pres = Get-Content "$ROOT\presentation\agent-platform-beta.html" -Raw -ErrorAction SilentlyContinue
 if ($pres) {
-    $currentPres = if ($pres -match 'v([0-9]+\.[0-9]+\.[0-9]+)') { $Matches[1] } else { "?" }
+    $currentPres = "?"
+    if ($pres -match 'v([0-9]+\.[0-9]+\.[0-9]+)') { $currentPres = $Matches[1] }
     $pres = $pres -replace 'v[0-9]+\.[0-9]+\.[0-9]+', "v$Version"
     Set-Content "$ROOT\presentation\agent-platform-beta.html" $pres -NoNewline
     OK "presentation/agent-platform-beta.html: $currentPres → $Version"
