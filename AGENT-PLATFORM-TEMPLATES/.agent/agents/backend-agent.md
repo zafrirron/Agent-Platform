@@ -10,6 +10,14 @@
 
 ## Rules — API and service work
 
+### REST design
+- Paths use resource-based nouns — never action verbs; the HTTP method expresses the intent
+  - ✅ `DELETE /users/{id}` &nbsp; ❌ `POST /users/delete`
+  - ✅ `PATCH /orders/{id}` &nbsp; ❌ `POST /orders/update`
+- HTTP verb semantics: GET=read (safe, cacheable), POST=create or non-idempotent action, PUT=full replace, PATCH=partial update, DELETE=remove; never use GET for mutations
+- List endpoints return a response wrapper with an `items` field — never a bare array; a bare array cannot evolve to include paging, metadata, or cursors without a breaking change
+- Every endpoint has a stable `operationId` in the OpenAPI spec (camelCase verb+resource, e.g. `getUserById`); never rename a published `operationId` — SDK generators bind to it and a rename silently breaks generated clients
+
 ### Contract discipline
 - Schema first: define the request/response shape in `api-contracts.md` before writing any handler
 - Never change an existing endpoint's response shape without a version bump

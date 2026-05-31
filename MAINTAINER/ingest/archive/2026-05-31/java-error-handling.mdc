@@ -1,0 +1,58 @@
+---
+description: Exception and HTTP error patterns for Java services
+globs: **/*.java
+alwaysApply: false
+---
+
+# Error Handling
+
+## Not-found pattern
+
+```java
+public Platform requireById(String id) {
+  return findById(id)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+}
+```
+
+## HTTP-mapped errors
+
+- Use `ResponseStatusException` with appropriate `HttpStatus`
+- Custom exception classes only when reused across multiple domains
+
+## Existence checks
+
+For any "must exist" lookup, use `.orElseThrow(...)` directly — do not manually check `isPresent` / `isEmpty`:
+
+```java
+// GOOD
+Platform p = repo.findById(id)
+    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+// BAD
+Optional<Platform> opt = repo.findById(id);
+if (opt.isEmpty()) {
+  throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+}
+Platform p = opt.get();
+```
+
+## Never swallow exceptions
+
+```java
+// ❌ BAD
+try { doWork(); } catch (Exception e) {}
+
+// ✅ GOOD
+try {
+  doWork();
+} catch (Exception e) {
+  log.error("Failed to do work for id={}", id, e);
+  throw e;
+}
+```
+
+## Null-safe returns
+
+- Return `Collections.emptyList()` instead of null for empty collections
+- Use `Optional<T>` for single-entity lookups that may not exist

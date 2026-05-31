@@ -5,6 +5,47 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.26.0] — 2026-05-31
+
+### Added — 23 production-proven rules from user submission ingest (Mode 3)
+
+First Mode 3 ingest: 7 Cursor rule files from a Java/Spring monorepo. Language-agnostic rules extracted and added to 5 platform files.
+
+**CONVENTIONS.md — 10 rules**
+- General: mark temporary implementations with TODO; prefer constructor injection; use structured log format with args not string concatenation
+- Agent behaviour: read module context docs before any task; mark tech shortcuts in code with TODO at the point of the shortcut
+- Git: commit subject ≤50 chars; commit body explains WHY (not what)
+- Error handling (new section): never swallow exceptions silently; return empty collections not null; model absent values with nullable wrappers
+
+**architect-agent.md — 3 rules**
+- Layer boundaries: controller→service only, service→repository only, no cross-layer shortcuts
+- No cross-service code imports — services communicate via API only
+- Consider CQRS: separate command from query controllers when domain has both
+
+**backend-agent.md — 4 rules (new REST design section)**
+- REST paths use resource nouns — never verbs; HTTP method expresses intent
+- HTTP verb semantics: GET=read, POST=create, PUT=replace, PATCH=partial, DELETE=remove
+- List endpoints return a wrapper with `items` field — never bare arrays
+- Every endpoint has a stable `operationId` — never rename a published operationId
+
+**docs-agent.md — 4 rules**
+- Explicit doc update trigger list (API surface, domains, tech stack, integrations, patterns, limitations)
+- Explicit skip list (formatting, comment-only, version bumps with no behavior change)
+- Docs content quality: one fact per bullet, no narration, no "TBD"/"coming soon"
+- Done-when gate: verify context docs match code before marking done
+
+**test-agent.md — 2 rules**
+- Test every fetch-by-id for both found AND missing cases (+ done-when gate)
+- Use fluent assertion libraries — failure messages must be actionable without reading source
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.25.0] — 2026-05-31
 
 ### Added — Global install: platform activates across all repos with one command

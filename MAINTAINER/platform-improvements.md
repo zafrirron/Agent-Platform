@@ -45,6 +45,48 @@
 
 ---
 
+### [2.26.0] — 2026-05-31 — User submission ingest: 23 production-proven rules across 5 expert files
+
+**Source:** Mode 3 user submission ingest — 7 Cursor rule files (.mdc) from a Java/Spring monorepo. Rules extracted, deduplicated against existing platform, language-agnostic versions written to platform standard.
+
+**Files changed:** `CONVENTIONS.md`, `architect-agent.md`, `backend-agent.md`, `docs-agent.md`, `test-agent.md`
+
+**Rules added (18 NEW):**
+- I001: Layer boundaries — controller→service only, service→repository only, no cross-domain shortcuts (architect-agent)
+- I002: No cross-service code imports — services communicate via API only (architect-agent)
+- I003: Mark temporary implementations with TODO + rationale in code (CONVENTIONS.md General)
+- I006: Explicit doc update trigger list: API surface, domains, tech stack, integrations, patterns, limitations (docs-agent)
+- I007: Explicit doc update skip list: formatting, comment-only, version bumps with no behavior change (docs-agent)
+- I008: Docs content quality: one fact per bullet, no narration, no "TBD"/"coming soon" (docs-agent)
+- I009: Commit body explains WHY — the diff shows what; body must capture reasoning (CONVENTIONS.md Git)
+- I011: Never swallow exceptions silently — log with context, then rethrow (CONVENTIONS.md Error handling)
+- I012: Return empty collections instead of null from list-returning functions (CONVENTIONS.md Error handling)
+- I013: Model absent values explicitly — nullable wrappers for optional, throw-on-absent for required (CONVENTIONS.md Error handling)
+- I014: REST paths use resource nouns — never verbs in paths (backend-agent REST design)
+- I015: HTTP verb semantics: GET=read, POST=create, PUT=replace, PATCH=partial, DELETE=remove (backend-agent)
+- I016: List endpoints return response wrapper with `items` field — never bare arrays (backend-agent)
+- I017: Every endpoint has stable operationId in OpenAPI spec — never rename published operationId (backend-agent)
+- I019: Consider CQRS — separate command from query controllers when domain has both (architect-agent)
+- I020: Test every fetch-by-id for BOTH found AND missing cases (test-agent + done-when gate)
+- I021: Use fluent assertion libraries — actionable failure messages without reading source (test-agent)
+- I022: Prefer constructor injection over field/annotation injection (CONVENTIONS.md General)
+- I023: Structured log format (format string + args) — never string concatenation in log calls (CONVENTIONS.md General)
+
+**Enhancements (5 ENHANCE):**
+- I004: "Read module context docs before any task" added to CONVENTIONS.md Agent behaviour
+- I005: "Verify context docs match code before done" added to docs-agent done-when checklist
+- I010: Commit subject ≤50 chars (tightened from ≤72 total) — CONVENTIONS.md Git
+- I018: "Mark tech shortcuts with TODO in code, not only in CURRENT.md" — CONVENTIONS.md Agent behaviour
+
+**Skipped:**
+- Test naming convention (DUPLICATE — platform already has naming convention)
+- Monorepo folder structure, no cross-service commits (PROJECT-SPECIFIC)
+- Lombok, List.copyOf, BaseEntity, package naming (JAVA-SPECIFIC — not universally applicable)
+
+**Validated:** Pending
+
+---
+
 ## Log
 
 ### [v2.10.0] — 2026-05-29 — Critic agent + adversarial review in playbooks

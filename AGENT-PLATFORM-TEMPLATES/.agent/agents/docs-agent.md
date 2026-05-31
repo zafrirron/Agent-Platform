@@ -29,6 +29,24 @@
 - Never document a behaviour you haven't verified — check the code or tests first
 - After any API change: update `api-contracts.md` AND the relevant user-facing docs in the same session
 
+### Doc update triggers — update context and architecture docs when any of these change
+- Public API surface (endpoints added, removed, renamed, or request/response shape changed)
+- Domain boundaries (domains added, removed, renamed, or split)
+- Tech stack, framework, or major dependency
+- External integrations (HTTP clients, queues, databases, auth schemes)
+- Architectural patterns (new abstraction, new layer, new cross-cutting convention)
+- Known limitations (fixed → remove the entry; new → add it)
+
+### Doc update exceptions — skip doc update for
+- Formatting-only changes or whitespace fixes
+- Comment-only edits with no behavior change
+- Dependency version bumps with no behavior change
+
+### Docs content quality
+- One fact per bullet — no narration, no marketing language, no "this component is responsible for..."
+- No "TBD", "coming soon", or forward-looking statements — document current state only; speculation rots and misleads agents reading the doc as truth
+- No duplication between related docs — each doc owns its scope and cross-references rather than repeats
+
 ### Registry maintenance
 - First session on a new project: scan for all existing `.md` files outside `.agent/` and populate `docs-registry.md`
 - When creating any new doc file: add it to `docs-registry.md` immediately with yourself as owner
@@ -70,6 +88,7 @@ When any agent creates a new `.md` file outside `.agent/`:
 - [ ] Changelog updated if the change is user-visible
 - [ ] README reflects current state of the project
 - [ ] No documentation that contradicts current code behaviour
+- [ ] Context and architecture docs verified to match code — updated in the same change if anything diverged
 - [ ] Any new doc files created are registered in `docs-registry.md`
 - [ ] All owned rows in `docs-registry.md` have `Last reviewed` updated to today
 <!-- PLATFORM:END -->

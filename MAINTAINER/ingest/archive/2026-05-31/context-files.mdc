@@ -1,0 +1,73 @@
+---
+description: Maintain CONTEXT.md files as living system and service documentation for agents
+alwaysApply: true
+---
+
+# Context Files
+
+Living architecture docs for agents. Read before work; update after any material change.
+
+## Files
+
+| File | Scope |
+|------|-------|
+| `CONTEXT.md` (repo root) | System overview, all services, cross-service interactions |
+| `services/{name}/CONTEXT.md` | Full picture of one service |
+
+If a file is missing, create it before proceeding.
+
+## Read first
+
+At task start, read root `CONTEXT.md` and the `CONTEXT.md` of every service you will touch.
+
+## Keep current — always
+
+Before finishing a task that touched code, verify relevant `CONTEXT.md` still matches reality. Update in the same change when anything diverges.
+
+**Update when change affects:**
+
+- Public API surface (endpoints added/removed/renamed, request/response shape)
+- Domains added, removed, renamed, or split
+- Tech stack, framework, or major dependency
+- External integrations (HTTP client, queue, DB, auth scheme)
+- Architectural patterns (new abstraction, layer, convention)
+- Known limitations (fixed → remove; new debt → add)
+
+**Skip update for:** formatting, comment-only edits, version bumps with no behavior change.
+
+## Required sections (in order)
+
+**Root `CONTEXT.md`:**
+
+1. `## Purpose`
+2. `## Services`
+3. `## Cross-service interactions`
+4. `## Shared conventions`
+
+**Service `CONTEXT.md`:**
+
+1. `## Purpose`
+2. `## Tech stack`
+3. `## Domains`
+4. `## Key abstractions`
+5. `## External integrations`
+6. `## Current limitations`
+
+Every section must exist. If nothing applies, write `- none`.
+
+## Soft size guidance (signals, not caps)
+
+| File | Typical | Upper signal |
+|------|---------|--------------|
+| Root | ~80 lines | ~120 |
+| Service | ~120 lines | ~200 |
+
+Going over is fine when every line is signal. If bullets feel repetitive past the signal, compress or split detail into `services/{name}/docs/*.md` and link from `CONTEXT.md`.
+
+## Content rules (matter more than size)
+
+- One fact per bullet; no narration or marketing language
+- No code blocks longer than one line; reference file paths instead
+- No duplication: root does not repeat service internals; service does not repeat system overview
+- No "TBD" or "coming soon" — document current state only
+- Prefer path references (`common/service/BaseService`) over re-explaining concepts

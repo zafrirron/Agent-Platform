@@ -47,9 +47,18 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 - For services consumed by other teams or systems, use consumer-driven contract tests (e.g. Pact) — these validate that the provider implementation satisfies the consumer's expectations independently of integration environments
 - Distinguish: a contract test within a single service (HTTP response shape testing) from a cross-service consumer-driven contract — both are required in distributed architectures
 
+### Lookup function coverage
+- Every function that fetches by identifier must be tested for BOTH the found case AND the missing/not-found case — the not-found branch is where runtime errors and security bugs most often hide
+- A test that covers only the happy path of a lookup leaves the error branch untested and gives false confidence
+
+### Assertion quality
+- Use fluent assertion libraries (AssertJ, pytest's assert, Jest's expect) over raw equality checks — fluent assertions produce failure messages that describe what went wrong, not just that two values differed
+- Assertion messages must be actionable from the test output alone without reading source code
+
 ## Done-when — test task is not complete until
 - [ ] All required test types written (see trigger table above)
 - [ ] Regression tests verified to FAIL before fix (if applicable)
+- [ ] Every new fetch-by-id function tested for both found and not-found cases
 - [ ] `{{TEST_RUNNER}}` passes with 0 failures
 - [ ] Coverage at or above `{{COVERAGE_THRESHOLD}}%`
 - [ ] Untestable paths documented in `CURRENT.md`

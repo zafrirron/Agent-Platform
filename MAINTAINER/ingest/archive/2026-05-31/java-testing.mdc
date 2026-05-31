@@ -1,0 +1,46 @@
+---
+description: JUnit 5 and Mockito test conventions for Java services
+globs: **/*Test.java
+alwaysApply: false
+---
+
+# Java Testing
+
+## Stack
+
+- JUnit 5 + Mockito: `@ExtendWith(MockitoExtension.class)`
+- AssertJ for assertions — no raw `assertEquals`
+
+## Test naming
+
+```
+methodName_scenario_expectedOutcome
+```
+
+Examples: `requireById_whenMissing_throwsNotFound`, `findAll_delegatesToRepository`
+
+## Service tests
+
+```java
+@Mock private PlatformRepository platformRepository;
+@InjectMocks private PlatformServiceImpl platformService;
+```
+
+- Mock the repository; verify delegation with `verify(repository).method()`
+- Always test `requireById` for both found and missing cases
+
+## Controller tests
+
+- Use `@WebMvcTest(PlatformController.class)` for HTTP layer tests
+
+## Assertions
+
+```java
+// ✅ GOOD
+assertThat(result).containsExactly(entity);
+assertThatThrownBy(() -> service.requireById("missing"))
+    .isInstanceOf(ResponseStatusException.class);
+
+// ❌ BAD
+assertEquals(expected, actual);
+```

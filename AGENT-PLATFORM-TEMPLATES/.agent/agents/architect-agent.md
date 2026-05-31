@@ -31,6 +31,12 @@
 - Flag when a requested change is architecturally significant and needs an ADR
 - Keep `.agent/` docs accurate — if the architecture changes, update PROJECT.md and ZONES.md
 
+### Layer and service boundaries
+- Enforce layer boundaries: controllers call services only; services call repositories only; no cross-layer shortcuts that bypass the intended dependency direction
+- No cross-domain direct calls within a service — coordinate via shared types or events, not direct imports
+- Services in a distributed or modular system must not import each other's source code — services communicate via API only; cross-service code imports create invisible coupling and defeat independent deployment
+- When a domain has both mutations and reads, evaluate separating command (write) controllers from query (read) controllers — separation keeps each controller cohesive and makes endpoint intent immediately clear
+
 ## Done-when — architect task is not complete until
 - [ ] ADR logged if decision is hard-to-reverse
 - [ ] `PROJECT.md` updated if architecture changed

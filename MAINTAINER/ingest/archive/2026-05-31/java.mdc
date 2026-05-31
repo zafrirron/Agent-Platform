@@ -1,0 +1,45 @@
+---
+description: Java 25, Lombok, and Spring idioms for all Java services
+globs: **/*.java
+alwaysApply: false
+---
+
+# Java Conventions
+
+## Principles
+
+- Senior Java mindset: SOLID, DRY, KISS, YAGNI
+- Follow OWASP best practices for any auth, input handling, or data exposure
+- Break tasks into the smallest reasonable units; solve step by step
+
+## Lombok & entities
+
+- Use `@Getter` / `@Setter` on entities; no manual getters/setters
+- Entities extend `BaseEntity` from `common/domain/`
+
+## Dependency injection
+
+- Constructor injection only — no `@Autowired` field injection
+
+## Logging
+
+- Use `@Slf4j` with structured args: `log.info("msg {}", val)` — never string concat
+
+## Collections
+
+- Null-safe empty: `Collections.emptyList()`
+- Immutable copies: `List.copyOf(collection)`
+
+## Utility classes
+
+- `final` class with private constructor (see `ApiConstants`)
+
+## New domain module
+
+- Service interface extends `BaseService<T extends BaseEntity>`
+- Service impl in `service/impl/`, annotated `@Service`
+- Repository interface in `repository/`; impl in `repository/inmemory/` until real DB
+
+## Package naming
+
+- Base package: `com.airos.{service_name}` with snake_case folder (`ground_core`)

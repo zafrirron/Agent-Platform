@@ -1,0 +1,40 @@
+---
+description: Monorepo service structure and cross-service boundaries
+alwaysApply: true
+---
+
+# Architecture
+
+See `CONTEXT.md` (root) and `services/{name}/CONTEXT.md` for current system and service state.
+
+## Monorepo layout
+
+- Each service is an independent deployable under `services/{name}/`
+- New service: add folder under `services/`, own `README.md`, own dependency manifest (`pom.xml`, `package.json`, etc.)
+
+## Domain-driven layout (within a service)
+
+Each domain module owns its layers:
+
+```
+{domain}/
+  controller/
+  service/
+  service/impl/
+  repository/
+  model/entity/
+  model/dto/
+  model/enums/
+  model/valueobject/
+```
+
+## Layer rules
+
+- Controller → service only
+- Service → repository only
+- No cross-domain direct calls — use shared types in `shared/` when needed
+- No cross-service code imports — services communicate via API only
+
+## Temporary implementations
+
+- `InMemory*Repository` classes are temporary; mark with `// TODO: Remove` javadoc until real persistence exists

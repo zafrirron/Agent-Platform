@@ -1,0 +1,51 @@
+---
+description: Spring REST and OpenAPI conventions for Java controllers
+globs: **/*Controller.java
+alwaysApply: false
+---
+
+# Spring REST API
+
+## Route prefix
+
+```java
+@RequestMapping(ApiConstants.API_V1_PREFIX + "/platforms")  // plural noun
+```
+
+## Resource paths
+
+- Paths are resource-based nouns: `/platforms`, `/platforms/{id}`, `/platforms/{id}/payloads`
+- Never use verbs in paths: no `/create`, `/update`, `/delete`, `/get`, `/edit`
+- Use the HTTP verb to express intent:
+  - `@GetMapping` — read
+  - `@PostMapping` — create (or non-idempotent action)
+  - `@PutMapping` — full update / replace
+  - `@PatchMapping` — partial update
+  - `@DeleteMapping` — delete
+
+## Controller annotations
+
+```java
+@RestController
+@Tag(name = "Platforms")
+@SecurityRequirement(name = OpenApiConfig.X_AUTH_TOKEN)
+```
+
+## Endpoint annotations
+
+Every endpoint needs `@Operation` with stable `operationId` (camelCase verb+resource) and `summary`:
+
+```java
+@GetMapping("/{platformId}")
+@Operation(operationId = "getPlatformsPlatformId", summary = "Get platform")
+```
+
+## Response shapes
+
+- List endpoints: return `*CollectionResponse` wrapper with `items` field — not bare `List<T>`
+- Prefer DTOs over entities in controller return types
+- Direct entity return is acceptable only with `// TODO: Return DTO` comment
+
+## Command vs query controllers
+
+- Separate `*CommandController` (mutations) from `*Controller` (reads) when domain has both

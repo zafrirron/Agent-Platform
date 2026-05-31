@@ -1,0 +1,30 @@
+---
+description: Branch naming and Conventional Commits for all services
+alwaysApply: true
+---
+
+# Git Conventions
+
+## Branch naming
+
+```
+feat/{ticket-short-description}
+fix/{ticket-short-description}
+chore/{ticket-short-description}
+```
+
+## Commits (Conventional Commits)
+
+```
+feat: add platform payload endpoint
+fix: return 404 when mission not found
+chore: bump springdoc version
+refactor: extract geo validation to shared
+test: cover requireById missing case
+docs: update openapi spec
+```
+
+- Subject ≤ 50 characters
+- Body explains **why**, not what (what is visible in the diff)
+- One logical change per commit
+- Do not mix changes across services in a single commit
