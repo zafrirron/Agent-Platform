@@ -10,23 +10,24 @@
 This platform is developed using itself. You work with your AI partner (the maintainer agent) the same way users work with their agents — describe what you want, the agent implements it.
 
 ```
-Two improvement sources feed the platform:
+Three improvement sources feed the platform:
 
-Source 1 — Internal (Mode 1):           Source 2 — Web ecosystem (Mode 2):
-Observe failure in a consumer repo  OR   Monthly: OWASP + CWE + best practices
-        ↓                                Quarterly: + community + conference findings
-"Add rule to X: [rule]"                          ↓
-        ↓                                Structured findings report (F001-Fxxx + E001-Exxx)
-Agent auto-implements 7 steps                    ↓
-        ↓                                Maintainer selects what to add
-Rule ships in next version                       ↓
-        ↓                                Agent implements selected findings
-Every consumer's agents smarter                  ↓
-        ↓                                Rule ships in next version
-Loop continues
+Source 1 — Internal (Mode 1):     Source 2 — Web ecosystem (Mode 2):     Source 3 — User submissions (Mode 3):
+Observe failure in consumer repo   Monthly: OWASP + CWE + best practices   Users drop agentic files into
+        ↓                          Quarterly: + community findings          MAINTAINER/ingest/
+"Add rule to X: [rule]"                    ↓                                       ↓
+        ↓                          Structured findings report               Ingest agent reads all files
+Agent auto-implements 7 steps              ↓                                       ↓
+        ↓                          Maintainer selects findings              Extracts NEW / ENHANCE / DUPLICATE
+Rule ships in next version                 ↓                                       ↓
+        ↓                          Agent implements selected               Maintainer selects what to add
+Every consumer's agents smarter            ↓                                       ↓
+        ↓                          Rule ships in next version              Agent implements via Mode 1 workflow
+Loop continues                                                                      ↓
+                                                                            Submissions archived
 ```
 
-**The platform gets smarter from two sources: real failures AND the global knowledge ecosystem.**
+**The platform gets smarter from three sources: real failures, the global knowledge ecosystem, AND production-proven rules from users.**
 
 ---
 
@@ -46,6 +47,7 @@ The maintainer agent knows the full framework structure, the two-section model, 
 | Frequency | Mode | What to say |
 |-----------|------|-------------|
 | Anytime | Mode 1 | `"Add rule to [expert]: [rule]"` |
+| When users submit files | Mode 3 | `Read MAINTAINER/platform-ingest.md and execute it.` |
 | Monthly | Mode 2 Option B | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Mode 2 Option C | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | After production incident | Mode 1 | `"Add rule to [expert]: [failure-based rule]"` |
@@ -59,11 +61,16 @@ The maintainer agent knows the full framework structure, the two-section model, 
 Agent Platform Bootstrap (framework repo)
 │
 ├── MAINTAINER/                    ← YOUR PRIVATE WORKSPACE — never deployed
-│   ├── platform-maintainer-agent.md  ← your AI partner (Mode 1 + Mode 2 commands)
+│   ├── platform-maintainer-agent.md  ← your AI partner (Mode 1 + Mode 2 + Mode 3 commands)
 │   ├── GUIDE.md                       ← this file
 │   ├── platform-audit.md              ← Mode 1: internal consistency audit
 │   ├── web-audit.md                   ← Mode 2: web ecosystem audit (Option B + C)
 │   ├── web-audit-report-template.md   ← structured findings report format
+│   ├── platform-ingest.md             ← Mode 3: user submission ingest playbook
+│   ├── ingest/                        ← DROP USER FILES HERE for Mode 3 analysis
+│   │   ├── README.md                  ←   instructions for submitters
+│   │   ├── .gitkeep                   ←   keeps folder in git when empty
+│   │   └── archive/                   ←   processed submissions (auto-created on first ingest)
 │   └── platform-improvements.md       ← improvement log (all rules traced to source)
 │
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
@@ -175,6 +182,65 @@ The release script:
 - Bumps version in `package.json`, `AGENT-PLATFORM-MANIFEST.json`, and `README.md`
 - Runs the full test suite (blocks on failure)
 - Commits the version bump, creates the git tag, pushes, creates the GitHub release page
+
+---
+
+## Mode 3 — Ingesting user submissions
+
+When a user shares their own agentic files (agents, playbooks, skills, CLAUDE.md, conventions):
+
+**Step 1 — User drops files into `MAINTAINER/ingest/`**
+
+Files can be:
+- Agent definition `.md` files from their `.agent/agents/` folder
+- Playbook files from their `.agent/playbooks/` folder
+- Their `CLAUDE.md` or `AGENTS.md` (the agent extracts rules only, ignores mechanics)
+- Conventions files, skill files, or raw rule lists
+
+**Step 2 — Run the ingest**
+
+```
+Read MAINTAINER/platform-ingest.md and execute it.
+```
+
+The ingest agent:
+1. Scans and classifies all files in `MAINTAINER/ingest/`
+2. Extracts every specific, verifiable rule it finds
+3. Deduplicates against existing platform rules
+4. Classifies each finding: NEW / ENHANCE / DUPLICATE / PROJECT-SPECIFIC / VAGUE
+5. Maps each finding to the best target (which expert, which playbook, or new expert/playbook candidate)
+6. Presents a structured ingest report with finding IDs (I001, I002, ...)
+
+**Step 3 — Review and select**
+
+Read the report. Use selection commands to approve, modify, skip, or defer each finding:
+- `"Add I001, I003"` — implement those
+- `"Add all NEW"` — implement all genuinely new findings
+- `"Modify I005 to: [better text]"` — use an improved version
+- `"New expert from I006-I010"` — scaffold a new expert from a cluster of findings
+- `"Archive"` — close the ingest without implementing anything
+
+**Step 4 — Agent implements**
+
+Selected findings are implemented via the standard Mode 1 workflow — PLATFORM section patched, improvement logged, version bumped.
+
+**Step 5 — Submissions archived**
+
+Processed files move to `MAINTAINER/ingest/archive/YYYY-MM-DD/` automatically.
+
+---
+
+### What the ingest agent looks for
+
+| Finding type | Examples | Typical target |
+|---|---|---|
+| Security rule | "Validate JWT `kid` before trusting `alg`" | security-agent.md |
+| API hygiene | "Return 422 for validation errors, not 400" | backend-agent.md |
+| Test quality | "Test at the boundary, not the implementation" | test-agent.md |
+| Review pattern | "Flag any method longer than 40 lines" | critic-agent.md |
+| Universal convention | "Never log sensitive fields" | CONVENTIONS.md |
+| New domain (≥5 rules) | Mobile, ML, browser extensions | New expert candidate |
+| New workflow | Incident response, code review, hotfix | New playbook candidate |
 
 ---
 

@@ -16,6 +16,7 @@ Task: [describe your platform improvement goal]
 - **Mode 1 — Internal audit:** `Read MAINTAINER/platform-audit.md and execute it.`
 - **Mode 2 — Web ecosystem audit (Option B, monthly):** `Read MAINTAINER/web-audit.md and execute it.`
 - **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
+- **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
 
 ---
 
@@ -24,6 +25,11 @@ Task: [describe your platform improvement goal]
 You are the Agent Platform maintainer's AI partner. Your job is to make the platform smarter — improving the expert agents, playbooks, and conventions that millions of developers will use. You think like a platform architect whose users are other AI agents.
 
 The meta-philosophy: **AI writing the rules that make other AIs better at software engineering.** Every rule you add is encoded intelligence that ships to every consumer repo on the next upgrade.
+
+**Three improvement sources:**
+- **Mode 1** — real failures observed in consumer repos → specific rules that prevent recurrence
+- **Mode 2** — the global knowledge ecosystem (OWASP, CWE, best practices) → rules from research
+- **Mode 3** — users' own deployed agentic intelligence → rules already proven in production
 
 ---
 
@@ -267,6 +273,79 @@ After processing all selections:
 2. Skipped/deferred findings logged with reason
 3. Version bumped if any rules were added
 4. Report: "X rules added from web audit. Y skipped. Z deferred to backlog."
+
+---
+
+## Mode 3 — User submission ingest
+
+**Triggered by:** `Read MAINTAINER/platform-ingest.md and execute it.`
+
+See `MAINTAINER/platform-ingest.md` for the full ingest playbook.
+
+Users drop their own agentic files (agent definitions, playbooks, skills, CLAUDE.md, conventions) into `MAINTAINER/ingest/`. The ingest playbook reads them all, extracts platform-worthy rules, classifies each finding, maps to the best integration path, and presents a structured report.
+
+### What makes this different from Mode 1 and Mode 2
+
+| | Mode 1 | Mode 2 | Mode 3 |
+|---|---|---|---|
+| **Source** | Failure observed in a consumer repo | OWASP / CWE / web ecosystem | User's own deployed agent files |
+| **Trigger** | "I saw X break" | Monthly/quarterly schedule | User submits files to `MAINTAINER/ingest/` |
+| **Signal quality** | Single failure case | Research + community consensus | Production-proven rules (already working for someone) |
+| **Volume** | One rule at a time | 10–30 findings per audit | Variable — depends on submission size |
+| **Implementation** | Immediate | Maintainer selects from report | Maintainer selects from ingest report |
+
+### Finding classifications
+
+| Status | Meaning | Action |
+|--------|---------|--------|
+| **NEW** | Not covered anywhere in the platform | Implement if approved |
+| **ENHANCE** | Related rule exists but weaker — submission strengthens it | Patch existing rule if approved |
+| **DUPLICATE** | Same concern already covered | Log as skipped |
+| **PROJECT-SPECIFIC** | Too narrow for universal use | Log as skipped |
+| **VAGUE** | Does not meet specificity bar | Log as skipped or rewrite to meet bar |
+
+### Integration path decision
+
+The ingest agent maps each finding to the right target. Maintainer can override any mapping.
+
+| Finding domain | Default target |
+|----------------|---------------|
+| Universal coding hygiene | `CONVENTIONS.md` PLATFORM |
+| Security / auth / secrets / injection | `security-agent.md` PLATFORM |
+| Backend / API | `backend-agent.md` PLATFORM |
+| Frontend / UI / state | `frontend-agent.md` PLATFORM |
+| Testing / coverage / quality gates | `test-agent.md` PLATFORM |
+| Code review / debt / complexity | `critic-agent.md` PLATFORM |
+| CI/CD / deployment / infra | `devops-agent.md` PLATFORM |
+| Schema / migrations / pipelines | `data-agent.md` PLATFORM |
+| Documentation governance | `docs-agent.md` PLATFORM |
+| New domain with ≥5 strong rules | New expert candidate |
+| Process / workflow | Relevant playbook or new playbook candidate |
+
+### Selection commands
+
+After the ingest report is presented:
+
+| You say | Agent does |
+|---------|-----------|
+| `"Add I001, I003"` | Implements those findings via Mode 1 workflow |
+| `"Add all"` | Implements all NEW + ENHANCE findings |
+| `"Add all NEW"` | Implements only NEW findings |
+| `"Skip I002"` | Logs as reviewed+skipped in platform-improvements.md |
+| `"Modify I004 to: [text]"` | Uses modified text, implements |
+| `"Defer I005 to backlog"` | Adds to backlog section of platform-improvements.md |
+| `"Explain I003"` | Shows full source context from submission file |
+| `"New expert from I006-I009"` | Scaffolds new expert using those findings as seed rules |
+| `"New playbook from I010"` | Scaffolds new playbook from those findings |
+| `"Archive"` | Moves processed files to archive, nothing implemented |
+| `"Skip all"` | Logs all findings, archives files |
+
+After processing:
+1. Implemented rules logged in `platform-improvements.md` with source: `User submission — [filename]`
+2. Skipped/deferred findings logged with reason
+3. Version bumped if any rules were added
+4. Submitted files archived to `MAINTAINER/ingest/archive/YYYY-MM-DD/`
+5. Report: "N rules added from M submissions. K skipped. J deferred. Files archived."
 
 ---
 
