@@ -38,20 +38,66 @@ Read MAINTAINER/platform-maintainer-agent.md
 Task: [your goal — e.g. "audit the security expert for gaps", "add a new rule for X"]
 ```
 
-The maintainer agent knows the full framework structure, the two-section model, the extension anatomy, and the release process. You do not need to explain any of this.
+The maintainer agent knows the full framework structure, the section model, the extension anatomy, and the release process. You do not need to explain any of this.
 
 ---
 
-## Audit schedule
+## Maintainer toolbox — what to use and when
 
-| Frequency | Mode | What to say |
-|-----------|------|-------------|
-| Anytime | Mode 1 | `"Add rule to [expert]: [rule]"` |
-| When users submit files | Mode 3 | `Read MAINTAINER/platform-ingest.md and execute it.` |
-| Monthly | Mode 2 Option B | `Read MAINTAINER/web-audit.md and execute it.` |
-| Quarterly | Mode 2 Option C | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
-| After production incident | Mode 1 | `"Add rule to [expert]: [failure-based rule]"` |
-| After OWASP update | Mode 2 Phase 1 | Run Phase 1 only |
+There are four maintainer tools. Each has a distinct trigger and a distinct output.
+
+| Tool | File | Trigger | Output |
+|------|------|---------|--------|
+| **Add rule** (Mode 1) | `platform-maintainer-agent.md` | Observed a failure, have a specific rule to add | One rule added to the right PLATFORM section, logged, version bumped |
+| **Internal platform audit** | `platform-audit.md` | Platform feels stale, before a release, or after many changes — check the platform's own health | Quality report: undertrained experts, weak playbooks, coverage gaps, vague rules, duplicates |
+| **Web ecosystem audit** (Mode 2) | `web-audit.md` | Monthly schedule, or after an OWASP/CWE update | Structured findings report F001-Fxxx from OWASP, CWE, best-practice sources |
+| **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/` | Structured findings report I001-Ixxx from user's production-proven rules |
+
+**The improvement cycle always ends the same way regardless of which tool triggered it:**
+Add rule to PLATFORM section → log in `platform-improvements.md` → bump version → ship via `tools/release.ps1`.
+
+---
+
+## ⚠️ Two "audits" — completely different things
+
+The word "audit" appears in two places in the platform and they are **not related**:
+
+| | Platform audit | User project audit |
+|---|---|---|
+| **File** | `MAINTAINER/platform-audit.md` | `.agent/playbooks/audit.md` |
+| **Who uses it** | You (the platform maintainer) | Users / agents in consumer repos |
+| **What it audits** | The platform itself — are the expert agents well-trained? Are playbooks solid? Are there coverage gaps? | The user's codebase — architecture, security, tests, docs, CI/CD |
+| **Output** | List of platform weaknesses for the maintainer to fix | Project health report saved to `.agent/context/audit-YYYY-MM-DD.md` |
+| **When triggered** | Maintainer runs it manually, periodically | First session (auto-offered), or user says "run project audit" |
+| **Scope** | `MAINTAINER/` folder only — never touches consumer repos | Consumer repo only — never touches the platform |
+
+**In short:** `platform-audit.md` is "is the platform itself good?". `.agent/playbooks/audit.md` is "is the user's project healthy?"
+
+---
+
+## When to run the internal platform audit
+
+Run `Read MAINTAINER/platform-audit.md and execute it.` when:
+
+- **Before a release** — confirm no expert has become undertrained, no playbook has a step with no verifiable outcome
+- **After a large Mode 3 ingest** — new rules were added; check for duplicates or inconsistencies introduced
+- **After a Mode 2 web audit** that touched many files — same reason
+- **When something feels off** — a rule seems wrong, an expert feels weak, or a playbook step seems vague
+
+It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that catches regressions in the platform's own rules before they ship.
+
+---
+
+## Maintenance schedule
+
+| Frequency | What to do | Tool |
+|-----------|-----------|------|
+| Anytime | Observed a failure → add a targeted rule | `"Add rule to [expert]: [rule]"` via maintainer agent |
+| When files arrive | User dropped files into `MAINTAINER/ingest/` | `Read MAINTAINER/platform-ingest.md and execute it.` |
+| Before release | Quality gate — check platform's own health | `Read MAINTAINER/platform-audit.md and execute it.` |
+| Monthly | Web ecosystem check (OWASP, CWE, best practices) | `Read MAINTAINER/web-audit.md and execute it.` |
+| Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
+| After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 
 ---
 
@@ -167,37 +213,42 @@ Personal cross-repo preferences — NEVER touched by upgrades.
 
 ## The improvement loop — fully agentic
 
-### 1. Observe a failure
-A consumer reports (or you discover): "The Backend agent shipped an endpoint without updating api-contracts.md."
+Every improvement — regardless of which tool triggered it — ends at the same place: a rule in a PLATFORM section, logged, versioned, and shipped. The trigger determines how you arrive at the rule; the loop below is how every rule actually gets into the platform.
 
-### 2. Open a maintainer session
+### Example: Mode 1 (observed failure)
+
+**1. Observe a failure**
+A consumer reports: "The Backend agent shipped an endpoint without updating api-contracts.md."
+
+**2. Open a maintainer session**
 ```
 Read MAINTAINER/platform-maintainer-agent.md
 Task: The Backend agent shipped an endpoint without updating api-contracts.md.
 I want to add a done-when gate. First check for duplicates.
 ```
 
-### 3. Agent audits, implements, and logs
-The agent:
+**3. Agent implements**
 - Searches existing rules for duplicates
 - Adds the rule to the correct PLATFORM section
-- Logs the entry in `MAINTAINER/platform-improvements.md`
-- Updates `CHANGELOG.md` with the change
+- Logs to `MAINTAINER/platform-improvements.md`
+- Bumps `bootstrap_version` in manifest
 
-### 4. Tests run automatically
-The pre-commit hook runs all 76 tests before every commit. If tests fail, the commit is blocked.
-To run tests manually: `npm test`
+**4. Tests run automatically**
+The pre-commit hook runs the test suite before every commit. If tests fail, the commit is blocked.
+Run manually: `npm test`
 
-### 5. Ship it
+**5. Ship it**
 ```powershell
 .\tools\release.ps1 -Version X.Y.Z
 ```
 
 The release script:
-- Validates CHANGELOG.md has an entry for this version (blocks if not)
+- Validates `CHANGELOG.md` has an entry for this version (blocks if not)
 - Bumps version in `package.json`, `AGENT-PLATFORM-MANIFEST.json`, and `README.md`
 - Runs the full test suite (blocks on failure)
 - Commits the version bump, creates the git tag, pushes, creates the GitHub release page
+
+> The same steps 3–5 apply after a Mode 2 web audit, a Mode 3 ingest, or a platform audit finding. The trigger is different; the implementation and release process is identical.
 
 ---
 
