@@ -125,10 +125,11 @@ Uninstall: npx ... --mode=uninstall         Uninstall: npx ... --mode=uninstall-
 
 ---
 
-## The two-section model — the core mechanism
+## The three-section model — the core mechanism
 
-Every template file that ships to consumer repos has two clearly marked sections:
+The platform uses two or three clearly marked sections depending on file type.
 
+**Project template files** (everything in `AGENT-PLATFORM-TEMPLATES/` except `global/`):
 ```markdown
 <!-- PLATFORM:START -->
 Rules maintained by the platform author.
@@ -136,16 +137,31 @@ Replaced automatically when user runs --mode=upgrade.
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->
-User's project-specific customisations.
+Team's project-specific customisations.
 NEVER touched by any upgrade mode.
 <!-- PROJECT:END -->
 ```
 
-**What this enables:** you improve expert rules, and every user gets the improvement on next upgrade — without losing their project customisations.
+**Global stub files** (`AGENT-PLATFORM-TEMPLATES/global/` — installed to `~/` via `--mode=global`):
+```markdown
+<!-- PLATFORM:START -->
+Platform activation logic — patched on --mode=global upgrade.
+<!-- PLATFORM:END -->
+
+<!-- USER:START -->
+Personal cross-repo preferences — NEVER touched by upgrades.
+<!-- USER:END -->
+```
+
+**What this enables:** you improve expert rules, and every user gets the improvement on next upgrade — without losing their project or personal customisations.
 
 **What `mode=upgrade` does:**
-- Files WITH markers → patches only the `PLATFORM` block, leaves `PROJECT` section untouched
+- Files WITH markers → patches only the `PLATFORM` block, leaves `PROJECT`/`USER` section untouched
 - Files WITHOUT markers → fully replaced (pure platform files: session-start-shared, session-end-shared, QUICK-REF, etc.)
+
+**What `mode=global` upgrade does:**
+- Global stub files WITH markers → patches only `PLATFORM` block, preserves `USER` section content
+- Global stub files WITHOUT markers (commands) → fully replaced with latest version
 
 ---
 
@@ -261,8 +277,24 @@ The agent follows the 7-step extension anatomy and handles all file creation, ma
 
 ## E2E testing
 
-The full test plan lives at `tests/E2E-TEST-PLAN.md`. It covers:
-- Install → session start → auto-routing → multi-expert → security audit → session end → cross-framework critic → uninstall
+The full test plan lives at `tests/E2E-TEST-PLAN.md` (v3). It covers:
+
+| Phase | What is tested |
+|-------|---------------|
+| 0 | Clean slate — pre-existing AI configs present |
+| 1 | Install — backup, two-section markers, `platform.json` fields |
+| 2 | Session start — first-session audit offer (Step 1d), NO/YES paths |
+| 2b | Full project audit — all 8 expert passes, report output |
+| 3 | Auto-routing — 6 prompt types |
+| 4 | Security gate — add-feature Step 5a |
+| 5 | Session end — derive summary, commit via shell |
+| 6 | Cross-framework Critic |
+| 7 | Framework takeover |
+| 8 | Upgrade two-section model |
+| 9 | Project uninstall (scope 1 only) |
+| 10 | Global install — stubs created, version file, idempotent upgrade |
+| 11 | Global stub activation — AGENTS.md detection, install offer, skip |
+| 12 | Global uninstall — USER content preserved, pure files deleted |
 
 To run automated tests:
 ```
@@ -278,8 +310,9 @@ To run the full E2E test manually: follow `tests/E2E-TEST-PLAN.md` using a scrat
 | Change type | Version bump |
 |------------|-------------|
 | New file added to manifest | Minor (2.x.0) |
-| Existing PLATFORM section improved | Patch (2.7.x) |
-| New install mode or infrastructure change | Minor (2.x.0) |
+| 1–3 targeted PLATFORM section improvements (Mode 1 / bug fix) | Patch (2.7.x) |
+| Large batch of PLATFORM improvements (Mode 2 web audit, Mode 3 ingest ≥5 rules) | Minor (2.x.0) |
+| New install mode, new expert, new playbook, new infrastructure capability | Minor (2.x.0) |
 | Breaking change to file structure or markers | Major (x.0.0) |
 
 **Always update `CHANGELOG.md` BEFORE running the release script.** The script will block if the version has no CHANGELOG entry.
