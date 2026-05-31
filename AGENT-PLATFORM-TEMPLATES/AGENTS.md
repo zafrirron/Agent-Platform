@@ -32,6 +32,7 @@ You are the active router. When the user describes a task, immediately and silen
 | "add library", "install package", "new dependency" | relevant `*-agent.md` | `.agent/playbooks/add-dependency.md` |
 | "integrate API", "external service", "connect to" | `.agent/agents/backend-agent.md` | `.agent/playbooks/api-integration.md` |
 | "debug", "investigate", "why is", "trace" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
+| "run audit", "audit this repo", "project audit", "health check", "onboarding", "what is this project" | all experts | `.agent/playbooks/audit.md` |
 | "write tests", "test coverage", "quality gate" | `.agent/agents/test-agent.md` | *(none)* |
 | "update docs", "README", "changelog", "document" | `.agent/agents/docs-agent.md` | *(none)* |
 | "schema", "migration", "database", "data pipeline" | `.agent/agents/data-agent.md` | *(none)* |

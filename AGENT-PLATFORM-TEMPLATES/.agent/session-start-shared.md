@@ -138,6 +138,37 @@ Check if `.agent/MIGRATION-NOTES.md` exists.
 > **Framework-agnostic by design:** It does not matter which IDE the user came from. All backed-up AI configs are read, evaluated, and merged into the platform in one automatic pass.
 > **The user does nothing.** No manual copying, no file editing, no prompts.
 
+### Step 1d — First-session audit offer
+
+Check `.agent/handoff/CURRENT.md` for any entries with `Status: done`.
+
+**If completed sessions exist:** skip this step entirely.
+
+**If NO completed sessions exist** (this is the first real session on this repo):
+
+Present this offer:
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  First session detected — Full Project Audit available           │
+│                                                                  │
+│  Run a professional audit of this codebase across 8 domains:     │
+│  Architecture · Documentation · Security · Tests · Code Quality  │
+│  Data · API Coverage · DevOps & CI                               │
+│                                                                  │
+│  Generates a full report at: .agent/context/audit-[date].md     │
+│  Takes 3-10 minutes depending on codebase size.                  │
+│                                                                  │
+│  Ideal for: onboarding · pre-release checks · unknown repos      │
+│                                                                  │
+│  Run audit now? YES / NO (run manually later)                    │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+- **If YES:** immediately read `.agent/playbooks/audit.md` and execute it. After the audit completes, continue to Step 2.
+- **If NO:** continue to Step 2. User can run the audit any time by saying `"Run project audit"`.
+
+> **The audit can also be run manually at any time** — say `"Run project audit"` or `"Read .agent/playbooks/audit.md and execute it."`
+
 ### Step 2 — One-time test runner setup
 
 Read `.agent/platform.json`. Check `test_runner`.

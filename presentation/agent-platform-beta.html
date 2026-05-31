@@ -402,6 +402,71 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
   </div>
 </div>
 
+<!-- ═══ S5c FULL PROJECT AUDIT ═══ -->
+<div class="slide" id="s5c">
+  <div class="mw">
+    <div class="kicker">New — v2.25.0</div>
+    <h2>Full Project Audit — <span class="hg">professional 8-domain report</span></h2>
+    <p class="gs">Offered automatically on first session. Run any time on any repo. Each domain uses its expert's full brain — upgrades make the audit smarter automatically.</p>
+    <div class="gap"></div>
+    <div class="cols c2" style="align-items:start">
+      <div>
+        <div class="agrid" style="grid-template-columns:1fr 1fr;gap:8px">
+          <div class="acard" style="border-color:var(--pur)"><span class="ic">🏛</span><div><h3 class="hp">Architecture</h3><p>Components, CSCIs, diagram, dependency gaps</p></div></div>
+          <div class="acard"><span class="ic">📚</span><div><h3 class="hl">Documentation</h3><p>Inventory, audience, staleness, missing docs</p></div></div>
+          <div class="acard" style="border-color:var(--red)"><span class="ic">🔒</span><div><h3 class="hr">Security</h3><p>Secrets, CVEs, OWASP Top 10, auth gaps</p></div></div>
+          <div class="acard" style="border-color:var(--grn)"><span class="ic">🧪</span><div><h3 class="hg">Test Quality</h3><p>Coverage, missing tests, error paths</p></div></div>
+          <div class="acard" style="border-color:var(--org)"><span class="ic">🎯</span><div><h3 class="ho">Code Quality</h3><p>Dead code, complexity, error handling gaps</p></div></div>
+          <div class="acard"><span class="ic">📊</span><div><h3 class="hp">Data</h3><p>Schema, migrations, N+1 risks, PII</p></div></div>
+          <div class="acard" style="border-color:var(--acc)"><span class="ic">⚙️</span><div><h3 class="hl">API</h3><p>Endpoint inventory, auth coverage, contracts</p></div></div>
+          <div class="acard" style="border-color:var(--org)"><span class="ic">🔧</span><div><h3 class="ho">DevOps & CI</h3><p>Pipeline health, SBOM, secrets, rollback</p></div></div>
+        </div>
+      </div>
+      <div>
+        <!-- First session offer box -->
+        <div style="background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.4);border-radius:12px;padding:16px;margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--grn);margin-bottom:10px">First session auto-offer</div>
+          <div class="code" style="font-size:11px;line-height:1.8">
+            First session detected — Full Project Audit available<br><br>
+            8-domain professional audit of this codebase.<br>
+            Report saved to: <span class="str">.agent/context/audit-[date].md</span><br><br>
+            Run audit now? <span class="hg">YES</span> / <span class="hr">NO</span>
+          </div>
+        </div>
+        <!-- Report preview -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt2);margin-bottom:10px">Report: executive summary</div>
+          <div class="code" style="font-size:11px;line-height:1.8">
+            <span class="cm">| Domain        | Health | Crit | High |</span><br>
+            | Architecture  | 🟡     |  0   |  2   |<br>
+            | Documentation | 🔴     |  0   |  3   |<br>
+            | Security      | 🔴     |  1   |  4   |<br>
+            | Test Quality  | 🟡     |  0   |  2   |<br>
+            | Code Quality  | 🟡     |  0   |  1   |<br>
+            | Data          | 🟢     |  0   |  0   |<br>
+            | API           | 🟡     |  0   |  2   |<br>
+            | DevOps & CI   | 🔴     |  0   |  3   |<br>
+          </div>
+        </div>
+        <div class="gs center">
+          <p style="font-size:12px"><span class="hg">Self-improving:</span> when experts get updated with new OWASP rules, the audit uses them automatically — no changes needed.</p>
+        </div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="font-size:13px;font-weight:600">Run any time:</span>
+      <code style="color:var(--grn);font-size:12px">"Run project audit"</code>
+      <span style="color:var(--txt2)">·</span>
+      <code style="color:var(--grn);font-size:12px">"health check"</code>
+      <span style="color:var(--txt2)">·</span>
+      <code style="color:var(--grn);font-size:12px">"what is this project"</code>
+      <span style="color:var(--txt2)">·</span>
+      <span class="b bg">Report persists across sessions</span>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ S6 AGENT ARTIFACTS ═══ -->
 <div class="slide" id="s6">
   <div class="mw">
@@ -856,9 +921,9 @@ const stitle = document.getElementById('stitle');
 const titles = [
   'Title','The Problem','What It Is','Full Platform Lifecycle Diagram',
   'How It Works — Lifecycle','Expert Agents','Playbooks',
-  'Agent Artifacts','Dual Rules Model','Caveman Mode','Enterprise Governance',
-  'Platform Evolution','Todo App: Before / After','Impact Metrics',
-  'Cross-Framework Critic','Zero Code Impact','Get Started'
+  '🔍 Full Project Audit','Agent Artifacts','Dual Rules Model','Caveman Mode',
+  'Enterprise Governance','Platform Evolution','Todo App: Before / After',
+  'Impact Metrics','Cross-Framework Critic','Zero Code Impact','Get Started'
 ];
 let cur = 0;
 

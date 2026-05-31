@@ -197,6 +197,11 @@
       "kind": "template"
     },
     {
+      "path": ".agent/playbooks/audit.md",
+      "template": ".agent/playbooks/audit.md",
+      "kind": "playbook"
+    },
+    {
       "path": ".agent/playbooks/add-dependency.md",
       "template": ".agent/playbooks/add-dependency.md",
       "kind": "playbook"

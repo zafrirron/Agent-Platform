@@ -268,6 +268,43 @@ These files accumulate knowledge about the project over time. Agents read and up
 
 ---
 
+## Full Project Audit
+
+A professional 8-domain audit of any codebase. Each domain runs its dedicated expert — using the expert's full ruleset, not a summary.
+
+**Run it:**
+```
+Run project audit
+```
+or
+```
+Read .agent/playbooks/audit.md and execute it.
+```
+
+**First session:** The platform automatically offers the audit on the first real session in any repo. Just say YES.
+
+**What it audits:**
+
+| Domain | Expert | Finds |
+|--------|--------|-------|
+| Architecture | Architect | Components, interfaces, CSCIs, ASCII diagram, dependency gaps |
+| Documentation | Docs | Doc inventory, audience mapping, staleness, missing docs |
+| Security | Security | Secrets, CVEs, OWASP Top 10, auth gaps, input validation |
+| Test quality | Test | Coverage, missing tests, no error-path tests, mutation gaps |
+| Code quality | Critic | Dead code, error handling gaps, complexity, duplicated logic |
+| Data | Data | Schema, migrations, N+1 risks, PII handling |
+| API | Backend | Endpoint inventory, auth coverage, api-contracts completeness |
+| DevOps & CI | DevOps | Pipeline health, SBOM, secrets management, rollback |
+
+**Report:** saved to `.agent/context/audit-YYYY-MM-DD-HH-MM.md` with:
+- Executive summary table (🟢 Good · 🟡 Needs attention · 🔴 Critical)
+- Prioritised findings: Critical → High → Medium → Low
+- Quick wins section (fixes under 1 hour)
+
+> **The audit improves automatically.** When experts get updated with new OWASP rules or best practices via `--mode=upgrade`, the audit uses those improvements — no changes to the audit playbook needed.
+
+---
+
 ## Testing enforcement
 
 The platform requires tests for all new code. Agents cannot mark a task done if tests are missing.

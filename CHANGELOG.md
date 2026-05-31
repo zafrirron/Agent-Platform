@@ -5,6 +5,44 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.25.0] — 2026-05-31
+
+### Added — Full Project Audit playbook: 8-domain professional report, first-session auto-offer
+
+**New playbook: `.agent/playbooks/audit.md`**
+
+Runs a comprehensive professional audit across 8 domains using the right expert for each:
+
+| Phase | Expert | What it audits |
+|-------|--------|---------------|
+| 1 | Architect | Architecture, components, interfaces, CSCIs, dependency map, ASCII diagram |
+| 2 | Docs | Documentation inventory, audience mapping, staleness, gaps |
+| 3 | Security | Secrets scan, CVEs, OWASP Top 10, auth coverage, input validation |
+| 4 | Test | Coverage, test types, missing regression tests, untested critical paths |
+| 5 | Critic | Dead code, error handling gaps, complexity hotspots, inconsistent patterns |
+| 6 | Data | Schema, migrations, N+1 risks, PII handling, backup strategy |
+| 7 | Backend | API endpoint inventory, auth coverage, api-contracts.md completeness |
+| 8 | DevOps | CI/CD health, secrets management, SBOM, rollback strategy |
+
+Generates a timestamped report at `.agent/context/audit-YYYY-MM-DD-HH-MM.md` with:
+- Executive summary table (per-domain health: 🟢🟡🔴)
+- Findings by severity: Critical → High → Medium → Low
+- Quick wins section (high-impact, under 1 hour)
+- Prioritised action plan
+
+**First-session auto-offer (session-start Step 1d):**
+On the very first session start (no prior completed sessions detected), the platform automatically offers to run the audit. User says YES or NO — the session continues either way.
+
+**Routing:** Say `"run project audit"`, `"health check"`, or `"what is this project"` to trigger at any time.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.24.0] — 2026-05-30
 
 ### Added — Beta presentation (17 slides) + release script auto-updates presentation version

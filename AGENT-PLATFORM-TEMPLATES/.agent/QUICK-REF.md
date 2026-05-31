@@ -45,6 +45,7 @@
 
 | Your situation | Playbook |
 |---------------|---------|
+| First time in this repo / onboarding / health check | **Full Project Audit** — 8-domain professional report saved to `.agent/context/audit-[date].md` |
 | Starting new feature work | Add feature — scopes, designs, implements, tests, Critic reviews |
 | Something is broken | Bug fix — reproduces, root-causes, fixes, regression test |
 | "clean up this area" (tests must exist first) | Refactor — safe incremental refactor with Critic gate |
