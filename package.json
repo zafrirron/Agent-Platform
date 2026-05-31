@@ -14,7 +14,7 @@
     "agent-platform": "bin/agent-platform.js"
   },
   "scripts": {
-    "test":         "node --test tests/apply-utils.test.mjs tests/apply-integration.test.mjs",
+    "test":         "node --test tests/apply-utils.test.mjs tests/apply-integration.test.mjs tests/global-install.test.mjs",
     "manifest":     "node tools/build-bootstrap-manifest.js",
     "readme":       "node tools/build-framework-readme.js",
     "apply":        "node AGENT-PLATFORM-APPLY.js",

@@ -1,10 +1,46 @@
 # Agent Platform — End-to-End Test Plan v3
 
 Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and **Antigravity**.
-Covers: install with pre-existing AI configs · backup/restore · session start/end · first-session
-audit offer · full project audit · auto-routing · multi-expert · security gate · cross-framework
-Critic · framework takeover · upgrade two-section model · project uninstall · global install ·
-global stub activation & detection · global uninstall with USER content preservation.
+
+## Automated vs manual split
+
+```
+npm test   ← runs all automated checks (125 assertions, ~4s)
+           covers: install, platform.json fields, placeholders, two-section markers,
+                   upgrade PROJECT preservation, uninstall + restore,
+                   global install, global uninstall, USER content preservation,
+                   global/project scope independence
+```
+
+**Automated (npm test):**
+
+| Phase | What | Test file |
+|-------|------|-----------|
+| 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers | `apply-integration.test.mjs` |
+| 1 | Install: global stubs suggestion in stdout | `apply-integration.test.mjs` |
+| 8 | Upgrade: PROJECT section preserved, PLATFORM section updated | `apply-integration.test.mjs` |
+| 9 | Uninstall dry-run + confirm: platform removed, user files intact, CLAUDE.md restored | `apply-integration.test.mjs` |
+| 10 | Global install: all stubs created, no raw placeholders, version file, PLATFORM/USER markers | `global-install.test.mjs` |
+| 10 | Global install idempotent: no duplicate blocks after re-run | `global-install.test.mjs` |
+| 10 | Global install upgrade: USER content preserved | `global-install.test.mjs` |
+| 12 | Global uninstall dry-run: no changes made | `global-install.test.mjs` |
+| 12 | Global uninstall confirm: pure files deleted, USER content kept in patched file | `global-install.test.mjs` |
+| 12 | Global uninstall: project install untouched | `global-install.test.mjs` |
+
+**Manual only (requires live AI agent):**
+
+| Phase | Why manual |
+|-------|-----------|
+| 2 | Session start — requires Claude Code to execute session-start.md |
+| 2b | Full project audit — requires AI to run 8 expert passes |
+| 3 | Auto-routing — requires AI to route 6 prompt types silently |
+| 4 | Security gate — requires AI to implement auth and trigger Step 5a |
+| 5 | Session end — requires AI to derive summary and commit via shell tools |
+| 6 | Cross-framework Critic — requires two different AI frameworks |
+| 7 | Framework takeover — requires AI to detect and respond to stuck session |
+| 11 | Global stub activation — requires AI to read ~/.claude/CLAUDE.md and act on it |
+
+---
 
 ---
 

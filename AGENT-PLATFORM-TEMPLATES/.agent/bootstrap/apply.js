@@ -327,7 +327,7 @@ function writeMigrationNotes(root, artifacts, backupDir) {
 
 /* ── Global install mode ──────────────────────────────────────────────────── */
 if (MODE === 'global') {
-  const HOME        = os.homedir();
+  const HOME        = process.env.AP_HOME || os.homedir();
   const platformNpx  = manifest.platform_npx  || 'github:zafrirron/Agent-Platform';
   const platformRepo = manifest.platform_repo || 'zafrirron/Agent-Platform';
   const globalVars   = {
@@ -919,7 +919,7 @@ if (MODE === 'remove-guards') {
 
 /* ── uninstall-global mode ────────────────────────────────────────────────── */
 if (MODE === 'uninstall-global') {
-  const HOME        = os.homedir();
+  const HOME        = process.env.AP_HOME || os.homedir();
   const platformNpx = manifest.platform_npx || 'github:zafrirron/Agent-Platform';
   const LINE        = '═'.repeat(62);
 
