@@ -675,44 +675,41 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
 <div class="slide" id="s10">
   <div class="mw">
     <div class="kicker">Continuous Evolution</div>
-    <h2>The platform maintains itself — <span class="hp">agentically</span></h2>
+    <h2>Three sources make the platform <span class="hp">continuously smarter</span></h2>
     <p class="gs">Platform maintainers use the same agentic model to improve the platform. No manual steps.</p>
     <div class="gap"></div>
-    <div class="cols c2" style="align-items:start">
-      <div>
-        <table class="mtbl">
-          <thead><tr><th>What you want</th><th>Say to your agent</th></tr></thead>
-          <tbody>
-            <tr><td>Improve an expert rule</td><td>"Add rule to [expert]: [rule]"</td></tr>
-            <tr><td>Monthly security audit</td><td>Read MAINTAINER/web-audit.md and execute it.</td></tr>
-            <tr><td>Quarterly full scan</td><td>web-audit.md · scope=full</td></tr>
-            <tr><td>Add a new expert agent</td><td>"Add new expert agent for [domain]"</td></tr>
-            <tr><td>Add a new playbook</td><td>"Add new playbook for [scenario]"</td></tr>
-            <tr><td>Add a new IDE framework</td><td>"Add new framework for [name]"</td></tr>
-            <tr><td>Release a version</td><td>"Release"</td></tr>
-          </tbody>
-        </table>
+    <div class="cols c3" style="align-items:start">
+      <div class="card ca" style="padding:14px 16px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:8px">🔴 Mode 1 — Failures</div>
+        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">A rule observed to prevent a real production failure.</p>
+        <div style="font-size:11px;color:var(--txt2);font-style:italic">"Backend agent shipped an endpoint without validating input"</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ "Add rule to backend: validate all inputs at entry point"<br>→ 7-step workflow → ships to all repos</div>
       </div>
-      <div>
-        <div class="tl">
-          <div class="tli">
-            <div class="tll"><div class="tld" style="background:var(--red)"></div><div class="tlc"></div></div>
-            <div class="tlcnt"><h3>Observe a failure in production</h3><p>"The Backend agent shipped an endpoint without validating user input"</p></div>
-          </div>
-          <div class="tli">
-            <div class="tll"><div class="tld" style="background:var(--acc)"></div><div class="tlc"></div></div>
-            <div class="tlcnt"><h3>Tell the maintainer agent</h3><p>"Add rule to backend: validate all user inputs at entry point"</p></div>
-          </div>
-          <div class="tli">
-            <div class="tll"><div class="tld" style="background:var(--pur)"></div><div class="tlc"></div></div>
-            <div class="tlcnt"><h3>Agent implements 7-step workflow</h3><p>Duplicate check → format → write → log → bump version</p></div>
-          </div>
-          <div class="tli">
-            <div class="tll"><div class="tld" style="background:var(--grn)"></div></div>
-            <div class="tlcnt"><h3>Rule ships — all users smarter</h3><p>Next upgrade propagates the rule to every repo, every agent, every developer</p></div>
-          </div>
-        </div>
+      <div class="card cg" style="padding:14px 16px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--grn);margin-bottom:8px">🌐 Mode 2 — Ecosystem</div>
+        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Monthly OWASP + CWE + best-practice audits. Quarterly full scans.</p>
+        <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/web-audit.md and execute it.</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ Structured report F001-Fxxx → maintainer selects → agent implements</div>
       </div>
+      <div class="card cp" style="padding:14px 16px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--pur);margin-bottom:8px">👥 Mode 3 — Users</div>
+        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Users drop their own agent files into <code style="font-size:10px">MAINTAINER/ingest/</code>. Production-proven rules absorbed into the platform.</p>
+        <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/platform-ingest.md and execute it.</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ Ingest agent extracts NEW / ENHANCE / DUPLICATE → maintainer selects → ships</div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 20px">
+      <table class="mtbl" style="margin:0">
+        <thead><tr><th>What you want</th><th>Say to your agent</th></tr></thead>
+        <tbody>
+          <tr><td>Improve an expert rule (Mode 1)</td><td>"Add rule to [expert]: [rule]"</td></tr>
+          <tr><td>Monthly security audit (Mode 2)</td><td>Read MAINTAINER/web-audit.md and execute it.</td></tr>
+          <tr><td>Ingest user agentic files (Mode 3)</td><td>Read MAINTAINER/platform-ingest.md and execute it.</td></tr>
+          <tr><td>Add new expert / playbook / framework</td><td>"Add new expert for [domain]"</td></tr>
+          <tr><td>Release a version</td><td>"Release"</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

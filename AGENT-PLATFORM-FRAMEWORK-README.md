@@ -1043,6 +1043,18 @@ Use this prompt verbatim — every part maps to a concrete location in the file.
 
 **Quality gate:** no consumer-product strings inside the pack (search product names and app folder names — zero hits).
 
+### Three improvement sources (how the platform gets smarter)
+
+| Mode | Source | Trigger |
+|------|--------|---------|
+| **Mode 1 — Failures** | A rule traced to a real production failure | `"Add rule to [expert]: [rule]"` |
+| **Mode 2 — Ecosystem** | OWASP / CWE / engineering best practices (monthly + quarterly) | `Read MAINTAINER/web-audit.md and execute it.` |
+| **Mode 3 — User submissions** | Users drop their own agent/playbook/skill files into `MAINTAINER/ingest/` | `Read MAINTAINER/platform-ingest.md and execute it.` |
+
+**Mode 3 ingest workflow:** The ingest agent reads all submitted files, extracts specific verifiable rules, deduplicates against existing platform rules, maps each finding to the right expert/playbook, and presents a structured report (findings I001, I002, ...). Maintainer selects what to add. Selected findings are implemented via Mode 1 workflow — logged in `platform-improvements.md`, version bumped, ready to ship.
+
+Drop user files into [`MAINTAINER/ingest/`](MAINTAINER/ingest/) — the `README.md` there explains what to submit and what gets kept.
+
 ---
 
 ## Tell an agent what this project is

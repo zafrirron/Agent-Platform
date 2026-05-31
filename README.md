@@ -278,13 +278,15 @@ Every expert file has two sections:
 - **Platform section** — improved by this project, pushed on `--mode=upgrade`
 - **Project section** — your team's rules, never overwritten
 
-**Why upgrading is worth it:** Every release includes rules sourced from OWASP security guidelines, CWE Top 25 dangerous software weaknesses, and engineering best practices collected from the developer ecosystem. The platform runs regular web audits and encodes the findings into expert agents. When you upgrade:
+**Why upgrading is worth it:** Every release includes rules sourced from three places — OWASP security guidelines and CWE Top 25 (Mode 2 web audit), real failures observed in production codebases (Mode 1), and production-proven rules contributed by platform users (Mode 3). The platform runs regular audits and encodes findings into the expert agents. When you upgrade:
 - Your **Security expert** knows the latest OWASP API vulnerabilities and CWE patterns
 - Your **Backend expert** knows current API design standards
 - Your **Test expert** knows current testing quality requirements
 - Your **Critic agent** knows what to look for in adversarial review
 
 You don't track these sources yourself — the platform does it for you, and every upgrade makes your agents smarter.
+
+**Contributing your own rules:** If you have agent definitions, playbooks, or conventions that work well in your projects, drop them into `MAINTAINER/ingest/` and run `Read MAINTAINER/platform-ingest.md and execute it.` The ingest agent extracts universally applicable rules and proposes them for inclusion. Your production-proven intelligence improves the platform for everyone.
 
 ---
 
@@ -326,7 +328,7 @@ The platform coordination layer is removed cleanly. Your AI agents improved your
 
 **👉 [View the interactive platform presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)**
 
-18 slides · what it is · how it works · expert agents · playbooks · before/after demo · enterprise governance · zero code impact.
+19 slides · what it is · how it works · expert agents · playbooks · before/after demo · enterprise governance · platform evolution · global install · zero code impact.
 Navigate with arrow keys or swipe. Works on mobile.
 
 > If the link above doesn't work yet (GitHub Pages propagating): [open via htmlpreview](https://htmlpreview.github.io/?https://github.com/zafrirron/Agent-Platform/blob/main/presentation/agent-platform-beta.html)
@@ -349,14 +351,15 @@ This platform is developed using itself. All maintenance is done by telling the 
 | What you want | Say to your agent |
 |--------------|------------------|
 | Start a maintainer session | `Read MAINTAINER/platform-maintainer-agent.md` then describe your task |
-| Improve an expert rule | `"Add rule to [expert]: [rule]"` |
+| Improve an expert rule (Mode 1) | `"Add rule to [expert]: [rule]"` |
 | Add a quality gate to a playbook | `"Add quality gate to [playbook] step N: [condition]"` |
 | Add a step to a playbook | `"Add step to [playbook]: [description]"` |
 | Add a new expert agent | `"Add a new expert agent for [domain]"` |
 | Add a new playbook | `"Add a new playbook for [scenario]"` |
 | Add a new IDE framework | `"Add a new framework for [name]"` |
 | Check if a topic is covered | `"Check if [topic] is covered"` |
-| Monthly security + best practice audit | `Read MAINTAINER/web-audit.md and execute it.` |
+| **Ingest user agentic files (Mode 3)** | `Read MAINTAINER/platform-ingest.md and execute it.` |
+| Monthly security + best practice audit (Mode 2) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly full ecosystem scan | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Internal consistency audit | `Read MAINTAINER/platform-audit.md and execute it.` |
 | Release the next version | `"Release"` — agent reads CHANGELOG, calculates version bump, confirms with you, runs the release script |
@@ -365,7 +368,7 @@ This platform is developed using itself. All maintenance is done by telling the 
 
 ## Version
 
-**v2.24.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.25.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 
