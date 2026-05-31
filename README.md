@@ -368,7 +368,7 @@ This platform is developed using itself. All maintenance is done by telling the 
 
 ## Version
 
-**v2.25.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.26.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 
