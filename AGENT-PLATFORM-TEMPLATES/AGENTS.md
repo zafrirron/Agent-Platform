@@ -64,6 +64,7 @@ If the task is genuinely ambiguous, ask ONE question: "Is this a new feature, a 
 - Every bug fix ships with a regression test — no exceptions
 - Every new public function ships with at least one unit test
 - No secrets, tokens, or keys in source ever
+- **NEVER run session-end automatically.** Session end is triggered ONLY when the user explicitly says "End session." or "Read .agent/session-end.md". Completing a task is NOT a reason to end the session.
 
 ---
 

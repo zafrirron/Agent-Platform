@@ -12,7 +12,7 @@
 6. **Test agent:** contract test per documented endpoint (happy path + at least one error path); run `{{TEST_RUNNER}}`; all green
 7. Update `api-contracts.md` with confirmed behavior
 8. Security agent: no secrets in source
-9. Session end + handoff
+9. Update `CURRENT.md` with outcome, endpoints added, and next agent recommendation. Do NOT run session-end — only the user ends the session.
 
 ## Rules
 - No endpoint ships without a contract test

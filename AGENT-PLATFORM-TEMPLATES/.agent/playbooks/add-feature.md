@@ -24,7 +24,7 @@
    **BLOCKED if: any Critical or High finding is reported.**
    Address all findings before continuing to Step 6.
 6. **Docs** — if user-facing: Docs agent updates README / changelog
-7. **Handoff** — end session prompt; update `CURRENT.md` with outcome + next agent
+7. **Handoff** — update `CURRENT.md` with outcome, files changed, and next agent recommendation. Do NOT run session-end — only the user ends the session.
 
 ## Rules
 - No feature additions and refactors in the same diff
