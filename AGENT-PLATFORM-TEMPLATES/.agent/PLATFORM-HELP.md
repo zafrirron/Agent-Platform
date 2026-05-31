@@ -16,7 +16,7 @@
 ```
 INSTALL (once)
 ──────────────────────────────────────────────────────────────────
-npx github:zafrirron/Agent-Platform
+npx {{PLATFORM_NPX}}
   │
   ├─ Backs up any existing AI configs (CLAUDE.md, Cursor rules, etc.)
   ├─ Installs .agent/ .claude/ .cursor/ .agents/ .codex/
@@ -465,7 +465,7 @@ You can permanently add new capabilities. Everything is prompt-driven — tell t
 | API convention | `"Add API agentic pattern: [convention]"` |
 
 Every extension follows the 7-step anatomy documented at:  
-https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md#extending-guide
+https://github.com/{{PLATFORM_REPO}}/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md#extending-guide
 
 ---
 
@@ -489,9 +489,10 @@ Every Agent Platform release includes rules sourced from OWASP security guidelin
 | Check installed version | Read `.agent/platform.json` |
 | Check for updates | `node .agent/tools/check-updates.mjs` |
 | Apply updates (agent-driven) | `Read .agent/tools/upgrade.md and execute it.` |
-| Apply updates (terminal) | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
-| Repair empty stubs | `npx github:zafrirron/Agent-Platform --mode=repair` |
-| Remove all platform files | `npx github:zafrirron/Agent-Platform --mode=uninstall` |
+| Apply updates (terminal) | `npx {{PLATFORM_NPX}} --mode=upgrade` |
+| Install global stubs (once, user-level) | `npx {{PLATFORM_NPX}} --mode=global` |
+| Repair empty stubs | `npx {{PLATFORM_NPX}} --mode=repair` |
+| Remove all platform files | `npx {{PLATFORM_NPX}} --mode=uninstall` |
 
 **What you get on upgrade:**
 - Improved expert rules (Security, Backend, Test, Critic, and others)
@@ -500,4 +501,4 @@ Every Agent Platform release includes rules sourced from OWASP security guidelin
 
 ---
 
-*Agent Platform Bootstrap v{{BOOTSTRAP_VERSION}} · https://github.com/zafrirron/Agent-Platform*
+*Agent Platform Bootstrap v{{BOOTSTRAP_VERSION}} · https://github.com/{{PLATFORM_REPO}}*

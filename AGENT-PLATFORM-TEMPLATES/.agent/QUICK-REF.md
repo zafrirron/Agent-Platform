@@ -8,7 +8,7 @@
 | **Framework** | <fw> |
 | **Version** | {{BOOTSTRAP_VERSION}} |
 | **Full guide** | `.agent/PLATFORM-HELP.md` |
-| **Online guide** | https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md |
+| **Online guide** | https://github.com/{{PLATFORM_REPO}}/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md |
 
 ---
 
@@ -121,8 +121,9 @@
 | Action | Command |
 |--------|---------|
 | Check for updates | Tell agent: "check for platform updates" |
-| Upgrade | `npx github:zafrirron/Agent-Platform --mode=upgrade` |
-| Install enforcement guards | `npx github:zafrirron/Agent-Platform --mode=install-guards` |
-| Remove guards | `npx github:zafrirron/Agent-Platform --mode=remove-guards` |
-| Repair | `npx github:zafrirron/Agent-Platform --mode=repair` |
-| Remove platform | `npx github:zafrirron/Agent-Platform --mode=uninstall` |
+| Upgrade | `npx {{PLATFORM_NPX}} --mode=upgrade` |
+| Install global stubs (user-level, run once) | `npx {{PLATFORM_NPX}} --mode=global` |
+| Install enforcement guards | `npx {{PLATFORM_NPX}} --mode=install-guards` |
+| Remove guards | `npx {{PLATFORM_NPX}} --mode=remove-guards` |
+| Repair | `npx {{PLATFORM_NPX}} --mode=repair` |
+| Remove platform | `npx {{PLATFORM_NPX}} --mode=uninstall` |

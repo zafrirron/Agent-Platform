@@ -31,23 +31,35 @@ The meta-philosophy: **AI writing the rules that make other AIs better at softwa
 
 ### Framework architecture
 - `AGENT-PLATFORM-TEMPLATES/` — all installable files; everything here ships to consumer repos
-- `AGENT-PLATFORM-MANIFEST.json` — file registry + `bootstrap_version`
+- `AGENT-PLATFORM-TEMPLATES/global/` — user-level stubs; installed via `--mode=global` to `~/`; never deployed to projects
+- `AGENT-PLATFORM-MANIFEST.json` — file registry + `bootstrap_version` + `platform_repo` + `platform_npx`
 - `AGENT-PLATFORM-APPLY.js` + `bin/agent-platform.js` — installer entry points
-- `.agent/bootstrap/apply.js` — core installer logic (ES modules, `patchPlatformSection`)
+- `.agent/bootstrap/apply.js` — core installer logic (ES modules, `patchPlatformSection`, `--mode=global` handler)
 - `MAINTAINER/` — this folder; never deployed; platform developer's private workspace
 
-### The two-section model
-Every deployed expert, playbook, and convention file has two sections:
+### The three-section model
+Expert, playbook, and convention files use two sections. Global stub files add a third:
 ```
 <!-- PLATFORM:START -->
 Platform-maintained rules — pushed to all users on mode=upgrade
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->
-User project customisations — NEVER touched by upgrades
+Team project customisations — NEVER touched by upgrades
 <!-- PROJECT:END -->
 ```
-Only ever edit the PLATFORM section. Never touch PROJECT sections.
+
+Global stub files (`global/`) use a USER section instead of PROJECT:
+```
+<!-- PLATFORM:START -->
+Platform-maintained activation logic
+<!-- PLATFORM:END -->
+
+<!-- USER:START -->
+Personal cross-repo preferences — NEVER touched by upgrades
+<!-- USER:END -->
+```
+Only ever edit the PLATFORM section. Never touch PROJECT or USER sections.
 
 ### What makes a good platform rule
 1. **Traces to a real failure** — "the Backend agent shipped an endpoint without updating api-contracts.md"
@@ -263,8 +275,13 @@ After processing all selections:
 ```
 1. MAINTAINER/platform-improvements.md — log the failure/source, the rule, the version
 2. AGENT-PLATFORM-TEMPLATES/ — edit or create the template file(s)
+   · Project files go in AGENT-PLATFORM-TEMPLATES/ (deployed to repos)
+   · Global stub files go in AGENT-PLATFORM-TEMPLATES/global/ (deployed to ~/ via --mode=global)
 3. Two-section markers — only edit PLATFORM:START/END sections
 4. AGENT-PLATFORM-MANIFEST.json — add new files; update bootstrap_version
+   · Project files: no scope field (default)
+   · Global files: add "scope": "global"
+   · If adding a new fork point: update platform_repo and platform_npx fields
 5. AGENT-PLATFORM-BOOTSTRAP.md footer — bump version
 6. AGENT-PLATFORM-FRAMEWORK-README.md — update if capability is new
 7. CHANGELOG.md — document what changed, why, how to upgrade

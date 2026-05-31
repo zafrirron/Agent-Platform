@@ -39,7 +39,7 @@ Run `node .agent/tools/check-updates.mjs` and read the output.
 Run the npx upgrade (preferred — no manual file copying):
 
 ```
-npx github:zafrirron/Agent-Platform --mode=upgrade
+npx {{PLATFORM_NPX}} --mode=upgrade
 ```
 
 This adds any files that are in the new manifest but missing from this repo, without overwriting existing content.
@@ -58,7 +58,7 @@ Common placeholders added in recent versions:
 ### Step 5 — Repair empty stubs
 
 ```
-npx github:zafrirron/Agent-Platform --mode=repair
+npx {{PLATFORM_NPX}} --mode=repair
 ```
 
 This fills any `{{placeholder}}` stubs that are still unfilled, without touching project content.
@@ -72,7 +72,7 @@ Update `.agent/handoff/CURRENT.md` with the upgrade result.
 
 ## Manual path (if npx is unavailable)
 
-1. Fetch `https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/CHANGELOG.md`
+1. Fetch `https://raw.githubusercontent.com/{{PLATFORM_REPO}}/main/CHANGELOG.md`
 2. Find the upgrade guide section matching your installed version
 3. Follow the targeted file-copy steps listed there
 4. Fill new placeholders manually

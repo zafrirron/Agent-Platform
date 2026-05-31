@@ -149,6 +149,37 @@ Read AGENT-PLATFORM-BOOTSTRAP.md and execute it.
 | `upgrade` | Same as install; processes new manifest entries added in this release |
 | `repair` | Overwrites only files whose content is still an unfilled stub |
 | `force` | Overwrites all template files — confirm first; your project source is never touched |
+| `global` | Install user-level stubs to `~/` — activates platform in every repo, globally |
+
+---
+
+### Global install — activate the platform across all repos (optional, run once)
+
+Install user-level stubs to your home directory so the platform auto-activates in any repo:
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=global
+```
+
+Writes stubs to: `~/.claude/CLAUDE.md` · `~/.claude/commands/` · `~/.cursor/rules/` · `~/.codex/instructions.md` · `~/.agents/rules/`
+
+**Behaviour per repo after global install:**
+
+| Repo state | What happens at session start |
+|---|---|
+| Platform installed (`AGENTS.md` present) | Expert routing activates automatically — no commands needed |
+| Platform not installed | One-time install offer displayed |
+| `.agent-platform-skip` present | Offer suppressed permanently for that repo |
+
+**The three-layer model:**
+
+```
+~/.claude/CLAUDE.md  USER section   ← personal cross-repo preferences (never overwritten)
+[repo]/AGENTS.md     PROJECT section ← team coding conventions  
+[repo]/.agent/       PLATFORM section ← framework expert rules
+```
+
+Upgrade global stubs later with the same command: `npx github:zafrirron/Agent-Platform --mode=global`
 
 ---
 

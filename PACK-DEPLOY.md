@@ -25,14 +25,34 @@ No files need to be manually copied.
 ## Install modes
 
 ```bash
-npx github:zafrirron/Agent-Platform                     # install (default)
-npx github:zafrirron/Agent-Platform --mode=upgrade      # add new files, skip existing
-npx github:zafrirron/Agent-Platform --mode=repair       # fill empty stubs only
-npx github:zafrirron/Agent-Platform --mode=force        # reset all templates (confirm first)
-npx github:zafrirron/Agent-Platform --mode=install-guards  # install pre-commit + CI guards
-npx github:zafrirron/Agent-Platform --mode=uninstall    # dry run (shows what will be removed)
-npx github:zafrirron/Agent-Platform --mode=uninstall --confirm  # remove everything
+# ── Project scope (per repo) ────────────────────────────────────────────────
+npx github:zafrirron/Agent-Platform                       # install into current repo (default)
+npx github:zafrirron/Agent-Platform --mode=upgrade        # add new files, skip existing
+npx github:zafrirron/Agent-Platform --mode=repair         # fill empty stubs only
+npx github:zafrirron/Agent-Platform --mode=force          # reset all templates (confirm first)
+npx github:zafrirron/Agent-Platform --mode=install-guards # install pre-commit + CI guards
+npx github:zafrirron/Agent-Platform --mode=remove-guards  # remove guards
+npx github:zafrirron/Agent-Platform --mode=uninstall      # dry run — shows what will be removed
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm  # remove project platform files
+
+# ── Global scope (user home directory, run once) ────────────────────────────
+npx github:zafrirron/Agent-Platform --mode=global                        # install global stubs to ~/
+npx github:zafrirron/Agent-Platform --mode=uninstall-global              # dry run
+npx github:zafrirron/Agent-Platform --mode=uninstall-global --confirm    # remove global stubs
 ```
+
+**The two scopes are independent.** Removing from one does not affect the other.
+
+## Global install (user-level, run once across all repos)
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=global
+```
+
+Installs stubs to `~/.claude/`, `~/.cursor/rules/`, `~/.codex/`, `~/.agents/rules/`.
+After this, every repo with `AGENTS.md` activates platform routing automatically.
+Repos without the platform get a one-time install offer at session start.
+Suppress the offer for a specific repo by creating `.agent-platform-skip` at its root.
 
 ---
 

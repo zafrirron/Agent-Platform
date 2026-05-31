@@ -1,9 +1,11 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.24.0",
+  "bootstrap_version": "2.25.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
+  "platform_repo": "zafrirron/Agent-Platform",
+  "platform_npx": "github:zafrirron/Agent-Platform",
   "placeholders": [
     "PROJECT_NAME",
     "PROJECT_DESCRIPTION",
@@ -12,7 +14,9 @@
     "TEST_RUNNER",
     "COVERAGE_CMD",
     "COVERAGE_THRESHOLD",
-    "BOOTSTRAP_VERSION"
+    "BOOTSTRAP_VERSION",
+    "PLATFORM_REPO",
+    "PLATFORM_NPX"
   ],
   "frameworks": [
     "cursor",
@@ -475,6 +479,66 @@
       "path": "SYNC-POINTS.md",
       "template": "SYNC-POINTS.md",
       "kind": "template"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "template": "global/.claude/CLAUDE.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/caveman.md",
+      "template": ".claude/commands/caveman.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/caveman-commit.md",
+      "template": ".claude/commands/caveman-commit.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/caveman-compress.md",
+      "template": ".claude/commands/caveman-compress.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/caveman-review.md",
+      "template": ".claude/commands/caveman-review.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/caveman-stats.md",
+      "template": ".claude/commands/caveman-stats.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/quick-ref.md",
+      "template": ".claude/commands/quick-ref.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/rules/agent-platform-global.mdc",
+      "template": "global/.cursor/rules/agent-platform-global.mdc",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".codex/instructions.md",
+      "template": "global/.codex/instructions.md",
+      "kind": "template",
+      "scope": "global"
+    },
+    {
+      "path": ".agents/rules/agent-platform-global.md",
+      "template": "global/.agents/rules/agent-platform-global.md",
+      "kind": "template",
+      "scope": "global"
     }
   ]
 }

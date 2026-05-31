@@ -70,6 +70,11 @@ Agent Platform Bootstrap (framework repo)
 │   ├── .agent/agents/             ← 9 expert agents (with PLATFORM/PROJECT sections)
 │   ├── .agent/playbooks/          ← 8 playbooks (with PLATFORM section)
 │   ├── .agent/CONVENTIONS.md      ← coding conventions (with PLATFORM/PROJECT sections)
+│   ├── global/                    ← USER-LEVEL STUBS (scope=global) — installed to ~/ via --mode=global
+│   │   ├── .claude/CLAUDE.md      ←   global activation stub for Claude Code
+│   │   ├── .cursor/rules/         ←   alwaysApply global rule for Cursor
+│   │   ├── .codex/instructions.md ←   global activation stub for Codex
+│   │   └── .agents/rules/         ←   global activation stub for Antigravity
 │   └── ... (all other installed files)
 │
 ├── AGENT-PLATFORM-MANIFEST.json   ← template registry + bootstrap_version
@@ -80,6 +85,36 @@ Agent Platform Bootstrap (framework repo)
 ├── tests/                         ← 76 integration + unit tests (run on every commit)
 └── tools/release.ps1              ← single command for versioning + tagging + GitHub release
 ```
+
+---
+
+## The two install scopes
+
+The platform installs at two independent scopes. Understanding both is important when testing or debugging install flows.
+
+```
+Scope 1 — Project (per repo)                Scope 2 — Global (per user, per machine)
+─────────────────────────────────────────   ──────────────────────────────────────────────
+[repo]/.agent/                              ~/.claude/CLAUDE.md
+[repo]/.claude/                             ~/.claude/commands/  (caveman, quick-ref, etc.)
+[repo]/.cursor/                             ~/.cursor/rules/agent-platform-global.mdc
+[repo]/.agents/                             ~/.codex/instructions.md
+[repo]/.codex/                              ~/.agents/rules/agent-platform-global.md
+[repo]/AGENTS.md                            ~/.agent-platform/global-version
+[repo]/CLAUDE.md
+
+Install:   npx ... (no flags)               Install:   npx ... --mode=global
+Uninstall: npx ... --mode=uninstall         Uninstall: npx ... --mode=uninstall-global
+```
+
+**Install pattern for new users:**
+1. User runs project install in their first repo → platform installs locally
+2. Installer shows: `○  Global stubs  not installed — run: npx ... --mode=global`
+3. User runs `--mode=global` once → all future repos (with or without project install) get routing
+
+**Not "double install":** the global stub is a thin activation signal (50 lines). The project install is the full platform (agents, playbooks, context, tools). They stack without conflict — global is the doorbell, project is the house.
+
+**Uninstall independence:** removing from one scope does not affect the other. A user can remove the platform from a single repo while keeping global stubs for other repos.
 
 ---
 

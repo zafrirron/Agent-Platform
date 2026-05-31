@@ -4,11 +4,17 @@
 
 ---
 
-⚠️ **This will permanently remove all platform files from this repository.**
+The platform has two independent install scopes. Uninstall each separately.
 
-The platform coordination scaffolding is removed. Your AI agents improved your codebase while you used the platform — those code changes are yours to keep. Only the coordination layer that guided them is removed.
+---
 
-## What will be deleted
+## Scope 1 — Project (this repo)
+
+⚠️ **Removes all platform files from this repository.**
+
+The coordination scaffolding is removed. Code your AI agents wrote while you used the platform is yours to keep. Only the layer that guided them is removed.
+
+### What will be deleted
 
 | Path | Contents |
 |------|---------|
@@ -21,19 +27,63 @@ The platform coordination scaffolding is removed. Your AI agents improved your c
 | `SYNC-POINTS.md` | Cross-IDE switch cheat sheet |
 | `CLAUDE.md` | Claude Code entry point |
 
-## Steps
+### Steps
 
 1. **Confirm with the user** — ask explicitly: "Are you sure you want to remove all Agent Platform files from this repository? This cannot be undone."
 2. If confirmed, run:
    ```
-   npx github:zafrirron/Agent-Platform --mode=uninstall --confirm
+   npx {{PLATFORM_NPX}} --mode=uninstall --confirm
    ```
 3. Report what was removed.
 
-## Dry run (see what would be removed without deleting)
+### Dry run
 
 ```
-npx github:zafrirron/Agent-Platform --mode=uninstall
+npx {{PLATFORM_NPX}} --mode=uninstall
 ```
 
-No `--confirm` = nothing is deleted, only a list is shown.
+No `--confirm` = nothing deleted, only a list is shown.
+
+---
+
+## Scope 2 — Global (user home directory)
+
+Removes the user-level stubs installed by `--mode=global`.
+
+**This does NOT affect any project installs.** Each scope is independent.
+
+### What will be affected
+
+| Path | Action |
+|------|--------|
+| `~/.claude/CLAUDE.md` | PLATFORM block removed; your USER section content is preserved if you added any |
+| `~/.cursor/rules/agent-platform-global.mdc` | Same — PLATFORM block removed, USER content kept |
+| `~/.codex/instructions.md` | Same |
+| `~/.agents/rules/agent-platform-global.md` | Same |
+| `~/.claude/commands/caveman*.md` etc. | Deleted (pure platform files, no user content) |
+| `~/.agent-platform/global-version` | Deleted |
+
+Files with no platform markers are left untouched.
+
+### Steps
+
+1. **Confirm with the user** — ask: "Remove the global Agent Platform stubs from your home directory?"
+2. Dry run first (recommended):
+   ```
+   npx {{PLATFORM_NPX}} --mode=uninstall-global
+   ```
+3. Confirm removal:
+   ```
+   npx {{PLATFORM_NPX}} --mode=uninstall-global --confirm
+   ```
+
+---
+
+## Removing both scopes
+
+Run project uninstall first, then global:
+
+```
+npx {{PLATFORM_NPX}} --mode=uninstall --confirm
+npx {{PLATFORM_NPX}} --mode=uninstall-global --confirm
+```

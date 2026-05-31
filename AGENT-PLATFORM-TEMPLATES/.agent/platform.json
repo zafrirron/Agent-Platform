@@ -45,6 +45,8 @@
   "test_runner":        "{{TEST_RUNNER}}",
   "coverage_cmd":       "{{COVERAGE_CMD}}",
   "coverage_threshold": "{{COVERAGE_THRESHOLD}}",
+  "platform_repo":      "{{PLATFORM_REPO}}",
+  "platform_npx":       "{{PLATFORM_NPX}}",
   "last_update_check":  null,
   "last_update_status": null,
   "notes": "Phase 3 fills launch.* from stack scan. Run: node .agent/tools/launch.mjs (all OS), or launch.sh / launch.ps1 wrappers."

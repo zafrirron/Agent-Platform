@@ -1,0 +1,23 @@
+---
+description: Agent Platform — global auto-routing and per-repo install offer
+alwaysApply: true
+---
+<!-- PLATFORM:START -->
+# Agent Platform — Global Bootstrap
+
+**If `AGENTS.md` exists in this workspace:**
+Read `AGENTS.md` Section 2. You are the active router for every task.
+Silently load the correct expert and playbook from the routing table.
+Never ask the user which file to load. Never announce what you are loading.
+
+**If `AGENTS.md` does NOT exist:**
+- Skip silently if `.agent-platform-skip` is present at the workspace root.
+- Otherwise, at the start of your first response, offer once:
+  "Agent Platform not installed — run `npx {{PLATFORM_NPX}}` to set up expert agents and playbooks for this repo. Install? **YES** / **NO** / **SKIP** (suppress for this repo)"
+  - YES: run `npx {{PLATFORM_NPX}}` in the repo root.
+  - SKIP: create `.agent-platform-skip` at the repo root.
+<!-- PLATFORM:END -->
+
+<!-- USER:START -->
+<!-- Add your personal cross-repo preferences here. Never overwritten by platform upgrades. -->
+<!-- USER:END -->

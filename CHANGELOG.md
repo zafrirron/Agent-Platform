@@ -7,6 +7,104 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [2.25.0] — 2026-05-31
 
+### Added — Global install: platform activates across all repos with one command
+
+**New mode: `--mode=global`**
+
+Installs user-level stubs to your home directory so the platform auto-activates in every repo:
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=global
+```
+
+Writes stubs to all four framework global config locations:
+
+| Framework | Target |
+|---|---|
+| Claude Code | `~/.claude/CLAUDE.md` + `~/.claude/commands/` (caveman, quick-ref, etc.) |
+| Cursor | `~/.cursor/rules/agent-platform-global.mdc` (alwaysApply: true) |
+| Codex | `~/.codex/instructions.md` |
+| Antigravity | `~/.agents/rules/agent-platform-global.md` |
+
+**Behaviour per repo:**
+- Repo with `AGENTS.md` → expert routing activates automatically
+- Repo without `AGENTS.md` → one-time install offer at session start
+- Repo with `.agent-platform-skip` → offer suppressed permanently
+- `~/.agent-platform/global-version` → tracks global stub version
+
+**Three-layer model:** PLATFORM (framework rules) → PROJECT (team rules) → USER (personal, global)
+USER sections in stub files are yours and never overwritten by upgrades.
+
+**Smart merge on upgrade:** existing global files with `PLATFORM:START/END` markers get only the platform section patched; USER content is preserved.
+
+---
+
+### Added — `--mode=uninstall-global` and install-time global stub suggestion
+
+**Symmetric uninstall for the global scope:**
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=uninstall-global          # dry run
+npx github:zafrirron/Agent-Platform --mode=uninstall-global --confirm # remove
+```
+
+Smart removal — does not blindly delete files:
+- Files with no user content in the USER section → deleted entirely
+- Files where the user added content to `<!-- USER:START/END -->` → PLATFORM block stripped, USER content kept
+- Files with no platform markers → left completely untouched
+- Pure platform files (`~/.claude/commands/`, `~/.agent-platform/global-version`) → always deleted
+
+The two scopes are fully independent: removing global stubs does not affect any project installs, and project uninstall does not touch global stubs.
+
+**Post-install global stub suggestion (fresh installs only):**
+
+After a project install, the summary now shows one of:
+```
+✔  Global stubs  installed (v2.25.0) — platform activates in all your repos
+```
+or:
+```
+○  Global stubs  not installed — run: npx github:zafrirron/Agent-Platform --mode=global
+   (activates platform in every repo you open — install once, works everywhere)
+```
+
+This surfaces the global option at the natural moment (first repo install) without duplicating content between the two scopes.
+
+**`uninstall.md`** updated to document both scopes with distinct dry-run and confirm steps.
+
+### Added — `PLATFORM_REPO` / `PLATFORM_NPX` placeholder system: full fork support
+
+Forks of this repo can now change a single field and have all deployed files and installer output reflect the correct repo URL.
+
+**`AGENT-PLATFORM-MANIFEST.json`** now has:
+```json
+"platform_repo": "zafrirron/Agent-Platform",
+"platform_npx":  "github:zafrirron/Agent-Platform"
+```
+
+**What this changes for forks:**
+- Change `platform_repo` and `platform_npx` in the manifest → all deployed template files, installer console output, and update checker automatically use the fork's URL
+- No more find-and-replace across 120 occurrences after every upstream merge
+
+**Files updated to use `{{PLATFORM_NPX}}` / `{{PLATFORM_REPO}}`:**
+- `.agent/PLATFORM-HELP.md` — all install/upgrade/remove commands
+- `.agent/QUICK-REF.md` — Platform Operations table
+- `.agent/tools/upgrade.md` — upgrade instructions
+- `.agent/tools/uninstall.md` — uninstall instructions
+- `.agent/tools/check-updates.mjs` — reads `platform_repo` from `platform.json` at runtime
+- `.agent/bootstrap/apply.js` — all console.log output, guard file comments
+- `.agent/platform.json` — stores `platform_repo` and `platform_npx` after install
+
+**Fork setup:** change two fields in `AGENT-PLATFORM-MANIFEST.json` and everything follows.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ### Added — Full Project Audit playbook: 8-domain professional report, first-session auto-offer
 
 **New playbook: `.agent/playbooks/audit.md`**

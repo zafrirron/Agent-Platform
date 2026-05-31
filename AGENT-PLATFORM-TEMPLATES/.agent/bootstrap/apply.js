@@ -85,6 +85,33 @@ function patchPlatformSection(existingContent, newContent) {
   return existingContent.slice(0, eStart) + newBlock + existingContent.slice(eEnd + END.length);
 }
 
+/**
+ * Remove the PLATFORM:START/END block from content.
+ * Returns the remaining content with surrounding whitespace cleaned up.
+ */
+function stripPlatformBlock(content) {
+  const START = '<!-- PLATFORM:START -->';
+  const END   = '<!-- PLATFORM:END -->';
+  const start = content.indexOf(START);
+  const end   = content.indexOf(END);
+  if (start < 0 || end < 0) return content;
+  const before = content.slice(0, start).trimEnd();
+  const after  = content.slice(end + END.length).trimStart();
+  if (!before && !after) return '';
+  return (before ? before + '\n\n' : '') + after;
+}
+
+/**
+ * Returns true if a global stub file has meaningful user content beyond
+ * the platform markers, placeholder HTML comments, and YAML frontmatter.
+ */
+function hasRealUserContent(content) {
+  const stripped = stripPlatformBlock(content);
+  const noFrontmatter = stripped.replace(/^---[\s\S]*?---\n?/, '');
+  const noComments    = noFrontmatter.replace(/<!--[\s\S]*?-->/g, '');
+  return noComments.trim().length > 0;
+}
+
 /* ── Stack detection ──────────────────────────────────────────────────────── */
 function detectTestRunner(root) {
   if (fs.existsSync(path.join(root, 'pyproject.toml')) ||
@@ -140,6 +167,8 @@ function discover() {
     COVERAGE_CMD:        detectCoverageCmd(runner),
     COVERAGE_THRESHOLD:  '80',
     BOOTSTRAP_VERSION:   manifest.bootstrap_version || '2.2.0',
+    PLATFORM_REPO:       manifest.platform_repo || 'zafrirron/Agent-Platform',
+    PLATFORM_NPX:        manifest.platform_npx  || 'github:zafrirron/Agent-Platform',
   };
 }
 
@@ -288,12 +317,108 @@ function writeMigrationNotes(root, artifacts, backupDir) {
 
   lines.push(`\n---\n\n`,
     `**Remove the platform** (restores all your backed-up AI config files automatically):\n`,
-    `\`\`\`\nnpx github:zafrirron/Agent-Platform --mode=uninstall --confirm\n\`\`\`\n`,
+    `\`\`\`\nnpx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=uninstall --confirm\n\`\`\`\n`,
   );
 
   const notesPath = path.join(root, '.agent/MIGRATION-NOTES.md');
   fs.mkdirSync(path.dirname(notesPath), { recursive: true });
   fs.writeFileSync(notesPath, lines.join(''));
+}
+
+/* ── Global install mode ──────────────────────────────────────────────────── */
+if (MODE === 'global') {
+  const HOME        = os.homedir();
+  const platformNpx  = manifest.platform_npx  || 'github:zafrirron/Agent-Platform';
+  const platformRepo = manifest.platform_repo || 'zafrirron/Agent-Platform';
+  const globalVars   = {
+    PLATFORM_REPO:     platformRepo,
+    PLATFORM_NPX:      platformNpx,
+    BOOTSTRAP_VERSION: manifest.bootstrap_version || '2.0.0',
+  };
+
+  const LINE = '═'.repeat(62);
+  const SEP  = '─'.repeat(62);
+  console.log('');
+  console.log(LINE);
+  console.log(`  Agent Platform Bootstrap v${manifest.bootstrap_version} — Global Install`);
+  console.log(LINE);
+  console.log('');
+  console.log('  Installing global stubs to: ' + HOME);
+  console.log('');
+
+  const globalFiles = manifest.files.filter(e => e.scope === 'global');
+  const gCreated = [], gUpdated = [], gSkipped = [];
+
+  for (const entry of globalFiles) {
+    const target = path.join(HOME, entry.path);
+    const src    = path.join(templatesRoot, entry.template);
+    if (!fs.existsSync(src)) { gSkipped.push(entry.path + ' (template not found)'); continue; }
+
+    const content = sub(fs.readFileSync(src, 'utf8'), globalVars);
+
+    if (fs.existsSync(target)) {
+      const existing = fs.readFileSync(target, 'utf8');
+      const patched  = patchPlatformSection(existing, content);
+      if (patched !== null) {
+        // File has PLATFORM markers — patch only platform section, USER section preserved
+        fs.writeFileSync(target, patched.endsWith('\n') ? patched : patched + '\n');
+        gUpdated.push(entry.path);
+      } else if (!content.includes('<!-- PLATFORM:START -->')) {
+        // Pure platform file (commands, etc.) — safe to replace with latest
+        fs.mkdirSync(path.dirname(target), { recursive: true });
+        fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
+        gUpdated.push(entry.path);
+      } else {
+        // File exists but no markers — prepend platform block, preserve existing content below
+        const sep = '\n\n---\n\n*(Your original content below — preserved by Agent Platform global install)*\n\n';
+        const merged = content + sep + existing;
+        fs.writeFileSync(target, merged.endsWith('\n') ? merged : merged + '\n');
+        gUpdated.push(entry.path + ' (platform block prepended)');
+      }
+      continue;
+    }
+
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
+    gCreated.push(entry.path);
+  }
+
+  // Write global version tracking
+  const versionDir = path.join(HOME, '.agent-platform');
+  fs.mkdirSync(versionDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(versionDir, 'global-version'),
+    JSON.stringify({ version: manifest.bootstrap_version, installed_at: new Date().toISOString(),
+                     platform_repo: platformRepo, platform_npx: platformNpx }, null, 2) + '\n'
+  );
+
+  console.log(`  Files created : ${gCreated.length}   Updated: ${gUpdated.length}   Skipped: ${gSkipped.length}`);
+  gCreated.forEach(f => console.log('  ✔ Created: ~/' + f));
+  gUpdated.forEach(f => console.log('  ✔ Updated: ~/' + f));
+  gSkipped.forEach(f => console.log('  ○ Skipped: ' + f));
+  console.log('');
+  console.log('  What was installed');
+  console.log(SEP);
+  console.log('  ~/.claude/CLAUDE.md              global activation + per-repo install offer');
+  console.log('  ~/.claude/commands/              caveman · caveman-commit · caveman-review · quick-ref');
+  console.log('  ~/.cursor/rules/                 agent-platform-global.mdc  (alwaysApply: true)');
+  console.log('  ~/.codex/instructions.md         global activation stub');
+  console.log('  ~/.agents/rules/                 agent-platform-global.md');
+  console.log('  ~/.agent-platform/global-version version tracking');
+  console.log('');
+  console.log('  How it works');
+  console.log(SEP);
+  console.log('  · Any repo with AGENTS.md    → expert routing activates automatically');
+  console.log('  · Any repo without AGENTS.md → one-time install offer at session start');
+  console.log('  · Repos with .agent-platform-skip → offer suppressed for that repo');
+  console.log('  · USER sections in stub files → yours, never overwritten by upgrades');
+  console.log('');
+  console.log('  To upgrade global stubs later:');
+  console.log(`    npx ${platformNpx} --mode=global`);
+  console.log('');
+  console.log(LINE);
+  console.log('');
+  process.exit(0);
 }
 
 /* ── Apply ────────────────────────────────────────────────────────────────── */
@@ -309,6 +434,7 @@ const backupDir    = (MODE === 'install') ? backupArtifacts(INSTALL_ROOT, preArt
 if (MODE === 'install') writeMigrationNotes(INSTALL_ROOT, preArtifacts, backupDir);
 
 for (const entry of manifest.files) {
+  if (entry.scope === 'global') continue; // global-only stubs — installed via --mode=global
   const target = path.join(INSTALL_ROOT, entry.path);
   const src    = path.join(templatesRoot, entry.template);
   if (!fs.existsSync(src)) continue;
@@ -441,7 +567,7 @@ if (MODE === 'uninstall') {
     });
     console.log('');
     console.log('  To confirm removal run:');
-    console.log('  npx github:zafrirron/Agent-Platform --mode=uninstall --confirm');
+    console.log(`  npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=uninstall --confirm`);
     console.log(LINE);
     console.log('');
     process.exit(0);
@@ -573,8 +699,8 @@ function generatePreCommitHook(runner, threshold) {
   const hasRunner = runner && !runner.startsWith('<fill');
   return `#!/usr/bin/env node
 // Agent Platform Bootstrap — pre-commit guard
-// Installed by: npx github:zafrirron/Agent-Platform --mode=install-guards
-// Remove with:  npx github:zafrirron/Agent-Platform --mode=remove-guards
+// Installed by: npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=install-guards
+// Remove with:  npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=remove-guards
 // @agent-platform-guard
 
 const { execSync, spawnSync } = require('child_process');
@@ -641,8 +767,8 @@ function generateCIWorkflow(runner, coverageCmd, threshold, setup) {
   const hasRunner = runner && !runner.startsWith('<fill');
   const hasCoverage = coverageCmd && !coverageCmd.startsWith('<fill');
   return `# Agent Platform Bootstrap — CI guards
-# Installed by: npx github:zafrirron/Agent-Platform --mode=install-guards
-# Remove with:  npx github:zafrirron/Agent-Platform --mode=remove-guards
+# Installed by: npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=install-guards
+# Remove with:  npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=remove-guards
 # @agent-platform-guard
 
 name: Platform Guards
@@ -791,6 +917,129 @@ if (MODE === 'remove-guards') {
   process.exit(0);
 }
 
+/* ── uninstall-global mode ────────────────────────────────────────────────── */
+if (MODE === 'uninstall-global') {
+  const HOME        = os.homedir();
+  const platformNpx = manifest.platform_npx || 'github:zafrirron/Agent-Platform';
+  const LINE        = '═'.repeat(62);
+
+  // Stub files that contain a PLATFORM block (may also have USER content)
+  const stubFiles = [
+    path.join(HOME, '.claude/CLAUDE.md'),
+    path.join(HOME, '.cursor/rules/agent-platform-global.mdc'),
+    path.join(HOME, '.codex/instructions.md'),
+    path.join(HOME, '.agents/rules/agent-platform-global.md'),
+  ];
+
+  // Pure platform files — no user content ever
+  const commandFiles = [
+    'caveman.md', 'caveman-commit.md', 'caveman-compress.md',
+    'caveman-review.md', 'caveman-stats.md', 'quick-ref.md',
+  ].map(f => path.join(HOME, '.claude/commands', f));
+  const versionFile = path.join(HOME, '.agent-platform/global-version');
+
+  console.log('');
+  console.log(LINE);
+  console.log('  Agent Platform Bootstrap — Uninstall Global Stubs');
+  console.log(LINE);
+  console.log('');
+
+  // Check what is actually present
+  const presentStubs = stubFiles.filter(f => fs.existsSync(f));
+  const presentCmds  = commandFiles.filter(f => fs.existsSync(f));
+  const versionExists = fs.existsSync(versionFile);
+
+  if (!presentStubs.length && !presentCmds.length && !versionExists) {
+    console.log('  ℹ  No global stubs found in ' + HOME + '.');
+    console.log('  Nothing to remove.');
+    console.log(LINE);
+    console.log('');
+    process.exit(0);
+  }
+
+  // Classify each stub file
+  const toDelete = []; // whole file deleted (no user content)
+  const toPatch  = []; // PLATFORM block stripped, USER content kept
+  const toIgnore = []; // no platform markers — leave untouched
+
+  for (const f of presentStubs) {
+    const content = fs.readFileSync(f, 'utf8');
+    if (!content.includes('<!-- PLATFORM:START -->')) {
+      toIgnore.push(f);
+    } else if (hasRealUserContent(content)) {
+      toPatch.push(f);
+    } else {
+      toDelete.push(f);
+    }
+  }
+
+  if (!CONFIRM) {
+    console.log('  ⚠️  DRY RUN — nothing deleted. Add --confirm to proceed.');
+    console.log('');
+    if (toDelete.length || presentCmds.length || versionExists) {
+      console.log('  Will be DELETED (no user content):');
+      [...toDelete, ...presentCmds, ...(versionExists ? [versionFile] : [])]
+        .forEach(f => console.log('    ' + f.replace(HOME, '~')));
+    }
+    if (toPatch.length) {
+      console.log('');
+      console.log('  Will be PATCHED (PLATFORM block removed, your USER content kept):');
+      toPatch.forEach(f => console.log('    ' + f.replace(HOME, '~')));
+    }
+    if (toIgnore.length) {
+      console.log('');
+      console.log('  Will be LEFT UNTOUCHED (no platform markers — not installed by this tool):');
+      toIgnore.forEach(f => console.log('    ' + f.replace(HOME, '~')));
+    }
+    console.log('');
+    console.log('  To confirm removal run:');
+    console.log(`    npx ${platformNpx} --mode=uninstall-global --confirm`);
+    console.log(LINE);
+    console.log('');
+    process.exit(0);
+  }
+
+  let removed = 0, patched = 0;
+
+  for (const f of toDelete) {
+    fs.rmSync(f, { force: true });
+    console.log('  ✔ Deleted : ' + f.replace(HOME, '~'));
+    removed++;
+  }
+
+  for (const f of toPatch) {
+    const stripped = stripPlatformBlock(fs.readFileSync(f, 'utf8'));
+    fs.writeFileSync(f, stripped.endsWith('\n') ? stripped : stripped + '\n');
+    console.log('  ✔ Patched : ' + f.replace(HOME, '~') + '  (PLATFORM block removed, USER content kept)');
+    patched++;
+  }
+
+  for (const f of presentCmds) {
+    fs.rmSync(f, { force: true });
+    console.log('  ✔ Deleted : ' + f.replace(HOME, '~'));
+    removed++;
+  }
+
+  if (versionExists) {
+    fs.rmSync(versionFile, { force: true });
+    try {
+      const dir = path.dirname(versionFile);
+      if (fs.readdirSync(dir).length === 0) fs.rmdirSync(dir);
+    } catch { /* ignore */ }
+    console.log('  ✔ Deleted : ~/.agent-platform/global-version');
+    removed++;
+  }
+
+  console.log('');
+  console.log(`  Done — ${removed} file(s) deleted, ${patched} file(s) patched.`);
+  if (patched > 0) {
+    console.log('  Your personal USER section content has been preserved.');
+  }
+  console.log(LINE);
+  console.log('');
+  process.exit(0);
+}
+
 /* ── Install summary ──────────────────────────────────────────────────────── */
 const LINE = '═'.repeat(66);
 const SEP  = '  ' + '─'.repeat(62);
@@ -820,7 +1069,7 @@ if (MODE === 'upgrade' && noMarkers.length > 0) {
   console.log('  ⚠  Some files were skipped — installed before v2.7 (no PLATFORM markers):');
   noMarkers.slice(0, 5).forEach(f => console.log('     ' + f));
   if (noMarkers.length > 5) console.log(`     ... and ${noMarkers.length - 5} more`);
-  console.log('  To get the latest expert rules, run: npx github:zafrirron/Agent-Platform --mode=force');
+  console.log(`  To get the latest expert rules, run: npx ${vars.PLATFORM_NPX} --mode=force`);
   console.log('  (force resets all templates — back up any project-specific content first)');
 }
 console.log('');
@@ -853,13 +1102,28 @@ if (totalArtifacts > 0) {
     console.log('  See .agent/MIGRATION-NOTES.md to connect your existing AI configs to the platform.');
   }
 }
-console.log('  ○  Enforcement guards  not installed — run: npx github:zafrirron/Agent-Platform --mode=install-guards');
+console.log(`  ○  Enforcement guards  not installed — run: npx ${vars.PLATFORM_NPX} --mode=install-guards`);
+// Global stubs check — only shown on fresh install, not upgrade/repair
+if (MODE === 'install') {
+  const globalVersionFile = path.join(os.homedir(), '.agent-platform/global-version');
+  if (fs.existsSync(globalVersionFile)) {
+    try {
+      const gv = JSON.parse(fs.readFileSync(globalVersionFile, 'utf8'));
+      console.log(`  ✔  Global stubs         installed (v${gv.version || '?'}) — platform activates in all your repos`);
+    } catch {
+      console.log('  ✔  Global stubs         installed — platform activates in all your repos');
+    }
+  } else {
+    console.log(`  ○  Global stubs         not installed — run: npx ${vars.PLATFORM_NPX} --mode=global`);
+    console.log('     (activates platform in every repo you open — install once, works everywhere)');
+  }
+}
 console.log('');
 console.log('  References');
 console.log(SEP);
-console.log('  Full guide  →  https://github.com/zafrirron/Agent-Platform/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md');
-console.log('  Repository  →  https://github.com/zafrirron/Agent-Platform');
-console.log('  Changelog   →  https://github.com/zafrirron/Agent-Platform/blob/main/CHANGELOG.md');
+console.log(`  Full guide  →  https://github.com/${vars.PLATFORM_REPO}/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md`);
+console.log(`  Repository  →  https://github.com/${vars.PLATFORM_REPO}`);
+console.log(`  Changelog   →  https://github.com/${vars.PLATFORM_REPO}/blob/main/CHANGELOG.md`);
 console.log('');
 console.log('  Next step — open your AI agent and send this message:');
 console.log('');
@@ -873,7 +1137,7 @@ console.log('');
 console.log(SEP);
 console.log('  To REMOVE all platform files, run in terminal:');
 console.log('');
-console.log('    npx github:zafrirron/Agent-Platform --mode=uninstall');
+console.log(`    npx ${vars.PLATFORM_NPX} --mode=uninstall`);
 console.log('');
 console.log(LINE);
 console.log('');

@@ -14,17 +14,18 @@
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 
-const REPO = 'zafrirron/Agent-Platform';
 const ROOT = process.cwd();
 
-/* ── Read installed version ──────────────────────────────────────────────── */
+/* ── Read installed version and platform config ──────────────────────────── */
 const platformFile = resolve(ROOT, '.agent/platform.json');
 let currentVersion = null;
+let REPO = '{{PLATFORM_REPO}}'; // substituted at install time; fallback is the source repo
 
 if (existsSync(platformFile)) {
   try {
     const pj = JSON.parse(readFileSync(platformFile, 'utf8'));
     currentVersion = pj.bootstrap_version || null;
+    if (pj.platform_repo) REPO = pj.platform_repo;
   } catch {
     console.error('Could not parse .agent/platform.json');
   }

@@ -239,6 +239,34 @@ You open Cursor, run session-start:
 
 ---
 
+## Global install — platform everywhere (optional, run once)
+
+Install user-level stubs to your home directory so the platform activates automatically in every repo:
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=global
+```
+
+Writes to `~/.claude/CLAUDE.md`, `~/.cursor/rules/`, `~/.codex/instructions.md`, `~/.agents/rules/` — all four frameworks.
+
+**What it does:**
+- **Repo with platform installed** → expert routing activates automatically, no manual session-start needed
+- **Repo without platform** → one-time install offer displayed at session start
+- **Repo with `.agent-platform-skip`** → offer suppressed permanently for that repo
+- **`~/.claude/commands/`** → `caveman`, `quick-ref`, and other commands available in every repo globally
+
+**The three-layer model after global install:**
+
+| Layer | Where | What |
+|---|---|---|
+| **PLATFORM** | project `.agent/agents/*.md` | Framework-maintained expert rules |
+| **PROJECT** | project `.agent/agents/*.md` | Your team's coding conventions |
+| **USER** | `~/.claude/CLAUDE.md` USER section | Your personal cross-repo preferences |
+
+USER section is yours — never overwritten by upgrades.
+
+---
+
 ## Upgrade — get smarter agents
 
 ```bash
