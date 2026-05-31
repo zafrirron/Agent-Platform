@@ -169,9 +169,11 @@ OK "Pushed"
 
 Step "Creating GitHub release page for v$Version"
 
-& $GH release view "v$Version" --repo $REPO 2>$null | Out-Null
 $action = "create"
+$ErrorActionPreference = "SilentlyContinue"
+& $GH release view "v$Version" --repo $REPO | Out-Null
 if ($LASTEXITCODE -eq 0) { $action = "edit" }
+$ErrorActionPreference = "Stop"
 
 $template = Get-Content "$ROOT\tools\release-notes-TEMPLATE.md" -Raw
 $releaseNotes = $template `
