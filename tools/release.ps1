@@ -68,7 +68,7 @@ OK "Working tree clean and up to date with origin"
 
 Step "Checking CHANGELOG.md for v$Version"
 
-$changelog = Get-Content "$ROOT\CHANGELOG.md" -Raw
+$changelog = Get-Content "$ROOT\CHANGELOG.md" -Raw -Encoding UTF8
 if ($changelog -notmatch "\[${Version}\]") {
     Fail "CHANGELOG.md has no entry for [$Version]. Update CHANGELOG.md first."
 }
@@ -90,31 +90,31 @@ if ($changelog -match $pattern) {
 
 Step "Bumping versions to $Version"
 
-$pkg = Get-Content "$ROOT\package.json" -Raw
+$pkg = Get-Content "$ROOT\package.json" -Raw -Encoding UTF8
 $currentPkg = "?"
 if ($pkg -match '"version":\s*"([^"]+)"') { $currentPkg = $Matches[1] }
 $pkg = $pkg -replace '"version":\s*"[^"]+"', """version"": ""$Version"""
-Set-Content "$ROOT\package.json" $pkg -NoNewline
+Set-Content "$ROOT\package.json" $pkg -NoNewline -Encoding UTF8
 OK "package.json: $currentPkg -> $Version"
 
-$man = Get-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" -Raw
+$man = Get-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" -Raw -Encoding UTF8
 $currentMan = "?"
 if ($man -match '"bootstrap_version":\s*"([^"]+)"') { $currentMan = $Matches[1] }
 $man = $man -replace '"bootstrap_version":\s*"[^"]+"', """bootstrap_version"": ""$Version"""
-Set-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" $man -NoNewline
+Set-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" $man -NoNewline -Encoding UTF8
 OK "AGENT-PLATFORM-MANIFEST.json: $currentMan -> $Version"
 
-$readme = Get-Content "$ROOT\README.md" -Raw
+$readme = Get-Content "$ROOT\README.md" -Raw -Encoding UTF8
 $currentReadme = "?"
 if ($readme -match '\*\*v([0-9]+\.[0-9]+\.[0-9]+)\*\*') { $currentReadme = $Matches[1] }
 $readme = $readme -replace '\*\*v[0-9]+\.[0-9]+\.[0-9]+\*\*', "**v$Version**"
-Set-Content "$ROOT\README.md" $readme -NoNewline
+Set-Content "$ROOT\README.md" $readme -NoNewline -Encoding UTF8
 OK "README.md: $currentReadme -> $Version"
 
-$pres = Get-Content "$ROOT\presentation\agent-platform-beta.html" -Raw -ErrorAction SilentlyContinue
+$pres = Get-Content "$ROOT\presentation\agent-platform-beta.html" -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
 if ($pres) {
     $pres = $pres -replace 'v[0-9]+\.[0-9]+\.[0-9]+', "v$Version"
-    Set-Content "$ROOT\presentation\agent-platform-beta.html" $pres -NoNewline
+    Set-Content "$ROOT\presentation\agent-platform-beta.html" $pres -NoNewline -Encoding UTF8
     OK "presentation/agent-platform-beta.html -> v$Version"
 }
 
@@ -175,7 +175,7 @@ $ErrorActionPreference = "SilentlyContinue"
 if ($LASTEXITCODE -eq 0) { $action = "edit" }
 $ErrorActionPreference = "Stop"
 
-$template = Get-Content "$ROOT\tools\release-notes-TEMPLATE.md" -Raw
+$template = Get-Content "$ROOT\tools\release-notes-TEMPLATE.md" -Raw -Encoding UTF8
 $releaseNotes = $template `
     -replace "vX\.Y\.Z", "v$Version" `
     -replace "<!-- Describe the main changes here -->", $whatsNew
