@@ -6,6 +6,8 @@ This file lists what is in the framework repository and what ships to consumer r
 
 ## Install (preferred — no manual copying needed)
 
+### Project install (per repo)
+
 ```bash
 # Any OS with Node.js 18+
 npx github:zafrirron/Agent-Platform
@@ -18,6 +20,18 @@ iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/instal
 ```
 
 No file copying required. The installer downloads the pack, applies it, and cleans up.
+
+### Global install (user home directory — run once, works across all repos)
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=global
+```
+
+Installs thin activation stubs to `~/.claude/`, `~/.cursor/rules/`, `~/.codex/`, `~/.agents/rules/`.
+After this, every repo you open with `AGENTS.md` activates expert routing automatically.
+Repos without the platform get a one-time install offer at session start.
+
+The project install summary shows a reminder if global stubs are not yet installed.
 
 ---
 
@@ -51,9 +65,9 @@ package.json
 
 ---
 
-## What gets installed on a consumer repo
+## What gets installed
 
-The apply step creates these (nothing else):
+### Project install (per repo)
 
 ```text
 .agent/          ← shared hub — conventions, playbooks, agents, context, tools
@@ -68,13 +82,40 @@ CLAUDE.md        ← Claude Code entry point
 
 All of the above are added to `.gitignore` automatically — nothing is committed to the user's repo.
 
+### Global install (user home directory, `--mode=global`)
+
+```text
+~/.claude/CLAUDE.md                         ← activation stub + USER section
+~/.claude/commands/caveman*.md              ← global slash commands
+~/.claude/commands/quick-ref.md
+~/.cursor/rules/agent-platform-global.mdc  ← alwaysApply: true activation rule
+~/.codex/instructions.md                   ← activation stub + USER section
+~/.agents/rules/agent-platform-global.md  ← activation stub + USER section
+~/.agent-platform/global-version           ← version tracking
+```
+
+These are never gitignored — they live in your home directory, not in any repo.
+
 ---
 
 ## Uninstall
 
+The two install scopes uninstall independently.
+
+### Project uninstall (this repo only)
+
 ```bash
 npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run
-npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes everything
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes project platform files
 ```
 
-Removes all platform files and restores any AI config files that existed before install.
+Removes all platform files from the repo and restores any AI config files that existed before install.
+
+### Global uninstall (user home directory)
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=uninstall-global          # dry run
+npx github:zafrirron/Agent-Platform --mode=uninstall-global --confirm # removes global stubs
+```
+
+Smart removal: files where you added USER section content have only the PLATFORM block stripped — your personal preferences are preserved. Files with no user content are deleted entirely.
