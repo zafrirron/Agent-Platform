@@ -421,6 +421,24 @@ if (MODE === 'global') {
   process.exit(0);
 }
 
+/* ── Guard: refuse to install into the platform repo itself ──────────────── */
+const PLATFORM_REPO_MARKERS = ['AGENT-PLATFORM-MANIFEST.json', 'AGENT-PLATFORM-TEMPLATES'];
+const isPlatformRepo = PLATFORM_REPO_MARKERS.every(m => fs.existsSync(path.join(INSTALL_ROOT, m)));
+const INSTALL_MODES  = new Set(['install', 'upgrade', 'repair', 'force', 'install-guards', 'remove-guards']);
+if (isPlatformRepo && INSTALL_MODES.has(MODE)) {
+  console.error('');
+  console.error('  ✗  ERROR: Target directory is the Agent Platform repo itself.');
+  console.error('');
+  console.error('  You are running the installer from inside the platform source repo.');
+  console.error('  The platform must be installed into a separate project folder.');
+  console.error('');
+  console.error('  To install into a project:');
+  console.error('    cd /path/to/your-project');
+  console.error('    npx ' + (manifest.platform_npx || 'github:zafrirron/Agent-Platform'));
+  console.error('');
+  process.exit(1);
+}
+
 /* ── Apply ────────────────────────────────────────────────────────────────── */
 const vars        = discover();
 const created     = [];
