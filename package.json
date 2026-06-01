@@ -29,5 +29,12 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "files": [
+    "bin/",
+    "AGENT-PLATFORM-APPLY.js",
+    "AGENT-PLATFORM-BOOTSTRAP.md",
+    "AGENT-PLATFORM-MANIFEST.json",
+    "AGENT-PLATFORM-TEMPLATES/"
+  ]
 }
