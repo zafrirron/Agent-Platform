@@ -65,6 +65,13 @@ describe('install — clean empty directory', () => {
     assert.ok(current.includes('**Status:** installed'), 'bootstrap entry must use Status: installed');
   });
 
+  test('.audit-offered flag file absent after fresh install', () => {
+    assert.ok(
+      !fs.existsSync(path.join(dir, '.agent/context/.audit-offered')),
+      '.audit-offered must not exist after install — first-session offer must fire on first session-start'
+    );
+  });
+
   test('creates .agent/QUICK-REF.md', () => {
     assert.ok(fs.existsSync(path.join(dir, '.agent/QUICK-REF.md')), 'QUICK-REF.md missing');
   });
