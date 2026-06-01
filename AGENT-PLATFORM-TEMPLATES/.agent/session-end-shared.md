@@ -62,6 +62,40 @@ Do not proceed to Step 3 until `git status` shows a clean working tree.
 
 > **Why:** The next IDE reads committed state. Uncommitted changes are invisible to the cross-framework Critic and the next agent. An agentic platform commits its own work.
 
+### Step 2d — Capture reusable pattern (selective — skip if nothing new)
+
+Ask yourself: **did this session solve a non-trivial problem in a non-trivial way?**
+
+**Write a pattern entry if:**
+- A tricky bug was root-caused and fixed using an approach worth remembering
+- A design decision was made that future similar tasks should follow
+- A testing strategy, refactor approach, or debugging technique worked unexpectedly well
+- The problem was one that will likely recur in this codebase
+
+**Skip silently if:**
+- The work was straightforward CRUD, config, or docs with no new insight
+- The approach was obvious and wouldn't help a future agent
+- A very similar pattern already exists in `.agent/context/patterns.md`
+
+**If a pattern is worth capturing:**
+
+1. Read `.agent/context/patterns.md`
+2. Prepend a new entry above the existing entries (newest first):
+
+```
+### [today's date] [Category]: [short title]
+
+**Situation:** [what kind of problem — specific enough to recognise next time]
+**Approach:** [what was done and the key insight — not the full code, the principle]
+**Reuse when:** [how to recognise this pattern applies to a new task]
+**Outcome:** [what it achieved — tests green, bug fixed, perf improved, etc.]
+**Source:** Session [today's date] — [one-line goal from this session]
+```
+
+3. Remove the `*(No patterns recorded yet...)*` placeholder if this is the first entry.
+
+> **Why this matters:** Patterns compound. Each session that captures a reusable insight makes every future session in this codebase smarter — without any infrastructure, databases, or servers. Just structured memory.
+
 ### Step 3 — Update handoff log
 
 Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:

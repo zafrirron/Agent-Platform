@@ -66,6 +66,7 @@
 | [.agent/handoff/sync/registry.yaml](.agent/handoff/sync/registry.yaml) | Which IDE is active, file ownership, conflict prevention |
 | [.agent/context/adr-log.md](.agent/context/adr-log.md) | Architecture decisions that are hard to reverse |
 | [.agent/context/known-issues.md](.agent/context/known-issues.md) | Known bugs and limitations to fix later |
+| [.agent/context/patterns.md](.agent/context/patterns.md) | Reusable approaches that worked — agents check this before implementing |
 | [.agent/BEST-PRACTICES.md](.agent/BEST-PRACTICES.md) | Project-specific coding rules and golden rules |
 | [.agent/context/docs-registry.md](.agent/context/docs-registry.md) | Registered docs, owners, freshness status |
 

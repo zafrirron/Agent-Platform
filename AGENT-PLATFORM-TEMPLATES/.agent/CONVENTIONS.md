@@ -18,6 +18,7 @@
 - Update `CURRENT.md` at every session end
 - Commits only when user explicitly asks
 - Before any task that touches a module or service, read that module's context docs (README, architecture overview, api-contracts) before writing code
+- Before implementing a non-trivial solution, check `.agent/context/patterns.md` — a prior session may have already solved a similar problem in this codebase
 - No drive-by refactors — note them in `CURRENT.md`, fix separately
 - Technical shortcuts taken under time pressure must be marked with TODO in the code at the point of the shortcut — not only in `CURRENT.md`
 - Ask before irreversible actions (delete, rename, schema drop, API break)

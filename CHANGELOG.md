@@ -5,6 +5,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.28.0] — 2026-06-01
+
+### Added — Solution pattern library: agents capture and reuse what worked
+
+**Inspired by Ruflo's SONA architecture** — lightweight, zero-infrastructure pattern memory.
+
+**New file: `.agent/context/patterns.md`**
+
+A structured library of reusable approaches that have worked in this codebase. Written by agents at session end when a non-trivial problem was solved in a non-trivial way. Read by agents before implementing to check if a prior session already solved a similar problem.
+
+Entry format:
+```
+### [date] Category: Pattern title
+Situation / Approach / Reuse when / Outcome / Source
+```
+
+Categories: Auth · API · Data · Testing · Refactor · Performance · Debugging · Security · Architecture
+
+**Session-end Step 2d (new):** After committing session work, the agent asks: "Did this session produce a reusable pattern?" Selective by design — only captures genuinely novel approaches, skips obvious CRUD and config work. Agents build up a codebase-specific pattern library over time with zero infrastructure.
+
+**CONVENTIONS.md:** New agent behaviour rule — before implementing a non-trivial solution, check `.agent/context/patterns.md` for prior patterns.
+
+**QUICK-REF.md:** `patterns.md` added to the Project Knowledge table.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.27.0] — 2026-06-01
 
 ### Added — Elastic License v2, fork instructions, self-install guard, release.ps1 fork-friendly
