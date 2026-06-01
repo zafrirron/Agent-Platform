@@ -7,6 +7,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [2.28.0] — 2026-06-01
 
+### Added — Solution pattern library + 7 rules from drone-systems ingest (Mode 3)
+
+**Solution pattern library (`patterns.md`):**
+- New `.agent/context/patterns.md` — reusable approaches that worked in this codebase
+- Session-end Step 2d: selective pattern capture (non-trivial solutions only)
+- CONVENTIONS.md: check `patterns.md` before implementing non-trivial solutions
+- QUICK-REF.md: `patterns.md` added to Project Knowledge table
+
+**Mode 3 ingest — AGENTS.md from production drone-systems repo:**
+
+CONVENTIONS.md (+3):
+- Never mask errors with silent fallbacks — fix root cause; a hidden failure is worse than a surfaced one
+- Do not delete existing comments unless deleting the code they belong to
+- Behavior-preserving refactors must be in separate commits from feature/bug-fix changes
+
+docs-agent.md (+3):
+- Create Mermaid diagrams for state machines, processes, and data flows instead of prose
+- When modifying a function, update its inline docstring in the same change
+- Done-when gate: any function you modified has an accurate inline docstring
+
+critic-agent.md (+1):
+- Note potential bugs found in adjacent code during review — report, do not fix without instruction
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ### Added — Solution pattern library: agents capture and reuse what worked
 
 **Inspired by Ruflo's SONA architecture** — lightweight, zero-infrastructure pattern memory.

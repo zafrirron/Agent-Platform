@@ -358,13 +358,16 @@ To run the full E2E test manually: follow `tests/E2E-TEST-PLAN.md` using a scrat
 
 ## Versioning rules
 
+Versions are bumped only when a release is requested — not on every commit. Changes accumulate and are released together.
+
 | Change type | Version bump |
 |------------|-------------|
-| New file added to manifest | Minor (2.x.0) |
-| 1–3 targeted PLATFORM section improvements (Mode 1 / bug fix) | Patch (2.7.x) |
-| Large batch of PLATFORM improvements (Mode 2 web audit, Mode 3 ingest ≥5 rules) | Minor (2.x.0) |
-| New install mode, new expert, new playbook, new infrastructure capability | Minor (2.x.0) |
-| Breaking change to file structure or markers | Major (x.0.0) |
+| Bug fixes only | Patch (2.7.x) |
+| Existing expert / playbook / convention enhancements (Mode 1, 2, 3 improvements) | Minor (2.x.0) |
+| New expert agent, new playbook, new IDE framework, new install mode | Minor (2.x.0) |
+| Breaking change to file structure, markers, or installer interface | Major (x.0.0) — **user decision only** |
+
+**Major version bumps are never auto-determined** — the user explicitly decides when a release warrants a major bump.
 
 **Always update `CHANGELOG.md` BEFORE running the release script.** The script will block if the version has no CHANGELOG entry.
 

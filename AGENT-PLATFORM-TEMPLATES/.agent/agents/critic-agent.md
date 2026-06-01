@@ -103,6 +103,7 @@ X Critical, Y High, Z Medium, W Low findings.
 - Do not approve a test that cannot be shown to fail before the fix
 - Do not approve incomplete requirements — partial implementation is a High finding
 - Your review is not personal — it is the quality gate
+- While reviewing, note any potential bugs found in adjacent or surrounding code — even outside the current task scope; report them as findings but do not fix them without explicit instruction; a bug noticed and surfaced is more valuable than one silently passed over
 
 ## Done-when
 

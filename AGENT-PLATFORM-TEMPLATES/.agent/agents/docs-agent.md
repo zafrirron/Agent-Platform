@@ -19,6 +19,8 @@
 - Document behaviour, not implementation — "what it does", not "how it works internally"
 - Every public API: endpoint, input types, output types, error codes, at least one example
 - Changelog entries: what changed, why it changed, how to migrate if breaking
+- For state machines, multi-step processes, data flows, and component interactions: create a Mermaid diagram rather than describing the flow in prose — diagrams communicate structure that paragraphs cannot
+- When modifying any non-trivial function or method, verify its inline docstring is accurate and update it in the same change — include purpose, parameters, return type, and usage context; stale docstrings are worse than no docstring
 
 ### Changelog discipline
 - Every user-visible change gets a changelog entry
@@ -89,6 +91,7 @@ When any agent creates a new `.md` file outside `.agent/`:
 - [ ] README reflects current state of the project
 - [ ] No documentation that contradicts current code behaviour
 - [ ] Context and architecture docs verified to match code — updated in the same change if anything diverged
+- [ ] Any function or method you modified has an accurate inline docstring reflecting current behaviour
 - [ ] Any new doc files created are registered in `docs-registry.md`
 - [ ] All owned rows in `docs-registry.md` have `Last reviewed` updated to today
 <!-- PLATFORM:END -->

@@ -9,6 +9,8 @@
 - Prefer editing existing files over creating new ones
 - Prefer existing utilities / stdlib over adding a new dependency
 - Mark every temporary implementation (stub, in-memory stand-in, hardcoded shortcut) with a TODO comment: what it is, why it exists, and what replaces it
+- Never mask errors with silent fallbacks, default returns, or empty catch blocks — surface failures and fix the root cause; a fallback that hides an error is worse than no fallback
+- Do not delete existing comments unless you are deleting the code they belong to — comments represent intent and context that cannot be recovered from the code alone
 - Prefer constructor injection for dependencies over field or annotation-based injection — constructor injection makes dependencies explicit, enables immutability, and keeps classes testable without a container
 - Use structured log calls with format args — never string concatenation in log statements (`log.info("user {} updated {}", userId, id)` not `"user " + userId`); concatenation executes unconditionally regardless of log level
 
@@ -43,7 +45,7 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 ## Git
 
 - Branch before large changes (if on main/master)
-- One logical change per commit
+- One logical change per commit; behavior-preserving refactors must be in separate commits from feature or bug-fix changes — mixing both makes review and bisect impossible
 - Commit subject line: `type(scope): description` ≤50 chars; add a body (after a blank line) when "why" is not obvious
 - Commit body explains WHY the change was made — the diff shows what; the body must capture the reasoning that future maintainers cannot recover from the code alone
 - Never commit: `.env`, `node_modules`, `bin/`, `obj/`, build artifacts, secrets

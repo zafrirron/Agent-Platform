@@ -45,6 +45,29 @@
 
 ---
 
+### [2.28.0] — 2026-06-01 — User submission ingest: 7 rules from drone-systems AGENTS.md
+
+**Source:** Mode 3 user submission ingest — AGENTS.md from a production Python/TypeScript drone defense monorepo (Pants build system). Language-agnostic rules extracted.
+
+**Files changed:** `CONVENTIONS.md`, `docs-agent.md`, `critic-agent.md`
+
+**Rules added (5 NEW):**
+- I001: Never mask errors with silent fallbacks — fix root cause; a hidden failure is worse than a surfaced one (CONVENTIONS.md General)
+- I002: Do not delete existing comments unless deleting the code they belong to (CONVENTIONS.md General)
+- I003: Behavior-preserving refactors must be in separate commits from feature/fix changes (CONVENTIONS.md Git)
+- I004: Create Mermaid diagrams for state machines, processes, data flows — not prose (docs-agent.md)
+- I005: Note potential bugs found in adjacent code during review — report, do not fix without instruction (critic-agent.md Rules)
+
+**Enhancements (2 ENHANCE):**
+- I006: Keep inline docstrings current when modifying a method — same change, include params/return/purpose (docs-agent.md Writing quality)
+- I007: Done-when gate: any function you modified must have an accurate inline docstring (docs-agent.md done-when)
+
+**Skipped:** Smallest diff/match style/comments (DUPLICATE x3), ask clarifying questions (DUPLICATE), keep PRs small (DUPLICATE), all Pants/Docker/drone-specific items (PROJECT-SPECIFIC ~12 items)
+
+**Validated:** Pending
+
+---
+
 ### [2.26.0] — 2026-05-31 — User submission ingest: 23 production-proven rules across 5 expert files
 
 **Source:** Mode 3 user submission ingest — 7 Cursor rule files (.mdc) from a Java/Spring monorepo. Rules extracted, deduplicated against existing platform, language-agnostic versions written to platform standard.
