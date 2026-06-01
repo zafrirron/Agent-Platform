@@ -362,10 +362,9 @@ Versions are bumped only when a release is requested — not on every commit. Ch
 
 | Change type | Version bump |
 |------------|-------------|
-| Bug fixes only | Patch (2.7.x) |
-| Existing expert / playbook / convention enhancements (Mode 1, 2, 3 improvements) | Minor (2.x.0) |
-| New expert agent, new playbook, new IDE framework, new install mode | Minor (2.x.0) |
-| Breaking change to file structure, markers, or installer interface | Major (x.0.0) — **user decision only** |
+| Bug fixes, existing expert enhancements, existing playbook enhancements (Mode 1/2/3 rule improvements) | **Patch** (2.7.x) — maintenance release |
+| New expert agent, new playbook, new IDE framework, new major capability | **Minor** (2.X.0) |
+| Breaking change to file structure, markers, or installer interface | **Major** (X.0.0) — user decision only |
 
 **Major version bumps are never auto-determined** — the user explicitly decides when a release warrants a major bump.
 

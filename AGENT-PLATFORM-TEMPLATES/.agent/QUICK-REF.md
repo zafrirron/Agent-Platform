@@ -24,19 +24,21 @@
 ---
 
 ## Expert Agents
-**Auto-routing is always on — just describe your task. The right expert loads silently.**
+**Auto-routing is always on — just describe your task. The right expert loads automatically.**
+When routing fires, your agent's first line declares what was loaded: `▶ Backend expert · bug-fix playbook`
+When no routing applies (explain, conceptual), no prefix appears — the agent answers directly.
 
 | Expert | Your task sounds like… |
 |--------|----------------------|
-| Architect | "design this feature", "should we use X or Y", cross-cutting change, new component |
+| Architect | "system design", "should we use X or Y", "ADR", "evaluate options", cross-cutting change |
 | Backend | "add an endpoint", "fix the API", "write a service", server or DB logic |
-| Frontend | "update the UI", "new component", "fix the styling", client state |
-| DevOps | "set up CI", "fix the build", "deployment", Docker, infra scripts |
-| Test | "write tests", "coverage is low", "regression test", quality gate |
-| Docs | "update README", "document this endpoint", "write the changelog" |
-| Security | "auth review", "check for vulnerabilities", "threat model", pre-release check |
-| Data | "schema change", "migration", "data pipeline", "transform data" |
-| **Critic** | **"review this", "find issues", "what could go wrong", after any implementation** |
+| Frontend | "update the UI", "new component", "new page", "fix the styling", client state |
+| DevOps | "set up CI", "fix the build", "deployment", Docker, Kubernetes, infra scripts |
+| Test | "write tests", "unit test", "e2e", "coverage is low", "fix failing tests", TDD |
+| Docs | "update README", "JSDoc", "document this endpoint", "swagger", "write the changelog" |
+| Security | "auth review", "check for vulnerabilities", "threat model", "OWASP", "JWT", "RBAC" |
+| Data | "schema change", "migration", "data pipeline", "ORM", "N+1", "transform data" |
+| **Critic** | **"review this", "code review", "find issues", "sanity check", "what could go wrong"** |
 
 ---
 
@@ -48,8 +50,10 @@
 | First time in this repo / onboarding / health check | **Full Project Audit** — 8-domain professional report saved to `.agent/context/audit-[date].md` |
 | Starting new feature work | Add feature — scopes, designs, implements, tests, Critic reviews |
 | Something is broken | Bug fix — reproduces, root-causes, fixes, regression test |
+| "hotfix", "rollback", "emergency fix" | Bug fix playbook via devops-agent — reproduce, fix, regression test |
 | "clean up this area" (tests must exist first) | Refactor — safe incremental refactor with Critic gate |
 | "something's wrong but I don't know why" | Debug pipeline — systematic diagnosis |
+| "slow", "performance", "memory leak", "bottleneck" | Debug pipeline — profile, isolate, fix |
 | Ready to ship a version | Release — docs gate, security review, tag, release notes |
 | Security review before release | Security audit — OWASP Top 10, findings with severity |
 | "I need to add [package/library]" | Add dependency — vets, installs, validates |

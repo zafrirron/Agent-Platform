@@ -141,15 +141,19 @@ Expert agents give the AI a focused persona with specific rules, owned files, an
 
 **You never need to tell the agent which expert or playbook to use.**
 
-The agent is primed as an active router from the moment a session starts. When you describe a task, it silently identifies the right expert and/or playbook and begins working. You just describe your goal in plain language.
+The agent is primed as an active router from the moment a session starts. When you describe a task, it identifies the right expert and/or playbook, declares the match on the first line of its response (`▶ Backend expert · bug-fix playbook`), then begins working immediately. When no routing applies (conceptual questions, explanations), no prefix appears. You just describe your goal in plain language.
 
-| You say | Agent automatically does |
-|---------|--------------------------|
-| "fix the login bug" | Loads backend-agent.md + bug-fix.md → begins bug-fix Step 1 |
-| "add rate limiting" | Loads backend-agent.md + add-feature.md → begins add-feature Step 1 |
-| "review the auth" | Loads security-agent.md → reviews using OWASP rules |
-| "ready to ship v2" | Loads devops-agent.md + release.md → begins release gates |
-| "find what's wrong" | Loads critic-agent.md → runs 6-dimension adversarial review |
+| You say | First line of response | Then… |
+|---------|------------------------|-------|
+| "fix the login bug" | `▶ Backend expert · bug-fix playbook` | begins bug-fix Step 1 |
+| "add rate limiting" | `▶ Backend expert · add-feature playbook` | begins add-feature Step 1 |
+| "auth review before release" | `▶ Security expert · security-audit playbook` | reviews using OWASP rules |
+| "ready to ship v2" | `▶ DevOps expert · release playbook` | begins release gates |
+| "hotfix the payment crash" | `▶ DevOps expert · bug-fix playbook` | emergency fix flow |
+| "the API is slow" | `▶ Backend expert · debug-pipeline playbook` | profile, isolate, fix |
+| "find what's wrong" | `▶ Critic expert` | runs 6-dimension adversarial review |
+| "sanity check this PR" | `▶ Critic expert` | adversarial review of the diff |
+| "how does the auth flow work" | *(no status line)* | answers directly — no expert or playbook loaded |
 
 ### Expert + Playbook combined
 
@@ -235,13 +239,13 @@ Playbooks are step-by-step workflows with pre-conditions, ordered steps, agent a
 | Playbook | Trigger | Load with | What it enforces |
 |---------|---------|-----------|-----------------|
 | **Add feature** | Starting new feature work | `Read .agent/playbooks/add-feature.md` | Spec first, design before code, tests before done |
-| **Bug fix** | Something is broken | `Read .agent/playbooks/bug-fix.md` | Reproduce first, regression test required, no exceptions |
+| **Bug fix** | Something is broken; also hotfix / rollback / emergency fix | `Read .agent/playbooks/bug-fix.md` | Reproduce first, regression test required, no exceptions |
 | **Refactor** | Clean up code (tests must exist) | `Read .agent/playbooks/refactor.md` | One change type per PR, tests green before and after |
-| **Debug** | Something's wrong but cause unknown | `Read .agent/playbooks/debug-pipeline.md` | Reproduce → isolate → hypothesise → probe → fix |
+| **Debug** | Something's wrong but cause unknown; also slow / performance / memory issues | `Read .agent/playbooks/debug-pipeline.md` | Reproduce → isolate → hypothesise → probe → fix |
 | **Release** | Ready to ship a version | `Read .agent/playbooks/release.md` | Full suite green, changelog updated, no unresolved blockers |
-| **Security audit** | Before a sensitive release | `Read .agent/playbooks/security-audit.md` | Secrets, auth, inputs, deps, permissions |
-| **Add dependency** | Need a new package/library | `Read .agent/playbooks/add-dependency.md` | Evaluate before install, audit after, document in deps file |
-| **API integration** | Integrating an external API | `Read .agent/playbooks/api-integration.md` | Schema-first, mock→stub→real, contract tests required |
+| **Security audit** | Explicit security review, threat model, OWASP check — NOT bare "auth" tasks | `Read .agent/playbooks/security-audit.md` | Secrets, auth, inputs, deps, permissions |
+| **Add dependency** | Need a new package/library; upgrade or pin a dependency | `Read .agent/playbooks/add-dependency.md` | Evaluate before install, audit after, document in deps file |
+| **API integration** | Integrating an external API, webhook, third-party SDK | `Read .agent/playbooks/api-integration.md` | Schema-first, mock→stub→real, contract tests required |
 
 **Example:**
 ```

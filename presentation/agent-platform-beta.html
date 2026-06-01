@@ -156,7 +156,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
     <p class="tagline">Built by agents. For agents. To build better agents.</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0">
       <span class="b bb">4 IDE Frameworks</span><span class="b bg">9 Expert Agents</span>
-      <span class="b bp">8 Playbooks</span><span class="b br">Zero Config</span><span class="b bo">OWASP 2024</span>
+      <span class="b bp">9 Playbooks</span><span class="b br">Zero Config</span><span class="b bo">OWASP 2024</span>
     </div>
     <div class="mono" style="margin-top:12px">npx github:zafrirron/Agent-Platform</div>
     <div style="margin-top:18px;font-size:11px;color:var(--txt2)">
@@ -192,7 +192,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
     <div class="cols c3">
       <div class="card ca"><div class="ic">📐</div><h3>Platform rules</h3><p>OWASP security, test enforcement, quality gates — every agent follows them automatically.</p></div>
       <div class="card cg"><div class="ic">🔗</div><h3>Cross-IDE coordination</h3><p>Registry prevents conflicts. Handoff preserves context. Critic reviews across model boundaries.</p></div>
-      <div class="card cp"><div class="ic">⚡</div><h3>Auto-routing</h3><p>Describe what you want. Expert + playbook load silently. No memorisation. No manual setup.</p></div>
+      <div class="card cp"><div class="ic">⚡</div><h3>Auto-routing</h3><p>Describe what you want. Agent declares the match (<code>▶ Expert · playbook</code>), then begins. No memorisation. No manual setup.</p></div>
     </div>
     <div class="gap center">
       <p><span class="hg">✓</span> Zero code impact &nbsp;·&nbsp; <span class="hg">✓</span> All platform files gitignored &nbsp;·&nbsp; <span class="hg">✓</span> Uninstall leaves nothing behind</p>
@@ -217,7 +217,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
       <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--pur);white-space:nowrap">🌐 GLOBAL &nbsp;<span style="font-weight:400">(once, all repos)</span></div>
       <div style="font-size:11px;color:var(--txt3)">
         <code style="color:var(--grn)">npx github:zafrirron/Agent-Platform --mode=global</code>
-        &nbsp;· Writes activation stubs to ~/.claude/ ~/.cursor/ ~/.codex/ ~/.agents/ · After this: any repo with AGENTS.md auto-routes silently
+        &nbsp;· Writes activation stubs to ~/.claude/ ~/.cursor/ ~/.codex/ ~/.agents/ · After this: any repo with AGENTS.md auto-routes
       </div>
     </div>
     <div class="center" style="font-size:16px;color:var(--border);line-height:1.2">↓</div>
@@ -232,11 +232,11 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
         <div>· Cross-framework Critic offer — if switching IDE</div>
         <div>· <code style="color:var(--grn)">Ready. Tell me what you want to do.</code></div>
         <div>· Update check — once per 7 days, cached</div>
-        <div>· Auto-routing activated silently</div>
+        <div>· Auto-routing activated</div>
       </div>
     </div>
     <div class="center" style="font-size:12px;color:var(--txt2);margin:4px 0">You describe what you want</div>
-    <div class="center" style="font-size:11px;color:var(--txt2);margin-bottom:2px">Auto-routing: agent identifies task type and loads the right expert + playbook silently</div>
+    <div class="center" style="font-size:11px;color:var(--txt2);margin-bottom:2px">Auto-routing: agent identifies task type, declares the match (<code>▶ Expert · playbook</code>), then begins</div>
     <div class="center" style="font-size:16px;color:var(--border)">↓</div>
 
     <!-- COMBINE ROW -->
@@ -347,7 +347,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
       <div class="hiwarr">→</div>
       <div class="hiwbox" style="border-color:var(--pur)">
         <span class="ic">💬</span><h3>DESCRIBE TASK</h3>
-        <p>User describes goal in plain language. Platform identifies expert + playbook silently.</p>
+        <p>User describes goal in plain language. Agent declares match (<code>▶ Expert · playbook</code>), then begins.</p>
         <div style="margin-top:8px"><span class="b bp">auto-routed</span></div>
       </div>
       <div class="hiwarr">→</div>
@@ -374,8 +374,8 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
 <div class="slide" id="s5">
   <div class="mw">
     <div class="kicker">Expert Agents</div>
-    <h2>9 specialists — auto-loaded, never announced</h2>
-    <p class="gs">Describe your task. The platform reads the right expert file silently and begins.</p>
+    <h2>9 specialists — auto-loaded, always declared</h2>
+    <p class="gs">Describe your task. The agent emits <code>▶ [Expert] expert</code> on the first line so you know exactly what loaded, then begins.</p>
     <div class="gap"></div>
     <div class="agrid">
       <div class="acard"><span class="ic">🏛</span><div><h3 class="hp">Architect</h3><p>Design, ADRs, threat models, cross-cutting decisions</p></div></div>
@@ -395,18 +395,19 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
 <div class="slide" id="s5b">
   <div class="mw">
     <div class="kicker">Playbooks</div>
-    <h2>8 step-by-step workflows — <span class="hg">with quality gates</span></h2>
-    <p class="gs">Describe the situation. The right playbook loads silently and enforces every step.</p>
+    <h2>9 step-by-step workflows — <span class="hg">with quality gates</span></h2>
+    <p class="gs">Describe the situation. The agent declares the match (<code>▶ Expert · playbook</code>) and enforces every step.</p>
     <div class="gap"></div>
     <div class="agrid">
       <div class="acard" style="border-color:var(--acc)"><span class="ic">✨</span><div><h3 class="hl">Add Feature</h3><p>Design → Security gate → Test → Critic → Docs</p></div></div>
-      <div class="acard" style="border-color:var(--red)"><span class="ic">🐛</span><div><h3 class="hr">Bug Fix</h3><p>Reproduce → Root cause → Fix → Regression test → Critic</p></div></div>
+      <div class="acard" style="border-color:var(--red)"><span class="ic">🐛</span><div><h3 class="hr">Bug Fix</h3><p>Reproduce → Root cause → Fix → Regression test → Critic. Also: hotfix, rollback, emergency fix.</p></div></div>
       <div class="acard" style="border-color:var(--org)"><span class="ic">🚀</span><div><h3 class="ho">Release</h3><p>Docs gate → Security review → Critic → Tag → GitHub release</p></div></div>
       <div class="acard" style="border-color:var(--pur)"><span class="ic">🏗</span><div><h3 class="hp">Refactor</h3><p>Tests must exist first → Incremental → Green before AND after</p></div></div>
-      <div class="acard"><span class="ic">🔍</span><div><h3>Debug Pipeline</h3><p>Systematic diagnosis — "something's wrong but I don't know why"</p></div></div>
+      <div class="acard"><span class="ic">🔍</span><div><h3>Debug Pipeline</h3><p>Systematic diagnosis — broken, slow, performance issues, memory leaks, bottlenecks.</p></div></div>
       <div class="acard" style="border-color:var(--red)"><span class="ic">🔒</span><div><h3 class="hr">Security Audit</h3><p>OWASP Top 10 · severity ratings · file:line findings · fix gate</p></div></div>
       <div class="acard" style="border-color:var(--grn)"><span class="ic">📦</span><div><h3 class="hg">Add Dependency</h3><p>Vets · license · CVE scan · installs · validates · docs updated</p></div></div>
       <div class="acard" style="border-color:var(--acc)"><span class="ic">🔗</span><div><h3 class="hl">API Integration</h3><p>Contract first · auth pattern · error handling · contract tests</p></div></div>
+      <div class="acard" style="border-color:var(--grn)"><span class="ic">🔎</span><div><h3 class="hg">Full Project Audit</h3><p>8-domain professional report — architecture · security · tests · data · API · DevOps</p></div></div>
     </div>
     <div class="gap center">
       <p style="font-size:12px"><span class="hr">★</span> Add-feature has an automatic <strong>Security gate (Step 5a)</strong> — fires before Critic for any feature touching endpoints, auth, or data. No user action needed.</p>
@@ -906,7 +907,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
         <h3>Smart per-repo detection</h3>
         <p>Every session start in every repo:</p>
         <div style="margin-top:10px;font-size:12px;display:flex;flex-direction:column;gap:6px">
-          <div><span class="hg">✓</span> <code>AGENTS.md</code> present → routing activates silently</div>
+          <div><span class="hg">✓</span> <code>AGENTS.md</code> present → routing activates (declares match on first line)</div>
           <div><span style="color:var(--acc)">●</span> No platform → one-time install offer</div>
           <div><span style="color:var(--txt3)">○</span> <code>.agent-platform-skip</code> → offer suppressed</div>
         </div>

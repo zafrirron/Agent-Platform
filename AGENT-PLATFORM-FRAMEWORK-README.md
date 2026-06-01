@@ -38,7 +38,7 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 > **One command. A complete agentic development environment on any repository.**
 
-Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, 8 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, 9 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
 
 ---
 
@@ -52,7 +52,7 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **Critic agent** | Adversarial reviewer with 6-dimension analysis (correctness, security, test quality, completeness, design, edge cases). Severity-rated findings. Built into add-feature, bug-fix, and release playbooks as mandatory quality gates. |
 | **Cross-framework critic review** | When switching IDEs, the new framework automatically offers to run the Critic on the previous framework's work. Zero setup — different AI models reviewing each other's blind spots, every time you switch. Session end commits all changes first so the next IDE always reviews real committed code. |
 | **Agent-generated artifacts** | Test expert generates a coverage HTML report; Docs expert generates OpenAPI/Swagger spec. These are your project files — not platform files. Not gitignored by default. Keep, commit, or exclude them as you see fit. See `.agent/PLATFORM-HELP.md` → Agent-generated artifacts. |
-| **8 playbooks** | add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration — step-by-step with agent assignments. add-feature includes automatic Security gate (Step 5a) for any feature touching endpoints, auth, or data input — fires before Critic, no user action needed. |
+| **9 playbooks** | audit · add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration — step-by-step with agent assignments. add-feature includes automatic Security gate (Step 5a) for any feature touching endpoints, auth, or data input — fires before Critic, no user action needed. |
 | **Quick reference on every session start** | Compact status block on every session start: last work, update status, path to full guide. Full capability guide at `.agent/QUICK-REF.md` — open in editor any time, no chat clutter. No memorisation required. |
 | **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
 | **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before done; coverage gate auto-detected at install; red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see line-by-line coverage. |
@@ -294,8 +294,8 @@ repo-root/
 │   ├── ZONES.md, SYNC.md, CHECKLIST.md
 │   ├── agents/                       ← 8 software-expert personas
 │   │   architect · backend · frontend · devops · test · docs · security · data
-│   ├── playbooks/                    ← 8 step-by-step workflows
-│   │   add-feature · release · debug-pipeline · bug-fix · refactor
+│   ├── playbooks/                    ← 9 step-by-step workflows
+│   │   audit · add-feature · release · debug-pipeline · bug-fix · refactor
 │   │   add-dependency · security-audit · api-integration
 │   ├── context/                      ← 6 living reference files
 │   │   project-overview · api-contracts · api-patterns · adr-log · known-issues · dependencies
@@ -412,7 +412,7 @@ Task: add rate-limiting middleware to the API
 | 🔧 DevOps | `Read .agent/agents/devops-agent.md` | CI/CD, builds, infra scripts |
 | 🧪 Test | `Read .agent/agents/test-agent.md` | Tests, fixtures, coverage enforcement, quality gate |
 | 📚 Docs | `Read .agent/agents/docs-agent.md` | READMEs, changelogs, API docs |
-| 🔒 Security | `Read .agent/agents/security-agent.md` | Secrets, auth, threat review |
+| 🔒 Security | `Read .agent/agents/security-agent.md` | Secrets, auth review, threat model, OWASP audits |
 | 🗄 Data | `Read .agent/agents/data-agent.md` | Schemas, migrations, pipelines |
 | 🔍 Critic | `Read .agent/agents/critic-agent.md` | Adversarial review — find what's wrong before production does |
 
@@ -594,7 +594,9 @@ The more precise the done-when, the less back-and-forth.
 
 #### Debug protocol
 
-When something is broken, follow this in order — never skip steps:
+When something is broken **or slow**, follow this in order — never skip steps:
+
+> Also applies to: performance issues, memory leaks, bottlenecks. Say "slow", "performance", "memory issue", or "bottleneck" and the router loads this playbook automatically.
 
 ```
 1. Reproduce   → confirm consistent trigger; document minimal repro steps
@@ -707,7 +709,9 @@ LOG ADR             Read .agent/context/adr-log.md
 LOG KNOWN ISSUE     Read .agent/context/known-issues.md
 ADD DEPENDENCY      Read .agent/playbooks/add-dependency.md
 DEBUG               Read .agent/playbooks/debug-pipeline.md
+PERFORMANCE / SLOW  Read .agent/playbooks/debug-pipeline.md  (auto-routed: "slow", "bottleneck", "memory leak")
 BUG FIX             Read .agent/playbooks/bug-fix.md
+HOTFIX / ROLLBACK   Read .agent/agents/devops-agent.md + Read .agent/playbooks/bug-fix.md
 REFACTOR            Read .agent/playbooks/refactor.md
 SECURITY AUDIT      Read .agent/playbooks/security-audit.md
 ADD FEATURE         Read .agent/playbooks/add-feature.md

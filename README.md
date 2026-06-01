@@ -14,7 +14,7 @@
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). Eight playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). Nine playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
 
 > **The platform coordination layer never modifies your source code.** It only adds `.agent/`, `.claude/`, etc. — all gitignored so nothing is accidentally committed. Your AI agents will write and improve your code through the platform. That's the point. The platform scaffolding itself stays completely out of your codebase.
 > **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
@@ -172,8 +172,8 @@ Repeat. The platform never stops improving.
                                    │
                       You describe what you want
                                    │
-              Auto-routing: agent identifies task type and loads
-              the right expert + playbook silently — user just describes the goal
+              Auto-routing: agent identifies task type, declares the match
+              (▶ Expert · playbook), then begins — user just describes the goal
                                    │
               ┌────────────────────┴─────────────────────┐
               │                                           │
