@@ -6,9 +6,18 @@ alwaysApply: true
 
 Router: `AGENTS.md` · Shared hub: `.agent/` · Minimal diffs · Commits only when user asks.
 
+## Session awareness (check once per chat)
+
+On your **first response** of this chat:
+1. Read `.agent/handoff/sync/registry.yaml`
+2. If `frameworks.cursor.status` is `idle` — output this notice on one line before your response:
+   > ⚠️ No active session — conflict detection and handoff logging are off. Your project rules are active. Say `"Start session"` to enable full platform features.
+3. If `active` — no notice, proceed normally.
+Do not repeat this check after the first response.
+
 ## Auto-routing (always active)
 
 Read `AGENTS.md` Section 2 on first use. You are the active router for every task.
-When the user describes a task, silently identify and load the appropriate expert agent
+When the user describes a task, identify and load the appropriate expert agent
 and/or playbook from the routing table. Begin working immediately.
 Never ask the user which expert or playbook to use. Never announce what you are loading.
