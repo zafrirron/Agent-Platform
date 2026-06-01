@@ -6,6 +6,6 @@
 
 ### {{DATE}} — Platform bootstrap
 - **Framework:** (installer)
-- **Status:** done
+- **Status:** installed
 - **Goal:** AGENT-PLATFORM-BOOTSTRAP.md executed
 - **Next agent:** Run your IDE session-start prompt; customize PROJECT.md if stubs empty

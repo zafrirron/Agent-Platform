@@ -59,6 +59,12 @@ describe('install — clean empty directory', () => {
     assert.ok(fs.existsSync(path.join(dir, '.agent/handoff/CURRENT.md')), 'CURRENT.md missing');
   });
 
+  test('CURRENT.md bootstrap entry uses Status: installed not Status: done', () => {
+    const current = fs.readFileSync(path.join(dir, '.agent/handoff/CURRENT.md'), 'utf8');
+    assert.ok(!current.includes('**Status:** done'), 'bootstrap entry must not use Status: done — breaks first-session audit offer');
+    assert.ok(current.includes('**Status:** installed'), 'bootstrap entry must use Status: installed');
+  });
+
   test('creates .agent/QUICK-REF.md', () => {
     assert.ok(fs.existsSync(path.join(dir, '.agent/QUICK-REF.md')), 'QUICK-REF.md missing');
   });
