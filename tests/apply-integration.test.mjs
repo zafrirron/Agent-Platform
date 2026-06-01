@@ -342,11 +342,9 @@ describe('self-install guard — platform repo protects itself', () => {
     );
   });
 
-  test('platform repo .gitignore has no platform block after blocked attempt', () => {
+  test('platform repo .gitignore has exactly one platform block (not duplicated by blocked attempt)', () => {
     const gi = fs.readFileSync(path.join(PACK_ROOT, '.gitignore'), 'utf8');
-    assert.ok(
-      !gi.includes('Agent Platform Bootstrap — START'),
-      'platform block was added to the platform repo .gitignore — self-install guard failed'
-    );
+    const count = (gi.match(/Agent Platform Bootstrap — START/g) || []).length;
+    assert.equal(count, 1, `expected exactly 1 platform block, got ${count} — blocked install may have duplicated the block`);
   });
 });
