@@ -311,6 +311,47 @@ Processed files move to `MAINTAINER/ingest/archive/YYYY-MM-DD/` automatically.
 
 ---
 
+## Multi-framework consistency rule — MANDATORY
+
+The platform runs on **4 frameworks** (Claude Code, Cursor, Antigravity, Codex). Every change to agent behaviour, routing, or session instructions must be applied to all four. Missing one means that framework silently diverges.
+
+### Always-loaded files — check all four on every behavioural change
+
+| Framework | Always-loaded file |
+|---|---|
+| Claude Code | `AGENT-PLATFORM-TEMPLATES/CLAUDE.md` |
+| Cursor | `AGENT-PLATFORM-TEMPLATES/.cursor/rules/platform-core.mdc` |
+| Antigravity | `AGENT-PLATFORM-TEMPLATES/.agents/rules/00-multi-framework-sync.md` |
+| Codex | `AGENT-PLATFORM-TEMPLATES/.codex/instructions.md` |
+
+Session-start is shared (`session-start-shared.md`) — one change covers all four. ✅  
+Routing table (`AGENTS.md`) is shared — one change covers all four. ✅  
+Always-loaded framework files are NOT shared — each must be updated individually. ⚠️
+
+### Checklist before every commit that touches routing or session behaviour
+
+- [ ] `AGENTS.md` updated (routing table, expert rules, status prefix, no-match logic)
+- [ ] `CLAUDE.md` — auto-routing section consistent with AGENTS.md
+- [ ] `.cursor/rules/platform-core.mdc` — auto-routing section consistent with AGENTS.md
+- [ ] `.agents/rules/00-multi-framework-sync.md` — auto-routing section consistent with AGENTS.md
+- [ ] `.codex/instructions.md` — auto-routing section consistent with AGENTS.md
+- [ ] No conflicting instructions in any framework file (no "silently", no "never announce" if ▶ prefix is active)
+- [ ] Session-awareness notice: same text and logic in all four files
+
+### How to audit consistency quickly
+
+```
+grep -rn "announce\|silently\|▶\|status prefix\|auto-routing" \
+  AGENT-PLATFORM-TEMPLATES/CLAUDE.md \
+  AGENT-PLATFORM-TEMPLATES/.cursor/rules/platform-core.mdc \
+  AGENT-PLATFORM-TEMPLATES/.agents/rules/00-multi-framework-sync.md \
+  AGENT-PLATFORM-TEMPLATES/.codex/instructions.md
+```
+
+Any result containing "never announce" or "silently" after routing changes is a bug.
+
+---
+
 ## Adding a new expert or playbook
 
 Tell the maintainer agent:
