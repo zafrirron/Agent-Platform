@@ -77,6 +77,29 @@ Read .agent/session-start.md and execute it.
 
 ---
 
+## Quick reference — commands, experts, and playbooks
+
+Install creates `.agent/QUICK-REF.md` — the full capability guide for your project.
+It lists every command, every expert agent, every playbook, and every platform operation.
+
+**Ask your agent at any time to show it:**
+
+| Say this | What happens |
+|----------|-------------|
+| `"show quick reference"` | Agent returns a clickable link to `.agent/QUICK-REF.md` |
+| `"show help"` | Same |
+| `"show commands"` | Same |
+| `"what can you do"` | Same |
+| `"platform help"` | Same |
+
+The agent responds with a **link** — it does not dump the file into chat (that would waste your context window). Open the file in your editor to see everything at a glance.
+
+**Claude Code slash command:** type `/quick-ref` in any chat — no session-start required.
+
+**What's in the guide:** session commands · 9 expert agents and their trigger phrases · 9 playbooks and when they activate · project knowledge files · token compression (caveman mode) · platform operations (upgrade, global install, guards, repair, remove)
+
+---
+
 ## The meta-philosophy
 
 Most tools make developers more productive. This platform makes **AI agents** more disciplined, consistent, and safe — by encoding hard-won lessons from real software failures into permanent rules that every agent follows, in every project, automatically.
