@@ -123,6 +123,7 @@
 | Check for updates | Tell agent: "check for platform updates" |
 | Upgrade | `npx {{PLATFORM_NPX}} --mode=upgrade` |
 | Install global stubs (user-level, run once) | `npx {{PLATFORM_NPX}} --mode=global` |
+| Remove global stubs | `npx {{PLATFORM_NPX}} --mode=uninstall-global` |
 | Install enforcement guards | `npx {{PLATFORM_NPX}} --mode=install-guards` |
 | Remove guards | `npx {{PLATFORM_NPX}} --mode=remove-guards` |
 | Repair | `npx {{PLATFORM_NPX}} --mode=repair` |
