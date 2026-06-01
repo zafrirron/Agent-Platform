@@ -5,6 +5,34 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.27.0] — 2026-06-01
+
+### Added — Elastic License v2, fork instructions, self-install guard, release.ps1 fork-friendly
+
+**Licensing (Elastic License v2):**
+- `LICENSE` file created with full ELv2 text — copyright © 2024–2026 Zafrir Ron (zafrirron)
+- `package.json` author expanded to `{name, email, url}` · license changed from `MIT` → `Elastic-2.0`
+- `README.md` — license badge + copyright line at top; links to LICENSE
+- ELv2 terms: free for personal, team, and internal enterprise use; commercial hosting/SaaS prohibited; attribution to Zafrir Ron required on all copies and forks
+
+**Fork instructions (`README.md` — "Fork this platform" section):**
+- Step-by-step guide: fork on GitHub, clone, change 4 fields, verify with `npm test`, deploy to team
+- How to pull upstream improvements via `git remote add upstream`
+- `tools/release.ps1` now reads `$REPO` from `AGENT-PLATFORM-MANIFEST.json` — forks don't need to edit the release script
+
+**Self-install guard (`apply.js`):**
+- Detects if the installer is being run against the platform repo itself (checks for `AGENT-PLATFORM-MANIFEST.json` + `AGENT-PLATFORM-TEMPLATES` in the target directory)
+- Blocks `install`, `upgrade`, `repair`, `force`, `install-guards`, `remove-guards` with a clear error message
+- Uninstall modes are exempt — you can always clean up
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.26.0] — 2026-05-31
 
 ### Added — 23 production-proven rules from user submission ingest (Mode 3)

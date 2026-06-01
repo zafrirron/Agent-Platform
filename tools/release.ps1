@@ -34,7 +34,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ROOT = git -C $PSScriptRoot rev-parse --show-toplevel
-$REPO = "zafrirron/Agent-Platform"
+# Read repo from manifest — forks only need to change AGENT-PLATFORM-MANIFEST.json
+$manifest = Get-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" | ConvertFrom-Json
+$REPO = $manifest.platform_repo
 
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function OK($msg)   { Write-Host "    OK  $msg" -ForegroundColor Green }

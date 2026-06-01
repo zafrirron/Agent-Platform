@@ -4,8 +4,12 @@
   "type": "module",
   "description": "Multi-framework agent coordination platform — installs a complete agentic development environment into any repo.",
   "keywords": ["agent", "ai", "claude", "cursor", "codex", "multi-agent", "agentic"],
-  "author": "zafrirron",
-  "license": "MIT",
+  "author": {
+    "name": "Zafrir Ron",
+    "email": "zafrir.ron@gmail.com",
+    "url": "https://github.com/zafrirron"
+  },
+  "license": "Elastic-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/zafrirron/Agent-Platform.git"

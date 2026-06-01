@@ -5,6 +5,9 @@
 > *The meta-platform: an AI agent maintains the rules that your AI agents follow.
 > Every upgrade makes every agent smarter. Agents building the platform that builds better agents.*
 
+[![License: Elastic-2.0](https://img.shields.io/badge/License-Elastic_2.0-blue.svg)](LICENSE)
+© 2024–2026 [Zafrir Ron](https://github.com/zafrirron) — Free for personal and internal use. Commercial hosting/SaaS prohibited. See [LICENSE](LICENSE).
+
 **[📊 View Interactive Presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)** — 18 slides · what it is · how it works · live demo · enterprise features
 
 ---
@@ -307,6 +310,82 @@ Stack-aware: auto-detects your test runner and generates the right CI setup step
 ```bash
 npx github:zafrirron/Agent-Platform --mode=remove-guards  # remove if needed
 ```
+
+---
+
+## Fork this platform — build your own
+
+This repository is designed to be forked. Teams and enterprises can run their own private instance with custom expert rules, playbooks, and branding.
+
+### Why fork?
+- Add your company's internal coding standards as permanent expert rules
+- Add domain-specific expert agents (mobile, ML, compliance, etc.)
+- Run private security audits with your own OWASP extensions
+- Deploy to your team via your own GitHub org: `npx github:YOUR_ORG/your-platform`
+- Keep proprietary rules out of a public repo
+
+### Fork setup — 4 fields to change
+
+**Step 1** — Fork and clone:
+```bash
+# Fork on GitHub: click "Fork" on https://github.com/zafrirron/Agent-Platform
+git clone https://github.com/YOUR_ORG/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
+```
+
+**Step 2** — Update `AGENT-PLATFORM-MANIFEST.json` *(the only critical change — drives all deployed content)*:
+```json
+"platform_repo": "YOUR_ORG/YOUR_REPO_NAME",
+"platform_npx":  "github:YOUR_ORG/YOUR_REPO_NAME"
+```
+
+**Step 3** — Update `package.json`:
+```json
+"name":   "your-platform-name",
+"author": "YOUR_ORG",
+"repository": {
+  "url": "https://github.com/YOUR_ORG/YOUR_REPO_NAME.git"
+}
+```
+
+**Step 4** — Update install scripts (so your team's install links point to your fork):
+
+In `install.sh`:
+```bash
+REPO="YOUR_ORG/YOUR_REPO_NAME"
+```
+
+In `install.ps1`:
+```powershell
+$Repo = "YOUR_ORG/YOUR_REPO_NAME"
+```
+
+`tools/release.ps1` reads the repo from the manifest automatically — no change needed.
+
+**Step 5** — Verify everything is wired:
+```bash
+npm test   # 125 tests must pass
+```
+
+**Step 6** — Deploy to your team:
+```bash
+# Your team installs your fork:
+npx github:YOUR_ORG/YOUR_REPO_NAME
+
+# Your team upgrades when you release new rules:
+npx github:YOUR_ORG/YOUR_REPO_NAME --mode=upgrade
+```
+
+### What you keep from upstream
+
+Pull improvements from this repo any time:
+```bash
+git remote add upstream https://github.com/zafrirron/Agent-Platform.git
+git fetch upstream
+git merge upstream/main
+```
+
+New OWASP rules, expert improvements, and platform features flow in via `merge`. Your custom rules in `<!-- PROJECT:START/END -->` sections are never overwritten.
 
 ---
 
