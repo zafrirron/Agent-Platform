@@ -3,17 +3,3 @@
 node_modules/
 .DS_Store
 Thumbs.db
-
-# Agent Platform Bootstrap — START
-# Platform coordination files — gitignored by default so nothing is
-# accidentally committed with your code. Remove this block if you want
-# to track platform files in git (e.g. to share agent config with your team).
-.agent/
-.claude/
-.cursor/
-.agents/
-.codex/
-AGENTS.md
-SYNC-POINTS.md
-CLAUDE.md
-# Agent Platform Bootstrap — END
