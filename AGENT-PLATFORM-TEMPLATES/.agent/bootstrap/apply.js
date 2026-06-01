@@ -538,12 +538,15 @@ SYNC-POINTS.md
 CLAUDE.md
 ${GI_END}`;
 
-const giPath = path.join(INSTALL_ROOT, '.gitignore');
-if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
-  const existing = fs.existsSync(giPath) ? fs.readFileSync(giPath, 'utf8') : '';
-  const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
-  fs.appendFileSync(giPath, separator + GI_BLOCK + '\n');
-  created.push('.gitignore (platform block)');
+// Only add the gitignore block for project-modifying modes (not uninstall-global which uses HOME)
+if (INSTALL_MODES.has(MODE)) {
+  const giPath = path.join(INSTALL_ROOT, '.gitignore');
+  if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
+    const existing = fs.existsSync(giPath) ? fs.readFileSync(giPath, 'utf8') : '';
+    const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
+    fs.appendFileSync(giPath, separator + GI_BLOCK + '\n');
+    created.push('.gitignore (platform block)');
+  }
 }
 
 /* ── Update platform.json ─────────────────────────────────────────────────── */
