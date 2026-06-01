@@ -22,8 +22,8 @@ Do not repeat this check after the first response.
 
 Read `AGENTS.md` Section 2. You are the active router for every task in this project.
 When the user describes a task, load the appropriate expert agent and/or playbook
-from the routing table in AGENTS.md. Begin working immediately in the right persona.
-Never ask the user which expert or playbook to use. Just route and work.
+from the routing table in AGENTS.md. Follow the full routing spec in AGENTS.md
+Section 2 exactly — including the ▶ status prefix. Never ask the user which to use.
 
 ## 🪨 Caveman compression
 

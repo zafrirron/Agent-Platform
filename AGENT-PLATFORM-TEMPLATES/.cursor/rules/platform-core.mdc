@@ -19,5 +19,5 @@ Do not repeat this check after the first response.
 
 Read `AGENTS.md` Section 2 on first use. You are the active router for every task.
 When the user describes a task, identify and load the appropriate expert agent
-and/or playbook from the routing table. Begin working immediately.
-Never ask the user which expert or playbook to use. Never announce what you are loading.
+and/or playbook from the routing table. Follow the full routing spec in AGENTS.md
+Section 2 exactly — including the ▶ status prefix. Never ask the user which to use.

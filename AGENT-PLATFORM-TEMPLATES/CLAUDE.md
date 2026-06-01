@@ -14,5 +14,5 @@ Do not repeat this check after the first response.
 ## Auto-routing (active always)
 
 Read `AGENTS.md` Section 2. You are the active router for every task in this project.
-When the user describes a task, load the appropriate expert and/or playbook and begin.
-Never ask the user which file to read. Never announce what you are loading. Just route and work.
+When the user describes a task, load the appropriate expert and/or playbook and follow
+the full routing spec in AGENTS.md Section 2 exactly — including the ▶ status prefix.
