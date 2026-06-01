@@ -443,6 +443,109 @@ if (_isPlatformRepo && INSTALL_MODES.has(MODE)) {
   process.exit(1);
 }
 
+/* ── uninstall-global mode ────────────────────────────────────────────────── */
+if (MODE === 'uninstall-global') {
+  const HOME        = process.env.AP_HOME || os.homedir();
+  const platformNpx = manifest.platform_npx || 'github:zafrirron/Agent-Platform';
+  const LINE        = '═'.repeat(62);
+
+  const stubFiles = [
+    path.join(HOME, '.claude/CLAUDE.md'),
+    path.join(HOME, '.cursor/rules/agent-platform-global.mdc'),
+    path.join(HOME, '.codex/instructions.md'),
+    path.join(HOME, '.agents/rules/agent-platform-global.md'),
+  ];
+  const commandFiles = [
+    'caveman.md', 'caveman-commit.md', 'caveman-compress.md',
+    'caveman-review.md', 'caveman-stats.md', 'quick-ref.md',
+  ].map(f => path.join(HOME, '.claude/commands', f));
+  const versionFile = path.join(HOME, '.agent-platform/global-version');
+
+  console.log('');
+  console.log(LINE);
+  console.log('  Agent Platform Bootstrap — Uninstall Global Stubs');
+  console.log(LINE);
+  console.log('');
+
+  const presentStubs = stubFiles.filter(f => fs.existsSync(f));
+  const presentCmds  = commandFiles.filter(f => fs.existsSync(f));
+  const versionExists = fs.existsSync(versionFile);
+
+  if (!presentStubs.length && !presentCmds.length && !versionExists) {
+    console.log('  ℹ  No global stubs found in ' + HOME + '.');
+    console.log('  Nothing to remove.');
+    console.log(LINE);
+    console.log('');
+    process.exit(0);
+  }
+
+  const toDelete = [];
+  const toPatch  = [];
+  const toIgnore = [];
+
+  for (const f of presentStubs) {
+    const content = fs.readFileSync(f, 'utf8');
+    if (!content.includes('<!-- PLATFORM:START -->')) {
+      toIgnore.push(f);
+    } else if (hasRealUserContent(content)) {
+      toPatch.push(f);
+    } else {
+      toDelete.push(f);
+    }
+  }
+
+  if (!CONFIRM) {
+    console.log('  ⚠️  DRY RUN — nothing deleted. Add --confirm to proceed.');
+    console.log('');
+    if (toDelete.length || presentCmds.length || versionExists) {
+      console.log('  Will be DELETED (no user content):');
+      [...toDelete, ...presentCmds, ...(versionExists ? [versionFile] : [])]
+        .forEach(f => console.log('    ' + f.replace(HOME, '~')));
+    }
+    if (toPatch.length) {
+      console.log('');
+      console.log('  Will be PATCHED (PLATFORM block removed, your USER content kept):');
+      toPatch.forEach(f => console.log('    ' + f.replace(HOME, '~')));
+    }
+    if (toIgnore.length) {
+      console.log('');
+      console.log('  Will be LEFT UNTOUCHED (no platform markers):');
+      toIgnore.forEach(f => console.log('    ' + f.replace(HOME, '~')));
+    }
+    console.log('');
+    console.log('  To confirm removal run:');
+    console.log(`    npx ${platformNpx} --mode=uninstall-global --confirm`);
+    console.log(LINE);
+    console.log('');
+    process.exit(0);
+  }
+
+  let removed = 0, patched = 0;
+
+  for (const f of toDelete) { fs.rmSync(f, { force: true }); console.log('  ✔ Deleted : ' + f.replace(HOME, '~')); removed++; }
+  for (const f of toPatch) {
+    const stripped = stripPlatformBlock(fs.readFileSync(f, 'utf8'));
+    fs.writeFileSync(f, stripped.endsWith('\n') ? stripped : stripped + '\n');
+    console.log('  ✔ Patched : ' + f.replace(HOME, '~') + '  (PLATFORM block removed, USER content kept)');
+    patched++;
+  }
+  for (const f of presentCmds) { fs.rmSync(f, { force: true }); console.log('  ✔ Deleted : ' + f.replace(HOME, '~')); removed++; }
+
+  if (versionExists) {
+    fs.rmSync(versionFile, { force: true });
+    try { const dir = path.dirname(versionFile); if (fs.readdirSync(dir).length === 0) fs.rmdirSync(dir); } catch { /* ignore */ }
+    console.log('  ✔ Deleted : ~/.agent-platform/global-version');
+    removed++;
+  }
+
+  console.log('');
+  console.log(`  Done — ${removed} file(s) deleted, ${patched} file(s) patched.`);
+  if (patched > 0) console.log('  Your personal USER section content has been preserved.');
+  console.log(LINE);
+  console.log('');
+  process.exit(0);
+}
+
 /* ── Apply ────────────────────────────────────────────────────────────────── */
 const vars        = discover();
 const created     = [];
@@ -938,129 +1041,6 @@ if (MODE === 'remove-guards') {
   console.log('');
   console.log(`  Done — ${removed} guard(s) removed.`);
   console.log(GLINE);
-  console.log('');
-  process.exit(0);
-}
-
-/* ── uninstall-global mode ────────────────────────────────────────────────── */
-if (MODE === 'uninstall-global') {
-  const HOME        = process.env.AP_HOME || os.homedir();
-  const platformNpx = manifest.platform_npx || 'github:zafrirron/Agent-Platform';
-  const LINE        = '═'.repeat(62);
-
-  // Stub files that contain a PLATFORM block (may also have USER content)
-  const stubFiles = [
-    path.join(HOME, '.claude/CLAUDE.md'),
-    path.join(HOME, '.cursor/rules/agent-platform-global.mdc'),
-    path.join(HOME, '.codex/instructions.md'),
-    path.join(HOME, '.agents/rules/agent-platform-global.md'),
-  ];
-
-  // Pure platform files — no user content ever
-  const commandFiles = [
-    'caveman.md', 'caveman-commit.md', 'caveman-compress.md',
-    'caveman-review.md', 'caveman-stats.md', 'quick-ref.md',
-  ].map(f => path.join(HOME, '.claude/commands', f));
-  const versionFile = path.join(HOME, '.agent-platform/global-version');
-
-  console.log('');
-  console.log(LINE);
-  console.log('  Agent Platform Bootstrap — Uninstall Global Stubs');
-  console.log(LINE);
-  console.log('');
-
-  // Check what is actually present
-  const presentStubs = stubFiles.filter(f => fs.existsSync(f));
-  const presentCmds  = commandFiles.filter(f => fs.existsSync(f));
-  const versionExists = fs.existsSync(versionFile);
-
-  if (!presentStubs.length && !presentCmds.length && !versionExists) {
-    console.log('  ℹ  No global stubs found in ' + HOME + '.');
-    console.log('  Nothing to remove.');
-    console.log(LINE);
-    console.log('');
-    process.exit(0);
-  }
-
-  // Classify each stub file
-  const toDelete = []; // whole file deleted (no user content)
-  const toPatch  = []; // PLATFORM block stripped, USER content kept
-  const toIgnore = []; // no platform markers — leave untouched
-
-  for (const f of presentStubs) {
-    const content = fs.readFileSync(f, 'utf8');
-    if (!content.includes('<!-- PLATFORM:START -->')) {
-      toIgnore.push(f);
-    } else if (hasRealUserContent(content)) {
-      toPatch.push(f);
-    } else {
-      toDelete.push(f);
-    }
-  }
-
-  if (!CONFIRM) {
-    console.log('  ⚠️  DRY RUN — nothing deleted. Add --confirm to proceed.');
-    console.log('');
-    if (toDelete.length || presentCmds.length || versionExists) {
-      console.log('  Will be DELETED (no user content):');
-      [...toDelete, ...presentCmds, ...(versionExists ? [versionFile] : [])]
-        .forEach(f => console.log('    ' + f.replace(HOME, '~')));
-    }
-    if (toPatch.length) {
-      console.log('');
-      console.log('  Will be PATCHED (PLATFORM block removed, your USER content kept):');
-      toPatch.forEach(f => console.log('    ' + f.replace(HOME, '~')));
-    }
-    if (toIgnore.length) {
-      console.log('');
-      console.log('  Will be LEFT UNTOUCHED (no platform markers — not installed by this tool):');
-      toIgnore.forEach(f => console.log('    ' + f.replace(HOME, '~')));
-    }
-    console.log('');
-    console.log('  To confirm removal run:');
-    console.log(`    npx ${platformNpx} --mode=uninstall-global --confirm`);
-    console.log(LINE);
-    console.log('');
-    process.exit(0);
-  }
-
-  let removed = 0, patched = 0;
-
-  for (const f of toDelete) {
-    fs.rmSync(f, { force: true });
-    console.log('  ✔ Deleted : ' + f.replace(HOME, '~'));
-    removed++;
-  }
-
-  for (const f of toPatch) {
-    const stripped = stripPlatformBlock(fs.readFileSync(f, 'utf8'));
-    fs.writeFileSync(f, stripped.endsWith('\n') ? stripped : stripped + '\n');
-    console.log('  ✔ Patched : ' + f.replace(HOME, '~') + '  (PLATFORM block removed, USER content kept)');
-    patched++;
-  }
-
-  for (const f of presentCmds) {
-    fs.rmSync(f, { force: true });
-    console.log('  ✔ Deleted : ' + f.replace(HOME, '~'));
-    removed++;
-  }
-
-  if (versionExists) {
-    fs.rmSync(versionFile, { force: true });
-    try {
-      const dir = path.dirname(versionFile);
-      if (fs.readdirSync(dir).length === 0) fs.rmdirSync(dir);
-    } catch { /* ignore */ }
-    console.log('  ✔ Deleted : ~/.agent-platform/global-version');
-    removed++;
-  }
-
-  console.log('');
-  console.log(`  Done — ${removed} file(s) deleted, ${patched} file(s) patched.`);
-  if (patched > 0) {
-    console.log('  Your personal USER section content has been preserved.');
-  }
-  console.log(LINE);
   console.log('');
   process.exit(0);
 }

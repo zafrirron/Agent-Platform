@@ -3,3 +3,13 @@
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Platform self-install artefacts — safe to ignore, should never be committed
+.agent/
+.claude/
+.cursor/
+.agents/
+.codex/
+AGENTS.md
+CLAUDE.md
+SYNC-POINTS.md
