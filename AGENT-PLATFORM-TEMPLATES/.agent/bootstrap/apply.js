@@ -422,20 +422,24 @@ if (MODE === 'global') {
 }
 
 /* ── Guard: refuse to install into the platform repo itself ──────────────── */
-const PLATFORM_REPO_MARKERS = ['AGENT-PLATFORM-MANIFEST.json', 'AGENT-PLATFORM-TEMPLATES'];
-const isPlatformRepo = PLATFORM_REPO_MARKERS.every(m => fs.existsSync(path.join(INSTALL_ROOT, m)));
-const INSTALL_MODES  = new Set(['install', 'upgrade', 'repair', 'force', 'install-guards', 'remove-guards']);
-if (isPlatformRepo && INSTALL_MODES.has(MODE)) {
-  console.error('');
-  console.error('  ✗  ERROR: Target directory is the Agent Platform repo itself.');
-  console.error('');
-  console.error('  You are running the installer from inside the platform source repo.');
-  console.error('  The platform must be installed into a separate project folder.');
-  console.error('');
-  console.error('  To install into a project:');
-  console.error('    cd /path/to/your-project');
-  console.error('    npx ' + (manifest.platform_npx || 'github:zafrirron/Agent-Platform'));
-  console.error('');
+// A platform repo contains BOTH AGENT-PLATFORM-MANIFEST.json AND AGENT-PLATFORM-TEMPLATES/
+// Use path.resolve to normalise case and separators before comparing (Windows-safe)
+const _installResolved = path.resolve(INSTALL_ROOT);
+const _isPlatformRepo  = ['AGENT-PLATFORM-MANIFEST.json', 'AGENT-PLATFORM-TEMPLATES'].every(
+  m => fs.existsSync(path.join(_installResolved, m))
+);
+const INSTALL_MODES = new Set(['install', 'upgrade', 'repair', 'force', 'install-guards', 'remove-guards']);
+if (_isPlatformRepo && INSTALL_MODES.has(MODE)) {
+  process.stderr.write('\n');
+  process.stderr.write('  ✗  ERROR: Target directory is the Agent Platform repo itself.\n');
+  process.stderr.write('\n');
+  process.stderr.write('  You are running the installer inside the platform source repo.\n');
+  process.stderr.write('  The platform must be installed into a separate project folder.\n');
+  process.stderr.write('\n');
+  process.stderr.write('  To install into a project:\n');
+  process.stderr.write('    cd /path/to/your-project\n');
+  process.stderr.write('    npx ' + (manifest.platform_npx || 'github:zafrirron/Agent-Platform') + '\n');
+  process.stderr.write('\n');
   process.exit(1);
 }
 
