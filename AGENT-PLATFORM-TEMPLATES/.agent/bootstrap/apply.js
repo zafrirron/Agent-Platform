@@ -421,6 +421,28 @@ if (MODE === 'global') {
   process.exit(0);
 }
 
+/* ── Guard: refuse to install into the platform repo itself ──────────────── */
+// A platform repo contains BOTH AGENT-PLATFORM-MANIFEST.json AND AGENT-PLATFORM-TEMPLATES/
+// Use path.resolve to normalise case and separators before comparing (Windows-safe)
+const _installResolved = path.resolve(INSTALL_ROOT);
+const _isPlatformRepo  = ['AGENT-PLATFORM-MANIFEST.json', 'AGENT-PLATFORM-TEMPLATES'].every(
+  m => fs.existsSync(path.join(_installResolved, m))
+);
+const INSTALL_MODES = new Set(['install', 'upgrade', 'repair', 'force', 'install-guards', 'remove-guards']);
+if (_isPlatformRepo && INSTALL_MODES.has(MODE)) {
+  process.stderr.write('\n');
+  process.stderr.write('  ✗  ERROR: Target directory is the Agent Platform repo itself.\n');
+  process.stderr.write('\n');
+  process.stderr.write('  You are running the installer inside the platform source repo.\n');
+  process.stderr.write('  The platform must be installed into a separate project folder.\n');
+  process.stderr.write('\n');
+  process.stderr.write('  To install into a project:\n');
+  process.stderr.write('    cd /path/to/your-project\n');
+  process.stderr.write('    npx ' + (manifest.platform_npx || 'github:zafrirron/Agent-Platform') + '\n');
+  process.stderr.write('\n');
+  process.exit(1);
+}
+
 /* ── Apply ────────────────────────────────────────────────────────────────── */
 const vars        = discover();
 const created     = [];
@@ -516,12 +538,15 @@ SYNC-POINTS.md
 CLAUDE.md
 ${GI_END}`;
 
-const giPath = path.join(INSTALL_ROOT, '.gitignore');
-if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
-  const existing = fs.existsSync(giPath) ? fs.readFileSync(giPath, 'utf8') : '';
-  const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
-  fs.appendFileSync(giPath, separator + GI_BLOCK + '\n');
-  created.push('.gitignore (platform block)');
+// Only add the gitignore block for project-modifying modes (not uninstall-global which uses HOME)
+if (INSTALL_MODES.has(MODE)) {
+  const giPath = path.join(INSTALL_ROOT, '.gitignore');
+  if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
+    const existing = fs.existsSync(giPath) ? fs.readFileSync(giPath, 'utf8') : '';
+    const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
+    fs.appendFileSync(giPath, separator + GI_BLOCK + '\n');
+    created.push('.gitignore (platform block)');
+  }
 }
 
 /* ── Update platform.json ─────────────────────────────────────────────────── */

@@ -3,6 +3,9 @@
 > **Human documentation** for the framework pack and for day-to-day use after install.  
 > **Agent install:** [AGENT-PLATFORM-BOOTSTRAP.md](AGENT-PLATFORM-BOOTSTRAP.md) · **Copy list:** [COPYING.md](COPYING.md) · **Deploy:** [PACK-DEPLOY.md](PACK-DEPLOY.md)
 
+[![License: Elastic-2.0](https://img.shields.io/badge/License-Elastic_2.0-blue.svg)](LICENSE)
+© 2024–2026 [Zafrir Ron](https://github.com/zafrirron) · Free for personal and internal use · Commercial hosting/SaaS prohibited · [Full license](LICENSE)
+
 ---
 
 ## Two kinds of repositories

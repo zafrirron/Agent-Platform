@@ -320,3 +320,31 @@ describe('upgrade — PROJECT section preserved, PLATFORM section updated', () =
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
 });
+
+// ── Self-install guard ─────────────────────────────────────────────────────
+
+describe('self-install guard — platform repo protects itself', () => {
+  const result = spawnSync(
+    process.execPath,
+    [APPLY, `--pack=${PACK_ROOT}`, `--target=${PACK_ROOT}`],
+    { encoding: 'utf8', timeout: 10_000 }
+  );
+
+  test('exits non-zero when target is the platform repo', () => {
+    assert.notEqual(result.status, 0, 'should have been blocked by self-install guard');
+  });
+
+  test('guard error message present', () => {
+    const combined = result.stdout + result.stderr;
+    assert.ok(
+      combined.includes('platform repo') || combined.includes('Agent Platform repo'),
+      `expected guard error, got: ${combined.slice(0, 200)}`
+    );
+  });
+
+  test('platform repo .gitignore has exactly one platform block (not duplicated by blocked attempt)', () => {
+    const gi = fs.readFileSync(path.join(PACK_ROOT, '.gitignore'), 'utf8');
+    const count = (gi.match(/Agent Platform Bootstrap — START/g) || []).length;
+    assert.equal(count, 1, `expected exactly 1 platform block, got ${count} — blocked install may have duplicated the block`);
+  });
+});
