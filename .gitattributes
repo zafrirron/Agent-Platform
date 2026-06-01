@@ -1,5 +1,6 @@
-# Enforce LF line endings for shell scripts on all platforms
-*.sh text eol=lf
+# Enforce LF line endings for all text files — prevents false "modified" status on Windows
+* text=auto eol=lf
 
-# Enforce LF for platform template shell scripts
+# Enforce LF for shell scripts explicitly
+*.sh text eol=lf
 AGENT-PLATFORM-TEMPLATES/**/*.sh text eol=lf
