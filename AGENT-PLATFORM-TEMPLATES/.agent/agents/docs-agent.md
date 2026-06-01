@@ -15,6 +15,24 @@
 - Agent/platform docs: `.agent/` only — never mix with user docs
 - API docs: generate OpenAPI/Swagger spec from `api-contracts.md` — output to `openapi.json` or `swagger/` in the project root. This is a project artifact the user owns; it is not gitignored by default.
 
+### OpenAPI/Swagger generation — full workflow
+
+When asked to "document the API" or generate an OpenAPI spec:
+
+1. **Read** `.agent/context/api-contracts.md` — this is the source of truth for the API shape
+2. **Generate** the spec file at `openapi.json` (or `swagger/openapi.yaml`) from the contracts
+3. **Check for a viewer** — look for `swagger-ui-express` (Node), `flasgger` (Python), `springdoc` (Java), or equivalent in the project's dependency file (`package.json`, `requirements.txt`, `pom.xml`, etc.)
+4. **If no viewer is installed:**
+   - Read `.agent/playbooks/add-dependency.md` and install the appropriate viewer for this stack
+   - Wire a minimal route to serve the spec (e.g. `/api-docs` for Express, `/docs` for FastAPI) — this is a Backend expert task; chain to backend-agent if needed
+   - Confirm the viewer is reachable before marking done
+5. **If viewer already installed:** verify the existing route still points to the updated spec file
+
+**Done-when for API documentation:**
+- `openapi.json` (or equivalent) exists and reflects current `api-contracts.md`
+- A viewer route exists and serves the spec in a browser
+- Viewer package is present in project dependencies
+
 ### Writing quality
 - Document behaviour, not implementation — "what it does", not "how it works internally"
 - Every public API: endpoint, input types, output types, error codes, at least one example
