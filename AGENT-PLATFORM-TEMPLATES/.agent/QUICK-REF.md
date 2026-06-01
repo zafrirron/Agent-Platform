@@ -125,8 +125,9 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 
 | Action | Command |
 |--------|---------|
-| Check for updates | Tell agent: "check for platform updates" |
-| Upgrade | `npx {{PLATFORM_NPX}} --mode=upgrade` |
+| What version am I on? | Say to agent: `"what version"` or `"platform version"` |
+| Check for updates | Say to agent: `"check for updates"` or `"is there a new version"` |
+| Upgrade | Say to agent: `"upgrade platform"` — or terminal: `npx {{PLATFORM_NPX}} --mode=upgrade` |
 | Install global stubs (user-level, run once) | `npx {{PLATFORM_NPX}} --mode=global` |
 | Remove global stubs | `npx {{PLATFORM_NPX}} --mode=uninstall-global` |
 | Install enforcement guards | `npx {{PLATFORM_NPX}} --mode=install-guards` |

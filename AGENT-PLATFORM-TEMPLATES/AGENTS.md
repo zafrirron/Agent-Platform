@@ -57,6 +57,7 @@ You are the active router. When the user describes a task:
 | "CI/CD", "build pipeline", "Docker", "infra", "Kubernetes", "k8s", "terraform", "GitHub Actions", "container", "monitoring" | `.agent/agents/devops-agent.md` | *(none)* |
 | "review this", "find issues", "what could go wrong", "code review", "PR review", "check my code", "give feedback", "sanity check", "second opinion" | `.agent/agents/critic-agent.md` | *(none)* |
 | "explain", "how does X work", "walk me through", "what does", "understand this code" | *(answer directly — no expert or playbook needed)* | *(none)* |
+| "what version", "platform version", "which version", "check for updates", "is there a new version", "update platform", "upgrade platform" | *(answer directly — read `.agent/platform.json` for version; run `node .agent/tools/check-updates.mjs` for update status; read `.agent/tools/upgrade.md` to upgrade)* | *(none)* |
 
 **When a playbook is listed: you MUST read it and follow its numbered steps exactly.** The expert rules govern every step — do not skip steps or summarise them.
 
@@ -74,6 +75,7 @@ A task is dev-related if it references code, a file, a function, a component, an
 |-----------|--------|
 | "show quick reference", "show help", "show commands" | Read `.agent/QUICK-REF.md` and display in full |
 | "platform help", "how does this work" | Read `.agent/PLATFORM-HELP.md` and display in full |
+| "what version", "check for updates", "is there a new version", "upgrade platform" | Read `.agent/platform.json` → report `bootstrap_version`; run `node .agent/tools/check-updates.mjs` → report update status |
 
 ---
 
