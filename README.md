@@ -184,6 +184,7 @@ Repeat. The platform never stops improving.
 │  WORK                                                                 │
 │                                                                       │
 │  Agent reads context files — api-contracts, adr-log, known-issues   │
+│  Agent checks patterns.md — reuses what worked in prior sessions    │
 │  Agent follows rules — CONVENTIONS.md, BEST-PRACTICES.md            │
 │  Agent writes code, tests, documentation                             │
 │  Security gate — automatic for new endpoints/auth (add-feature 5a)  │
@@ -199,6 +200,8 @@ Repeat. The platform never stops improving.
 │  · Summarise work — derived from context, no user recap needed       │
 │  · Pre-handoff checklist — tests green, no stubs, docs updated      │
 │  · Commit all uncommitted changes — clean handoff to next IDE        │
+│  · Capture reusable pattern in patterns.md (if session solved        │
+│    something non-trivial — agents build codebase memory over time)   │
 │  · Update CURRENT.md — goal, files, commit hash, Critic reviewed: no│
 │  · Mark framework idle in registry                                   │
 └──────────────────────────────────┬──────────────────────────────────┘

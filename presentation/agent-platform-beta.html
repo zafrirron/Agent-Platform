@@ -289,9 +289,9 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-size:11px;color:var(--txt3);line-height:1.7">
         <div>Agent reads context files — api-contracts, adr-log, known-issues</div>
         <div>Security gate — automatic for new endpoints/auth (add-feature 5a)</div>
-        <div>Agent follows rules — CONVENTIONS.md, BEST-PRACTICES.md</div>
+        <div>Agent checks <code>patterns.md</code> — reuses what worked in prior sessions</div>
         <div>Critic review gate (mandatory quality gate in every playbook)</div>
-        <div>Agent writes code, tests, documentation</div>
+        <div>Agent follows rules — CONVENTIONS.md, BEST-PRACTICES.md</div>
         <div>Test suite runs and passes · Coverage report generated</div>
       </div>
     </div>
@@ -307,7 +307,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
         <div>· Pre-handoff checklist — tests green, no stubs, docs updated</div>
         <div>· Mark framework idle in registry</div>
         <div>· Commit all uncommitted changes — clean handoff to next IDE</div>
-        <div>· Scan for new unregistered doc files</div>
+        <div>· Capture reusable pattern in <code>patterns.md</code> (if non-trivial)</div>
       </div>
     </div>
     <div class="center" style="font-size:16px;color:var(--border)">↓</div>

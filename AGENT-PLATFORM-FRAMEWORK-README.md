@@ -297,8 +297,9 @@ repo-root/
 │   ├── playbooks/                    ← 8 step-by-step workflows
 │   │   add-feature · release · debug-pipeline · bug-fix · refactor
 │   │   add-dependency · security-audit · api-integration
-│   ├── context/                      ← 5 living reference files
+│   ├── context/                      ← 6 living reference files
 │   │   project-overview · api-contracts · api-patterns · adr-log · known-issues · dependencies
+│   │   patterns                      ← reusable approaches from prior sessions (agents write + read)
 │   ├── skills/caveman/SKILL.md       ← 🪨 token-compression skill
 │   ├── tools/
 │   │   ├── check-updates.mjs         ← version check vs GitHub (7-day cache)
