@@ -307,15 +307,18 @@ Every expert file has two sections:
 - **Platform section** — improved by this project, pushed on `--mode=upgrade`
 - **Project section** — your team's rules, never overwritten
 
-**Why upgrading is worth it:** Every release includes rules sourced from three places — OWASP security guidelines and CWE Top 25 (Mode 2 web audit), real failures observed in production codebases (Mode 1), and production-proven rules contributed by platform users (Mode 3). The platform runs regular audits and encodes findings into the expert agents. When you upgrade:
+**Why upgrading is worth it:** Every release includes rules sourced from four places — OWASP security guidelines and CWE Top 25 (Mode 2 web audit), real failures observed in production codebases (Mode 1), production-proven rules contributed by platform users (Mode 3), and new governance patterns discovered through quarterly GitHub ecosystem scans (Mode 4). When you upgrade:
 - Your **Security expert** knows the latest OWASP API vulnerabilities and CWE patterns
 - Your **Backend expert** knows current API design standards
 - Your **Test expert** knows current testing quality requirements
 - Your **Critic agent** knows what to look for in adversarial review
+- Your **platform governance** reflects the best coordination patterns from the open-source ecosystem
 
 You don't track these sources yourself — the platform does it for you, and every upgrade makes your agents smarter.
 
 **Contributing your own rules:** If you have agent definitions, playbooks, or conventions that work well in your projects, drop them into `MAINTAINER/ingest/` and run `Read MAINTAINER/platform-ingest.md and execute it.` The ingest agent extracts universally applicable rules and proposes them for inclusion. Your production-proven intelligence improves the platform for everyone.
+
+**Quarterly GitHub governance scan (Mode 4):** The platform runs a quarterly scan of GitHub for new agent governance, coordination, and orchestration tools. Discoveries become new platform capabilities — session lifecycle improvements, routing innovations, trust mechanisms. Run: `Read MAINTAINER/github-governance-scan.md and execute it.`
 
 ---
 

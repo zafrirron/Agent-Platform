@@ -681,27 +681,33 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
 <div class="slide" id="s10">
   <div class="mw">
     <div class="kicker">Continuous Evolution</div>
-    <h2>Three sources make the platform <span class="hp">continuously smarter</span></h2>
+    <h2>Four sources make the platform <span class="hp">continuously smarter</span></h2>
     <p class="gs">Platform maintainers use the same agentic model to improve the platform. No manual steps.</p>
     <div class="gap"></div>
-    <div class="cols c3" style="align-items:start">
+    <div class="cols c4" style="align-items:start">
       <div class="card ca" style="padding:14px 16px">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:8px">🔴 Mode 1 — Failures</div>
         <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">A rule observed to prevent a real production failure.</p>
-        <div style="font-size:11px;color:var(--txt2);font-style:italic">"Backend agent shipped an endpoint without validating input"</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ "Add rule to backend: validate all inputs at entry point"<br>→ 7-step workflow → ships to all repos</div>
+        <div style="font-size:11px;color:var(--txt2);font-style:italic">"Backend agent shipped endpoint without validating input"</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ Rule added → 9-step workflow → ships to all repos</div>
       </div>
       <div class="card cg" style="padding:14px 16px">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--grn);margin-bottom:8px">🌐 Mode 2 — Ecosystem</div>
         <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Monthly OWASP + CWE + best-practice audits. Quarterly full scans.</p>
         <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/web-audit.md and execute it.</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ Structured report F001-Fxxx → maintainer selects → agent implements</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ F001-Fxxx findings → maintainer selects → agent implements</div>
       </div>
       <div class="card cp" style="padding:14px 16px">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--pur);margin-bottom:8px">👥 Mode 3 — Users</div>
         <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Users drop their own agent files into <code style="font-size:10px">MAINTAINER/ingest/</code>. Production-proven rules absorbed into the platform.</p>
         <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/platform-ingest.md and execute it.</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ Ingest agent extracts NEW / ENHANCE / DUPLICATE → maintainer selects → ships</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ I001-Ixxx findings → maintainer selects → ships</div>
+      </div>
+      <div class="card" style="padding:14px 16px;border-color:var(--org)">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--org);margin-bottom:8px">🔭 Mode 4 — GitHub Scan</div>
+        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Quarterly scan of GitHub governance &amp; coordination repos. Surfaces new platform-level capabilities.</p>
+        <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/github-governance-scan.md and execute it.</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ R001-Rxxx findings → Add / Roadmap / Skip → new phases or features</div>
       </div>
     </div>
     <div class="gap"></div>
@@ -712,6 +718,7 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
           <tr><td>Improve an expert rule (Mode 1)</td><td>"Add rule to [expert]: [rule]"</td></tr>
           <tr><td>Monthly security audit (Mode 2)</td><td>Read MAINTAINER/web-audit.md and execute it.</td></tr>
           <tr><td>Ingest user agentic files (Mode 3)</td><td>Read MAINTAINER/platform-ingest.md and execute it.</td></tr>
+          <tr><td>Quarterly GitHub governance scan (Mode 4)</td><td>Read MAINTAINER/github-governance-scan.md and execute it.</td></tr>
           <tr><td>Add new expert / playbook / framework</td><td>"Add new expert for [domain]"</td></tr>
           <tr><td>Release a version</td><td>"Release"</td></tr>
         </tbody>

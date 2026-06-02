@@ -362,7 +362,7 @@ Read .agent/tools/upgrade.md and execute it.
 
 Your customised content (filled stubs, project-specific docs, ADRs, known-issues) is never overwritten in upgrade mode. See [CHANGELOG.md](CHANGELOG.md) for version-specific upgrade guides.
 
-**Why upgrades are valuable:** Every release includes rules sourced from OWASP security guidelines, CWE Top 25 weaknesses, and engineering best practices collected from the web ecosystem. The platform maintainer runs regular web audits and encodes the findings into the expert agents' PLATFORM sections. Your expert agents automatically become aware of new vulnerability classes, updated security standards, and current engineering practices — without you tracking those sources yourself. The more you upgrade, the smarter your agents become.
+**Why upgrades are valuable:** Every release includes rules sourced from four places: OWASP security guidelines and CWE Top 25 (Mode 2), real production failures (Mode 1), user-contributed production-proven rules (Mode 3), and new coordination/governance patterns discovered via quarterly GitHub ecosystem scans (Mode 4). Your expert agents automatically become aware of new vulnerability classes, updated security standards, current engineering practices, and the latest open-source governance innovations — without you tracking those sources yourself. The more you upgrade, the smarter your agents become.
 
 ---
 
@@ -1071,17 +1071,20 @@ Use this prompt verbatim — every part maps to a concrete location in the file.
 
 **Quality gate:** no consumer-product strings inside the pack (search product names and app folder names — zero hits).
 
-### Three improvement sources (how the platform gets smarter)
+### Four improvement sources (how the platform gets smarter)
 
-| Mode | Source | Trigger |
-|------|--------|---------|
-| **Mode 1 — Failures** | A rule traced to a real production failure | `"Add rule to [expert]: [rule]"` |
-| **Mode 2 — Ecosystem** | OWASP / CWE / engineering best practices (monthly + quarterly) | `Read MAINTAINER/web-audit.md and execute it.` |
-| **Mode 3 — User submissions** | Users drop their own agent/playbook/skill files into `MAINTAINER/ingest/` | `Read MAINTAINER/platform-ingest.md and execute it.` |
+| Mode | Source | Output | Trigger |
+|------|--------|--------|---------|
+| **Mode 1 — Failures** | A rule traced to a real production failure | One rule added immediately | `"Add rule to [expert]: [rule]"` |
+| **Mode 2 — Ecosystem** | OWASP / CWE / engineering best practices (monthly + quarterly) | Rules for expert agents (F001-Fxxx) | `Read MAINTAINER/web-audit.md and execute it.` |
+| **Mode 3 — User submissions** | Users drop their own agent/playbook/skill files into `MAINTAINER/ingest/` | Rules for expert agents (I001-Ixxx) | `Read MAINTAINER/platform-ingest.md and execute it.` |
+| **Mode 4 — GitHub scan** | Quarterly scan of GitHub governance/coordination repos | New platform capabilities or phases (R001-Rxxx) | `Read MAINTAINER/github-governance-scan.md and execute it.` |
 
 **Mode 3 ingest workflow:** The ingest agent reads all submitted files, extracts specific verifiable rules, deduplicates against existing platform rules, maps each finding to the right expert/playbook, and presents a structured report (findings I001, I002, ...). Maintainer selects what to add. Selected findings are implemented via Mode 1 workflow — logged in `platform-improvements.md`, version bumped, ready to ship.
 
 Drop user files into [`MAINTAINER/ingest/`](MAINTAINER/ingest/) — the `README.md` there explains what to submit and what gets kept.
+
+**Mode 4 scan workflow:** The agent searches GitHub with rotating query templates across coordination, session lifecycle, trust/scoring, and routing themes. For each promising repo it reads README and key files, answers 8 structured questions, and extracts findings (FEATURE / STRENGTHEN / ARCHITECTURE). Maintainer selects findings to implement directly or bundle into a phased roadmap. Results logged to `MAINTAINER/governance-scan/scan-log.md` — already-analyzed repos are skipped on future runs to avoid repetition.
 
 ---
 
