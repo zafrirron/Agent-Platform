@@ -67,7 +67,8 @@
 1. Use `previous_framework` captured in Step 1.2 — do NOT re-read `meta.updated_by` from registry (it now shows the current framework)
 2. Read the most recent entry in `.agent/handoff/CURRENT.md`
 3. **If** `previous_framework` is a DIFFERENT framework than the current one
-   AND the most recent CURRENT.md entry has `Critic reviewed: no`:
+   AND the most recent CURRENT.md entry does NOT contain `Critic reviewed: yes`
+   (absent field or `Critic reviewed: no` both count as not reviewed):
 
    Present this offer to the user:
    ```
