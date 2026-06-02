@@ -5,6 +5,53 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.30.0] — 2026-06-02
+
+### Added — Mode 4: GitHub Governance Repo Scan
+
+Quarterly workflow for discovering new agent governance, coordination, and orchestration tools on GitHub and surfacing them as new platform capabilities.
+
+**`MAINTAINER/github-governance-scan.md`** — 7-phase playbook:
+- Phase 1: 15 search query templates across 4 themes (coordination, session lifecycle, trust/scoring, routing/recovery) — rotated each scan run to widen coverage over time
+- Phase 2: Triage criteria — keeps 6–15 repos meeting ≥2 governance signals, discards wrappers and placeholders
+- Phase 3: 8-question structured analysis per repo (session lifecycle, coordination, routing, trust, quality gates, recovery, manifests, gaps)
+- Phase 4: R001-Rxxx findings with `FEATURE / STRENGTHEN / ARCHITECTURE` classification + effort + impact
+- Phase 5: Quick-pick table sorted by effort × impact
+- Phase 6: Selection commands — `Add` (implement now) · `Investigate` (deeper read) · `Roadmap` (create phased plan doc) · `Skip` · `Defer`
+- Phase 7: Archive to `governance-scan/archive/YYYY-MM-DD/` + running scan log updated
+
+**`MAINTAINER/governance-scan/scan-log.md`** — pre-seeded with the founding scan (8 repos → v2.29.0 governance phases).
+
+**`platform-maintainer-agent.md`** updated:
+- Available modes list: Mode 4 added
+- "Three improvement sources" → "Four improvement sources"
+- Mode comparison table expanded to include Mode 4
+- Mode 4 section with selection commands, scan-log reference, archive path
+- Amendment promotion workflow added (user AP-NNN approvals → PLATFORM section via Mode 1)
+- Extension anatomy: 7 → 9 steps (manifest.json, reputation.json, AGENTS.md PLATFORM section)
+- "add new framework" command: registry.yaml v2 fields specified
+
+**`MAINTAINER/GUIDE.md`** updated:
+- Toolbox table: Mode 4 row added
+- Maintenance schedule: quarterly GitHub scan added
+- Repo layout: `governance-scan/` folder documented
+- E2E test table: phases 5rep, 5gate, 7b, 6a, 6b added
+
+**User-facing docs updated:**
+- `README.md`: upgrade section references four improvement sources; Mode 4 paragraph added
+- `AGENT-PLATFORM-FRAMEWORK-README.md`: "Three improvement sources" → four-column table; Mode 4 workflow description
+- `presentation/agent-platform-beta.html` (slide s10): "Three sources" → "Four sources"; `c3` grid → `c4`; new Mode 4 card (orange, 🔭); commands table row added
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+No template files change in this release — all additions are in `MAINTAINER/` (never deployed to consumer repos). Upgrade picks up the version bump in `platform.json`.
+
+---
+
 ## [2.29.0] — 2026-06-02
 
 ### Added — Agent Governance System (14-phase roadmap)
