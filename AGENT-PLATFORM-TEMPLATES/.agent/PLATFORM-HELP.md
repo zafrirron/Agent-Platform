@@ -471,6 +471,18 @@ You can permanently add new capabilities. Everything is prompt-driven — tell t
 Every extension follows the 7-step anatomy documented at:  
 https://github.com/{{PLATFORM_REPO}}/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md#extending-guide
 
+### Complementary tool — production-grade agent governance
+
+If your project builds or deploys AI agents (not just uses AI for coding), consider pairing this platform with **Microsoft's Agent Governance Toolkit** (`agent-governance-claude-code` plugin):
+
+- Pre-execution policy enforcement at the tool-call level (deterministic, not prompt-based)
+- Cryptographic agent identity and tamper-evident audit logs
+- OWASP Agentic AI risk coverage for production deployments
+
+This platform handles **development workflow governance** (routing, expert rules, quality gates, session coordination). AGT handles **runtime action governance** (what agents can do in production). They operate at different layers and complement each other.
+
+GitHub: `https://github.com/microsoft/agent-governance-toolkit`
+
 ---
 
 ## Platform maintenance

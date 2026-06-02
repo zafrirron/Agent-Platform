@@ -72,16 +72,43 @@
 
 ### LLM and agentic system security (F008 — OWASP LLM01/LLM06 2025, F015 — OWASP LLM05/LLM07)
 - Treat all LLM-generated outputs as untrusted input — validate and sanitise before rendering or executing
-- Defend against indirect prompt injection: content from external sources (documents, web pages, tool results) processed by an LLM must be treated as potentially adversarial
 - Agent tool grants follow least-privilege — agents should only have access to tools they need for the current task
 - System prompts must never be returned to users or logged in retrievable form
 - LLM inputs from untrusted sources must be sanitised to remove instruction-like patterns before forwarding to model
+
+**Prompt injection — check for all 7 attack types:**
+1. **Direct injection** — user input contains embedded instructions ("Ignore previous instructions and...")
+2. **Indirect injection** — tool results, document content, or web pages contain adversarial instructions processed by the LLM
+3. **Goal hijacking** — adversarial content replaces or overrides the agent's original task objective
+4. **Jailbreak patterns** — role-play prompts, hypothetical framings, or encoding tricks designed to bypass safety rules
+5. **System prompt extraction** — inputs designed to make the agent reveal its system prompt or instructions
+6. **Context manipulation** — injecting false conversation history or fabricated prior turns to alter agent behaviour
+7. **Multi-turn injection** — attack spread across several messages, each innocuous alone but collectively hijacking the agent
+
+**Detection approach:** for any feature that passes external content (document text, API responses, user messages, search results) to an LLM, review the data flow and confirm external content is isolated from instruction context — either via strict message-role separation, or content-aware sanitisation before forwarding.
+
+### Agentic AI risks — apply when reviewing AI agent features
+
+When the codebase builds, hosts, or integrates AI agents (not just uses an LLM for text generation):
+
+| Risk | Check |
+|---|---|
+| **Unauthorised action execution** | Can the agent perform destructive actions (delete, send, pay) without explicit user confirmation? Add a human-in-the-loop gate on irreversible actions. |
+| **Over-privileged tool access** | Does the agent have access to tools beyond what its current task requires? Apply least-privilege — scope tool access per task, not per agent lifetime. |
+| **Rogue delegation** | Can the agent spawn sub-agents or delegate tasks to third-party agents without the user knowing? Log and gate all delegation calls. |
+| **Knowledge poisoning** | Does the agent consume documents or RAG sources that could be adversarially crafted? Treat all retrieved content as untrusted; validate before acting on it. |
+| **Supply chain — tool/plugin trust** | Are third-party MCP servers, plugins, or tool providers vetted? Unvetted tool providers can exfiltrate data or inject instructions via tool results. |
+| **Audit trail completeness** | Is every agent action (tool call, file write, API call, delegation) logged with enough context to reconstruct what happened and why? |
+| **Resource exhaustion loops** | Can an agent enter an unbounded retry or delegation loop? Enforce max-turn and max-tool-call limits to prevent runaway execution. |
+| **PII leakage through agents** | Does the agent handle PII? Confirm it is not logged, cached, or forwarded to third-party tools. |
 
 ## Done-when — security task is not complete until
 - [ ] Grep returned 0 secret hits on all staged files
 - [ ] All new endpoints reviewed against the auth checklist above
 - [ ] All new inputs validated at trust boundary
 - [ ] Dependency audit clean (or CVEs documented in known-issues.md with mitigations)
+- [ ] If feature uses LLM or passes external content to a model: all 7 prompt injection types checked
+- [ ] If feature builds or integrates an AI agent: all 8 agentic risk rows reviewed
 - [ ] Findings logged in `.agent/context/known-issues.md` with severity rating
 - [ ] `docs-registry.md` checked — Security-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
