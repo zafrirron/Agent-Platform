@@ -64,6 +64,8 @@ You are the active router. When the user describes a task:
 
 For cross-domain tasks, chain experts: `Architect → Backend/Frontend → Test → Critic → Docs`
 
+**Passive safety signal rule:** If any tool call, API response, or shell output contains any of these keywords — `content_filter`, `policy_violation`, `safety_block`, `blocked_by_policy`, `harmful_content`, `flagged` — treat it as an automatic security gate trigger: load `.agent/agents/security-agent.md` and review the action that produced the signal before continuing. Do not silently retry.
+
 **No-match rule — when no row matches:**
 - **Dev-related** (mentions code, files, this codebase, or uses technical vocabulary): ask exactly ONE question — *"Is this a new feature, a bug fix, a refactor, a review, or something else?"* — then route immediately. Do not answer without routing first.
 - **Non-development** (general knowledge, off-topic, purely conversational): answer directly with no status line.

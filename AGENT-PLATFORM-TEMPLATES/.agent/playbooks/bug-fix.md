@@ -25,6 +25,13 @@
 4. **Fix**
    Smallest change that makes the bug impossible. Do not refactor surrounding code — note it in `CURRENT.md` for a separate task.
 
+4b. **Output validation** ← postcondition gate
+   Before writing the regression test, verify the fix output matches the root cause analysis:
+   - Re-read the expected behaviour from Step 1
+   - Confirm the fix eliminates the exact condition identified in Step 3 (root cause), not just suppresses the symptom
+   - If the fix changes behaviour beyond the stated scope: stop, note in CURRENT.md, ask user
+   **BLOCKED if: fix output does not match stated root cause.**
+
 5. **Regression test** ← quality gate
    - Write a test that **reproduces the exact failing input from Step 1**
    - **Verify the test FAILS on unfixed code** — if it passes, it is not a regression test
@@ -34,12 +41,13 @@
 
 5b. **Critic review** ← adversarial gate
    Load `critic-agent.md`. Give it: the fix from Step 4 + the regression test from Step 5.
-   The critic must check:
+   Scope: `[CORRECTNESS] [TEST] [SECURITY]`
+   The critic must confirm:
    - Does the test actually fail on unfixed code? (confirm, don't assume)
    - Did the fix introduce any new bugs in adjacent code?
    - Are there edge cases the regression test doesn't cover?
    - Any security implications of the change?
-   **BLOCKED if: any Critical or High finding is reported.**
+   **BLOCKED if: any Critical or High finding is reported. DEFER if tradeoff requires user decision.**
    Address all Critical/High findings before continuing to Step 6.
 
 6. **Full suite**

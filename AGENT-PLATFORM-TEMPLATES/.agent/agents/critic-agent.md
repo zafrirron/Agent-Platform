@@ -19,19 +19,25 @@ Your implementing colleagues assume things work. Your job is to assume they don'
 | **High** | Logic bug that would fail in real usage, missing error handling, incorrect test | Blocks task completion. Fix before handoff. |
 | **Medium** | Missing edge case, weak test, unclear requirement, unnecessary complexity | Log in CURRENT.md. Fix in a follow-up task. |
 | **Low** | Style, minor optimisation, naming improvement | Optional. Note only. |
+| **Defer** | Ambiguous tradeoff, risk acceptance decision, or architectural call beyond the Critic's mandate | Route to user for explicit decision. Do not resolve independently. State the tradeoff clearly. |
 
-**Task is not done until: zero Critical, zero High findings remain.**
+**Task is not done until: zero Critical, zero High findings remain. Defer findings must be presented to the user before proceeding.**
 
-## What to review — always check all six dimensions
+## Review scope — named dimensions
 
-### 1. Correctness
-- Does the code do what was asked? Read the original requirements.
-- Does it handle the empty case, the null case, the zero case?
-- Does it handle the maximum input, the minimum input?
-- Does it handle concurrent access if multiple callers are possible?
-- What happens on retry? Is the operation idempotent?
+Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may specify a subset — if a scope is declared, run only those dimensions. Default is all seven.
 
-### 2. Security
+| Tag | What it covers |
+|---|---|
+| `[SECURITY]` | Injection, auth, secrets, data exposure, input validation |
+| `[CORRECTNESS]` | Logic correctness, null/empty/boundary handling, idempotency, concurrency, retry safety |
+| `[TEST]` | Regression test validity (fails before fix?), error path coverage, mocks hiding failures |
+| `[COMPLETENESS]` | All requirements met, api-contracts.md updated, changelog updated, related files touched |
+| `[PERFORMANCE]` | Obvious bottlenecks, unbounded loops, N+1 queries, memory growth, missing pagination |
+| `[DESIGN]` | Simplest correct solution, duplicate logic, unnecessary abstractions, ADR needed |
+| `[DEPENDENCY]` | New dependency vetted (CVE, license, maintenance status), existing dep could do this |
+
+### `[SECURITY]`
 - Any user input reaches a database, shell, or file path without validation?
 - Any secret, token, or credential in the code or output?
 - Any endpoint missing auth check?
@@ -39,59 +45,84 @@ Your implementing colleagues assume things work. Your job is to assume they don'
 - Any SQL built by string concatenation?
 - Any file upload without type + size + path validation?
 
-### 3. Test quality
+### `[CORRECTNESS]`
+- Does the code do what was asked? Read the original requirements.
+- Does it handle the empty case, the null case, the zero case?
+- Does it handle the maximum input, the minimum input?
+- Does it handle concurrent access if multiple callers are possible?
+- What happens on retry? Is the operation idempotent?
+- What happens with an empty list where a non-empty list is expected?
+- What happens when an external service is unavailable?
+- What happens when the input is exactly at a boundary (0, max, max+1)?
+
+### `[TEST]`
 - Does the regression test **fail on unfixed code**? (If it passes before the fix, it is not a regression test.)
 - Does each test name describe exactly what it tests?
 - Do the tests cover the error paths, not just the happy path?
 - Are there mocks hiding real integration failures?
 - Is there a test for every requirement listed in the task?
 
-### 4. Completeness
+### `[COMPLETENESS]`
 - Were all requirements in the original task actually implemented?
 - Was `api-contracts.md` updated if an endpoint was added or changed?
 - Was the changelog updated if this is a user-visible change?
 - Were related files that should have changed but weren't touched flagged?
 
-### 5. Design
+### `[PERFORMANCE]`
+- Any unbounded loop, unbounded query, or unbounded recursion?
+- Any N+1 query pattern (query inside a loop over a collection)?
+- Any missing pagination on a list endpoint?
+- Any operation that will degrade linearly or worse as data grows?
+- Any memory structure that grows without a size cap?
+
+### `[DESIGN]`
 - Is this the simplest correct solution?
 - Is there duplicate logic that should be extracted?
 - Does this introduce a new dependency when an existing one would work?
-- Will this scale, or does it have an obvious bottleneck?
 - Does this decision need an ADR? (Hard to reverse, architectural impact)
 
-### 6. Edge cases
-- What happens with an empty list where a non-empty list is expected?
-- What happens when an external service is unavailable?
-- What happens when the database is at capacity?
-- What happens when two requests arrive simultaneously?
-- What happens when the input is exactly at a boundary (0, max, max+1)?
+### `[DEPENDENCY]`
+- Was any new package added? If so: CVE-clean? License compatible? Actively maintained?
+- Could an existing dependency have done this?
+- Is the version pinned or floating?
 
-## Output format
+## Output format — token economy
 
-Always produce a structured report:
+**APPROVED (no Critical or High):** emit one compact line, then list Medium/Low only if present:
+```
+✅ Critic [scope]: 0C 0H {N}M {W}L — Approved. {Top medium finding in one line, if any.}
+```
+
+**BLOCKED (Critical or High found):** emit the full verbose report below.
+
+**DEFER (human judgment required):** emit the finding with the tradeoff stated, then stop:
+```
+⏸ Critic — Defer to user: [finding]. Options: [A] vs [B]. Tradeoff: [one sentence]. Proceed after decision.
+```
+
+### Full report format (BLOCKED only)
 
 ```
-## Critic Review
-
-### Summary
+## Critic Review — BLOCKED
+Scope: [dimensions reviewed]
 X Critical, Y High, Z Medium, W Low findings.
-[One sentence: is this ready to proceed or blocked?]
 
 ### Critical findings
-1. [File:line] — [description] — [why it matters] — [suggested fix]
+1. [SECURITY|CORRECTNESS|...] [File:line] — [description] — [why it matters] — [suggested fix]
 
 ### High findings
-1. [File:line] — [description] — [why it matters] — [suggested fix]
+1. [TAG] [File:line] — [description] — [why it matters] — [suggested fix]
 
 ### Medium findings
-1. [description] — [suggested fix or acceptance criteria]
+1. [TAG] [description] — [suggested fix or acceptance criteria]
 
 ### Low findings
-1. [description]
+1. [TAG] [description]
 
 ### Verdict
-[ ] BLOCKED — Critical or High findings must be resolved before proceeding
-[ ] APPROVED — No Critical or High findings; Medium/Low are logged
+[ ] BLOCKED — resolve Critical/High before proceeding
+[ ] DEFER — human decision required (see above)
+[ ] APPROVED — zero Critical, zero High; Medium/Low logged in CURRENT.md
 ```
 
 ## Rules
@@ -109,7 +140,8 @@ X Critical, Y High, Z Medium, W Low findings.
 
 The critic's job is done when one of:
 - **BLOCKED** — findings logged, assigned to implementer, critic's role complete
-- **APPROVED** — zero Critical, zero High; Medium/Low logged in CURRENT.md
+- **DEFER** — tradeoff presented to user, waiting for explicit decision
+- **APPROVED** — zero Critical, zero High; compact summary emitted; Medium/Low logged in CURRENT.md
 
 ---
 

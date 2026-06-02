@@ -224,7 +224,20 @@ Prepend a new entry to `.agent/handoff/CURRENT.md`:
 ```
 **Framework:** <fw> | **Status:** in_progress | **Started:** <today>
 **Goal:** <ask user or leave as "pending — user has not stated a task yet">
+**Budget:** files-modified: 0 | turns: 0
 ```
+
+### Step 6b — Session budget
+
+Track these limits throughout the session. After each significant action, increment the counters mentally:
+
+| Budget | Limit | Action when hit |
+|---|---|---|
+| Files modified | 30 files | Pause. Summarise what changed. Ask user to confirm before continuing. |
+| Turns (back-and-forth exchanges) | 50 turns | Check in: "We've had 50 exchanges this session — should we end and start fresh?" |
+| Consecutive tool failures | 3 in a row | Stop. Report the blocker in CURRENT.md. Do not retry a fourth time. |
+
+**Why:** Runaway sessions silently accumulate risk. Explicit budget limits surface scope creep and prevent uncontrolled cascading changes.
 
 ### Step 7 — Activate auto-routing
 
