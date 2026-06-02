@@ -143,7 +143,7 @@ Check if `.agent/MIGRATION-NOTES.md` exists.
 **Check:** does the file `.agent/context/.audit-offered` exist?
 
 - **If it exists:** skip this step entirely — the offer has already been shown.
-- **If it does NOT exist:** this is the first real session. Show the offer below, then create the file.
+- **If it does NOT exist:** this is the first real session. **Immediately** write the file `.agent/context/.audit-offered` with content `offered` — do this BEFORE showing the offer, so the flag is set regardless of how the user replies or whether the session is interrupted.
 
 > Do NOT use CURRENT.md to decide this. The flag file is the only source of truth.
 
@@ -164,8 +164,6 @@ Present this offer:
 │  Run audit now? YES / NO (run manually later)                    │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
-After the user replies (YES or NO): write the file `.agent/context/.audit-offered` with content `offered`.
 
 - **If YES:** immediately read `.agent/playbooks/audit.md` and execute it. After the audit completes, continue to Step 2.
 - **If NO:** continue to Step 2. User can run the audit any time by saying `"Run project audit"`.
