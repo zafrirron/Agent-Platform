@@ -72,6 +72,29 @@ describe('install — clean empty directory', () => {
     );
   });
 
+  // Phase 2A + 2B: registry schema v2
+  test('registry.yaml schema_version is 2', () => {
+    const reg = fs.readFileSync(path.join(dir, '.agent/handoff/sync/registry.yaml'), 'utf8');
+    assert.ok(reg.includes('schema_version: 2'), 'registry must be schema_version 2 after Phase 2');
+  });
+
+  test('registry.yaml has finality_state: clean for all frameworks (Phase 2A)', () => {
+    const reg = fs.readFileSync(path.join(dir, '.agent/handoff/sync/registry.yaml'), 'utf8');
+    const matches = (reg.match(/finality_state: clean/g) || []).length;
+    assert.equal(matches, 4, `expected 4 finality_state: clean entries (one per framework), got ${matches}`);
+  });
+
+  test('registry.yaml has step_manifest: [] for all frameworks (Phase 2A)', () => {
+    const reg = fs.readFileSync(path.join(dir, '.agent/handoff/sync/registry.yaml'), 'utf8');
+    const matches = (reg.match(/step_manifest: \[\]/g) || []).length;
+    assert.equal(matches, 4, `expected 4 step_manifest: [] entries (one per framework), got ${matches}`);
+  });
+
+  test('registry.yaml has completed_actions: {} at top level (Phase 2B)', () => {
+    const reg = fs.readFileSync(path.join(dir, '.agent/handoff/sync/registry.yaml'), 'utf8');
+    assert.ok(reg.includes('completed_actions: {}'), 'registry missing completed_actions map (Phase 2B idempotency)');
+  });
+
   test('creates .agent/QUICK-REF.md', () => {
     assert.ok(fs.existsSync(path.join(dir, '.agent/QUICK-REF.md')), 'QUICK-REF.md missing');
   });

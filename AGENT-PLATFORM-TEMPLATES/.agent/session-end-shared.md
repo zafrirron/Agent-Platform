@@ -117,12 +117,28 @@ Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:
 > will use this list to offer a cross-framework Critic review of your work.
 > Set `Critic reviewed: no` — the next framework's session-start will update this.
 
-### Step 4 — Mark framework idle
+### Step 4 — Mark framework idle + write finality state
 
 In `.agent/handoff/sync/registry.yaml`:
 - Set `frameworks.<fw>.status` → `idle`
 - Clear `frameworks.<fw>.files` → `[]`
 - Set `meta.updated_by` → `<fw>`
+- Set `frameworks.<fw>.finality_state` based on checklist outcome from Step 2:
+  - All checklist items green AND test suite passed → `clean`
+  - Some steps incomplete (e.g. tests not written, docs not updated) → `partial`
+  - Session ended due to unresolved blocker → `failed`
+- Set `frameworks.<fw>.step_manifest` to list the IDs of steps completed this session:
+  ```
+  step_manifest:
+    - reproduce      # bug-fix step 1 complete
+    - fix            # bug-fix step 4 complete
+    - regression     # bug-fix step 5 complete
+    - critic         # bug-fix step 5b complete
+  ```
+  Use short IDs matching the playbook step names. Empty list `[]` if no playbook was followed.
+
+> **Why this matters:** `finality_state: partial` tells the next session-start to offer a targeted resume
+> rather than a full restart. `step_manifest` tells it exactly which steps remain.
 
 ### Step 5 — Optional: prune handoff log
 

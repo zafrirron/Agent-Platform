@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 meta:
   updated_at: "{{DATE}}T00:00:00Z"
   updated_by: bootstrap
@@ -12,6 +12,10 @@ frameworks:
     agent_label: ""
     task: ""
     files: []
+    # Phase 2A: five-state finality (clean|partial|lost_confirmation|failed|in_progress)
+    finality_state: clean
+    # Phase 2A: list of completed step IDs from last session — enables targeted resume
+    step_manifest: []
   claude:
     status: idle
     started_at: null
@@ -19,6 +23,8 @@ frameworks:
     agent_label: ""
     task: ""
     files: []
+    finality_state: clean
+    step_manifest: []
   antigravity:
     status: idle
     started_at: null
@@ -26,6 +32,8 @@ frameworks:
     agent_label: ""
     task: ""
     files: []
+    finality_state: clean
+    step_manifest: []
   codex:
     status: idle
     started_at: null
@@ -33,6 +41,13 @@ frameworks:
     agent_label: ""
     task: ""
     files: []
+    finality_state: clean
+    step_manifest: []
+
+# Phase 2B: idempotency keys — prevents double-execution on retry or cross-IDE takeover
+# Key: sha256(action_type + target + content_hash)[:16]
+# Value: { completed_at: ISO8601, framework: string }
+completed_actions: {}
 
 protected_paths:
   - "**/node_modules/**"

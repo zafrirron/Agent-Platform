@@ -49,16 +49,44 @@
    **If user replies 2 (either case):** Stop. Do not continue.
 
    **If user replies 1 (either case) — Takeover sequence:**
-   a. Run `git status --short` to check for uncommitted work
-   b. If uncommitted changes exist:
-      - Run `git add -A`
+   a. Read `completed_actions` from `registry.yaml` — this is the idempotency map
+   b. Run `git status --short` to check for uncommitted work
+   c. If uncommitted changes exist:
+      - For each changed file: derive idempotency key `[file_path]:[last_modified_timestamp]`
+      - Check if key already exists in `completed_actions` — if yes, skip that file (already handled)
+      - Run `git add -A` for remaining files
       - Run `git commit -m "WIP: [framework] session interrupted — [task from registry]"`
       - Confirm commit succeeded
-   c. In `registry.yaml`: set `frameworks.[stuck_framework].status` → `idle`, `files` → `[]`
-   d. For Case A only: keep `meta.updated_by` as `[stuck_framework]` so Step 1b correctly offers cross-framework Critic review
-   e. Continue to Step 1.4
+      - Add committed files to `completed_actions` with `completed_at: now, framework: [stuck_framework]`
+   d. In `registry.yaml`: set `frameworks.[stuck_framework].status` → `idle`, `files` → `[]`, `finality_state` → `lost_confirmation`
+   e. For Case A only: keep `meta.updated_by` as `[stuck_framework]` so Step 1b correctly offers cross-framework Critic review
+   f. Continue to Step 1.4
 
-   **If no active sessions found:** continue directly to Step 1.4
+   > **Why idempotency matters:** If the takeover commit fails mid-way and is retried, the same files
+   > won't be double-committed. The `completed_actions` map prevents duplicate work across IDE switches.
+
+   **If no active sessions found:** check for partial sessions (Case C below), then continue to Step 1.4
+
+   **Case C — This framework has a partial previous session** (finality_state is `partial` or `failed`):
+   Read `frameworks.<fw>.finality_state` and `frameworks.<fw>.step_manifest`.
+   If `finality_state` is `partial`:
+   ```
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  Previous session was incomplete                                │
+   │                                                                 │
+   │  Completed steps: [step_manifest list]                          │
+   │  Last goal: [goal from CURRENT.md]                              │
+   │                                                                 │
+   │  1. Resume — continue from where it stopped                     │
+   │  2. Start fresh — ignore previous partial state                 │
+   │                                                                 │
+   │  Reply 1 or 2.                                                  │
+   └─────────────────────────────────────────────────────────────────┘
+   ```
+   If user replies 1: load the relevant playbook, skip already-completed steps from step_manifest, resume from first incomplete step.
+   If user replies 2: clear `step_manifest`, set `finality_state: clean`, proceed normally.
+   If `finality_state` is `failed`: note the failure in session context, proceed normally.
+
 4. Set `frameworks.<fw>` → `active`, `started_at` → now, in `registry.yaml`
 5. Set `meta.updated_by` → `<fw>`
 

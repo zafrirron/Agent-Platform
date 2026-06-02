@@ -285,11 +285,11 @@ When returning to this plan in a new session:
 - [x] PW1 — AGENTS.md two-section model (2026-06-02) — 11 new tests, migration logic added
 - [x] Phase 1A — Agent manifest schema + 9 files (2026-06-02) — 22 new tests, all agents covered
 - [x] Phase 1B — Reputation vectors template (2026-06-02) — 4 new tests, all 9 agents at 500
-- [ ] Phase 2A — Five-state finality in registry
-- [ ] Phase 2B — Idempotency keys in registry
-- [ ] Phase 3A — Session-end: finality + step manifest
-- [ ] Phase 3B — Session-start: partial resume offer
-- [ ] Phase 3C — Session-start: idempotency check on takeover
+- [x] Phase 2A — Five-state finality in registry (2026-06-02) — finality_state + step_manifest per framework
+- [x] Phase 2B — Idempotency keys in registry (2026-06-02) — completed_actions map at top level
+- [x] Phase 3A — Session-end: finality + step manifest (2026-06-02) — Step 4 writes finality state
+- [x] Phase 3B — Session-start: partial resume offer (2026-06-02) — Case C handles partial/failed
+- [x] Phase 3C — Session-start: idempotency check on takeover (2026-06-02) — takeover checks completed_actions
 - [ ] Phase 4A — Critic: amendment proposals
 - [ ] Phase 4B — AGENTS.md: amendment approval routing
 - [ ] Phase 5A — Session-end: reputation delta writing
