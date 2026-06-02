@@ -5,6 +5,144 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.29.0] — 2026-06-02
+
+### Added — Agent Governance System (14-phase roadmap)
+
+A complete governance layer for multi-agent, multi-IDE development. Six capabilities added in one release; all additive — no existing behaviour changes.
+
+---
+
+#### Upgrade safety model (PW1)
+
+`AGENTS.md` now uses a two-section model with `<!-- PLATFORM:START/END -->` and `<!-- PROJECT:START/END -->` markers. Platform upgrades patch only the PLATFORM section — your custom routing rows and hard rules in the PROJECT section survive every upgrade. Migration: first upgrade replaces AGENTS.md once; re-add any custom rows you had, then they are preserved permanently.
+
+---
+
+#### Machine-readable agent manifests (Phase 1A)
+
+Nine `*.manifest.json` files deployed alongside each expert agent in `.agent/agents/`. Each manifest declares:
+
+- `capabilities` — what the agent knows
+- `cannot_do` — task types this agent must never handle (used for routing validation)
+- `routing_keywords` — supplementary trigger phrases beyond the AGENTS.md table
+- `governance.critic_dimensions` — which Critic dimensions apply to this agent's output
+- `governance.requires_architect_for` — task types that require Architect sign-off first
+- `trust_ceiling` — `standard` or `elevated`
+
+JSON Schema 2020-12 at `.agent/agents/schemas/agent.manifest.schema.json`. All manifests validated on install.
+
+---
+
+#### Reputation vectors (Phase 1B)
+
+`.agent/context/reputation.json` — per-agent trust scores, updated automatically at every session end.
+
+Each agent starts at 500/1000. Scores move based on Critic outcomes:
+
+| Event | Delta |
+|-------|-------|
+| Critic APPROVED, session `clean` | +10 overall + each capability used |
+| Critic found issues, all fixed | +5 overall |
+| Critic BLOCKED, unresolved | −20 overall |
+| Security gate triggered | −15 on security capability |
+| Session `partial` or budget exceeded | −10 overall |
+
+Scores are per-capability as well as overall, floor 0, ceiling 1000.
+
+---
+
+#### Five-state finality + idempotency (Phases 2A, 2B)
+
+`registry.yaml` schema v2 adds two fields per framework:
+
+- `finality_state` — `clean` | `partial` | `lost_confirmation` | `failed` | `in_progress`
+- `step_manifest` — list of completed playbook step IDs (e.g. `[reproduce, fix, regression, critic]`)
+- `completed_actions` — top-level map keyed by `file_path:timestamp`; prevents double-execution when a takeover is retried
+
+---
+
+#### Partial session resume (Phase 3B)
+
+Session start now handles a third case alongside the existing takeover and conflict flows:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  Previous session was incomplete                                 │
+│  Completed steps: [reproduce, scope, fix]                        │
+│  Last goal: [goal from CURRENT.md]                               │
+│                                                                  │
+│  1. Resume — continue from where it stopped                      │
+│  2. Start fresh — ignore previous partial state                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+Reply 1 loads the playbook and skips the already-completed steps. Reply 2 clears the partial state and starts normally.
+
+---
+
+#### Idempotency check on takeover (Phase 3C)
+
+When taking over a stuck session, the new framework reads `completed_actions` before committing. Files already handled in a previous takeover attempt are skipped — no double-commits even if the takeover itself is retried.
+
+---
+
+#### Policy self-evolution — amendment proposals (Phases 4A, 4B)
+
+When the Critic issues a DEFER finding, it now also emits a structured amendment proposal:
+
+```
+## Amendment Proposal AP-001
+Current rule: [the specific rule blocking this]
+Proposed exception: [minimal change that allows this case]
+Rationale: [why this case is legitimately different]
+Scope: [agent file + section]
+To approve: say "approve amendment AP-001"
+```
+
+Saying `"approve amendment AP-NNN"` writes the exception directly into the PROJECT section of the specified agent file. The platform learns from real usage without any manual file editing.
+
+---
+
+#### Reputation-aware Critic gate scope (Phase 5B)
+
+Before running a Critic gate, the router reads `reputation.json`:
+
+- `overall ≥ 700` → Critic scope reduced to `[CORRECTNESS] [TEST]` for routine tasks
+- `overall ≤ 300` → all 7 dimensions mandatory
+- `by_capability.security ≤ 400` → `[SECURITY]` mandatory regardless of score
+
+High-trust agents earn lighter review. Low-trust agents and any agent with a weak security record get heavier scrutiny.
+
+---
+
+#### Manifest-driven routing validation (Phases 6A, 6B)
+
+Two routing improvements backed by manifests:
+
+**cannot_do check:** After identifying an expert, the router reads their manifest's `cannot_do` list. If the task type matches, routing re-runs to find the correct expert (e.g. a UI task routed to backend-agent is redirected to frontend-agent because backend's manifest says `cannot_do: ["UI", "styling"]`).
+
+**Manifest-augmented fallback:** When no AGENTS.md row matches, the router reads `routing_keywords` from all manifests before asking for clarification. Eliminates drift between the routing table and actual agent capabilities.
+
+---
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+What the upgrade changes:
+- `AGENTS.md` PLATFORM section: two-section markers added on first upgrade (see upgrade safety above)
+- `session-end-shared.md`: Step 4b added (reputation delta writing)
+- `session-start-shared.md`: Case C (partial resume) + manifest-augmented routing fallback
+- `critic-agent.md`: DEFER output format includes amendment proposal block
+- Nine new `*.manifest.json` files deployed alongside agent files
+- `.agent/context/reputation.json` deployed (all agents start at 500)
+- `registry.yaml` migrated to schema v2 (finality_state, step_manifest, completed_actions added)
+
+---
+
 ## [2.28.0] — 2026-06-01
 
 ### Added — Solution pattern library + 7 rules from drone-systems ingest (Mode 3)

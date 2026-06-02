@@ -36,9 +36,13 @@ npm test   ← runs all automated checks (125 assertions, ~4s)
 | 3 | Auto-routing — requires AI to route 6 prompt types silently |
 | 4 | Security gate — requires AI to implement auth and trigger Step 5a |
 | 5 | Session end — requires AI to derive summary and commit via shell tools |
+| 5rep | Reputation delta — requires AI to update reputation.json at session end |
+| 5gate | Reputation gate scope — requires AI to adjust Critic dimensions based on score |
 | 6 | Cross-framework Critic — requires two different AI frameworks |
 | 7 | Framework takeover — requires AI to detect and respond to stuck session |
 | 11 | Global stub activation — requires AI to read ~/.claude/CLAUDE.md and act on it |
+| 6cannotdo | Manifest cannot_do routing — requires AI to read manifest and re-route |
+| 6manifest | Manifest-augmented routing — requires AI to fall back to manifest keywords |
 
 ---
 
@@ -295,6 +299,10 @@ End session.
 - [ ] Working tree confirmed clean before proceeding
 - [ ] CURRENT.md updated: goal · files · `Commit:` hash · `Critic reviewed: no`
 - [ ] registry.yaml: claude → idle · `meta.updated_by: claude`
+- [ ] registry.yaml: `finality_state: clean` (all checklist items passed) or `partial` (incomplete items)
+- [ ] registry.yaml: `step_manifest` lists completed step IDs (e.g. `[reproduce, fix, regression, critic]`)
+- [ ] `reputation.json`: `sessions_completed` incremented for active agents; `last_updated` set to today; `updated_at` set to today
+- [ ] `reputation.json`: `overall` score delta applied (Critic APPROVED → +10; unresolved BLOCKED → -20)
 - [ ] Output: `Session ended. Framework: claude → idle.`
 
 ---
@@ -350,10 +358,24 @@ Read .agent/session-start.md and execute it.
 ```
 
 Say **1**. Verify:
+- [ ] Agent reads `completed_actions` map before committing (idempotency check)
 - [ ] Agent checks `git status` and commits if uncommitted changes exist
 - [ ] registry.yaml: claude set to idle
+- [ ] registry.yaml: claude `finality_state` → `lost_confirmation`
 - [ ] Antigravity session starts
 - [ ] Cross-framework Critic offer follows
+
+### Phase 7b — Partial resume offer (new)
+
+To test Case B (partial session resume):
+1. End a session mid-playbook (close IDE without running session-end)
+2. Manually set in registry.yaml: `finality_state: partial`, `step_manifest: [reproduce, scope]`
+3. Start a new session in the same framework
+
+Verify:
+- [ ] Partial resume offer appears showing completed steps
+- [ ] Reply 1 (resume): playbook loads and skips completed steps
+- [ ] Reply 2 (fresh): `step_manifest` cleared, `finality_state: clean`, normal session start
 
 ---
 
@@ -665,6 +687,54 @@ test -d <TEST_DIR>/.agent   && echo "OK: project install untouched"
 
 ---
 
+## Phase 5b — Reputation-aware Critic gate (manual)
+
+After completing a task through a full add-feature or bug-fix playbook:
+
+1. Run 2+ sessions successfully (Critic APPROVED each time) to build `backend-agent` reputation above 700
+2. Trigger a routine bug-fix task
+
+Verify:
+- [ ] Critic gate runs with reduced scope: `[CORRECTNESS] [TEST]` only (not all 7 dimensions)
+- [ ] Agent reports reduced scope in status line, e.g. `✅ Critic [CORRECTNESS, TEST]: 0C 0H`
+
+To test expanded scope: manually set `backend-agent.overall` to 250 in `reputation.json`, run same task.
+- [ ] Critic uses all 7 dimensions
+
+---
+
+## Phase 6a — Manifest cannot_do routing (manual)
+
+With manifests deployed, try to route a task that violates an agent's `cannot_do`:
+
+```
+Add a new login page component with a form and validation
+```
+
+Expected: this is UI work. Routing should go to frontend-agent.
+backend-agent manifest has `"UI"` in `cannot_do`.
+
+Verify:
+- [ ] Agent identifies task as frontend work — routes to frontend-agent (not backend-agent)
+- [ ] Status line: `▶ Frontend expert · add-feature playbook`
+
+---
+
+## Phase 6b — Manifest-augmented routing fallback (manual)
+
+Try a task whose keywords are in manifests but not the AGENTS.md routing table rows exactly:
+
+```
+I need to optimise a slow database aggregate query
+```
+
+Verify:
+- [ ] Agent routes to data-agent (manifest routing_keywords: `query-optimisation`, `aggregate`)
+- [ ] No clarification question asked
+- [ ] Correct expert + playbook loaded silently
+
+---
+
 ## Pass / Fail Summary
 
 | Phase | Test | Pass condition |
@@ -677,8 +747,11 @@ test -d <TEST_DIR>/.agent   && echo "OK: project install untouched"
 | 3 | Auto-routing | 6 prompts routed silently to correct expert/playbook |
 | 4 | Security gate | add-feature Step 5a fires automatically for auth feature |
 | 5 | Session end | Agent derives summary, commits work via shell, CURRENT.md has commit hash |
+| 5rep | Reputation delta — manual | sessions_completed incremented, scores updated, last_updated set in reputation.json |
+| 5gate | Reputation gate scope — manual | High score → reduced Critic dimensions; low score → all 7 mandatory |
 | 6 | Cross-framework Critic | Offer box appears in Antigravity, YES triggers 6-dim cold review |
 | 7 | Framework takeover | Offer appears for stuck session, takeover completes cleanly |
+| 7b | Partial resume — manual | Partial finality triggers resume offer; step 1 resumes from first incomplete step |
 | 8 | Upgrade two-section | PROJECT section preserved, PLATFORM updated, pure platform files replaced |
 | 9 | Project uninstall dry-run | Lists all files, zero changes made |
 | 9 | Project uninstall confirm | Platform gone, original CLAUDE.md + AGENTS.md restored, src/ intact |
@@ -690,3 +763,5 @@ test -d <TEST_DIR>/.agent   && echo "OK: project install untouched"
 | 11C | Global activation — skip file | Offer suppressed when .agent-platform-skip present |
 | 12A | Global uninstall dry-run | Correct files listed as DELETE vs PATCH, zero changes made |
 | 12B | Global uninstall confirm | USER content preserved in patched file; pure platform files deleted; project install untouched |
+| 6a | Manifest cannot_do routing — manual | UI task routes to frontend, not backend; manifest cannot_do respected |
+| 6b | Manifest-augmented routing — manual | Task with manifest-only keywords routes correctly without clarification question |

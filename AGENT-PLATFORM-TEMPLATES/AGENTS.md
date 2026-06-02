@@ -60,12 +60,22 @@ You are the active router. When the user describes a task:
 | "explain", "how does X work", "walk me through", "what does", "understand this code" | *(answer directly — no expert or playbook needed)* | *(none)* |
 | "what version", "platform version", "which version", "check for updates", "is there a new version", "update platform", "upgrade platform" | *(answer directly — read `.agent/platform.json` for version; run `node .agent/tools/check-updates.mjs` for update status; read `.agent/tools/upgrade.md` to upgrade)* | *(none)* |
 | "add a rule", "add a convention", "add a best practice", "add a golden rule", "add a project rule", "add a coding standard" | *(answer directly — edit the PROJECT section of the relevant `.agent/agents/*-agent.md` or `.agent/CONVENTIONS.md` or `.agent/BEST-PRACTICES.md`)* | *(none)* |
+| "approve amendment AP-NNN", "approve AP-NNN", "apply amendment" | *(answer directly — write the proposed exception from the amendment's "Proposed exception" field into the PROJECT section of the agent file specified in the amendment's "Scope" field; confirm once written)* | *(none)* |
 
 **When a playbook is listed: you MUST read it and follow its numbered steps exactly.** The expert rules govern every step — do not skip steps or summarise them.
 
 For cross-domain tasks, chain experts: `Architect → Backend/Frontend → Test → Critic → Docs`
 
 **Passive safety signal rule:** If any tool call, API response, or shell output contains any of these keywords — `content_filter`, `policy_violation`, `safety_block`, `blocked_by_policy`, `harmful_content`, `flagged` — treat it as an automatic security gate trigger: load `.agent/agents/security-agent.md` and review the action that produced the signal before continuing. Do not silently retry.
+
+**Reputation-aware gate scope:** Before running a Critic gate (any playbook step that calls for Critic review), read `.agent/context/reputation.json` for the active expert:
+- `overall >= 700` → reduce Critic scope to `[CORRECTNESS] [TEST]` only (routine tasks)
+- `overall <= 300` → all 7 Critic dimensions mandatory
+- `by_capability.security <= 400` → `[SECURITY]` dimension mandatory regardless of score
+
+Skip silently if the file cannot be read or no Critic gate is active this turn.
+
+**Manifest cannot_do check:** After identifying the expert for a task, check `.agent/agents/<name>-agent.manifest.json`. If the task type appears in the `cannot_do` list → re-route to the correct expert (example: a UI task routed to backend-agent where manifest says `cannot_do: ["UI", "styling"]` → re-route to frontend-agent instead). Skip if the manifest file does not exist.
 
 **No-match rule — when no row matches:**
 - **Dev-related** (mentions code, files, this codebase, or uses technical vocabulary): ask exactly ONE question — *"Is this a new feature, a bug fix, a refactor, a review, or something else?"* — then route immediately. Do not answer without routing first.

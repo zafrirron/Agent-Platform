@@ -40,6 +40,8 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 | Data | "schema change", "migration", "data pipeline", "ORM", "N+1", "transform data" |
 | **Critic** | **"review this", "code review", "find issues", "sanity check", "what could go wrong"** |
 
+> Routing keywords above are human-readable summaries. The authoritative keyword list for each expert is in `.agent/agents/<name>-agent.manifest.json` → `routing_keywords` field.
+
 ---
 
 ## Playbooks

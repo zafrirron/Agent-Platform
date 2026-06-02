@@ -140,6 +140,31 @@ In `.agent/handoff/sync/registry.yaml`:
 > **Why this matters:** `finality_state: partial` tells the next session-start to offer a targeted resume
 > rather than a full restart. `step_manifest` tells it exactly which steps remain.
 
+### Step 4b — Update reputation scores
+
+Read `.agent/context/reputation.json`.
+
+Identify which agents were active this session (derive from the files changed and which expert personas were loaded).
+
+For each active agent, apply deltas to `overall` and to the relevant `by_capability` keys:
+- Session ended `finality_state: clean` AND Critic APPROVED → **+10** to `overall` and each capability used
+- Critic found issues that were fixed before session end → **+5** to `overall`
+- Critic BLOCKED with unresolved Critical or High → **-20** to `overall`
+- Security gate triggered → **-15** to the `security`-related capability of the triggering agent
+- `finality_state: partial` or session budget exceeded → **-10** to `overall`
+
+After applying deltas:
+- Increment `sessions_completed` by 1 for each active agent
+- Update `gate_passes` / `gate_blocks` counts based on Critic outcomes
+- Set `last_updated` on each updated agent entry to today's date (YYYY-MM-DD)
+- Set top-level `updated_at` to today's date
+
+Floor all scores at 0, ceiling at 1000.
+
+Write the updated `.agent/context/reputation.json`.
+
+> **If no agents were clearly active or the context is ambiguous:** skip this step silently.
+
 ### Step 5 — Optional: prune handoff log
 
 If `.agent/handoff/CURRENT.md` has more than 20 entries, run:

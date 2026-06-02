@@ -436,7 +436,9 @@ Just start a session in the new IDE:
 Read .agent/session-start.md and execute it.
 ```
 
-Session start detects the stuck open session and offers a **takeover**:
+Session start detects the state of the previous session and offers the right path:
+
+**Case A — Stuck session (other IDE still shows active):**
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  [framework] has an open session                                │
@@ -448,9 +450,24 @@ Session start detects the stuck open session and offers a **takeover**:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-Reply **1** — the new IDE commits any uncommitted work from the stuck session, closes it cleanly, and continues. No manual file editing required. Cross-framework Critic review is then offered automatically.
+Reply **1** — the new IDE checks what was already committed (idempotency check), commits any remaining uncommitted work, closes the stuck session cleanly, and continues. Cross-framework Critic review is then offered automatically.
 
-> **This is one of the key reasons to use a multi-framework platform.** When one IDE's credits run out mid-task, switch to another and continue without losing any work or context.
+**Case B — Partial session (your own previous session ended incomplete):**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Previous session was incomplete                                │
+│  Completed steps: [reproduce, scope, fix]                       │
+│  Last goal: [goal from CURRENT.md]                              │
+│                                                                 │
+│  1. Resume — continue from where it stopped                     │
+│  2. Start fresh — ignore previous partial state                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+Reply **1** — the playbook resumes from the first incomplete step, skipping what was already done.
+Reply **2** — clears partial state and starts the session normally.
+
+> **This is one of the key reasons to use a multi-framework platform.** When one IDE's credits run out mid-task, switch to another and continue without losing any work or context. The idempotency check ensures no action is executed twice even if the takeover itself is retried.
 
 ---
 

@@ -1,6 +1,6 @@
 # Platform Governance Roadmap
 **Created:** 2026-06-02  
-**Status:** Pre-work required before Phase 1  
+**Status:** All phases complete (2026-06-02)  
 **Tracking:** Pick up any session by reading this file + running `git log --oneline -5`
 
 ---
@@ -290,9 +290,9 @@ When returning to this plan in a new session:
 - [x] Phase 3A — Session-end: finality + step manifest (2026-06-02) — Step 4 writes finality state
 - [x] Phase 3B — Session-start: partial resume offer (2026-06-02) — Case C handles partial/failed
 - [x] Phase 3C — Session-start: idempotency check on takeover (2026-06-02) — takeover checks completed_actions
-- [ ] Phase 4A — Critic: amendment proposals
-- [ ] Phase 4B — AGENTS.md: amendment approval routing
-- [ ] Phase 5A — Session-end: reputation delta writing
-- [ ] Phase 5B — Routing: reputation-aware gate scope
-- [ ] Phase 6A — Routing validates against manifest cannot_do
-- [ ] Phase 6B — QUICK-REF sourced from manifests
+- [x] Phase 4A — Critic: amendment proposals (2026-06-02) — DEFER emits structured AP-NNN proposals
+- [x] Phase 4B — AGENTS.md: amendment approval routing (2026-06-02) — "approve AP-NNN" row wired
+- [x] Phase 5A — Session-end: reputation delta writing (2026-06-02) — Step 4b added, +/-10/20 deltas
+- [x] Phase 5B — Routing: reputation-aware gate scope (2026-06-02) — gate scope adjusts on score thresholds
+- [x] Phase 6A — Routing validates against manifest cannot_do (2026-06-02) — re-routes on cannot_do match
+- [x] Phase 6B — QUICK-REF sourced from manifests (2026-06-02) — manifest routing_keywords as authoritative source

@@ -95,10 +95,19 @@ Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may spe
 
 **BLOCKED (Critical or High found):** emit the full verbose report below.
 
-**DEFER (human judgment required):** emit the finding with the tradeoff stated, then stop:
+**DEFER (human judgment required):** emit the finding with the tradeoff stated, then emit a structured amendment proposal:
 ```
 ⏸ Critic — Defer to user: [finding]. Options: [A] vs [B]. Tradeoff: [one sentence]. Proceed after decision.
+
+## Amendment Proposal AP-NNN
+Current rule: [the specific rule or constraint that blocks this]
+Proposed exception: [minimal change that allows this specific case]
+Rationale: [why this case is legitimately different from the rule's intent]
+Scope: [which agent file + which section — e.g., backend-agent.md PROJECT section]
+To approve: say "approve amendment AP-NNN"
 ```
+
+Number proposals sequentially per session starting at AP-001. Each DEFER finding gets its own proposal.
 
 ### Full report format (BLOCKED only)
 

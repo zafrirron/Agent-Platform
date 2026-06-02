@@ -139,6 +139,8 @@ Agent Platform Bootstrap (framework repo)
 └── tools/release.ps1              ← single command for versioning + tagging + GitHub release
 ```
 
+> Test count: `npm test` runs 172 assertions (~4s). Count grows as governance phases add coverage.
+
 ---
 
 ## The two install scopes
@@ -387,13 +389,18 @@ The full test plan lives at `tests/E2E-TEST-PLAN.md` (v3). It covers:
 | 3 | Auto-routing — 6 prompt types |
 | 4 | Security gate — add-feature Step 5a |
 | 5 | Session end — derive summary, commit via shell |
+| 5rep | Reputation delta — `reputation.json` scores updated at session end |
+| 5gate | Reputation-aware gate scope — Critic dimensions adjust per score |
 | 6 | Cross-framework Critic |
-| 7 | Framework takeover |
+| 7 | Framework takeover — idempotency check, lost_confirmation state |
+| 7b | Partial resume — partial finality triggers targeted step resumption |
 | 8 | Upgrade two-section model |
 | 9 | Project uninstall (scope 1 only) |
 | 10 | Global install — stubs created, version file, idempotent upgrade |
 | 11 | Global stub activation — AGENTS.md detection, install offer, skip |
 | 12 | Global uninstall — USER content preserved, pure files deleted |
+| 6a | Manifest cannot_do routing — UI task re-routes away from backend-agent |
+| 6b | Manifest-augmented routing — manifest keywords route without clarification |
 
 To run automated tests:
 ```

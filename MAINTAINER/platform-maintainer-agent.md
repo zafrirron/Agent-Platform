@@ -189,7 +189,16 @@ Execution:
    - prompts/session-end.md (calls .agent/session-end-shared.md)
    - Any framework-specific skill files (e.g. rules/, commands/)
 4. Add all new files to AGENT-PLATFORM-MANIFEST.json
-5. Add the framework to registry.yaml template
+5. Add the framework to registry.yaml template — include all v2 fields:
+   ```yaml
+   <name>:
+     status: idle
+     task: ""
+     files: []
+     started_at: null
+     finality_state: clean
+     step_manifest: []
+   ```
 6. Add to AGENTS.md template framework table
 7. Add to PLATFORM-HELP.md Switching IDEs section
 8. Add to README.md and FRAMEWORK-README.md capability tables
@@ -357,7 +366,7 @@ After processing:
 
 ---
 
-## Extension anatomy — all platform changes follow these 7 steps
+## Extension anatomy — all platform changes follow these 9 steps
 
 ```
 1. MAINTAINER/platform-improvements.md — log the failure/source, the rule, the version
@@ -365,16 +374,41 @@ After processing:
    · Project files go in AGENT-PLATFORM-TEMPLATES/ (deployed to repos)
    · Global stub files go in AGENT-PLATFORM-TEMPLATES/global/ (deployed to ~/ via --mode=global)
 3. Two-section markers — only edit PLATFORM:START/END sections
-4. AGENT-PLATFORM-MANIFEST.json — add new files; update bootstrap_version
+4. If adding a new expert agent:
+   a. Create <name>-agent.manifest.json (id, capabilities, cannot_do, governance, routing_keywords, trust_ceiling)
+   b. Add entry to .agent/context/reputation.json (overall: 500, per-capability: 500, counters: 0)
+5. AGENT-PLATFORM-MANIFEST.json — add new files; update bootstrap_version
    · Project files: no scope field (default)
    · Global files: add "scope": "global"
-   · If adding a new fork point: update platform_repo and platform_npx fields
-5. AGENT-PLATFORM-BOOTSTRAP.md footer — bump version
-6. AGENT-PLATFORM-FRAMEWORK-README.md — update if capability is new
-7. CHANGELOG.md — document what changed, why, how to upgrade
+6. AGENT-PLATFORM-BOOTSTRAP.md footer — bump version
+7. AGENTS.md template PLATFORM section (§2) — add routing row if new routing is needed
+   ⚠️ Edit only inside <!-- PLATFORM:START --> … <!-- PLATFORM:END -->
+8. AGENT-PLATFORM-FRAMEWORK-README.md — update if capability is new
+9. CHANGELOG.md — document what changed, why, how to upgrade
 ```
 
-The Mode 1 commands above execute all 7 steps automatically.
+The Mode 1 commands above execute all 9 steps automatically.
+
+---
+
+## Amendment promotion — governance feedback loop
+
+When users approve amendment proposals (AP-NNN), the exception is written to the PROJECT section of the relevant agent file. These PROJECT-section exceptions are user data — they survive upgrades and are never touched by the platform.
+
+**When a PROJECT exception proves universally valid**, promote it to PLATFORM:
+
+```
+Read MAINTAINER/platform-maintainer-agent.md
+Task: Promote amendment — [paste the exception text]. Source: user-approved AP-NNN in [agent].
+```
+
+The maintainer agent will:
+1. Check for duplicates in all PLATFORM sections
+2. Add the rule to the PLATFORM section of the relevant agent
+3. Log to `platform-improvements.md` with source: `User amendment AP-NNN`
+4. Bump version
+
+After promotion, the next `--mode=upgrade` will put the rule in all consumer repos. Users who already approved it locally get it again (idempotent — same content, PLATFORM section replaces with identical rule).
 
 ---
 

@@ -280,6 +280,8 @@ From this point until session end, follow the routing table exactly:
 - Never announce what you are reading — just read and begin
 - If a task spans domains, chain experts in order: Architect → domain expert → Test → Critic
 
+**Manifest-augmented routing:** The routing keywords in the table above are the primary source. Each agent also declares `routing_keywords` in their `.agent/agents/<name>-agent.manifest.json`. When the routing table has no clear match, read the manifest files from `.agent/agents/` and check their `routing_keywords` before asking the user for clarification — this eliminates drift between the routing table and agent capabilities.
+
 ### Step 8 — Ready
 
 Output exactly:
