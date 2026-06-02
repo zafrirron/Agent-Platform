@@ -330,7 +330,7 @@ Always-loaded framework files are NOT shared — each must be updated individual
 
 ### Checklist before every commit that touches routing or session behaviour
 
-- [ ] `AGENTS.md` updated (routing table, expert rules, status prefix, no-match logic)
+- [ ] `AGENTS.md` PLATFORM section updated (routing table rows, rules, no-match logic) — never edit PROJECT section
 - [ ] `CLAUDE.md` — auto-routing section consistent with AGENTS.md
 - [ ] `.cursor/rules/platform-core.mdc` — auto-routing section consistent with AGENTS.md
 - [ ] `.agents/rules/00-multi-framework-sync.md` — auto-routing section consistent with AGENTS.md
@@ -363,7 +363,14 @@ or
 Add a new playbook for [scenario]
 ```
 
-The agent follows the 7-step extension anatomy and handles all file creation, manifest registration, and cross-file updates (AGENTS.md, QUICK-REF.md, PLATFORM-HELP.md, CHANGELOG.md, platform-improvements.md) automatically.
+The agent follows the extension anatomy and handles all file creation, manifest registration, and cross-file updates automatically.
+
+**When adding a new expert agent, three additional files are required (Phase 1 governance):**
+- `<name>-agent.manifest.json` — machine-readable capabilities, routing keywords, governance profile
+- Entry in `reputation.json` — agent starts at overall: 500 with per-capability scores
+- Routing row added inside `AGENTS.md` PLATFORM section (§2), not PROJECT section
+
+These files seed the Phase 5 reputation-aware gate routing and Phase 6 manifest-driven routing. Omitting them will cause those phases to fail silently for the new agent.
 
 ---
 

@@ -108,8 +108,9 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 
 | What you can add | Where it goes | Say to agent |
 |-----------------|---------------|-------------|
-| New expert agent | `.agent/agents/<name>-agent.md` | "Add a new expert agent for [domain]" |
+| New expert agent | `.agent/agents/<name>-agent.md` + `<name>-agent.manifest.json` + entry in `reputation.json` | "Add a new expert agent for [domain]" |
 | New playbook | `.agent/playbooks/<name>.md` | "Add a new playbook for [scenario]" |
+| Custom routing row | `AGENTS.md` Section 5 (PROJECT section) | "Add a project routing rule: [trigger] → [expert]" |
 | New shared skill | `.agent/skills/<name>/` | "Add a new skill called [name] that [does X]" |
 | New context file | `.agent/context/<name>.md` | "Add a context file tracking [what]" |
 | 5th IDE framework | `.<name>/` private folder | "Add [Windsurf/Cline/etc.] as a 5th framework" |

@@ -760,7 +760,7 @@ EXTEND PLATFORM     See Extending guide in this file (AGENT-PLATFORM-FRAMEWORK-R
 
 ---
 
-### The extension anatomy — always the same 7 steps
+### The extension anatomy — always the same 9 steps
 
 Every extension touches the **templates pack** in this order. Give this list when extending the platform:
 
@@ -768,10 +768,15 @@ Every extension touches the **templates pack** in this order. Give this list whe
 1. This README — Usage / Extending sections + quick-ref card
 2. Install tables — update counts/lists if needed
 3. AGENT-PLATFORM-TEMPLATES/ — add or edit template file(s)
-4. node tools/build-bootstrap-manifest.js — regenerate manifest
-5. Stub templates / apply.js Phase 3 — if project-specific
-6. Bump bootstrap_version in manifest + AGENT-PLATFORM-BOOTSTRAP.md footer
-7. AGENTS.md template — update expert table or hard rules if relevant
+4. If adding a new expert agent:
+   a. Create <name>-agent.manifest.json alongside the agent file
+   b. Add entry to .agent/context/reputation.json (overall: 500, per-capability: 500)
+5. node tools/build-bootstrap-manifest.js — regenerate manifest (includes new manifest + reputation files)
+6. Stub templates / apply.js if project-specific
+7. Bump bootstrap_version in manifest + AGENT-PLATFORM-BOOTSTRAP.md footer
+8. AGENTS.md template PLATFORM section (§2) — add routing row if new routing needed
+   ⚠️ Edit only inside <!-- PLATFORM:START --> … <!-- PLATFORM:END --> — never edit the PROJECT section
+9. CHANGELOG.md — document what changed, why, how to upgrade
 ```
 
 Miss any step and the next consumer repo upgraded from the pack will not get the new capability.
@@ -789,16 +794,27 @@ Edit AGENT-PLATFORM-TEMPLATES/ then rebuild manifest.
 
 Task: Add a new expert agent for [DOMAIN — e.g. "Mobile / React Native", "ML / AI pipelines", "Performance"].
 
-Follow the extension anatomy (all 7 steps):
+Follow the extension anatomy (all 9 steps):
 1. Usage Guide §3 expert table — add row
 2. "What this installs" — update shared-hub row to mention the new agent
 3. Templates tree — no new dirs needed (.agent/agents/ exists)
-4. AGENT-PLATFORM-TEMPLATES/ — add FILE: .agent/agents/[name]-agent.md template:
-   - Domain, Owns, Before work, Rules sections
-   - Rules must reference BEST-PRACTICES.md and CONVENTIONS.md
+4a. AGENT-PLATFORM-TEMPLATES/ — add FILE: .agent/agents/[name]-agent.md template:
+    - Domain, Owns, Before work, Rules sections
+    - Rules must reference BEST-PRACTICES.md and CONVENTIONS.md
+    - Two-section markers (PLATFORM:START/END + PROJECT:START/END)
+4b. Create companion .agent/agents/[name]-agent.manifest.json:
+    - id: "[name]-agent", display_name, version: "1.0"
+    - capabilities: [...], cannot_do: [...]
+    - governance: { critic_dimensions: [...], requires_architect_for: [...] }
+    - routing_keywords: [...], trust_ceiling: "standard"
+    - reputation_capabilities: [...] (capability keys for per-domain trust tracking)
+4c. Add entry to .agent/context/reputation.json:
+    - "[name]-agent": { overall: 500, by_capability: { ... }, sessions_completed: 0, ... }
 5. Phase 3 — no stub needed (agent fills own context from scan)
-6. Manifest rebuild + version bump — add: [ ] .agent/agents/[name]-agent.md exists
-7. AGENTS.md template §2 — add row to specialist table
+6. Manifest rebuild + version bump — add agent.md, manifest.json to AGENT-PLATFORM-MANIFEST.json
+7. AGENTS.md template §2 PLATFORM section — add routing row inside <!-- PLATFORM:START/END -->
+8. QUICK-REF.md + PLATFORM-HELP.md — add expert to tables
+9. CHANGELOG.md — document new expert
 
 Also create .agent/agents/[name]-agent.md in this repo now, filled for [PROJECT_NAME].
 ```

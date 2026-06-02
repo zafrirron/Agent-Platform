@@ -211,12 +211,20 @@ Execution:
    - 5+ specific rules with done-when gates
    - Two-section markers (PLATFORM + PROJECT)
    - PROJECT placeholder section
-4. Add to AGENT-PLATFORM-MANIFEST.json
-5. Add to AGENTS.md template expert table
-6. Add to QUICK-REF.md template expert table
-7. Add to PLATFORM-HELP.md template expert section
-8. Log + bump version
-9. Report: "New expert created. 7 files updated. Ready to commit."
+4. Create companion AGENT-PLATFORM-TEMPLATES/.agent/agents/<name>-agent.manifest.json:
+   - Use existing manifests (backend-agent.manifest.json) as template
+   - Fill: id, display_name, version, capabilities, cannot_do, governance
+     (critic_dimensions, requires_architect_for, always_runs_security_gate),
+     routing_keywords, trust_ceiling, reputation_capabilities
+5. Add new agent entry to AGENT-PLATFORM-TEMPLATES/.agent/context/reputation.json:
+   - Use id matching manifest id (e.g. "<name>-agent")
+   - Set overall: 500, all by_capability scores: 500, counters: 0
+6. Add both new files to AGENT-PLATFORM-MANIFEST.json
+7. Add routing row to AGENTS.md template — inside the PLATFORM:START/END section (§2)
+8. Add to QUICK-REF.md template expert table
+9. Add to PLATFORM-HELP.md template expert section
+10. Log + bump version
+11. Report: "New expert created. 10 files updated. Ready to commit."
 ```
 
 ---

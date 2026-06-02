@@ -460,7 +460,8 @@ You can permanently add new capabilities. Everything is prompt-driven — tell t
 
 | What to add | Tell the agent |
 |------------|---------------|
-| New expert agent | `"Add a new expert agent for [domain — e.g. Mobile, ML, Performance]"` |
+| New expert agent | `"Add a new expert agent for [domain — e.g. Mobile, ML, Performance]"` — creates the agent file, companion manifest.json, and reputation.json entry automatically |
+| Custom routing row | `"Add a project routing rule: when user says [X], route to [expert]"` — added to AGENTS.md Section 5 (PROJECT section, survives upgrades) |
 | New playbook | `"Add a new playbook for [scenario — e.g. incident response, data migration]"` |
 | New shared skill | `"Add a new skill called [name] that [does X]"` |
 | New context file | `"Add a context file tracking [what]"` |
