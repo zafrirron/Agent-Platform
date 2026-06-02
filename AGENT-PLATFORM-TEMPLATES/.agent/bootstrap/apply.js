@@ -593,8 +593,14 @@ for (const entry of manifest.files) {
         // Safe to fully replace — nothing user-customizable to preserve
         fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
         updated.push(entry.path);
+      } else if (!existing.includes('<!-- PROJECT:START -->')) {
+        // Template has markers but installed file doesn't, AND installed file has no PROJECT
+        // section — this is a migration from a pre-two-section-model install.
+        // Safe to full replace: no user content exists yet to preserve.
+        fs.writeFileSync(target, content.endsWith('\n') ? content : content + '\n');
+        updated.push(entry.path + ' (migrated to two-section model)');
       } else {
-        noMarkers.push(entry.path); // template has markers but installed file doesn't → warn user
+        noMarkers.push(entry.path); // template has markers but installed file has PROJECT content without PLATFORM markers → warn user
         skipped.push(entry.path);
       }
     } else if (MODE === 'install' && path.basename(entry.path) === 'CLAUDE.md') {

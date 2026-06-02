@@ -4,6 +4,7 @@
 
 ---
 
+<!-- PLATFORM:START -->
 ## 1 · Session commands
 
 | Action | Command |
@@ -102,3 +103,20 @@ A task is dev-related if it references code, a file, a function, a component, an
 - Private folders: `.claude/` `.cursor/` `.agents/` `.codex/` — never edit other frameworks' private folders
 - Registry: `.agent/handoff/sync/registry.yaml` — active-framework lock
 - Handoff log: `.agent/handoff/CURRENT.md` — session history and next-agent notes
+<!-- PLATFORM:END -->
+
+<!-- PROJECT:START -->
+## 5 · Project customizations — {{PROJECT_NAME}}
+
+> **These sections survive platform upgrades.** Add your project-specific routing and rules here.
+
+### Custom routing rows
+Add project-specific triggers below — one row per pattern:
+
+| User says something like… | Expert file | Playbook file |
+|--------------------------|-------------|---------------|
+| *(add custom rows here)* | | |
+
+### Project-specific hard rules
+*(Add project-specific rules here — e.g. "All endpoints must have rate limiting", "No direct DB queries outside the repository layer")*
+<!-- PROJECT:END -->

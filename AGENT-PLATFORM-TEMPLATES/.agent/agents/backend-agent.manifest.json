@@ -1,0 +1,15 @@
+{
+  "id": "backend-agent",
+  "display_name": "Backend",
+  "version": "1.0",
+  "capabilities": ["api", "service", "database", "auth", "validation", "middleware", "server-logic", "error-handling"],
+  "cannot_do": ["UI", "styling", "client-state", "CSS", "components", "CI/CD", "infrastructure", "schema-migrations"],
+  "governance": {
+    "critic_dimensions": ["SECURITY", "CORRECTNESS", "TEST", "COMPLETENESS", "PERFORMANCE", "DESIGN", "DEPENDENCY"],
+    "requires_architect_for": ["auth", "data-shape-change", "new-service", "middleware", "external-integration"],
+    "always_runs_security_gate": false
+  },
+  "routing_keywords": ["endpoint", "API", "service", "server", "route", "handler", "controller", "middleware", "database query"],
+  "trust_ceiling": "standard",
+  "reputation_capabilities": ["api", "security", "database", "auth"]
+}

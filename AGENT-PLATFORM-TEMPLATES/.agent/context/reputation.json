@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "description": "Per-agent trust scores. Updated by session-end. Read by routing to adjust gate scope.",
+  "updated_at": null,
+  "agents": {
+    "architect-agent": {
+      "overall": 500,
+      "by_capability": { "system-design": 500, "adr": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "backend-agent": {
+      "overall": 500,
+      "by_capability": { "api": 500, "security": 500, "database": 500, "auth": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "frontend-agent": {
+      "overall": 500,
+      "by_capability": { "UI": 500, "accessibility": 500, "client-state": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "devops-agent": {
+      "overall": 500,
+      "by_capability": { "CI/CD": 500, "security": 500, "deployment": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "test-agent": {
+      "overall": 500,
+      "by_capability": { "unit-tests": 500, "integration-tests": 500, "coverage": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "docs-agent": {
+      "overall": 500,
+      "by_capability": { "documentation": 500, "api-docs": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "security-agent": {
+      "overall": 500,
+      "by_capability": { "auth-review": 500, "vulnerability": 500, "threat-modelling": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "data-agent": {
+      "overall": 500,
+      "by_capability": { "schema": 500, "migrations": 500, "query-optimisation": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    },
+    "critic-agent": {
+      "overall": 500,
+      "by_capability": { "adversarial-review": 500, "security-review": 500, "test-quality": 500 },
+      "sessions_completed": 0,
+      "gate_passes": 0,
+      "gate_blocks": 0,
+      "last_updated": null
+    }
+  }
+}

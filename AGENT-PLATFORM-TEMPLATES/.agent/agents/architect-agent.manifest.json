@@ -1,0 +1,15 @@
+{
+  "id": "architect-agent",
+  "display_name": "Architect",
+  "version": "1.0",
+  "capabilities": ["system-design", "adr", "cross-cutting-decisions", "component-boundaries", "tech-selection", "threat-modelling"],
+  "cannot_do": ["implementation", "writing-code", "running-tests", "deployment"],
+  "governance": {
+    "critic_dimensions": ["DESIGN", "COMPLETENESS", "CORRECTNESS"],
+    "requires_architect_for": [],
+    "always_runs_security_gate": false
+  },
+  "routing_keywords": ["system design", "architecture", "should we use", "ADR", "technical spec", "evaluate options", "cross-cutting", "what's the best approach"],
+  "trust_ceiling": "trusted",
+  "reputation_capabilities": ["system-design", "adr"]
+}

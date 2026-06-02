@@ -56,7 +56,7 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **Quick reference on every session start** | Compact status block on every session start: last work, update status, path to full guide. Full capability guide at `.agent/QUICK-REF.md` — open in editor any time, no chat clutter. No memorisation required. |
 | **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
 | **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before done; coverage gate auto-detected at install; red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see line-by-line coverage. |
-| **5 living context files** | api-contracts · adr-log (Architecture Decision Records) · known-issues · dependencies · project-overview — kept in sync as code evolves |
+| **7 living context files** | api-contracts · adr-log · known-issues · dependencies · project-overview · patterns · reputation.json (per-agent trust scores) — kept in sync as code evolves |
 | **📋 Docs governance** | Every project doc is registered with an owner expert, audience, and staleness threshold. All expert Done-when checklists require checking owned docs. Session end scans for new unregistered files. Release playbook blocked until Docs agent audits all docs current. Pre-commit guard warns on unregistered new doc files. |
 | **🪨 Caveman skill** | ~65% output token savings; activated with `"caveman mode"` across all 4 frameworks |
 | **Agentic update check** | `node .agent/tools/check-updates.mjs` — or tell the agent: `Read .agent/tools/upgrade.md and execute it.` Checks once per 7 days, caches result. |
@@ -292,13 +292,17 @@ repo-root/
 │   ├── session-start-shared.md       ← shared session-start logic for all 4 frameworks
 │   ├── PROJECT.md, CONVENTIONS.md, WORKFLOWS.md, FILE_MAP.md
 │   ├── ZONES.md, SYNC.md, CHECKLIST.md
-│   ├── agents/                       ← 8 software-expert personas
-│   │   architect · backend · frontend · devops · test · docs · security · data
+│   ├── agents/                       ← 9 software-expert personas + machine-readable manifests
+│   │   architect · backend · frontend · devops · test · docs · security · data · critic
+│   │   Each agent has a companion *.manifest.json defining capabilities, routing keywords,
+│   │   Critic dimensions, and trust ceiling — machine-readable foundation for Phase 5-6 routing
+│   ├── agents/schemas/               ← JSON Schema for agent manifests
 │   ├── playbooks/                    ← 9 step-by-step workflows
 │   │   audit · add-feature · release · debug-pipeline · bug-fix · refactor
 │   │   add-dependency · security-audit · api-integration
-│   ├── context/                      ← 6 living reference files
+│   ├── context/                      ← 7 living reference files
 │   │   project-overview · api-contracts · api-patterns · adr-log · known-issues · dependencies
+│   │   reputation.json               ← per-agent trust scores (seeds Phase 5 reputation-aware gates)
 │   │   patterns                      ← reusable approaches from prior sessions (agents write + read)
 │   ├── skills/caveman/SKILL.md       ← 🪨 token-compression skill
 │   ├── tools/

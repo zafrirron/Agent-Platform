@@ -1,0 +1,15 @@
+{
+  "id": "frontend-agent",
+  "display_name": "Frontend",
+  "version": "1.0",
+  "capabilities": ["UI", "components", "client-state", "styling", "accessibility", "UX-flows", "forms", "rendering"],
+  "cannot_do": ["server-logic", "database", "auth-implementation", "CI/CD", "infrastructure"],
+  "governance": {
+    "critic_dimensions": ["CORRECTNESS", "TEST", "COMPLETENESS", "DESIGN", "SECURITY"],
+    "requires_architect_for": ["new-component-library", "state-management-change", "routing-strategy"],
+    "always_runs_security_gate": false
+  },
+  "routing_keywords": ["UI", "component", "page", "screen", "styling", "CSS", "client state", "form", "button", "layout"],
+  "trust_ceiling": "standard",
+  "reputation_capabilities": ["UI", "accessibility", "client-state"]
+}

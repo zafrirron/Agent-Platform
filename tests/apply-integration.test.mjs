@@ -334,6 +334,183 @@ describe('upgrade — PROJECT section preserved, PLATFORM section updated', () =
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
 });
 
+// ── PW1: AGENTS.md two-section model ─────────────────────────────────────────
+
+describe('AGENTS.md — two-section model after fresh install', () => {
+  const dir = tmpDir();
+  runApply(dir);
+  const agentsPath = path.join(dir, 'AGENTS.md');
+
+  test('AGENTS.md has PLATFORM:START marker', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('<!-- PLATFORM:START -->'), 'AGENTS.md missing PLATFORM:START');
+  });
+
+  test('AGENTS.md has PROJECT:START marker', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('<!-- PROJECT:START -->'), 'AGENTS.md missing PROJECT:START');
+  });
+
+  test('AGENTS.md PROJECT section has custom routing rows placeholder', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('Custom routing rows'), 'AGENTS.md PROJECT section missing custom routing rows placeholder');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('AGENTS.md — custom PROJECT routing row survives upgrade', () => {
+  const dir = tmpDir();
+  runApply(dir);
+  const agentsPath = path.join(dir, 'AGENTS.md');
+
+  // User adds a custom routing row in the PROJECT section
+  const installed = fs.readFileSync(agentsPath, 'utf8');
+  const withCustom = installed.replace(
+    '| *(add custom rows here)* | | |',
+    '| "my custom trigger" | `.agent/agents/backend-agent.md` | *(none)* |'
+  );
+  fs.writeFileSync(agentsPath, withCustom);
+
+  runApply(dir, ['--mode=upgrade']);
+
+  test('custom routing row preserved after upgrade', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('my custom trigger'), 'custom PROJECT routing row was destroyed by upgrade');
+  });
+
+  test('PLATFORM section still present after upgrade', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('<!-- PLATFORM:START -->'), 'PLATFORM markers missing after upgrade');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('AGENTS.md — migration from pre-two-section install', () => {
+  const dir = tmpDir();
+  runApply(dir);
+  const agentsPath = path.join(dir, 'AGENTS.md');
+
+  // Simulate old install: strip PLATFORM/PROJECT markers (pre-PW1 state)
+  const installed = fs.readFileSync(agentsPath, 'utf8');
+  const oldFormat = installed
+    .replace(/<!-- PLATFORM:START -->\n/, '')
+    .replace(/<!-- PLATFORM:END -->\n/, '')
+    .replace(/<!-- PROJECT:START -->[\s\S]*<!-- PROJECT:END -->\n?/, '');
+  fs.writeFileSync(agentsPath, oldFormat);
+
+  // Upgrade should migrate it (full replace since no PROJECT content)
+  const result = runApply(dir, ['--mode=upgrade']);
+
+  test('upgrade exits 0 during migration', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}`);
+  });
+
+  test('migrated AGENTS.md has PLATFORM markers', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('<!-- PLATFORM:START -->'), 'migration did not add PLATFORM markers');
+  });
+
+  test('migrated AGENTS.md has PROJECT section', () => {
+    const content = fs.readFileSync(agentsPath, 'utf8');
+    assert.ok(content.includes('<!-- PROJECT:START -->'), 'migration did not add PROJECT section');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── Phase 1A: Agent manifests ──────────────────────────────────────────────
+
+describe('Phase 1A — agent manifest files deployed after install', () => {
+  const dir = tmpDir();
+  runApply(dir);
+
+  const agents = ['architect','backend','frontend','devops','test','docs','security','data','critic'];
+
+  for (const agent of agents) {
+    test(`${agent}-agent.manifest.json exists`, () => {
+      assert.ok(
+        fs.existsSync(path.join(dir, `.agent/agents/${agent}-agent.manifest.json`)),
+        `${agent}-agent.manifest.json not deployed`
+      );
+    });
+
+    test(`${agent}-agent.manifest.json is valid JSON with required fields`, () => {
+      const manifest = JSON.parse(
+        fs.readFileSync(path.join(dir, `.agent/agents/${agent}-agent.manifest.json`), 'utf8')
+      );
+      assert.ok(manifest.id,               `${agent} manifest missing id`);
+      assert.ok(manifest.display_name,     `${agent} manifest missing display_name`);
+      assert.ok(manifest.version,          `${agent} manifest missing version`);
+      assert.ok(Array.isArray(manifest.capabilities) && manifest.capabilities.length > 0, `${agent} manifest missing capabilities`);
+      assert.ok(manifest.governance,       `${agent} manifest missing governance`);
+      assert.ok(Array.isArray(manifest.governance.critic_dimensions), `${agent} manifest missing critic_dimensions`);
+      assert.ok(Array.isArray(manifest.routing_keywords) && manifest.routing_keywords.length > 0, `${agent} manifest missing routing_keywords`);
+      assert.ok(manifest.trust_ceiling,    `${agent} manifest missing trust_ceiling`);
+    });
+  }
+
+  test('schema file deployed', () => {
+    assert.ok(
+      fs.existsSync(path.join(dir, '.agent/agents/schemas/agent.manifest.schema.json')),
+      'schema file not deployed'
+    );
+  });
+
+  test('schema file is valid JSON', () => {
+    const schema = JSON.parse(
+      fs.readFileSync(path.join(dir, '.agent/agents/schemas/agent.manifest.schema.json'), 'utf8')
+    );
+    assert.ok(schema.$schema, 'schema missing $schema field');
+    assert.ok(schema.required, 'schema missing required fields list');
+  });
+
+  test('manifest ids match agent filenames', () => {
+    for (const agent of agents) {
+      const manifest = JSON.parse(
+        fs.readFileSync(path.join(dir, `.agent/agents/${agent}-agent.manifest.json`), 'utf8')
+      );
+      assert.equal(manifest.id, `${agent}-agent`, `${agent} manifest id does not match filename`);
+    }
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── Phase 1B: Reputation vectors ───────────────────────────────────────────
+
+describe('Phase 1B — reputation.json deployed after install', () => {
+  const dir = tmpDir();
+  runApply(dir);
+  const repPath = path.join(dir, '.agent/context/reputation.json');
+
+  test('reputation.json exists', () => {
+    assert.ok(fs.existsSync(repPath), 'reputation.json not deployed');
+  });
+
+  test('reputation.json is valid JSON', () => {
+    assert.doesNotThrow(() => JSON.parse(fs.readFileSync(repPath, 'utf8')));
+  });
+
+  test('reputation.json contains all 9 agents', () => {
+    const rep = JSON.parse(fs.readFileSync(repPath, 'utf8'));
+    const agents = ['architect-agent','backend-agent','frontend-agent','devops-agent',
+                    'test-agent','docs-agent','security-agent','data-agent','critic-agent'];
+    for (const agent of agents) {
+      assert.ok(rep.agents[agent], `reputation.json missing agent: ${agent}`);
+      assert.equal(rep.agents[agent].overall, 500, `${agent} should start at 500 trust`);
+    }
+  });
+
+  test('reputation.json has required schema_version field', () => {
+    const rep = JSON.parse(fs.readFileSync(repPath, 'utf8'));
+    assert.ok(rep.schema_version, 'reputation.json missing schema_version');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
 // ── Self-install guard ─────────────────────────────────────────────────────
 
 describe('self-install guard — platform repo protects itself', () => {

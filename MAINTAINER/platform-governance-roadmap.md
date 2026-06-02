@@ -282,9 +282,9 @@ When returning to this plan in a new session:
 ## Current status
 
 - [x] Pre-analysis complete (2026-06-02)
-- [ ] PW1 — AGENTS.md two-section model
-- [ ] Phase 1A — Agent manifest schema + 9 files
-- [ ] Phase 1B — Reputation vectors template
+- [x] PW1 — AGENTS.md two-section model (2026-06-02) — 11 new tests, migration logic added
+- [x] Phase 1A — Agent manifest schema + 9 files (2026-06-02) — 22 new tests, all agents covered
+- [x] Phase 1B — Reputation vectors template (2026-06-02) — 4 new tests, all 9 agents at 500
 - [ ] Phase 2A — Five-state finality in registry
 - [ ] Phase 2B — Idempotency keys in registry
 - [ ] Phase 3A — Session-end: finality + step manifest

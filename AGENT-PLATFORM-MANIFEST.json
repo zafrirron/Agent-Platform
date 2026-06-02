@@ -176,6 +176,61 @@
       "kind": "template"
     },
     {
+      "path": ".agent/context/reputation.json",
+      "template": ".agent/context/reputation.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/schemas/agent.manifest.schema.json",
+      "template": ".agent/agents/schemas/agent.manifest.schema.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/architect-agent.manifest.json",
+      "template": ".agent/agents/architect-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/backend-agent.manifest.json",
+      "template": ".agent/agents/backend-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/frontend-agent.manifest.json",
+      "template": ".agent/agents/frontend-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/devops-agent.manifest.json",
+      "template": ".agent/agents/devops-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/test-agent.manifest.json",
+      "template": ".agent/agents/test-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/docs-agent.manifest.json",
+      "template": ".agent/agents/docs-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/security-agent.manifest.json",
+      "template": ".agent/agents/security-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/data-agent.manifest.json",
+      "template": ".agent/agents/data-agent.manifest.json",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/agents/critic-agent.manifest.json",
+      "template": ".agent/agents/critic-agent.manifest.json",
+      "kind": "template"
+    },
+    {
       "path": ".agent/handoff/CURRENT.md",
       "template": ".agent/handoff/CURRENT.md",
       "kind": "template"

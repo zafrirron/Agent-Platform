@@ -1,0 +1,15 @@
+{
+  "id": "data-agent",
+  "display_name": "Data",
+  "version": "1.0",
+  "capabilities": ["schema-design", "migrations", "data-pipelines", "ORM", "query-optimisation", "ETL", "PII-handling", "data-modelling"],
+  "cannot_do": ["UI", "API-endpoints", "auth-implementation", "CI/CD", "deployment"],
+  "governance": {
+    "critic_dimensions": ["CORRECTNESS", "PERFORMANCE", "SECURITY", "COMPLETENESS"],
+    "requires_architect_for": ["breaking-schema-change", "new-database-engine", "data-partitioning-strategy"],
+    "always_runs_security_gate": false
+  },
+  "routing_keywords": ["schema", "migration", "database", "ORM", "table", "column", "data pipeline", "ETL", "N+1", "seed"],
+  "trust_ceiling": "standard",
+  "reputation_capabilities": ["schema", "migrations", "query-optimisation"]
+}

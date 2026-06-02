@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-platform/agent.manifest",
+  "title": "Agent Manifest",
+  "description": "Machine-readable definition of an Agent Platform expert agent",
+  "type": "object",
+  "required": ["id", "display_name", "version", "capabilities", "governance", "routing_keywords", "trust_ceiling"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique agent identifier matching the filename without extension",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable name shown in routing status prefix (▶ {display_name} expert)"
+    },
+    "version": {
+      "type": "string",
+      "description": "Manifest schema version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "capabilities": {
+      "type": "array",
+      "description": "Domains and actions this agent is qualified to perform",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "cannot_do": {
+      "type": "array",
+      "description": "Domains explicitly outside this agent's scope — routing will not send these here",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "governance": {
+      "type": "object",
+      "required": ["critic_dimensions"],
+      "additionalProperties": false,
+      "properties": {
+        "critic_dimensions": {
+          "type": "array",
+          "description": "Which Critic review dimensions apply when this agent's work is reviewed",
+          "items": {
+            "type": "string",
+            "enum": ["SECURITY", "CORRECTNESS", "TEST", "COMPLETENESS", "PERFORMANCE", "DESIGN", "DEPENDENCY"]
+          }
+        },
+        "requires_architect_for": {
+          "type": "array",
+          "description": "Task types that require Architect agent sign-off before this agent proceeds",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "always_runs_security_gate": {
+          "type": "boolean",
+          "description": "If true, security gate runs on every task regardless of endpoint/auth involvement",
+          "default": false
+        }
+      }
+    },
+    "routing_keywords": {
+      "type": "array",
+      "description": "Representative trigger phrases — used by routing table and surfaced in QUICK-REF",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "trust_ceiling": {
+      "type": "string",
+      "description": "Maximum privilege tier this agent can operate at",
+      "enum": ["restricted", "standard", "trusted", "sovereign"],
+      "default": "standard"
+    },
+    "reputation_capabilities": {
+      "type": "array",
+      "description": "Capability keys tracked separately in reputation.json for per-domain trust scoring",
+      "items": { "type": "string" },
+      "default": []
+    }
+  }
+}

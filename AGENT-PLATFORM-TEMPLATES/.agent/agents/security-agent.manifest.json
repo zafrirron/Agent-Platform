@@ -1,0 +1,15 @@
+{
+  "id": "security-agent",
+  "display_name": "Security",
+  "version": "1.0",
+  "capabilities": ["auth-review", "vulnerability-scanning", "threat-modelling", "OWASP", "secrets-audit", "input-validation-review", "dependency-audit", "agentic-security"],
+  "cannot_do": ["feature-implementation", "UI", "deployment", "test-writing"],
+  "governance": {
+    "critic_dimensions": ["SECURITY", "COMPLETENESS"],
+    "requires_architect_for": ["auth-architecture-change", "new-trust-boundary"],
+    "always_runs_security_gate": false
+  },
+  "routing_keywords": ["security review", "auth review", "vulnerability", "threat model", "OWASP", "XSS", "injection", "JWT", "RBAC", "pentest"],
+  "trust_ceiling": "trusted",
+  "reputation_capabilities": ["auth-review", "vulnerability", "threat-modelling"]
+}

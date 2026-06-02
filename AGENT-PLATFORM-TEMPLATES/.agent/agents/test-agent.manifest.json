@@ -1,0 +1,15 @@
+{
+  "id": "test-agent",
+  "display_name": "Test",
+  "version": "1.0",
+  "capabilities": ["unit-tests", "integration-tests", "e2e-tests", "coverage", "test-strategy", "fixtures", "mocks"],
+  "cannot_do": ["feature-implementation", "production-code-changes", "deployment", "schema-changes"],
+  "governance": {
+    "critic_dimensions": ["TEST", "CORRECTNESS", "COMPLETENESS"],
+    "requires_architect_for": ["new-test-framework", "test-infrastructure-change"],
+    "always_runs_security_gate": false
+  },
+  "routing_keywords": ["test", "coverage", "unit test", "integration test", "e2e", "TDD", "regression", "fixture", "mock"],
+  "trust_ceiling": "standard",
+  "reputation_capabilities": ["unit-tests", "integration-tests", "coverage"]
+}
