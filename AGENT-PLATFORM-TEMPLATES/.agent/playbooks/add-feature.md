@@ -6,8 +6,10 @@
 
 ## Steps
 1. **Claim** — read `registry.yaml`; claim scope files
-2. **Design** — if cross-cutting: Architect agent first; log ADR if architectural
-3. **Spec** — write acceptance criteria or test skeleton before implementation
+2. **Design** — **REQUIRED before any code.** Assess scope:
+   - Touches more than one file domain, adds middleware, changes auth, or modifies data shape → **BLOCKED: load `architect-agent.md` first; write ADR before proceeding**
+   - Isolated single-domain change → document the approach in one paragraph before coding
+3. **Spec** — write acceptance criteria or failing test skeleton **before** implementation — no exceptions
 4. **Implement** — domain expert(s); smallest correct change
 5. **Test** — Test agent: unit + integration; all tests green
 5a. **Security gate** ← automatic for any feature touching endpoints, auth, or data input
