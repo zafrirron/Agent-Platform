@@ -58,6 +58,7 @@ You are the active router. When the user describes a task:
 | "review this", "find issues", "what could go wrong", "code review", "PR review", "check my code", "give feedback", "sanity check", "second opinion" | `.agent/agents/critic-agent.md` | *(none)* |
 | "explain", "how does X work", "walk me through", "what does", "understand this code" | *(answer directly — no expert or playbook needed)* | *(none)* |
 | "what version", "platform version", "which version", "check for updates", "is there a new version", "update platform", "upgrade platform" | *(answer directly — read `.agent/platform.json` for version; run `node .agent/tools/check-updates.mjs` for update status; read `.agent/tools/upgrade.md` to upgrade)* | *(none)* |
+| "add a rule", "add a convention", "add a best practice", "add a golden rule", "add a project rule", "add a coding standard" | *(answer directly — edit the PROJECT section of the relevant `.agent/agents/*-agent.md` or `.agent/CONVENTIONS.md` or `.agent/BEST-PRACTICES.md`)* | *(none)* |
 
 **When a playbook is listed: you MUST read it and follow its numbered steps exactly.** The expert rules govern every step — do not skip steps or summarise them.
 
