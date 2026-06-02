@@ -17,6 +17,7 @@ Task: [describe your platform improvement goal]
 - **Mode 2 — Web ecosystem audit (Option B, monthly):** `Read MAINTAINER/web-audit.md and execute it.`
 - **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
 - **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
+- **Mode 4 — GitHub governance repo scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
 
 ---
 
@@ -26,10 +27,11 @@ You are the Agent Platform maintainer's AI partner. Your job is to make the plat
 
 The meta-philosophy: **AI writing the rules that make other AIs better at software engineering.** Every rule you add is encoded intelligence that ships to every consumer repo on the next upgrade.
 
-**Three improvement sources:**
+**Four improvement sources:**
 - **Mode 1** — real failures observed in consumer repos → specific rules that prevent recurrence
 - **Mode 2** — the global knowledge ecosystem (OWASP, CWE, best practices) → rules from research
 - **Mode 3** — users' own deployed agentic intelligence → rules already proven in production
+- **Mode 4** — GitHub governance/coordination repo ecosystem → new platform-level capabilities
 
 ---
 
@@ -301,15 +303,15 @@ See `MAINTAINER/platform-ingest.md` for the full ingest playbook.
 
 Users drop their own agentic files (agent definitions, playbooks, skills, CLAUDE.md, conventions) into `MAINTAINER/ingest/`. The ingest playbook reads them all, extracts platform-worthy rules, classifies each finding, maps to the best integration path, and presents a structured report.
 
-### What makes this different from Mode 1 and Mode 2
+### What makes this different from Mode 1, Mode 2, and Mode 4
 
-| | Mode 1 | Mode 2 | Mode 3 |
-|---|---|---|---|
-| **Source** | Failure observed in a consumer repo | OWASP / CWE / web ecosystem | User's own deployed agent files |
-| **Trigger** | "I saw X break" | Monthly/quarterly schedule | User submits files to `MAINTAINER/ingest/` |
-| **Signal quality** | Single failure case | Research + community consensus | Production-proven rules (already working for someone) |
-| **Volume** | One rule at a time | 10–30 findings per audit | Variable — depends on submission size |
-| **Implementation** | Immediate | Maintainer selects from report | Maintainer selects from ingest report |
+| | Mode 1 | Mode 2 | Mode 3 | Mode 4 |
+|---|---|---|---|---|
+| **Source** | Failure observed in a consumer repo | OWASP / CWE / web ecosystem | User's own deployed agent files | GitHub governance/coordination repos |
+| **Trigger** | "I saw X break" | Monthly/quarterly schedule | User submits files to `MAINTAINER/ingest/` | Quarterly GitHub scan |
+| **Signal quality** | Single failure case | Research + community consensus | Production-proven rules | Open-source implementations |
+| **Output granularity** | One rule at a time | Rules for expert agents | Rules for expert agents | Platform-level capabilities + new phases |
+| **Implementation** | Immediate | Maintainer selects from report | Maintainer selects from ingest report | Maintainer selects; may create a roadmap |
 
 ### Finding classifications
 
@@ -363,6 +365,35 @@ After processing:
 3. Version bumped if any rules were added
 4. Submitted files archived to `MAINTAINER/ingest/archive/YYYY-MM-DD/`
 5. Report: "N rules added from M submissions. K skipped. J deferred. Files archived."
+
+---
+
+## Mode 4 — GitHub governance repo scan
+
+**Triggered by:** `Read MAINTAINER/github-governance-scan.md and execute it.`
+
+See `MAINTAINER/github-governance-scan.md` for the full scan playbook.
+
+Searches GitHub for repos with agent governance, coordination, session management, or routing
+patterns. Compares against the current platform and surfaces findings at the **platform capability
+level** — not individual rules, but whole features or architectural patterns the platform could adopt.
+
+### Selection commands (after the report is presented)
+
+| You say | Agent does |
+|---------|-----------|
+| `"Add R001, R003"` | Implements low-effort findings as rules or new files via Mode 1 workflow |
+| `"Add all Low-effort High-impact"` | Filters and implements that set |
+| `"Investigate R004"` | Fetches more files from that repo for deeper analysis |
+| `"Roadmap R005"` | Creates a phased roadmap document for that finding (like platform-governance-roadmap.md) |
+| `"Roadmap R002, R007, R009"` | Creates a single phased roadmap covering those findings together |
+| `"Skip R002"` | Logs R002 as reviewed+skipped in scan log |
+| `"Defer R006"` | Adds to backlog section of scan log |
+| `"Skip all"` | Logs all findings, archives report |
+
+**Scan log:** `MAINTAINER/governance-scan/scan-log.md` — running record of all scanned repos, findings, and dispositions. Prevents re-analyzing the same repos within 6 months.
+
+**Archive:** `MAINTAINER/governance-scan/archive/YYYY-MM-DD/scan-report.md` — full report from each scan run.
 
 ---
 

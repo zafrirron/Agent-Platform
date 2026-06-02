@@ -52,6 +52,7 @@ There are four maintainer tools. Each has a distinct trigger and a distinct outp
 | **Internal platform audit** | `platform-audit.md` | Platform feels stale, before a release, or after many changes — check the platform's own health | Quality report: undertrained experts, weak playbooks, coverage gaps, vague rules, duplicates |
 | **Web ecosystem audit** (Mode 2) | `web-audit.md` | Monthly schedule, or after an OWASP/CWE update | Structured findings report F001-Fxxx from OWASP, CWE, best-practice sources |
 | **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/` | Structured findings report I001-Ixxx from user's production-proven rules |
+| **GitHub governance scan** (Mode 4) | `github-governance-scan.md` | Quarterly — discover new governance/coordination tools on GitHub | Structured findings report R001-Rxxx; findings may become new phases or capabilities |
 
 **The improvement cycle always ends the same way regardless of which tool triggered it:**
 Add rule to PLATFORM section → log in `platform-improvements.md` → bump version → ship via `tools/release.ps1`.
@@ -97,6 +98,7 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Before release | Quality gate — check platform's own health | `Read MAINTAINER/platform-audit.md and execute it.` |
 | Monthly | Web ecosystem check (OWASP, CWE, best practices) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
+| Quarterly | GitHub governance repo scan — discover new capabilities | `Read MAINTAINER/github-governance-scan.md and execute it.` |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 
 ---
@@ -117,7 +119,11 @@ Agent Platform Bootstrap (framework repo)
 │   │   ├── README.md                  ←   instructions for submitters
 │   │   ├── .gitkeep                   ←   keeps folder in git when empty
 │   │   └── archive/                   ←   processed submissions (auto-created on first ingest)
-│   └── platform-improvements.md       ← improvement log (all rules traced to source)
+│   ├── platform-improvements.md       ← improvement log (all rules traced to source)
+│   ├── github-governance-scan.md      ← Mode 4: quarterly GitHub governance repo scan
+│   └── governance-scan/               ← Mode 4 output
+│       ├── scan-log.md                ←   running log of all scanned repos + dispositions
+│       └── archive/                   ←   full scan reports (auto-created on first scan)
 │
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
 │   ├── .agent/agents/             ← 9 expert agents (with PLATFORM/PROJECT sections)
