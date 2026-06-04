@@ -16,6 +16,7 @@
 
 ## Agent behaviour
 
+- **Design before code — always:** before writing any production code, present a design at the correct depth tier (trivial → 1 sentence; small → 2-3 sentences; medium → written design; large → architect review + ADR) and wait for explicit user confirmation; silence does not count as approval
 - Claim files in `registry.yaml` before large edits
 - Update `CURRENT.md` at every session end
 - Commits only when user explicitly asks
@@ -62,6 +63,23 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 - Grep before committing: `password|api_key|token|secret|private_key`
 - Input validated at all trust boundaries — not deep in call stack
 - Parameterised queries only — no string-concatenated SQL
+
+## Code structure & modularity
+
+- **File size:** a file exceeding 400 lines is a signal it is doing too much — split into smaller, focused modules; never exceed 800 lines without a documented reason
+- **Single responsibility:** each file, class, or module has one reason to change; if you cannot describe its purpose in one sentence without "and", split it
+- **DRY (Don't Repeat Yourself):** if the same logic appears in two places, extract it; three or more occurrences of the same pattern require a shared abstraction — no copy-paste blocks
+- **No magic numbers or strings:** named constants for every value that has business meaning (e.g. `MAX_RETRIES = 3`, not `3`); hard-coded values make intent invisible and changes dangerous
+- **Function focus:** each function does one thing and does it well; a function that requires more than ~20 lines to explain its single purpose should be decomposed
+- **Folder structure:** use predictable, standard names (`src/`, `tests/`, `docs/`, `config/`, `scripts/`); organise by feature/module as the project grows — never by file type alone (e.g. prefer `user/` over a flat `controllers/` + `models/` split)
+- **Linting gate:** linting must pass before any code is merged; lint failures are treated as build failures — not style suggestions
+
+## Branching & version control
+
+- **Strategy:** use trunk-based development for teams ≤5; use Gitflow (main + develop + feature/*) for larger teams or release-gated projects — document the chosen strategy in `.agent/WORKFLOWS.md`
+- **Branch naming:** `feature/<ticket-or-description>`, `fix/<description>`, `chore/<description>`; no personal or random names
+- **PR/MR size:** keep changes reviewable — aim for <400 lines changed per PR; large changes must be split into stacked PRs with a documented dependency order
+- **Never force-push to main/master** — use revert commits instead
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

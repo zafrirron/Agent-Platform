@@ -309,6 +309,30 @@ Read .agent/playbooks/audit.md and execute it.
 
 ---
 
+## Code standards enforcement
+
+The platform encodes industry coding standards — SOLID, DRY, file modularity, linting gates, and branching strategy — directly into expert agent rules and CONVENTIONS.md. Every agent enforces them automatically.
+
+| Standard | Where enforced | Key rule |
+|----------|---------------|---------|
+| **File size / modularity** | CONVENTIONS.md | >400 lines = split signal; single responsibility per file |
+| **DRY** | Critic agent + CONVENTIONS.md | 3+ duplicate occurrences require abstraction |
+| **No magic numbers** | CONVENTIONS.md | Named constants for all business-meaning values |
+| **SOLID principles** | Architect agent | SRP, OCP, LSP, ISP, DIP checked at design review |
+| **Linting gate** | DevOps agent + CI | Lint failures block pipeline — not optional |
+| **Branching strategy** | CONVENTIONS.md | Trunk-based (≤5 devs) or Gitflow (larger) — must be documented |
+| **PR size** | CONVENTIONS.md | <400 lines per PR; large changes require stacked PRs |
+
+**Tell your agent to enforce standards:**
+```
+"review this code for SOLID violations"
+"check for DRY violations in this module"
+"our file is getting too large — help me split it"
+"set up our branching strategy"
+```
+
+---
+
 ## Testing enforcement
 
 The platform requires tests for all new code. Agents cannot mark a task done if tests are missing.

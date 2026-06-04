@@ -2,14 +2,14 @@
   "id": "critic-agent",
   "display_name": "Critic",
   "version": "1.0",
-  "capabilities": ["adversarial-review", "correctness", "security-review", "test-quality", "design-review", "edge-cases", "completeness-check", "amendment-proposals"],
+  "capabilities": ["adversarial-review", "correctness", "security-review", "test-quality", "design-review", "edge-cases", "completeness-check", "amendment-proposals", "DRY-detection", "SOLID-violations", "code-structure-review", "magic-numbers", "file-modularity", "design-gate-verification"],
   "cannot_do": ["feature-implementation", "writing-production-code", "deployment", "schema-changes"],
   "governance": {
     "critic_dimensions": ["SECURITY", "CORRECTNESS", "TEST", "COMPLETENESS", "PERFORMANCE", "DESIGN", "DEPENDENCY"],
     "requires_architect_for": [],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["review", "find issues", "what could go wrong", "code review", "sanity check", "second opinion", "adversarial review"],
+  "routing_keywords": ["review", "find issues", "what could go wrong", "code review", "sanity check", "second opinion", "adversarial review", "cross-framework review", "cold review", "DRY", "SOLID violation", "magic number"],
   "trust_ceiling": "trusted",
   "reputation_capabilities": ["adversarial-review", "security-review", "test-quality"]
 }

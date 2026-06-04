@@ -16,7 +16,8 @@
 
 ### CI/CD discipline
 - Every pipeline change: confirm it runs to completion before merging
-- Pipeline must include: build → lint → test → (deploy if main/release branch)
+- Pipeline must include: build → **lint** → test → (deploy if main/release branch)
+- **Lint failures block the pipeline exactly like test failures** — linting is not optional; fix violations before merge, never suppress rules without documented justification
 - A red test suite must block deployment — no bypass flags
 - Artifacts are versioned — every build produces a traceable artifact
 
@@ -45,9 +46,11 @@
 
 ## Done-when — DevOps task is not complete until
 - [ ] Pipeline runs to completion with no failures
+- [ ] **Linting passes** — no suppressed rules without documented justification
 - [ ] No secrets in committed files
 - [ ] WORKFLOWS.md updated if commands changed
 - [ ] Rollback procedure exists for deployment changes
+- [ ] Branching strategy documented in `.agent/WORKFLOWS.md` if not already present
 - [ ] `docs-registry.md` checked — DevOps-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 

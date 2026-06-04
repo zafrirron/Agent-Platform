@@ -480,6 +480,51 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
   </div>
 </div>
 
+<!-- ═══ S5d CODE STANDARDS & DESIGN GATE ═══ -->
+<div class="slide" id="s5d">
+  <div class="mw">
+    <div class="kicker">Engineering Standards</div>
+    <h2>Industry coding standards — <span class="hg">enforced automatically</span></h2>
+    <p class="gs">The platform encodes software engineering best practices into every expert. Agents enforce them without being asked.</p>
+    <div class="gap"></div>
+    <div class="cols c2" style="align-items:start">
+      <div>
+        <h3 style="font-size:14px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Design Gate — before any code</h3>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+            <div style="font-size:12px;font-weight:700;color:var(--txt)">Trivial fix</div>
+            <div style="font-size:11px;color:var(--txt2);margin-top:3px">1-sentence statement → "ok" → proceed</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--acc);border-radius:8px;padding:12px">
+            <div style="font-size:12px;font-weight:700;color:var(--acc)">Small feature / new function</div>
+            <div style="font-size:11px;color:var(--txt2);margin-top:3px">2–3 sentence design → explicit confirmation</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--pur);border-radius:8px;padding:12px">
+            <div style="font-size:12px;font-weight:700;color:var(--pur)">New endpoint / module / schema</div>
+            <div style="font-size:11px;color:var(--txt2);margin-top:3px">Written design with contracts → user approves</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--org);border-radius:8px;padding:12px">
+            <div style="font-size:12px;font-weight:700;color:var(--org)">Cross-cutting / new service</div>
+            <div style="font-size:11px;color:var(--txt2);margin-top:3px">Architect review + ADR + alternatives → full approval</div>
+          </div>
+        </div>
+        <div class="gs center"><span class="hr">★</span> <span style="font-size:12px">Silence ≠ approval. No code until confirmed.</span></div>
+      </div>
+      <div>
+        <h3 style="font-size:14px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Code Standards — always on</h3>
+        <div class="agrid" style="grid-template-columns:1fr 1fr;gap:8px">
+          <div class="acard"><span class="ic">🔷</span><div><h3 class="hp">SOLID</h3><p>All 5 principles at design review — SRP, OCP, LSP, ISP, DIP</p></div></div>
+          <div class="acard"><span class="ic">🔁</span><div><h3 class="hg">DRY</h3><p>3+ duplicate occurrences require abstraction — Critic flags it</p></div></div>
+          <div class="acard"><span class="ic">📏</span><div><h3 class="hl">File size</h3><p>&gt;400 lines = split signal · &gt;800 lines = blocked</p></div></div>
+          <div class="acard"><span class="ic">🔢</span><div><h3 class="ho">No magic numbers</h3><p>Named constants required for all business-meaning values</p></div></div>
+          <div class="acard"><span class="ic">🔍</span><div><h3 class="hr">Lint gate</h3><p>Lint failures block CI same as test failures — not optional</p></div></div>
+          <div class="acard"><span class="ic">🌿</span><div><h3 class="hl">Branch strategy</h3><p>Trunk-based (≤5) or Gitflow · documented in WORKFLOWS.md</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ S6 AGENT ARTIFACTS ═══ -->
 <div class="slide" id="s6">
   <div class="mw">
@@ -994,7 +1039,7 @@ const stitle = document.getElementById('stitle');
 const titles = [
   'Title','The Problem','What It Is','Full Platform Lifecycle Diagram',
   'How It Works — Lifecycle','Expert Agents','Playbooks',
-  '🔍 Full Project Audit','Agent Artifacts','Dual Rules Model','Caveman Mode',
+  '🔍 Full Project Audit','⚙️ Code Standards & Design Gate','Agent Artifacts','Dual Rules Model','Caveman Mode',
   'Enterprise Governance','Platform Evolution','Todo App: Before / After',
   'Impact Metrics','Cross-Framework Critic','Zero Code Impact',
   'Global Install — Works Everywhere','Get Started'

@@ -57,6 +57,14 @@ Create an ASCII architecture diagram showing the major components and data flow.
 - Hard-to-reverse decisions not logged in adr-log.md
 - Monolithic areas that should be decomposed
 
+**SOLID & design standards audit:**
+- **SRP violations:** identify classes/modules/files that have more than one reason to change
+- **OCP violations:** identify areas where adding behaviour requires modifying existing working code
+- **DIP violations:** identify high-level modules depending directly on concrete low-level implementations
+- **File size:** flag any file exceeding 400 lines (warning) or 800 lines (critical)
+- **Design-before-code evidence:** check commit history and ADR log — are architectural decisions recorded before implementation? Flag any significant feature with no ADR or design record
+- **Folder structure:** does the structure follow predictable conventions (`src/`, `tests/`, `docs/`)? Flag clever or inconsistent naming
+
 ---
 
 ### Phase 2 — Documentation audit (Docs agent)
@@ -149,11 +157,22 @@ Using the Critic's full adversarial framework, review:
 - API design: consistent response shapes, naming, versioning
 - Concurrency/race conditions (if applicable)
 
+**Code standards audit (DRY, modularity, magic numbers):**
+- **DRY violations:** find logic or code blocks appearing 2+ times — report location and proposed abstraction
+- **Magic numbers/strings:** flag any numeric or string literal with business meaning that is not a named constant
+- **Function focus:** flag any function exceeding ~25 lines that could be decomposed
+- **File size:** flag files >400 lines (MEDIUM) and >800 lines (HIGH)
+- **Naming clarity:** flag single-letter variables, cryptic abbreviations, or names that require reading the implementation to understand
+- **No magic string patterns:** are status codes, error codes, and configuration values defined as constants?
+
 **Flag gaps:**
 - Silent error swallowing (catch with no action): HIGH
 - Functions with no error handling at all: MEDIUM
 - Dead code files: LOW (but clean up)
 - Business logic in UI components: MEDIUM
+- DRY violations (2+ identical blocks): MEDIUM
+- Magic numbers with business meaning: LOW
+- Files >800 lines: HIGH
 
 ---
 
@@ -218,12 +237,20 @@ Using the DevOps expert's full domain knowledge, review:
 - Rollback strategy: can a bad deploy be reverted quickly?
 - Environment parity: dev/staging/production differences documented?
 
+**Code standards gates audit:**
+- **Linting gate:** does the CI pipeline include a lint step that blocks on failure? Or is linting advisory-only / absent?
+- **Branching strategy:** is a branching strategy documented in `WORKFLOWS.md` or equivalent? Is it followed in practice (check branch names in git history)?
+- **PR size:** review recent PRs — are they reviewable (<400 lines)? Or are large unreviewed commits landing on main directly?
+
 **Flag gaps:**
 - No CI/CD pipeline: HIGH
 - Tests not required to pass before merge: HIGH
 - Secrets in code or config files: CRITICAL
 - No deployment rollback procedure: HIGH
 - Floating dependency versions (no lock file): MEDIUM
+- Linting not enforced in CI (advisory or absent): MEDIUM
+- No documented branching strategy: MEDIUM
+- Large commits directly to main with no review: HIGH
 
 ---
 

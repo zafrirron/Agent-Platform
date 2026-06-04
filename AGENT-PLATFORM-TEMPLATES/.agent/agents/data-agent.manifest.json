@@ -2,7 +2,7 @@
   "id": "data-agent",
   "display_name": "Data",
   "version": "1.0",
-  "capabilities": ["schema-design", "migrations", "data-pipelines", "ORM", "query-optimisation", "ETL", "PII-handling", "data-modelling"],
+  "capabilities": ["schema-design", "migrations", "data-pipelines", "ORM", "query-optimisation", "ETL", "PII-handling", "data-modelling", "idempotency", "zero-downtime-migration", "N+1-detection", "index-optimisation"],
   "cannot_do": ["UI", "API-endpoints", "auth-implementation", "CI/CD", "deployment"],
   "governance": {
     "critic_dimensions": ["CORRECTNESS", "PERFORMANCE", "SECURITY", "COMPLETENESS"],

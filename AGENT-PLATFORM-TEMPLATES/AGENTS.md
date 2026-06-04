@@ -95,6 +95,7 @@ A task is dev-related if it references code, a file, a function, a component, an
 
 ## 3 · Hard rules — every agent, every session
 
+- **DESIGN BEFORE CODE:** before writing any production code, present a design at the correct depth and wait for explicit user confirmation — silence does not count (see Design Gate in `.agent/BEST-PRACTICES.md`)
 - Read `.agent/BEST-PRACTICES.md` before any non-trivial task
 - Read `.agent/CONVENTIONS.md` for coding, testing, git, and security rules
 - Claim files in `.agent/handoff/sync/registry.yaml` before large edits

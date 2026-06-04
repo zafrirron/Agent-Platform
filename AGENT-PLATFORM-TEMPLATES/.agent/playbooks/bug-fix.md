@@ -22,6 +22,12 @@
    Follow `debug-pipeline.md` if cause is not immediately obvious.
    **Fix the root cause, not the symptom.** If fixing the symptom, stop and escalate.
 
+3b. **Design check** — before writing any fix code:
+   - **Simple / obvious fix** (1–5 lines, isolated, no interface changes): state the fix in one sentence — wait for user "ok" before proceeding
+   - **Non-trivial fix** (multiple files, changes shared logic, requires refactor, touches security or auth): present a written design — what changes, which files, why this approach, any risks — wait for explicit user approval
+   - **Architectural fix** (root cause requires restructuring, breaking API change, schema migration): load `architect-agent.md`, write ADR, get full design approval first
+   **BLOCKED:** do not write code until the appropriate design confirmation is received.
+
 4. **Fix**
    Smallest change that makes the bug impossible. Do not refactor surrounding code — note it in `CURRENT.md` for a separate task.
 

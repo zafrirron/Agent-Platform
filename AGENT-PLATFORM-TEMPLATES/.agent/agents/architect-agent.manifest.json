@@ -1,15 +1,15 @@
 {
   "id": "architect-agent",
   "display_name": "Architect",
-  "version": "1.0",
-  "capabilities": ["system-design", "adr", "cross-cutting-decisions", "component-boundaries", "tech-selection", "threat-modelling"],
+  "version": "1.1",
+  "capabilities": ["system-design", "adr", "cross-cutting-decisions", "component-boundaries", "tech-selection", "threat-modelling", "SOLID-principles", "design-gate", "code-standards-review", "DRY-enforcement", "layer-boundaries"],
   "cannot_do": ["implementation", "writing-code", "running-tests", "deployment"],
   "governance": {
     "critic_dimensions": ["DESIGN", "COMPLETENESS", "CORRECTNESS"],
     "requires_architect_for": [],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["system design", "architecture", "should we use", "ADR", "technical spec", "evaluate options", "cross-cutting", "what's the best approach"],
+  "routing_keywords": ["system design", "architecture", "should we use", "ADR", "technical spec", "evaluate options", "cross-cutting", "what's the best approach", "SOLID", "design review", "design before code", "layer boundaries", "abstraction", "interface design", "code standards", "threat model", "threat modelling"],
   "trust_ceiling": "trusted",
-  "reputation_capabilities": ["system-design", "adr"]
+  "reputation_capabilities": ["system-design", "adr", "SOLID-principles", "design-gate"]
 }

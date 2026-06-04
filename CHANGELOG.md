@@ -5,6 +5,91 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.33.0] — 2026-06-04
+
+### Fixed — All 9 agent manifests fully synced with actual capabilities (16 gaps closed)
+
+Agent `.manifest.json` files had drifted behind the actual `.md` files across multiple releases. Full audit and resync:
+
+| Agent | Gaps closed |
+|-------|------------|
+| architect | Added: `SOLID-principles`, `design-gate`, `code-standards-review`, `DRY-enforcement`, `layer-boundaries`; routing: `threat model`, `design before code`, `SOLID` |
+| backend | Added: `rate-limiting`, `idempotency-keys`, `SSRF-prevention`, `mass-assignment-protection`, `OWASP-API-compliance`; routing: `rate limit`, `SSRF`, `REST design` |
+| frontend | Added: `XSS-prevention`, `CSP-configuration`, `CSRF-frontend`, `secure-storage`; routing: `accessibility`, `XSS`, `CSP`, `localStorage` |
+| devops | Added: `SBOM`, `supply-chain-security`, `artifact-signing`, `OIDC-credentials`, `api-version-inventory`, `linting-enforcement`, `branching-strategy` |
+| test | Added: `contract-testing`, `consumer-driven-contracts`, `mutation-testing`, `regression-tests`, `coverage-report-generation`; routing: `contract test`, `mutation testing` |
+| docs | Added: `docs-registry-audit`, `new-doc-registration`, `staleness-detection`; routing: `docs registry`, `registry audit` |
+| security | Added: `prompt-injection-detection`, `CSRF-prevention`, `SSRF-prevention`, `security-audit-logging`, `LLM-security`, `property-level-auth`; routing: `prompt injection`, `LLM security`, `agentic` |
+| data | Added: `idempotency`, `zero-downtime-migration`, `N+1-detection`, `index-optimisation` |
+| critic | Added: `DRY-detection`, `SOLID-violations`, `code-structure-review`, `magic-numbers`, `design-gate-verification`, `cross-framework-review`; routing: `cross-framework`, `DRY`, `magic number` |
+
+**Prevention:** `MAINTAINER/platform-maintainer-agent.md` now has a "Manifest sync" hard rule — manifests must be updated on every agent capability change.
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.32.0] — 2026-06-04
+
+### Added — Design before code: mandatory Design Gate across all agents, playbooks, and hard rules
+
+**The gap:** agents defaulted to coding immediately. Design was only triggered for "cross-cutting" changes — everything else went straight to implementation.
+
+**The fix:** a four-tier Design Gate is now a platform-level hard rule enforced everywhere:
+
+| Tier | Examples | Required |
+|------|---------|---------|
+| Trivial | Bug fix, 1-line patch | 1-sentence statement + "ok" |
+| Small | New function, small feature | 2–3 sentence design + confirmation |
+| Medium | New endpoint, module, schema change | Written design + explicit approval |
+| Large | Cross-cutting, new service, breaking change | Architect review + ADR + approval |
+
+**Files changed:**
+- `BEST-PRACTICES.md` — Design Gate is now Golden Rule #1; full tier table added; task anatomy updated to include Design as Step 0
+- `CONVENTIONS.md` — "Design before code — always" as first agent behaviour rule
+- `AGENTS.md` — "DESIGN BEFORE CODE" as first hard rule in Section 3
+- `add-feature.md` — Step 2 (Design) expanded to mandatory tier table with BLOCKED gates per tier
+- `bug-fix.md` — new Step 3b (Design check) for non-trivial and architectural fixes
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
+## [2.31.0] — 2026-06-04
+
+### Added — Code standards enforcement: SOLID, DRY, file modularity, linting gate, branching strategy
+
+**`CONVENTIONS.md` — new PLATFORM sections:**
+- **Code structure & modularity:** file size limit (400 lines warning / 800 lines hard), single responsibility rule, DRY with 3-occurrence abstraction threshold, no magic numbers, function focus, standard folder structure (`src/`, `tests/`, `docs/`, `config/`, `scripts/`), linting as a build gate
+- **Branching & version control:** trunk-based (≤5 devs) vs Gitflow (larger teams), branch naming convention (`feature/`, `fix/`, `chore/`), PR size limit (<400 lines), no force-push to main
+
+**`architect-agent.md` — SOLID principles section:**
+- Full SOLID coverage: SRP, OCP (extend don't modify), LSP (substitution guarantee), ISP (small focused interfaces), DIP (depend on abstractions not implementations)
+- Design-review questions for each principle to surface issues before coding begins
+
+**`devops-agent.md` — linting as a real gate:**
+- Pipeline rule: lint failures block deployment same as test failures — not optional
+- Done-when: linting passes (no unsuppressed violations), branching strategy documented in WORKFLOWS.md
+
+**`PLATFORM-HELP.md`** — new "Code standards enforcement" section with full table
+**`README.md`** — new "Code standards enforcement" row in "What you get"
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.30.0] — 2026-06-02
 
 ### Added — Mode 4: GitHub Governance Repo Scan

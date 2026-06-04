@@ -397,28 +397,60 @@ level** — not individual rules, but whole features or architectural patterns t
 
 ---
 
-## Extension anatomy — all platform changes follow these 9 steps
+## Platform change checklist — run EVERY item after ANY change
 
-```
-1. MAINTAINER/platform-improvements.md — log the failure/source, the rule, the version
-2. AGENT-PLATFORM-TEMPLATES/ — edit or create the template file(s)
-   · Project files go in AGENT-PLATFORM-TEMPLATES/ (deployed to repos)
-   · Global stub files go in AGENT-PLATFORM-TEMPLATES/global/ (deployed to ~/ via --mode=global)
-3. Two-section markers — only edit PLATFORM:START/END sections
-4. If adding a new expert agent:
-   a. Create <name>-agent.manifest.json (id, capabilities, cannot_do, governance, routing_keywords, trust_ceiling)
-   b. Add entry to .agent/context/reputation.json (overall: 500, per-capability: 500, counters: 0)
-5. AGENT-PLATFORM-MANIFEST.json — add new files; update bootstrap_version
-   · Project files: no scope field (default)
-   · Global files: add "scope": "global"
-6. AGENT-PLATFORM-BOOTSTRAP.md footer — bump version
-7. AGENTS.md template PLATFORM section (§2) — add routing row if new routing is needed
-   ⚠️ Edit only inside <!-- PLATFORM:START --> … <!-- PLATFORM:END -->
-8. AGENT-PLATFORM-FRAMEWORK-README.md — update if capability is new
-9. CHANGELOG.md — document what changed, why, how to upgrade
-```
+**This checklist is not optional. Run every item on every change. Check it off before marking the task done.**
 
-The Mode 1 commands above execute all 9 steps automatically.
+### A. Core change
+- [ ] **`MAINTAINER/platform-improvements.md`** — log: what changed, why, source (failure/finding), version
+- [ ] **Template file** — edit `AGENT-PLATFORM-TEMPLATES/` (PLATFORM:START/END only, never PROJECT sections)
+- [ ] **Two-section integrity** — confirm no PROJECT content was modified
+
+### B. Agent manifest sync (EVERY agent rule addition)
+- [ ] **`<name>-agent.manifest.json`** — add new capabilities, routing_keywords; bump version field
+- [ ] **`reputation.json`** — add new capability entry if it's reputation-trackable (score: 500)
+- [ ] **`AGENTS.md` routing table** — add routing row if new trigger phrases needed
+
+### C. File registration
+- [ ] **`AGENT-PLATFORM-MANIFEST.json`** — register any new files created; bump `bootstrap_version`
+
+### D. User-facing documentation (update ALL that apply)
+- [ ] **`README.md`** — "What you get" table if a new user-visible capability was added
+- [ ] **`AGENT-PLATFORM-FRAMEWORK-README.md`** — capability table if user-facing
+- [ ] **`.agent/PLATFORM-HELP.md`** — add or update relevant section
+- [ ] **`.agent/QUICK-REF.md`** — add to playbooks/agents section if user-triggerable
+- [ ] **`MAINTAINER/GUIDE.md`** — update if maintainer workflow changed
+
+### E. Audit coverage
+- [ ] **`.agent/playbooks/audit.md`** — if the new capability should be audited, add it to the relevant phase checklist
+
+### F. Tests
+- [ ] **`tests/apply-integration.test.mjs`** — add test if new installer behavior was introduced
+- [ ] **Run `npm test`** — 172/172 (or current count) must pass before commit
+
+### G. Presentation
+- [ ] **`presentation/agent-platform-beta.html`** — update or add slide if this is a user-facing highlight worth presenting
+
+### H. Release
+- [ ] **`CHANGELOG.md`** — document what changed, why, upgrade path
+- [ ] **Commit** — one logical commit per change
+- [ ] **Push** — push to origin
+- [ ] **Release** — say "Release" when ready; agent calculates version and runs `release.ps1`
+
+---
+
+**Quick reference — what to update for common change types:**
+
+| Change type | Must update |
+|------------|-------------|
+| New rule in expert agent | B (manifest) + D (docs) + E (audit) + H (changelog) |
+| New playbook step | D (PLATFORM-HELP, QUICK-REF) + E (audit if applicable) + H |
+| New expert agent | A + B (manifest + reputation + AGENTS.md) + C (manifest.json) + D (all) + E + F + G + H |
+| Security rule (OWASP/CWE) | A + B + D (PLATFORM-HELP) + E (Phase 3 in audit) + H |
+| New install behaviour | A + C + F (tests) + D (README) + H |
+| New playbook | A + C + B (AGENTS.md routing) + D (all) + E + G + H |
+
+The Mode 1 commands above execute the checklist automatically. If doing a manual change, work through A→H in order.
 
 ---
 
@@ -455,6 +487,17 @@ After promotion, the next `--mode=upgrade` will put the rule in all consumer rep
 
 ---
 
+## Manifest sync — mandatory after every agent capability change
+
+**After adding or modifying any expert agent .md rules, you MUST update its `.manifest.json`:**
+
+1. Add new capabilities to `capabilities` array (kebab-case)
+2. Add new triggers to `routing_keywords`
+3. Bump `version` (e.g. "1.0" → "1.1")
+4. Update `reputation_capabilities` if capability is reputation-trackable
+
+**Never ship an agent rule addition without syncing the manifest.** The manifest drives routing and reputation — a stale manifest means the platform cannot correctly use the agent's actual capabilities.
+
 ## What you do NOT do
 - Do not edit PROJECT sections — only PLATFORM sections
 - Do not add rules that cannot be verified (vague language)
@@ -462,3 +505,4 @@ After promotion, the next `--mode=upgrade` will put the rule in all consumer rep
 - Do not add a rule without logging its source (failure or web finding) in `platform-improvements.md`
 - Do not touch consumer repo content — your scope is this framework repo only
 - Do not implement Mode 2 findings without maintainer selection confirmation
+- **Do not update an agent .md without updating its .manifest.json** — manifests must stay in sync

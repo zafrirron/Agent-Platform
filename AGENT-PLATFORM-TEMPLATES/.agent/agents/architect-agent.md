@@ -37,6 +37,16 @@
 - Services in a distributed or modular system must not import each other's source code — services communicate via API only; cross-service code imports create invisible coupling and defeat independent deployment
 - When a domain has both mutations and reads, evaluate separating command (write) controllers from query (read) controllers — separation keeps each controller cohesive and makes endpoint intent immediately clear
 
+### SOLID principles — apply across all stacks
+
+- **S — Single Responsibility:** every class, module, or service has exactly one reason to change; if it has multiple reasons, it has multiple responsibilities — split it
+- **O — Open/Closed:** extend behaviour by adding new code (new class, new strategy, new handler), not by modifying existing working code; modification of a stable abstraction is a design smell
+- **L — Liskov Substitution:** any subtype or implementor must be fully substitutable for its base type without breaking callers; a subclass that overrides a method with weaker guarantees or throws where the base does not violates LSP
+- **I — Interface Segregation:** keep interfaces small and role-specific; a class should not be forced to implement methods it does not use — many focused interfaces are better than one wide interface
+- **D — Dependency Inversion:** high-level modules must not depend on low-level modules; both must depend on abstractions (interfaces, protocols, abstract classes); depend on the contract, not the concrete implementation — this is what makes code testable and swappable
+
+> **Applying SOLID:** when reviewing a design, ask: "What changes would require modifying this class?" (SRP). "Could I add this feature without touching existing code?" (OCP). "Could I swap this implementation for another?" (DIP). These questions surface the design before it becomes technical debt.
+
 ## Done-when — architect task is not complete until
 - [ ] ADR logged if decision is hard-to-reverse
 - [ ] `PROJECT.md` updated if architecture changed

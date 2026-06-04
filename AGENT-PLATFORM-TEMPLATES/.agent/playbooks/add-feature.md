@@ -6,9 +6,18 @@
 
 ## Steps
 1. **Claim** — read `registry.yaml`; claim scope files
-2. **Design** — **REQUIRED before any code.** Assess scope:
-   - Touches more than one file domain, adds middleware, changes auth, or modifies data shape → **BLOCKED: load `architect-agent.md` first; write ADR before proceeding**
-   - Isolated single-domain change → document the approach in one paragraph before coding
+
+2. **Design** — **MANDATORY before any code.** Apply the Design Gate from `.agent/BEST-PRACTICES.md`:
+
+   | Feature scope | Required design step | Blocked until |
+   |--------------|---------------------|---------------|
+   | Trivial patch / 1-line change | State what changes in 1 sentence | User says "ok" or "proceed" |
+   | New function, small addition | 2–3 sentence design summary: what, where, why this approach | User gives explicit confirmation |
+   | New endpoint, module, schema change, auth logic | Written design: components, data flow, contracts, edge cases | User explicitly approves |
+   | Cross-cutting, new service, breaking change | Load `architect-agent.md`; write ADR; present 2–3 alternatives; create diagram | User approves full design |
+
+   **BLOCKED:** do not write any production code until the user confirms the design at the appropriate tier. Silence is not confirmation.
+
 3. **Spec** — write acceptance criteria or failing test skeleton **before** implementation — no exceptions
 4. **Implement** — domain expert(s); smallest correct change
 4b. **Output validation** ← postcondition gate

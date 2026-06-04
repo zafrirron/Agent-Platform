@@ -2,14 +2,14 @@
   "id": "docs-agent",
   "display_name": "Docs",
   "version": "1.0",
-  "capabilities": ["README", "changelog", "API-docs", "OpenAPI", "JSDoc", "migration-guides", "architecture-docs", "docs-registry"],
+  "capabilities": ["README", "changelog", "API-docs", "OpenAPI", "JSDoc", "migration-guides", "architecture-docs", "docs-registry", "docs-registry-audit", "new-doc-registration", "staleness-detection"],
   "cannot_do": ["code-changes", "feature-implementation", "test-writing", "deployment"],
   "governance": {
     "critic_dimensions": ["COMPLETENESS", "CORRECTNESS"],
     "requires_architect_for": [],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["README", "changelog", "document", "JSDoc", "swagger", "OpenAPI", "API docs", "migration notes"],
+  "routing_keywords": ["README", "changelog", "document", "JSDoc", "swagger", "OpenAPI", "API docs", "migration notes", "docs registry", "registry audit", "documentation gap", "unregistered doc"],
   "trust_ceiling": "standard",
   "reputation_capabilities": ["documentation", "api-docs"]
 }
