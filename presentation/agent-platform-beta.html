@@ -730,52 +730,62 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
   </div>
 </div>
 
-<!-- S10 PLATFORM EVOLUTION — deep maintainer detail, moved to docs -->
-<div class="slide" id="s10" style="display:none">
+<!-- ═══ S10 PLATFORM EVOLUTION ═══ -->
+<div class="slide" id="s10">
   <div class="mw">
-    <div class="kicker">Continuous Evolution</div>
-    <h2>Four sources make the platform <span class="hp">continuously smarter</span></h2>
-    <p class="gs">Platform maintainers use the same agentic model to improve the platform. No manual steps.</p>
+    <div class="kicker">Living Platform</div>
+    <h2>Every upgrade makes <span class="hg">every agent smarter</span> — automatically</h2>
+    <p class="gs">The platform never stops improving. Four living sources feed new rules, security findings, and best practices into every release. You just run one command.</p>
     <div class="gap"></div>
-    <div class="cols c4" style="align-items:start">
-      <div class="card ca" style="padding:14px 16px">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:8px">🔴 Mode 1 — Failures</div>
-        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">A rule observed to prevent a real production failure.</p>
-        <div style="font-size:11px;color:var(--txt2);font-style:italic">"Backend agent shipped endpoint without validating input"</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ Rule added → 9-step workflow → ships to all repos</div>
+    <div class="cols c2" style="align-items:start;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card ca" style="padding:16px 18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">🔴</span>
+            <h3 class="hl" style="font-size:14px">Real-world failures</h3>
+          </div>
+          <p style="font-size:12px">When an agent makes a mistake in a real project, a rule is written to prevent it from ever happening again — to any agent, in any repo.</p>
+        </div>
+        <div class="card cg" style="padding:16px 18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">🌐</span>
+            <h3 class="hg" style="font-size:14px">Monthly OWASP + CWE audits</h3>
+          </div>
+          <p style="font-size:12px">The platform runs its own security audit against OWASP Top 10, CWE Top 25, and LLM security standards. Gaps become rules. Your agents stay current.</p>
+        </div>
+        <div class="card cp" style="padding:16px 18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">👥</span>
+            <h3 class="hp" style="font-size:14px">Community rules</h3>
+          </div>
+          <p style="font-size:12px">Production-proven rules from real codebases — Java, Python, Go, whatever — are reviewed and absorbed. The platform learns from its users.</p>
+        </div>
+        <div class="card co" style="padding:16px 18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">🔭</span>
+            <h3 class="ho" style="font-size:14px">Ecosystem trend scanning</h3>
+          </div>
+          <p style="font-size:12px">Quarterly scan of the AI engineering landscape. New patterns, emerging risks, industry standards — surfaced and encoded before they become your problem.</p>
+        </div>
       </div>
-      <div class="card cg" style="padding:14px 16px">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--grn);margin-bottom:8px">🌐 Mode 2 — Ecosystem</div>
-        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Monthly OWASP + CWE + best-practice audits. Quarterly full scans.</p>
-        <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/web-audit.md and execute it.</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ F001-Fxxx findings → maintainer selects → agent implements</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.4);border-radius:12px;padding:20px;text-align:center">
+          <div class="statbig hg">1</div>
+          <div class="statlbl" style="margin-top:6px">Command to get every improvement</div>
+          <div class="mono" style="margin-top:14px;font-size:13px">npx github:zafrirron/Agent-Platform<br>--mode=upgrade</div>
+          <p style="font-size:12px;margin-top:12px">Your custom rules survive. Platform rules improve. Zero conflict.</p>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px">
+          <div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:12px">What you get on each upgrade:</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--txt3)">
+            <div style="display:flex;gap:8px"><span class="hg">✓</span> Latest OWASP / CWE rules in your Security expert</div>
+            <div style="display:flex;gap:8px"><span class="hg">✓</span> Any new playbook steps or quality gates</div>
+            <div style="display:flex;gap:8px"><span class="hg">✓</span> Community-contributed best practices</div>
+            <div style="display:flex;gap:8px"><span class="hg">✓</span> Your PROJECT sections untouched — always</div>
+            <div style="display:flex;gap:8px"><span class="hg">✓</span> No re-setup. No re-explaining. Just upgrade.</div>
+          </div>
+        </div>
       </div>
-      <div class="card cp" style="padding:14px 16px">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--pur);margin-bottom:8px">👥 Mode 3 — Users</div>
-        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Users drop their own agent files into <code style="font-size:10px">MAINTAINER/ingest/</code>. Production-proven rules absorbed into the platform.</p>
-        <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/platform-ingest.md and execute it.</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ I001-Ixxx findings → maintainer selects → ships</div>
-      </div>
-      <div class="card" style="padding:14px 16px;border-color:var(--org)">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--org);margin-bottom:8px">🔭 Mode 4 — GitHub Scan</div>
-        <p style="font-size:12px;color:var(--txt3);margin-bottom:10px">Quarterly scan of GitHub governance &amp; coordination repos. Surfaces new platform-level capabilities.</p>
-        <div style="font-size:11px;color:var(--txt2);font-style:italic">Read MAINTAINER/github-governance-scan.md and execute it.</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--txt3)">→ R001-Rxxx findings → Add / Roadmap / Skip → new phases or features</div>
-      </div>
-    </div>
-    <div class="gap"></div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 20px">
-      <table class="mtbl" style="margin:0">
-        <thead><tr><th>What you want</th><th>Say to your agent</th></tr></thead>
-        <tbody>
-          <tr><td>Improve an expert rule (Mode 1)</td><td>"Add rule to [expert]: [rule]"</td></tr>
-          <tr><td>Monthly security audit (Mode 2)</td><td>Read MAINTAINER/web-audit.md and execute it.</td></tr>
-          <tr><td>Ingest user agentic files (Mode 3)</td><td>Read MAINTAINER/platform-ingest.md and execute it.</td></tr>
-          <tr><td>Quarterly GitHub governance scan (Mode 4)</td><td>Read MAINTAINER/github-governance-scan.md and execute it.</td></tr>
-          <tr><td>Add new expert / playbook / framework</td><td>"Add new expert for [domain]"</td></tr>
-          <tr><td>Release a version</td><td>"Release"</td></tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </div>
@@ -1049,7 +1059,7 @@ const titles = [
   'Title','The Problem','What It Is',
   'How It Works','Expert Agents','Playbooks',
   '🔍 Full Project Audit','⚙️ Quality Gates · SOLID','Agent Artifacts','Dual Rules Model',
-  'Enterprise Governance','Todo App: Before / After',
+  'Enterprise Governance','🔄 Living Platform — Always Improving','Todo App: Before / After',
   'Impact Metrics','Cross-Framework Critic','Zero Code Impact',
   'Global Install','Get Started'
 ];
