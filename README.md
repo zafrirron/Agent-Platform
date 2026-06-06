@@ -317,9 +317,7 @@ Every expert file has two sections:
 
 You don't track these sources yourself — the platform does it for you, and every upgrade makes your agents smarter.
 
-**Contributing your own rules:** If you have agent definitions, playbooks, or conventions that work well in your projects, drop them into `MAINTAINER/ingest/` and run `Read MAINTAINER/platform-ingest.md and execute it.` The ingest agent extracts universally applicable rules and proposes them for inclusion. Your production-proven intelligence improves the platform for everyone.
-
-**Quarterly GitHub governance scan (Mode 4):** The platform runs a quarterly scan of GitHub for new agent governance, coordination, and orchestration tools. Discoveries become new platform capabilities — session lifecycle improvements, routing innovations, trust mechanisms. Run: `Read MAINTAINER/github-governance-scan.md and execute it.`
+> **Platform fork maintainers:** the full improvement pipeline (Mode 1–4 commands, ingest workflow, governance scan) is documented in [`MAINTAINER/GUIDE.md`](MAINTAINER/GUIDE.md).
 
 ---
 
