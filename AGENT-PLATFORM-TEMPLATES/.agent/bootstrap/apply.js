@@ -774,13 +774,16 @@ if (MODE === 'uninstall') {
   // Restore original files from staging (safe — .agent/ already deleted above)
   let restored = 0;
   if (staged) {
-    console.log('  Restoring your original AI configuration files...');
+    console.log('');
+    console.log('  ──────────────────────────────────────────────────────────────');
+    console.log('  Restoring your original AI configuration files from backup...');
+    console.log('  ──────────────────────────────────────────────────────────────');
     if (staged.manifest) {
       for (const [backupName, originalPath] of Object.entries(staged.manifest)) {
         const dest = path.join(INSTALL_ROOT, originalPath);
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.copyFileSync(path.join(staged.stagingDir, backupName), dest);
-        console.log('  ✔ Restored: ' + originalPath);
+        console.log('  ✅ Restored: ' + originalPath + '  ← your original file is back');
         restored++;
       }
     } else {
@@ -789,11 +792,12 @@ if (MODE === 'uninstall') {
         const dest = path.join(INSTALL_ROOT, backupFile);
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.copyFileSync(path.join(staged.stagingDir, backupFile), dest);
-        console.log('  ✔ Restored: ' + backupFile);
+        console.log('  ✅ Restored: ' + backupFile + '  ← your original file is back');
         restored++;
       });
     }
     fs.rmSync(staged.stagingDir, { recursive: true }); // clean up temp
+    console.log('');
   }
 
   console.log('');

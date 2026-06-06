@@ -5,6 +5,46 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.34.0] — 2026-06-06
+
+### Added — Honest limitation notice · Glossary · Responsive presentation · Uninstall restore visibility · Antigravity rules scan
+
+**Honest limitation notice (3 places):**
+- `apply.js` install output: new "⚠ Rules are guidance — not deterministic enforcement" section with call-to-action for `--mode=install-guards`
+- `.agent/PLATFORM-HELP.md`: new "⚠ Important" section at top explaining probabilistic vs deterministic enforcement
+- `presentation`: amber callout on "What It Is" slide
+
+**Uninstall restore visibility:**
+- Restore messages now have their own clearly separated section with `──────` dividers and `✅ Restored: X ← your original file is back` formatting
+- Previously buried between `✔ Removed:` lines; users were missing that their files were restored
+
+**PLATFORM-HELP.md discoverability:**
+- Status block Reference line now shows `say "platform help" for full guide` — users see it every session instead of only after opening QUICK-REF.md
+
+**Glossary with links (`README.md`):**
+- New "Glossary — standards and abbreviations" section: 14 terms (OWASP, CWE, CVE, SOLID, DRY, ADR, OpenAPI/Swagger, OIDC, SBOM, CSRF, SSRF, N+1, CQRS) all with clickable links to authoritative sources
+
+**Responsive presentation:**
+- 3-tier CSS breakpoints (960px tablet, 640px mobile, 400px small mobile)
+- Grids, fonts, padding, arrows all adapt correctly to different screen sizes
+
+**New: Standards Glossary slide (presentation):**
+- Slide 17: 10 terms explained and linked — OWASP, LLM Top 10, CWE, SOLID, ADR, OpenAPI, OIDC, SBOM, CVE/CSRF/SSRF, DRY/N+1/CQRS
+
+**Presentation trimmed (19 → 17 slides):**
+- Removed: Full Platform Lifecycle Diagram (overlapped How It Works), Caveman Mode (mentioned in Quality Gates), Platform Evolution (rewritten as "Living Platform" user value story)
+- SOLID: now shown as badge in Quality Gates slide — named but not taught
+
+**Antigravity `.agents/rules/` now scanned** for pre-existing user rules (was missing; only `.agents/prompts/` was scanned)
+
+### Upgrade path
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+
+---
+
 ## [2.33.0] — 2026-06-04
 
 ### Fixed — All 9 agent manifests fully synced with actual capabilities (16 gaps closed)
