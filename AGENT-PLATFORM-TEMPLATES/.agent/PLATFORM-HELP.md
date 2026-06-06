@@ -11,6 +11,31 @@
 
 ---
 
+## ⚠ Important: rules are guidance, not deterministic enforcement
+
+Platform rules live in markdown files. Your AI agent reads them and follows them — **most of the time**. AI agents are probabilistic, not deterministic: a rule can be skipped depending on model, context window, session length, or how the agent interprets competing instructions.
+
+**What this means in practice:**
+- Expert rules and playbook steps are strong guidance — most agents follow them consistently
+- No markdown instruction can guarantee 100% compliance on every run
+- Some steps (especially complex multi-step sequences) may occasionally be skipped
+
+**How to get deterministic enforcement for critical gates:**
+
+```bash
+npx {{PLATFORM_NPX}} --mode=install-guards
+```
+
+This installs **real pre-commit hooks and GitHub Actions CI** that block commits and PRs regardless of agent behaviour — no agent can skip them:
+- Test suite must pass
+- No secrets in committed files
+- Coverage threshold enforced
+- Unregistered doc files flagged
+
+For everything else (expert rules, playbook discipline, done-when checklists), the platform provides consistent structure that makes agents significantly more reliable — but the framework hosting the agent is ultimately responsible for execution.
+
+---
+
 ## Platform lifecycle — the complete flow
 
 ```

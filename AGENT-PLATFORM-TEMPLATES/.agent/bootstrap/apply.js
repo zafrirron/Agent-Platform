@@ -223,6 +223,9 @@ const PLATFORM_FOLDER_SCANS = [
   { folder: '.agents/prompts', ext: '.md',
     platformFiles: new Set(['session-start.md','session-end.md']),
     label: 'Antigravity prompt' },
+  { folder: '.agents/rules', ext: '.md',
+    platformFiles: new Set(['00-multi-framework-sync.md']),
+    label: 'Antigravity rule' },
 ];
 
 function scanPreExistingArtifacts(root) {
@@ -1144,6 +1147,18 @@ console.log('  └────────────────────�
 console.log('');
 console.log('  Works in: Claude Code · Cursor · Antigravity · Codex');
 console.log('  ⚠  This is an agent chat message — do not run it in the terminal.');
+console.log('');
+console.log(SEP);
+console.log('  ℹ  Rules are guidance — not deterministic enforcement');
+console.log(SEP);
+console.log('  Platform rules are read by your AI agent and followed most of the');
+console.log('  time — but AI agents are probabilistic, not deterministic. A rule');
+console.log('  may occasionally be skipped depending on model, context, or session.');
+console.log('');
+console.log('  For gates that must ALWAYS fire (tests, secrets, coverage), install');
+console.log('  real pre-commit hooks and CI that block regardless of agent behaviour:');
+console.log('');
+console.log(`    npx ${vars.PLATFORM_NPX} --mode=install-guards`);
 console.log('');
 console.log(SEP);
 console.log('  To REMOVE all platform files, run in terminal:');

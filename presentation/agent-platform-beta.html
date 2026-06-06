@@ -140,9 +140,44 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
 #s6{background:radial-gradient(ellipse at 70% 30%,rgba(63,185,80,.06) 0%,transparent 50%),var(--bg);}
 #s13{background:radial-gradient(ellipse at 50% 50%,rgba(210,168,255,.07) 0%,transparent 60%),var(--bg);}
 
-/* Responsive */
-@media(max-width:900px){.c3,.c4,.agrid{grid-template-columns:1fr 1fr;}.ba{grid-template-columns:1fr;}.hiw{flex-wrap:wrap;}}
-@media(max-width:600px){.c2,.c3,.c4{grid-template-columns:1fr;}.slide{padding:28px 20px;}}
+/* Responsive — tablet */
+@media(max-width:960px){
+  .mw{max-width:100%;padding:0 8px;}
+  .c3,.c4,.agrid{grid-template-columns:1fr 1fr;}
+  .ba{grid-template-columns:1fr;}
+  .hiw{flex-wrap:wrap;gap:4px;}
+  .hiwbox{min-width:120px;}
+  h1{font-size:clamp(22px,3vw,38px);}
+  h2{font-size:clamp(18px,2.5vw,30px);}
+}
+/* Responsive — mobile */
+@media(max-width:640px){
+  .c2,.c3,.c4{grid-template-columns:1fr;}
+  .agrid{grid-template-columns:1fr 1fr;}
+  .slide{padding:20px 16px;}
+  .cols{gap:12px;}
+  .card{padding:14px;}
+  .acard{padding:10px;}
+  h1{font-size:clamp(20px,5vw,32px);}
+  h2{font-size:clamp(16px,4vw,24px);}
+  h3{font-size:clamp(13px,3vw,17px);}
+  .hiw{flex-direction:column;}
+  .hiwarr{transform:rotate(90deg);padding:4px 0;}
+  .statbig{font-size:clamp(28px,8vw,52px);}
+  .arrows{display:none;}
+  .mono{font-size:clamp(11px,3vw,14px);padding:8px 12px;}
+  .code{font-size:11px;}
+  .bargrp{gap:6px;}
+  .barlbl{width:80px;font-size:11px;}
+  .twobox-top,.twobox-bot{padding:12px 14px;}
+}
+/* Small mobile */
+@media(max-width:400px){
+  .agrid{grid-template-columns:1fr;}
+  .slide{padding:16px 12px;}
+  .nav{gap:5px;}
+  .dot{width:6px;height:6px;}
+}
 </style>
 </head>
 <body>
@@ -196,6 +231,9 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
     </div>
     <div class="gap center">
       <p><span class="hg">✓</span> Zero code impact &nbsp;·&nbsp; <span class="hg">✓</span> All platform files gitignored &nbsp;·&nbsp; <span class="hg">✓</span> Uninstall leaves nothing behind</p>
+    </div>
+    <div style="margin-top:14px;background:rgba(255,166,87,.07);border:1px solid rgba(255,166,87,.3);border-radius:8px;padding:10px 16px;font-size:11px;color:var(--txt3);text-align:left;max-width:820px;margin-left:auto;margin-right:auto">
+      <span style="color:var(--org);font-weight:700">ℹ Honest:</span> Rules are guidance — AI agents follow them most of the time but are probabilistic, not deterministic. For gates that must <em>always</em> fire, use <code style="color:var(--grn)">--mode=install-guards</code> (real pre-commit hooks + CI).
     </div>
   </div>
 </div>
@@ -1007,6 +1045,82 @@ p{font-size:clamp(13px,1.2vw,17px);line-height:1.7;color:var(--txt3);}
   </div>
 </div>
 
+<!-- ═══ S14c STANDARDS GLOSSARY ═══ -->
+<div class="slide" id="s14c">
+  <div class="mw">
+    <div class="kicker">Standards &amp; Terms</div>
+    <h2>Every standard referenced — <span class="hl">explained and linked</span></h2>
+    <p class="gs">The platform encodes real industry standards. Here's what each one means and where to learn more.</p>
+    <div class="gap"></div>
+    <div class="cols c2" style="align-items:start;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hr" style="font-size:13px">OWASP Top 10 + API Security</h3><p style="font-size:11px">Most critical web &amp; API security risks. Updated regularly. Platform Security expert covers all 20.</p></div>
+            <a href="https://owasp.org" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">owasp.org →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="ho" style="font-size:13px">OWASP LLM Top 10</h3><p style="font-size:11px">Security risks for AI/LLM applications — prompt injection, excessive agency, output handling.</p></div>
+            <a href="https://genai.owasp.org" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">genai.owasp.org →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hl" style="font-size:13px">CWE Top 25</h3><p style="font-size:11px">Common Weakness Enumeration — catalog of most dangerous software security weaknesses.</p></div>
+            <a href="https://cwe.mitre.org/top25" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">cwe.mitre.org →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hp" style="font-size:13px">SOLID principles</h3><p style="font-size:11px">5 object-oriented design principles: Single responsibility · Open/closed · Liskov · Interface segregation · Dependency inversion</p></div>
+            <a href="https://en.wikipedia.org/wiki/SOLID" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">Wikipedia →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hg" style="font-size:13px">ADR — Architecture Decision Record</h3><p style="font-size:11px">Short document capturing a hard-to-reverse architectural decision and why it was made.</p></div>
+            <a href="https://adr.github.io" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">adr.github.io →</a>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hl" style="font-size:13px">OpenAPI / Swagger</h3><p style="font-size:11px">Industry standard for describing REST APIs. Docs expert generates publish-ready OpenAPI specs automatically.</p></div>
+            <a href="https://swagger.io" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">swagger.io →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="ho" style="font-size:13px">OIDC — OpenID Connect</h3><p style="font-size:11px">Short-lived token auth for CI runners — more secure than long-lived static secrets.</p></div>
+            <a href="https://openid.net/connect" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">openid.net →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hg" style="font-size:13px">SBOM — Software Bill of Materials</h3><p style="font-size:11px">Complete list of all software components in a build. Required for supply chain security compliance.</p></div>
+            <a href="https://www.cisa.gov/sbom" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">cisa.gov →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hr" style="font-size:13px">CVE / CSRF / SSRF</h3><p style="font-size:11px">CVE = known vulnerability in a specific library · CSRF = cross-site request forgery attack · SSRF = server fetches attacker URLs</p></div>
+            <a href="https://cve.mitre.org" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">cve.mitre.org →</a>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div><h3 class="hl" style="font-size:13px">DRY · N+1 · CQRS</h3><p style="font-size:11px">DRY = Don't Repeat Yourself · N+1 = database query anti-pattern · CQRS = separate read/write controllers</p></div>
+            <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" target="_blank" style="color:var(--acc);font-size:11px;flex-shrink:0;margin-left:8px">Wikipedia →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ S15 GET STARTED ═══ -->
 <div class="slide" id="s15">
   <div style="max-width:820px;width:100%;text-align:center">
@@ -1061,7 +1175,7 @@ const titles = [
   '🔍 Full Project Audit','⚙️ Quality Gates · SOLID','Agent Artifacts','Dual Rules Model',
   'Enterprise Governance','🔄 Living Platform — Always Improving','Todo App: Before / After',
   'Impact Metrics','Cross-Framework Critic','Zero Code Impact',
-  'Global Install','Get Started'
+  'Global Install','📖 Standards Glossary','Get Started'
 ];
 let cur = 0;
 

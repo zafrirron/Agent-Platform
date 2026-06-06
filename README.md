@@ -444,6 +444,30 @@ Navigate with arrow keys or swipe. Works on mobile.
 
 ---
 
+## Glossary — standards and abbreviations used
+
+The platform references industry standards by name. Click any term for more detail:
+
+| Term | What it means | Learn more |
+|------|--------------|-----------|
+| **OWASP** | Open Web Application Security Project — publishes the most widely-used web security risk lists | [owasp.org](https://owasp.org) |
+| **OWASP Top 10** | The 10 most critical web application security risks (updated ~every 3 years) | [owasp.org/Top10](https://owasp.org/Top10/) |
+| **OWASP API Security** | The 10 most critical API-specific security risks (2023 edition used in this platform) | [owasp.org/API-Security](https://owasp.org/API-Security/) |
+| **OWASP LLM Top 10** | Security risks specific to LLM/AI applications (2025 edition) | [genai.owasp.org](https://genai.owasp.org/llm-top-10/) |
+| **CWE** | Common Weakness Enumeration — catalog of software security weaknesses; CWE Top 25 = most dangerous | [cwe.mitre.org](https://cwe.mitre.org) |
+| **CVE** | Common Vulnerabilities and Exposures — database of known vulnerabilities in specific software versions | [cve.mitre.org](https://cve.mitre.org) |
+| **SOLID** | Five object-oriented design principles: Single responsibility, Open/closed, Liskov substitution, Interface segregation, Dependency inversion | [Wikipedia](https://en.wikipedia.org/wiki/SOLID) |
+| **DRY** | Don't Repeat Yourself — don't duplicate logic; extract shared abstractions | [Wikipedia](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) |
+| **ADR** | Architecture Decision Record — a short document capturing a hard-to-reverse architectural decision and why it was made | [adr.github.io](https://adr.github.io) |
+| **OpenAPI / Swagger** | Industry-standard format for describing REST APIs; Swagger is the tooling ecosystem around it | [swagger.io](https://swagger.io) |
+| **OIDC** | OpenID Connect — identity layer on top of OAuth 2.0; used for short-lived token authentication in CI/CD (OIDC credentials) | [openid.net/connect](https://openid.net/connect/) |
+| **SBOM** | Software Bill of Materials — a list of all components in a software build, required for supply chain security | [cisa.gov/sbom](https://www.cisa.gov/sbom) |
+| **CSRF** | Cross-Site Request Forgery — attack that tricks a user's browser into making unwanted requests | [OWASP CSRF](https://owasp.org/www-community/attacks/csrf) |
+| **SSRF** | Server-Side Request Forgery — attack that makes the server fetch attacker-controlled URLs | [OWASP SSRF](https://owasp.org/www-community/attacks/Server_Side_Request_Forgery) |
+| **N+1** | A database query anti-pattern: 1 query to get a list + N queries for each item = (N+1) total queries | [explanation](https://stackoverflow.com/questions/97197/what-is-the-n1-selects-problem-in-orm-object-relational-mapping) |
+
+---
+
 ## Documentation
 
 | Document | For |

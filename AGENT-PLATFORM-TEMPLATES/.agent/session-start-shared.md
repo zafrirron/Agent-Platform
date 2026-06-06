@@ -235,7 +235,7 @@ Output this status block as plain text (no code block) so markdown links render 
 **{{PROJECT_NAME}} · Agent Platform v{{BOOTSTRAP_VERSION}} · <fw>**
 Last work : <one-line summary from CURRENT.md, or "no prior sessions">
 Updates   : <"✅ Up to date" | "⚠️ vX.Y.Z available — say 'upgrade platform'">
-Reference : 📄 [.agent/QUICK-REF.md](.agent/QUICK-REF.md) · say `"caveman mode"` to cut output ~65%
+Reference : 📄 [.agent/QUICK-REF.md](.agent/QUICK-REF.md) · say `"platform help"` for full guide · `"caveman mode"` cuts output ~65%
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Do NOT read or output QUICK-REF.md at session start.**
