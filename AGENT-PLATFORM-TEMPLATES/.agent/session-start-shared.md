@@ -17,38 +17,40 @@
    **Case A — Another framework is active** (e.g. Codex active, you are starting Claude):
    ```
    ┌─────────────────────────────────────────────────────────────────┐
-   │  [stuck_framework] has an open session                          │
+   │  Picking up from [stuck_framework]                              │
    │                                                                 │
-   │  Task : [task from registry]                                    │
-   │  Files: [files list from registry]                              │
+   │  Last task : [task from registry]                               │
+   │  Files     : [files list from registry]                         │
    │                                                                 │
-   │  1. Take over — commit uncommitted work, close it, continue     │
-   │     here. Use when that IDE ran out of credits or is gone.      │
-   │  2. Wait — end the other session first if it is still running.  │
-   │                                                                 │
-   │  Reply 1 or 2.                                                  │
-   └─────────────────────────────────────────────────────────────────┘
-   ```
-
-   **Case B — This framework already has an active session** (e.g. Claude crashed, new chat opened):
-   ```
-   ┌─────────────────────────────────────────────────────────────────┐
-   │  You already have an open [current_framework] session           │
-   │                                                                 │
-   │  Task : [task from registry]                                    │
-   │  Files: [files list from registry]                              │
-   │                                                                 │
-   │  1. Continue — close the previous session and start fresh here  │
-   │     (uncommitted work will be committed first)                  │
-   │  2. Cancel — if another window of this IDE is still running.    │
+   │  1. Continue here — I'll save any open work and hand off        │
+   │  2. Wait — the other IDE is still running and I should use it   │
    │                                                                 │
    │  Reply 1 or 2.                                                  │
    └─────────────────────────────────────────────────────────────────┘
    ```
 
-   **If user replies 2 (either case):** Stop. Do not continue.
+   **Case B — This framework already has an active session** (e.g. session ended without session-end, credits ran out, IDE closed):
 
-   **If user replies 1 (either case) — Takeover sequence:**
+   **Do NOT prompt the user. Auto-resume silently:**
+   a. Read `completed_actions` from `registry.yaml`
+   b. Run `git status --short` to check for uncommitted work
+   c. If uncommitted changes exist:
+      - For each changed file: derive idempotency key `[file_path]:[last_modified_timestamp]`
+      - Check if key already exists in `completed_actions` — if yes, skip (already handled)
+      - Run `git add -A` for remaining files
+      - Run `git commit -m "WIP: [framework] session resumed — [task from registry]"`
+      - Add committed files to `completed_actions`
+   d. In `registry.yaml`: set `frameworks.<fw>.status` → `active`, `started_at` → now, `finality_state` → `in_progress`
+   e. Output exactly one reassuring line (not a warning box):
+      `▶ Resuming: [task from registry]` (append `— N files auto-committed.` only if there were uncommitted changes)
+   f. Continue to Step 1b — do NOT treat this as a cross-framework switch (same framework resumed)
+
+   > This is the normal path when a session ends without session-end. It is not an error.
+   > If another window of this IDE is genuinely still open, the user will notice the duplicate — do not pre-empt with a scary warning.
+
+   **If user replies 2 (Case A only):** Stop. Do not continue.
+
+   **Case A takeover sequence (triggered by user replying 1):**
    a. Read `completed_actions` from `registry.yaml` — this is the idempotency map
    b. Run `git status --short` to check for uncommitted work
    c. If uncommitted changes exist:
@@ -59,7 +61,7 @@
       - Confirm commit succeeded
       - Add committed files to `completed_actions` with `completed_at: now, framework: [stuck_framework]`
    d. In `registry.yaml`: set `frameworks.[stuck_framework].status` → `idle`, `files` → `[]`, `finality_state` → `lost_confirmation`
-   e. For Case A only: keep `meta.updated_by` as `[stuck_framework]` so Step 1b correctly offers cross-framework Critic review
+   e. Keep `meta.updated_by` as `[stuck_framework]` so Step 1b correctly offers cross-framework Critic review
    f. Continue to Step 1.4
 
    > **Why idempotency matters:** If the takeover commit fails mid-way and is retried, the same files

@@ -483,30 +483,43 @@ Read .agent/session-start.md and execute it.
 
 The new session picks up from where the last one left off via `CURRENT.md`.
 
-**Emergency switch (previous IDE unavailable — out of credits, crashed, etc.):**
+**Same IDE re-opened (credits ran out, IDE crashed, chat closed without ending session):**
 
-Just start a session in the new IDE:
+Just start a new session normally:
 ```
 Read .agent/session-start.md and execute it.
 ```
 
-Session start detects the state of the previous session and offers the right path:
+The platform detects the previous session and **resumes automatically** — no prompt, no decision required. Any uncommitted work is silently committed first. You see one line:
 
-**Case A — Stuck session (other IDE still shows active):**
+```
+▶ Resuming: [your previous task]
+```
+
+Then the session continues exactly where you left off. Nothing is lost.
+
+**Switching to a different IDE (e.g. Claude → Cursor):**
+
+Start the session in the new IDE:
+```
+Read .agent/session-start.md and execute it.
+```
+
+Session start detects the switch and offers to pick up the previous IDE's work:
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  [framework] has an open session                                │
-│  Task : [what it was doing]                                     │
-│  Files: [files it had claimed]                                  │
+│  Picking up from [previous IDE]                                 │
+│  Last task : [what it was doing]                                │
 │                                                                 │
-│  1. Take over — commit uncommitted work, close it, continue     │
-│  2. Wait — end the other session first if it is still running   │
+│  1. Continue here — I'll save any open work and hand off        │
+│  2. Wait — the other IDE is still running and I should use it   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-Reply **1** — the new IDE checks what was already committed (idempotency check), commits any remaining uncommitted work, closes the stuck session cleanly, and continues. Cross-framework Critic review is then offered automatically.
+Reply **1** — uncommitted work is saved, the previous session closes cleanly, and a cross-framework Critic review is offered (different AI model reviewing the previous model's work).
 
-**Case B — Partial session (your own previous session ended incomplete):**
+**Partial session (previous session ended mid-playbook):**
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Previous session was incomplete                                │
@@ -521,7 +534,7 @@ Reply **1** — the new IDE checks what was already committed (idempotency check
 Reply **1** — the playbook resumes from the first incomplete step, skipping what was already done.
 Reply **2** — clears partial state and starts the session normally.
 
-> **This is one of the key reasons to use a multi-framework platform.** When one IDE's credits run out mid-task, switch to another and continue without losing any work or context. The idempotency check ensures no action is executed twice even if the takeover itself is retried.
+> **Nothing is lost between sessions.** The registry, handoff log, and idempotency map preserve full state. Even if your session ends unexpectedly mid-task, the next session picks up cleanly.
 
 ---
 

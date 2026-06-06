@@ -19,7 +19,8 @@
 | Start session | `Read .agent/session-start.md and execute it.` |
 | End session | `Read .agent/session-end.md and execute it.` |
 
-> **Switching IDEs?** Session start automatically offers a Critic review of the previous IDE's work — different AI models catch each other's blind spots. Say YES to run it.
+> **Session ended without "End session"?** No problem — session start resumes automatically. You'll see `▶ Resuming: [your last task]` and continue where you left off.
+> **Switching to a different IDE?** Session start offers a Critic review of the previous IDE's work — different AI models catch each other's blind spots. Say YES to run it.
 
 ---
 
