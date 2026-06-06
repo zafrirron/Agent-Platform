@@ -301,7 +301,7 @@ After processing all selections:
 
 See `MAINTAINER/platform-ingest.md` for the full ingest playbook.
 
-Users drop their own agentic files (agent definitions, playbooks, skills, CLAUDE.md, conventions) into `MAINTAINER/ingest/`. The ingest playbook reads them all, extracts platform-worthy rules, classifies each finding, maps to the best integration path, and presents a structured report.
+When platform users share their agent definitions, playbooks, skills, CLAUDE.md, or conventions (via email, GitHub issues, or PRs), the **maintainer** reviews and drops the relevant files into `MAINTAINER/ingest/`. The ingest playbook then reads them all, extracts platform-worthy rules, classifies each finding, maps to the best integration path, and presents a structured report for the maintainer to select from.
 
 ### What makes this different from Mode 1, Mode 2, and Mode 4
 

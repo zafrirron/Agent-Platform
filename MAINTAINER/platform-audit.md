@@ -76,13 +76,37 @@ For each rule in the PLATFORM sections, evaluate:
 
 Flag any rule that fails the specificity or verifiability check.
 
-### Step 6 — Report
+### Step 6 — Documentation & presentation sync check
+
+Verify that user-facing documentation and the product presentation reflect the platform's actual current state.
+
+**Check each of the following:**
+
+| Document | What to verify |
+|----------|---------------|
+| `README.md` — "What you get" table | Every capability row matches a real feature. No rows for removed features. New features since last release have a row. |
+| `AGENT-PLATFORM-FRAMEWORK-README.md` — capability table | Same as README — in sync with actual installed capabilities |
+| `.agent/PLATFORM-HELP.md` | Sections match actual platform features. No references to deprecated commands. All playbook names current. |
+| `.agent/QUICK-REF.md` | Playbook list matches actual playbooks in `.agent/playbooks/`. Expert list matches actual agents. |
+| `presentation/agent-platform-beta.html` | Slide count, feature claims, and version badge match current release. No slides describing removed features. Key new features have representation. |
+| `CHANGELOG.md` | Top entry version matches `package.json` version (or is the next planned version). |
+| Agent `.manifest.json` files | All `capabilities` arrays reflect rules in the corresponding `.md` file. No stale or missing capabilities. |
+
+**Flag as OUT OF SYNC if:**
+- A capability mentioned in docs/presentation doesn't exist in the installed files
+- A significant feature added in recent releases has no doc coverage
+- The presentation version badge doesn't match the latest release
+- A manifest lists capabilities not found in the agent's PLATFORM section
+
+### Step 7 — Report
 
 Produce:
-1. Summary: X experts audited, Y playbooks audited
+1. Summary: X experts audited, Y playbooks audited, Z doc/presentation checks
 2. Undertrained experts list (if any)
 3. Weak playbooks list (if any)
 4. Duplicate rules that need consolidation (if any)
 5. Gap list — failure categories with no coverage
 6. Rule quality issues — vague or unverifiable rules
-7. Recommended next improvements (priority-ordered)
+7. **Documentation sync issues** — features in docs not in platform, or features in platform not in docs
+8. **Presentation sync issues** — slides that need updating
+9. Recommended next improvements (priority-ordered)

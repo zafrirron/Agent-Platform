@@ -1077,12 +1077,12 @@ Use this prompt verbatim — every part maps to a concrete location in the file.
 |------|--------|--------|---------|
 | **Mode 1 — Failures** | A rule traced to a real production failure | One rule added immediately | `"Add rule to [expert]: [rule]"` |
 | **Mode 2 — Ecosystem** | OWASP / CWE / engineering best practices (monthly + quarterly) | Rules for expert agents (F001-Fxxx) | `Read MAINTAINER/web-audit.md and execute it.` |
-| **Mode 3 — User submissions** | Users drop their own agent/playbook/skill files into `MAINTAINER/ingest/` | Rules for expert agents (I001-Ixxx) | `Read MAINTAINER/platform-ingest.md and execute it.` |
+| **Mode 3 — User submissions** | Maintainer receives agent/playbook/convention files from platform users (via email, PR, or community) and drops them into `MAINTAINER/ingest/` for review | Rules for expert agents (I001-Ixxx) | `Read MAINTAINER/platform-ingest.md and execute it.` |
 | **Mode 4 — GitHub scan** | Quarterly scan of GitHub governance/coordination repos | New platform capabilities or phases (R001-Rxxx) | `Read MAINTAINER/github-governance-scan.md and execute it.` |
 
 **Mode 3 ingest workflow:** The ingest agent reads all submitted files, extracts specific verifiable rules, deduplicates against existing platform rules, maps each finding to the right expert/playbook, and presents a structured report (findings I001, I002, ...). Maintainer selects what to add. Selected findings are implemented via Mode 1 workflow — logged in `platform-improvements.md`, version bumped, ready to ship.
 
-Drop user files into [`MAINTAINER/ingest/`](MAINTAINER/ingest/) — the `README.md` there explains what to submit and what gets kept.
+When users share agent rules, playbooks, or conventions (via email, GitHub issues, or PRs), the maintainer reviews them and drops the relevant files into [`MAINTAINER/ingest/`](MAINTAINER/ingest/). The `README.md` there explains the review process and what gets kept.
 
 **Mode 4 scan workflow:** The agent searches GitHub with rotating query templates across coordination, session lifecycle, trust/scoring, and routing themes. For each promising repo it reads README and key files, answers 8 structured questions, and extracts findings (FEATURE / STRENGTHEN / ARCHITECTURE). Maintainer selects findings to implement directly or bundle into a phased roadmap. Results logged to `MAINTAINER/governance-scan/scan-log.md` — already-analyzed repos are skipped on future runs to avoid repetition.
 
