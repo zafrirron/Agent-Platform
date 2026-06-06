@@ -88,8 +88,7 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 | Regression test after a fix | Happens automatically via bug-fix playbook |
 | Full test suite + quality gate | "run the test suite and check coverage" |
 
-> **Coverage report** — after any coverage run, open `coverage/lcov-report/index.html` in your browser.
-> Line-by-line view: green = covered, red = not covered. Generated automatically by the Test expert.
+> **Coverage reports (4 formats)** — generated automatically in `coverage/`: HTML (`lcov-report/index.html` — open in browser) · Clover XML (`clover.xml` — Jenkins/CI) · LCOV (`lcov.info` — Codecov/Coveralls) · JSON (`coverage-final.json` — scripts).
 
 ---
 

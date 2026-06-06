@@ -135,7 +135,7 @@ Repeat. The platform never stops improving.
 | **9 playbooks** | audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
 | **Code standards enforcement** | SOLID principles · DRY · file modularity · no magic numbers · linting gates · branching strategy — encoded into expert agents and CONVENTIONS.md. Architect agent runs SOLID checks at design time. Critic catches DRY violations. DevOps agent blocks the pipeline on lint failures — not a suggestion, a gate. |
-| **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see exactly which lines aren't covered. Coverage and Swagger artifacts are your project files — keep, commit, or gitignore them as you see fit. |
+| **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. Test expert auto-generates coverage in 4 formats: HTML (`coverage/lcov-report/index.html` — open in browser), Clover XML (Jenkins/CI), LCOV (Codecov/Coveralls), and JSON. All formats generated from one `--coverage` run. |
 | **API documentation** | Docs expert generates OpenAPI/Swagger docs from `api-contracts.md`. Say "document the API" and get a publish-ready spec. |
 | **Quick reference** | Compact status block on every session start (last work, update status). Full capability guide at `.agent/QUICK-REF.md` — open in editor any time. No memorisation required. |
 | **Local help** | `PLATFORM-HELP.md` installed in every repo — everything explained, fully offline |
@@ -463,6 +463,9 @@ The platform references industry standards by name. Click any term for more deta
 | **CSRF** | Cross-Site Request Forgery — attack that tricks a user's browser into making unwanted requests | [OWASP CSRF](https://owasp.org/www-community/attacks/csrf) |
 | **SSRF** | Server-Side Request Forgery — attack that makes the server fetch attacker-controlled URLs | [OWASP SSRF](https://owasp.org/www-community/attacks/Server_Side_Request_Forgery) |
 | **N+1** | A database query anti-pattern: 1 query to get a list + N queries for each item = (N+1) total queries | [explanation](https://stackoverflow.com/questions/97197/what-is-the-n1-selects-problem-in-orm-object-relational-mapping) |
+| **Clover XML** | A test coverage report format (originally by Atlassian) consumed by CI tools like Jenkins, GitHub Actions, and Bamboo | [wikipedia](https://en.wikipedia.org/wiki/Clover_(software)) |
+| **LCOV** | Linux Test Project coverage data format — consumed by Codecov, Coveralls, and most CI coverage dashboards | [lcov.github.io](https://github.com/linux-test-project/lcov) |
+| **Codecov / Coveralls** | Cloud services that track test coverage trends over time and post coverage badges/comments on PRs | [codecov.io](https://codecov.io) · [coveralls.io](https://coveralls.io) |
 
 ---
 
