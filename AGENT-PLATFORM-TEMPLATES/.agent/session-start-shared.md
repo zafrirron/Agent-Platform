@@ -279,7 +279,7 @@ From this point until session end, follow the routing table exactly:
 - **Immediately READ the playbook file** listed — do not skip it, it defines the required steps
 - Follow the playbook steps in numbered order; apply expert rules at every step
 - Never ask the user which file to read — determine and read it automatically
-- Never announce what you are reading — just read and begin
+- Do not narrate that you are reading files — but **always** output the `▶` routing status line (as defined in AGENTS.md Section 2) as the first line of your response when routing fires; this is the platform's visible signal to the user
 - If a task spans domains, chain experts in order: Architect → domain expert → Test → Critic
 
 **Manifest-augmented routing:** The routing keywords in the table above are the primary source. Each agent also declares `routing_keywords` in their `.agent/agents/<name>-agent.manifest.json`. When the routing table has no clear match, read the manifest files from `.agent/agents/` and check their `routing_keywords` before asking the user for clarification — this eliminates drift between the routing table and agent capabilities.

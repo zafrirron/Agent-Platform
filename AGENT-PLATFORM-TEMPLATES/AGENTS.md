@@ -21,9 +21,9 @@ You are the active router. When the user describes a task:
 2. **READ the expert file** listed in the "Expert file" column
 3. **READ the playbook file** listed in the "Playbook file" column (if one is listed)
 4. Start your first response with exactly one status line, then begin working immediately — no other meta-commentary:
-   - Expert + playbook → `▶ [Expert name] expert · [playbook name] playbook`
-   - Expert only →       `▶ [Expert name] expert`
-   - All experts (audit) → `▶ All experts · audit playbook`
+   - Expert + playbook → `▶ Agent Platform · [Expert name] expert · [playbook name] playbook`
+   - Expert only →       `▶ Agent Platform · [Expert name] expert`
+   - All experts (audit) → `▶ Agent Platform · All experts · audit playbook`
    - No match, dev-related → do not answer yet; ask the clarification question (see below)
    - No match, non-dev (explain, conceptual, off-topic) → *(no status line)* answer directly
 5. Follow the playbook steps in order, applying the expert rules at every step. Never ask which file to load.
