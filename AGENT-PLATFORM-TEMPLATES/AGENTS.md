@@ -43,7 +43,8 @@ You are the active router. When the user describes a task:
 | "add a feature", "implement", "build", "create", "new endpoint", "new component", "new page", "new screen", "scaffold" | `.agent/agents/backend-agent.md` (server/API/data) or `frontend-agent.md` (UI/component/styling) | `.agent/playbooks/add-feature.md` |
 | "fix a bug", "broken", "crash", "not working", "error", "exception", "failing", "regression", "incorrect", "wrong output", "throws", "404", "500", "timeout", "flaky test" | relevant `*-agent.md` | `.agent/playbooks/bug-fix.md` |
 | "refactor", "clean up", "rename", "simplify", "restructure", "reorganize", "extract", "split", "decouple", "deduplicate", "modernize" | relevant `*-agent.md` | `.agent/playbooks/refactor.md` |
-| "deploy", "release", "ship", "version bump", "tag", "publish", "go live", "cut release", "push to prod" | `.agent/agents/devops-agent.md` | `.agent/playbooks/release.md` |
+| "release", "ship", "version bump", "tag", "publish", "cut release", "ready to release", "release this" | `.agent/agents/devops-agent.md` | `.agent/playbooks/release.md` |
+| "deploy to production", "push to prod", "go live", "deploy prod", "production deploy", "take it live" | `.agent/agents/devops-agent.md` | *(none — ask for confirmation before any production deploy action)* |
 | "hotfix", "rollback", "revert release", "emergency fix" | `.agent/agents/devops-agent.md` | `.agent/playbooks/bug-fix.md` |
 | "security review", "auth review", "check auth", "vulnerability", "secrets", "threat model", "OWASP", "XSS", "injection", "JWT", "RBAC", "access control", "encryption", "pentest" | `.agent/agents/security-agent.md` | `.agent/playbooks/security-audit.md` |
 | "add library", "install package", "new dependency", "npm install", "yarn add", "pip install", "upgrade dependency", "update package" | relevant `*-agent.md` | `.agent/playbooks/add-dependency.md` |

@@ -111,9 +111,21 @@
 8. **Announce**
    Docs agent: share the release page URL in any project comms channels (Slack, email, etc.) per project convention. No writing needed — the release page is the announcement.
 
+9. **STOP — release is complete. Production deploy is a separate step.**
+   ```
+   ✅ Released: vX.Y.Z — tag pushed, GitHub release page live.
+   ⛔ Production deploy NOT done. Say "deploy to production" when ready.
+   ```
+   - Do NOT proceed to deploy production unless the user explicitly says so in this message or a follow-up
+   - "release", "ship", "tag", "publish" do NOT mean deploy to production
+   - Only "deploy to production", "push to prod", "go live on prod", or equivalent explicit instruction triggers a production deploy
+   - If the user said "deploy" in the same message that triggered this playbook, stop here and ask: *"Release is done. Should I also deploy vX.Y.Z to production now?"* — wait for confirmation before proceeding
+
 ## Rules
 - **Broken tests = blocked release — no exceptions, no `--skip-tests` flags**
+- **Release ≠ deploy** — releasing to GitHub and deploying to production are two separate actions; never combine them without explicit instruction for both
 - Never tag or publish without explicit user instruction
+- Never deploy to production automatically — always require a separate, explicit "deploy to production" command
 - Breaking changes require a migration guide before release
-- Rollback plan must exist before deploying to production
+- Rollback plan must exist and be confirmed before any production deploy
 <!-- PLATFORM:END -->

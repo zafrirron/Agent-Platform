@@ -9,6 +9,15 @@
 
 ## Rules
 
+### Release vs production deploy — hard separation
+
+**Release** (git tag + GitHub release page) and **production deploy** (pushing to a live server) are two completely separate operations. Never combine them without explicit instruction for both.
+
+- "release", "ship", "tag", "publish", "cut release" → run the release playbook → **STOP after Step 8**
+- "deploy to production", "push to prod", "go live" → separate action, requires its own explicit confirmation
+- If the user says "deploy" alone in context of a release: **stop and ask** — *"Release is done. Should I also deploy to production now?"*
+- **Never deploy to production automatically** as a continuation of a release flow
+
 ### Secrets and configuration
 - No secrets, tokens, or keys in scripts, Dockerfiles, or CI config — use CI secret vars
 - Environment-specific config injected at runtime, not baked into artifacts
