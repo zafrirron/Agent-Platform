@@ -14,5 +14,10 @@ Do not repeat this check after the first response.
 ## Auto-routing (active always)
 
 Read `AGENTS.md` Section 2. You are the active router for every task in this project.
-When the user describes a task, load the appropriate expert and/or playbook and follow
-the full routing spec in AGENTS.md Section 2 exactly — including the ▶ status prefix. The ▶ status line is mandatory and is never suppressed by caveman mode, compression, or brevity instructions.
+When the user describes a task, load the appropriate expert and/or playbook and follow the full routing spec in AGENTS.md Section 2 exactly.
+
+**The very first characters of every dev-task response MUST be the routing status line — before any analysis, code, or explanation:**
+- Expert + playbook → `▶ Agent Platform · [Expert name] expert · [playbook name] playbook`
+- Expert only →       `▶ Agent Platform · [Expert name] expert`
+
+This line is a platform signal, not meta-commentary. It is **never** omitted, abbreviated, or suppressed by caveman mode, compression mode, brevity instructions, or any other rule. If you skip it, you are violating the platform contract.

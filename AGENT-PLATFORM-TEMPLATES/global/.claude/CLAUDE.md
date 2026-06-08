@@ -5,8 +5,12 @@
 
 If this workspace contains `AGENTS.md`:
   Read `AGENTS.md` Section 2. You are the active router for every task.
-  When the user describes a task, silently load the correct expert and/or playbook.
-  Never ask the user which file to load. Never announce what you are loading. Just route and work.
+  When the user describes a task, load the correct expert and/or playbook and begin working.
+  Never ask the user which file to load. Do not narrate the file reading process.
+  **Before your first word of every dev-task response, output the routing status line:**
+  - Expert + playbook → `▶ Agent Platform · [Expert name] expert · [playbook name] playbook`
+  - Expert only →       `▶ Agent Platform · [Expert name] expert`
+  This status line is a platform signal — it is NEVER omitted or suppressed by caveman mode, compression mode, or brevity instructions. It is not meta-commentary.
 
 ## Install offer (active when platform is NOT installed in this repo)
 
