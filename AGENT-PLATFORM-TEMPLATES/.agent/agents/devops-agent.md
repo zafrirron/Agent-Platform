@@ -44,6 +44,34 @@
 - Changes to shared infra (databases, queues) need an ADR before applying
 - Maintain an API version inventory — track all deployed API versions (including deprecated), their auth requirements, and decommission timelines; remove undocumented/shadow endpoints (F010 — OWASP API9:2023)
 
+## Changelog management
+
+### Writing a release entry
+Follow release playbook Step 3c — collect commits, determine semver bump, write the entry, bump versions.
+
+### Retrofitting an existing changelog
+When the user says "retrofit changelog", "convert my changelog", "standardize my changelog", or "migrate changelog to standard format":
+
+1. **Read** the existing `CHANGELOG.md` in full — understand the format currently in use
+2. **Audit** what's present: versions, dates, grouping style, tone, completeness
+3. **Confirm with user** before rewriting: show a one-paragraph summary of what you found and what the converted version will look like, then wait for approval
+4. **Convert** to Keep a Changelog format, preserving:
+   - Every version number and its date (never invent or drop a date)
+   - All change descriptions (reword for clarity only if needed — do not summarise away detail)
+   - Chronological order (newest at top)
+5. **Map** existing entries to the correct sections:
+   - New capability → `### Added`
+   - Modified behavior → `### Changed`
+   - Still present but going away → `### Deprecated`
+   - Removed feature → `### Removed`
+   - Bug fix → `### Fixed`
+   - Vulnerability fix → `### Security`
+   - Internal-only (no user impact) → **drop it** — changelogs are for users, not devs
+6. **Add** the platform header, `[Unreleased]` section, authoring rules block, and comparison link stubs
+7. **Show a diff summary** to the user before writing — list any entries you dropped (internal-only) and any you could not confidently classify
+8. **Write** the converted file only after user confirms the diff summary
+9. **Do not** invent change descriptions, collapse multiple distinct changes into one bullet, or remove any version that had real user-facing changes
+
 ## Done-when — DevOps task is not complete until
 - [ ] Pipeline runs to completion with no failures
 - [ ] **Linting passes** — no suppressed rules without documented justification

@@ -538,7 +538,39 @@ Task: version bump and build artifact
 
 ---
 
-### 9 · Check for updates and upgrade
+### 9 · Changelog management
+
+The platform installs and manages `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) best practices.
+
+**On install — starter template created automatically**
+
+If your project has no `CHANGELOG.md`, the platform creates one with:
+- A professional header and guiding principles
+- `[Unreleased]` section to track work-in-progress changes
+- Full format reference with an example entry, authoring rules, and comparison link stubs
+- If you already have a `CHANGELOG.md` — it is never touched; your existing file is preserved as-is
+
+**On every release — DevOps agent writes the entry**
+
+The release playbook (Step 3c) directs the DevOps agent to:
+1. Collect all commits since the last tag + session handoff notes
+2. Determine the semver bump level (patch / minor / major)
+3. Write a new versioned section at the top of `CHANGELOG.md`
+4. Respect your existing format — if your changelog uses a different style, the agent follows it
+
+**Retrofitting an old changelog**
+
+If your project has an existing changelog in a different format, the DevOps agent can convert it:
+
+```
+retrofit my changelog to the platform standard format
+```
+
+The agent reads your existing file, maps every entry to the correct section (Added / Changed / Fixed / Removed / Security), drops internal-only entries that have no user impact, and shows you a diff summary for approval before writing anything.
+
+---
+
+### 10 · Check for updates and upgrade
 
 **Check from inside any consumer repo:**
 ```bash
@@ -560,7 +592,7 @@ npx github:zafrirron/Agent-Platform --mode=upgrade   # add new files from latest
 
 ---
 
-### 10 · Agentic development best practices
+### 11 · Agentic development best practices
 
 All generated files follow these rules. They live in `.agent/BEST-PRACTICES.md` — read them before any non-trivial task.
 
