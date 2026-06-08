@@ -11,12 +11,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 - **Agent Platform branding on routing status lines** — every expert/playbook activation now shows `▶ Agent Platform · [Expert] · [Playbook]` so users can see the platform working
 - **Release playbook — DevOps owns changelog + version bump** — Step 3 expanded with four concrete sub-steps: collect commits since last tag, determine semver bump level, write CHANGELOG.md entry, bump version in all relevant files (DevOps agent, not docs-agent)
 - **Release playbook — full release commit + tag + GitHub release page** — Steps 6–8 added: `chore(release): vX.Y.Z` commit, `git tag`, push `--tags`, `gh release create` using the CHANGELOG entry verbatim, and announce via release page URL
+- **CHANGELOG.md starter template ships on install** — professional Keep a Changelog template created automatically for new projects; includes `[Unreleased]` section, full example entry, authoring rules, semver guide, and comparison link stubs; existing changelogs are never touched
+- **Changelog retrofit capability** — DevOps agent can convert any existing changelog to Keep a Changelog format; 9-step workflow: audit → confirm plan → map entries → drop internal noise → show diff → write on approval; trigger: "retrofit my changelog"
+- **Changelog management documented** — new section in user-facing README covering install-time creation, release-time authoring, and the retrofit command
 
 ### Fixed
 - **Routing status line suppressed** — `session-start-shared.md` contained "Never announce what you are reading" which silenced the `▶` status line entirely; replaced with a precise rule that preserves the status line while still preventing file-read narration
 - **Session-start: same-framework auto-resume** — sessions on the same framework now resume silently without re-prompting the user
 - **Mode 3 ingest clarified** — ingest is maintainer-curated, not user self-serve; audit now verifies docs and presentation are in sync
 - **README: maintainer-only commands removed** — Mode 4 / ingest commands removed from user-facing upgrade section
+- **release.ps1 BOM bug** — `Set-Content -Encoding UTF8` wrote a BOM that broke `JSON.parse`; switched to `[System.IO.File]::WriteAllText` with explicit no-BOM UTF-8
 
 ### Documented
 - All 4 Jest coverage output formats (HTML, Clover XML, LCOV, JSON summary) documented with glossary entries
