@@ -45,7 +45,13 @@
    - When in doubt, ask the user before proceeding
 
    **3c. Write CHANGELOG.md entry** — DevOps agent writes this, not docs agent
-   Insert a new section at the top of CHANGELOG.md (below the `# Changelog` header):
+   First: read the existing CHANGELOG.md to detect the format already in use.
+   - If the file uses **Keep a Changelog** format (sections like `### Added`, `### Fixed`) — follow it exactly
+   - If the file uses a **different format** (plain prose, GitHub releases style, custom headings) — match that format; do not impose Keep a Changelog on a repo that chose something else
+   - If the file **does not exist** — create it using the platform starter format below
+
+   **Default format (Keep a Changelog):**
+   Insert a new section at the top (below the `# Changelog` header):
    ```
    ## [X.Y.Z] — YYYY-MM-DD
    ### Added

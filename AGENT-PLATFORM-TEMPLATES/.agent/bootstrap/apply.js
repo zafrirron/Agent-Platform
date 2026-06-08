@@ -661,6 +661,19 @@ if (INSTALL_MODES.has(MODE)) {
   }
 }
 
+/* ── CHANGELOG.md — create starter if absent, never overwrite ────────────── */
+const changelogPath = path.join(INSTALL_ROOT, 'CHANGELOG.md');
+const changelogTemplate = path.join(templatesRoot, 'CHANGELOG.md');
+if (INSTALL_MODES.has(MODE) && !fs.existsSync(changelogPath)) {
+  if (fs.existsSync(changelogTemplate)) {
+    const content = sub(fs.readFileSync(changelogTemplate, 'utf8'), vars);
+    fs.writeFileSync(changelogPath, content.endsWith('\n') ? content : content + '\n');
+    created.push('CHANGELOG.md');
+  }
+} else if (INSTALL_MODES.has(MODE) && fs.existsSync(changelogPath)) {
+  skipped.push('CHANGELOG.md (already exists — preserved as-is)');
+}
+
 /* ── Update platform.json ─────────────────────────────────────────────────── */
 const platformPath = path.join(INSTALL_ROOT, '.agent/platform.json');
 if (fs.existsSync(platformPath)) {
