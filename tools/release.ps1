@@ -92,31 +92,35 @@ if ($changelog -match $pattern) {
 
 Step "Bumping versions to $Version"
 
-$pkg = Get-Content "$ROOT\package.json" -Raw -Encoding UTF8
+# Use [System.IO.File]::WriteAllText with explicit no-BOM UTF-8 encoding.
+# PowerShell 5.1 Set-Content -Encoding UTF8 writes a BOM which breaks JSON.parse in Node.js.
+$utf8NoBOM = [System.Text.UTF8Encoding]::new($false)
+
+$pkg = [System.IO.File]::ReadAllText("$ROOT\package.json", $utf8NoBOM)
 $currentPkg = "?"
 if ($pkg -match '"version":\s*"([^"]+)"') { $currentPkg = $Matches[1] }
 $pkg = $pkg -replace '"version":\s*"[^"]+"', """version"": ""$Version"""
-Set-Content "$ROOT\package.json" $pkg -NoNewline -Encoding UTF8
+[System.IO.File]::WriteAllText("$ROOT\package.json", $pkg, $utf8NoBOM)
 OK "package.json: $currentPkg -> $Version"
 
-$man = Get-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" -Raw -Encoding UTF8
+$man = [System.IO.File]::ReadAllText("$ROOT\AGENT-PLATFORM-MANIFEST.json", $utf8NoBOM)
 $currentMan = "?"
 if ($man -match '"bootstrap_version":\s*"([^"]+)"') { $currentMan = $Matches[1] }
 $man = $man -replace '"bootstrap_version":\s*"[^"]+"', """bootstrap_version"": ""$Version"""
-Set-Content "$ROOT\AGENT-PLATFORM-MANIFEST.json" $man -NoNewline -Encoding UTF8
+[System.IO.File]::WriteAllText("$ROOT\AGENT-PLATFORM-MANIFEST.json", $man, $utf8NoBOM)
 OK "AGENT-PLATFORM-MANIFEST.json: $currentMan -> $Version"
 
-$readme = Get-Content "$ROOT\README.md" -Raw -Encoding UTF8
+$readme = [System.IO.File]::ReadAllText("$ROOT\README.md", $utf8NoBOM)
 $currentReadme = "?"
 if ($readme -match '\*\*v([0-9]+\.[0-9]+\.[0-9]+)\*\*') { $currentReadme = $Matches[1] }
 $readme = $readme -replace '\*\*v[0-9]+\.[0-9]+\.[0-9]+\*\*', "**v$Version**"
-Set-Content "$ROOT\README.md" $readme -NoNewline -Encoding UTF8
+[System.IO.File]::WriteAllText("$ROOT\README.md", $readme, $utf8NoBOM)
 OK "README.md: $currentReadme -> $Version"
 
-$pres = Get-Content "$ROOT\presentation\agent-platform-beta.html" -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
-if ($pres) {
+if (Test-Path "$ROOT\presentation\agent-platform-beta.html") {
+    $pres = [System.IO.File]::ReadAllText("$ROOT\presentation\agent-platform-beta.html", $utf8NoBOM)
     $pres = $pres -replace 'v[0-9]+\.[0-9]+\.[0-9]+', "v$Version"
-    Set-Content "$ROOT\presentation\agent-platform-beta.html" $pres -NoNewline -Encoding UTF8
+    [System.IO.File]::WriteAllText("$ROOT\presentation\agent-platform-beta.html", $pres, $utf8NoBOM)
     OK "presentation/agent-platform-beta.html -> v$Version"
 }
 
