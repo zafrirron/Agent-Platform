@@ -1,9 +1,17 @@
 {
   "name": "agent-platform-bootstrap",
-  "version": "2.35.0",
+  "version": "2.35.1",
   "type": "module",
   "description": "Multi-framework agent coordination platform — installs a complete agentic development environment into any repo.",
-  "keywords": ["agent", "ai", "claude", "cursor", "codex", "multi-agent", "agentic"],
+  "keywords": [
+    "agent",
+    "ai",
+    "claude",
+    "cursor",
+    "codex",
+    "multi-agent",
+    "agentic"
+  ],
   "author": {
     "name": "Zafrir Ron",
     "email": "zafrir.ron@gmail.com",
@@ -18,14 +26,14 @@
     "agent-platform": "bin/agent-platform.js"
   },
   "scripts": {
-    "pretest":      "node -e \"const fs=require('fs'); ['.agent','.claude','.cursor','.agents','.codex','AGENTS.md','CLAUDE.md','SYNC-POINTS.md'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true})}catch{}})\"",
-    "test":         "node --test tests/apply-utils.test.mjs tests/apply-integration.test.mjs tests/global-install.test.mjs",
-    "test:manual":  "node tests/run-manual.mjs",
-    "manifest":     "node tools/build-bootstrap-manifest.js",
-    "readme":       "node tools/build-framework-readme.js",
-    "apply":        "node AGENT-PLATFORM-APPLY.js",
-    "apply:upgrade":"node AGENT-PLATFORM-APPLY.js --mode=upgrade",
-    "check-tools":  "node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/check_locks.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/prune_handoff.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/launch.mjs"
+    "pretest": "node -e \"const fs=require('fs'); ['.agent','.claude','.cursor','.agents','.codex','AGENTS.md','CLAUDE.md','SYNC-POINTS.md'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true})}catch{}})\"",
+    "test": "node --test tests/apply-utils.test.mjs tests/apply-integration.test.mjs tests/global-install.test.mjs",
+    "test:manual": "node tests/run-manual.mjs",
+    "manifest": "node tools/build-bootstrap-manifest.js",
+    "readme": "node tools/build-framework-readme.js",
+    "apply": "node AGENT-PLATFORM-APPLY.js",
+    "apply:upgrade": "node AGENT-PLATFORM-APPLY.js --mode=upgrade",
+    "check-tools": "node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/check_locks.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/prune_handoff.js && node --check AGENT-PLATFORM-TEMPLATES/.agent/tools/launch.mjs"
   },
   "engines": {
     "node": ">=18"

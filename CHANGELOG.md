@@ -5,6 +5,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.35.1] — 2026-06-08
+
+### Fixed
+- **`▶` routing signal silenced by global stub** — the global `~/.claude/CLAUDE.md` template said "silently load the correct expert/playbook" which instructed the model to suppress all routing output, overriding every project-level `▶` exemption; removed the word "silently" and added the exact `▶` format with an explicit platform-signal exemption from caveman mode/compression
+- **Project CLAUDE.md: `▶` format now inline** — the `▶` format is now embedded directly in `CLAUDE.md` so no prior `AGENTS.md` read is required; the agent no longer needs to read `AGENTS.md` before outputting the first response line
+
+---
+
 ## [2.35.0] — 2026-06-08
 
 ### Added
