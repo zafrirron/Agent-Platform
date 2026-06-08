@@ -79,11 +79,31 @@
    DevOps agent: produce release artifact (binary / package / container image).
    Artifact must be versioned — tag matches changelog version.
 
-6. **Tag** — only when user explicitly says to tag
-   `git tag vX.Y.Z` — only after user confirms.
+6. **Release commit + tag** — only when user explicitly says to release
+   Run in order — do not skip steps:
+   ```
+   git add CHANGELOG.md package.json package-lock.json   # + any other version files from 3d
+   git commit -m "chore(release): vX.Y.Z"
+   git tag vX.Y.Z
+   git push origin main --tags
+   ```
+   - The commit message must be exactly `chore(release): vX.Y.Z`
+   - Tag and commit happen together — never tag without a matching release commit
+   - Push tags in the same command as the push (`--tags`) so the tag appears atomically
 
-7. **Announce**
-   Docs agent: post the CHANGELOG section written in Step 3c as the release notes (GitHub release, Slack, etc. — per project convention). No rewriting needed — Step 3c is the canonical source.
+7. **GitHub release page** — only when user explicitly says to publish
+   Create the release page using the CHANGELOG entry from Step 3c as the body:
+   ```
+   gh release create vX.Y.Z \
+     --title "vX.Y.Z" \
+     --notes "$(sed -n '/^## \[X.Y.Z\]/,/^## \[/p' CHANGELOG.md | head -n -1)"
+   ```
+   - If no `gh` CLI: create manually on GitHub using the CHANGELOG section as-is
+   - Release page title: `vX.Y.Z` (no project name prefix — it's already scoped to the repo)
+   - Do NOT rewrite the changelog text — Step 3c is the canonical source; copy it verbatim
+
+8. **Announce**
+   Docs agent: share the release page URL in any project comms channels (Slack, email, etc.) per project convention. No writing needed — the release page is the announcement.
 
 ## Rules
 - **Broken tests = blocked release — no exceptions, no `--skip-tests` flags**
