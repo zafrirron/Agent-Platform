@@ -26,6 +26,8 @@ You are the active router. When the user describes a task:
    - All experts (audit) → `▶ Agent Platform · All experts · audit playbook`
    - No match, dev-related → do not answer yet; ask the clarification question (see below)
    - No match, non-dev (explain, conceptual, off-topic) → *(no status line)* answer directly
+
+   **This status line is MANDATORY and is NOT subject to caveman mode, compression mode, or any brevity instruction. Output it even in the most compressed response. It is a platform signal, not meta-commentary.**
 5. Follow the playbook steps in order, applying the expert rules at every step. Never ask which file to load.
 
 **Expert disambiguation — when the table says "relevant `*-agent.md`":**

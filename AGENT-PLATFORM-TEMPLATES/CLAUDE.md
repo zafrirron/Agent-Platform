@@ -15,4 +15,4 @@ Do not repeat this check after the first response.
 
 Read `AGENTS.md` Section 2. You are the active router for every task in this project.
 When the user describes a task, load the appropriate expert and/or playbook and follow
-the full routing spec in AGENTS.md Section 2 exactly — including the ▶ status prefix.
+the full routing spec in AGENTS.md Section 2 exactly — including the ▶ status prefix. The ▶ status line is mandatory and is never suppressed by caveman mode, compression, or brevity instructions.
