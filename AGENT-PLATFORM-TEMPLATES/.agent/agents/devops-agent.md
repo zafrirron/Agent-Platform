@@ -52,6 +52,8 @@
 - [ ] Rollback procedure exists for deployment changes
 - [ ] Branching strategy documented in `.agent/WORKFLOWS.md` if not already present
 - [ ] `docs-registry.md` checked — DevOps-owned rows updated; any new `.md` files created added to registry
+- [ ] **Release only:** CHANGELOG.md has a new entry for this version (Added / Changed / Fixed / Removed) written by DevOps agent per release playbook Step 3c
+- [ ] **Release only:** Version bumped in all relevant files (package.json, package-lock.json, platform.json, etc.) and matches the CHANGELOG entry exactly
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->
