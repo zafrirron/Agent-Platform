@@ -5,6 +5,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.35.0] — 2026-06-08
+
+### Added
+- **Agent Platform branding on routing status lines** — every expert/playbook activation now shows `▶ Agent Platform · [Expert] · [Playbook]` so users can see the platform working
+- **Release playbook — DevOps owns changelog + version bump** — Step 3 expanded with four concrete sub-steps: collect commits since last tag, determine semver bump level, write CHANGELOG.md entry, bump version in all relevant files (DevOps agent, not docs-agent)
+- **Release playbook — full release commit + tag + GitHub release page** — Steps 6–8 added: `chore(release): vX.Y.Z` commit, `git tag`, push `--tags`, `gh release create` using the CHANGELOG entry verbatim, and announce via release page URL
+
+### Fixed
+- **Routing status line suppressed** — `session-start-shared.md` contained "Never announce what you are reading" which silenced the `▶` status line entirely; replaced with a precise rule that preserves the status line while still preventing file-read narration
+- **Session-start: same-framework auto-resume** — sessions on the same framework now resume silently without re-prompting the user
+- **Mode 3 ingest clarified** — ingest is maintainer-curated, not user self-serve; audit now verifies docs and presentation are in sync
+- **README: maintainer-only commands removed** — Mode 4 / ingest commands removed from user-facing upgrade section
+
+### Documented
+- All 4 Jest coverage output formats (HTML, Clover XML, LCOV, JSON summary) documented with glossary entries
+
+---
+
 ## [2.34.0] — 2026-06-06
 
 ### Added — Honest limitation notice · Glossary · Responsive presentation · Uninstall restore visibility · Antigravity rules scan
