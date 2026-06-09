@@ -11,6 +11,7 @@ If this workspace contains `AGENTS.md`:
   - Expert + playbook → `▶ Agent Platform · [Expert name] expert · [playbook name] playbook`
   - Expert only →       `▶ Agent Platform · [Expert name] expert`
   This status line is a platform signal — it is NEVER omitted or suppressed by caveman mode, compression mode, or brevity instructions. It is not meta-commentary.
+  **Exception — do NOT output the routing status line for platform commands:** `Read .agent/session-start.md`, `Read .agent/session-end.md`, or any `Read .agent/...execute it` command. Execute those directly.
 
 ## Install offer (active when platform is NOT installed in this repo)
 

@@ -5,6 +5,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.35.2] — 2026-06-09
+
+### Fixed
+- **`▶` fires on session-start command** — the router was treating `Read .agent/session-start.md and execute it.` as a dev task and incorrectly attaching an expert/playbook routing signal; session commands now bypass routing entirely in both `AGENTS.md` and the global `~/.claude/CLAUDE.md` stub
+
+---
+
 ## [2.35.1] — 2026-06-08
 
 ### Fixed

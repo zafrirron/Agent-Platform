@@ -1,6 +1,6 @@
 {
   "name": "agent-platform-bootstrap",
-  "version": "2.35.1",
+  "version": "2.35.2",
   "type": "module",
   "description": "Multi-framework agent coordination platform — installs a complete agentic development environment into any repo.",
   "keywords": [

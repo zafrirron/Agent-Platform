@@ -16,6 +16,11 @@
 
 ## 2 · Auto-routing
 
+**Session commands bypass routing entirely — no `▶` line, no expert, no playbook:**
+- `Read .agent/session-start.md and execute it.` → execute session-start directly
+- `Read .agent/session-end.md and execute it.` → execute session-end directly
+- Any command that begins with `Read .agent/` and contains `execute it` → execute directly, never route
+
 You are the active router. When the user describes a task:
 1. Identify the matching row in the table below
 2. **READ the expert file** listed in the "Expert file" column
