@@ -18,6 +18,15 @@
 
    **BLOCKED:** do not write any production code until the user confirms the design at the appropriate tier. Silence is not confirmation.
 
+2b. **BC check** ← gate before implementation
+   Apply the Backwards compatibility policy from `.agent/BEST-PRACTICES.md`:
+   - Does the feature change any existing endpoint, schema, config key, exported type, or auth mechanism?
+   - If **no changes to existing contracts**: proceed to Step 3.
+   - If **yes**: classify as additive-safe or BC break.
+     - Additive-safe (new optional field, new endpoint, new optional config): proceed.
+     - BC break (removal, rename, type change, required param added, incompatible format change): **output ⚠️ BC BREAK notice** (format in `BEST-PRACTICES.md`) covering what breaks, who is affected, and the migration path — then **wait for explicit user approval before proceeding.**
+   **BLOCKED if: BC break detected and user approval not received.**
+
 3. **Spec** — write acceptance criteria or failing test skeleton **before** implementation — no exceptions
 4. **Implement** — domain expert(s); smallest correct change
 4b. **Output validation** ← postcondition gate

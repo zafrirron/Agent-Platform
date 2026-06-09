@@ -40,6 +40,12 @@ When asked to "document the API" or generate an OpenAPI spec:
 - For state machines, multi-step processes, data flows, and component interactions: create a Mermaid diagram rather than describing the flow in prose — diagrams communicate structure that paragraphs cannot
 - When modifying any non-trivial function or method, verify its inline docstring is accurate and update it in the same change — include purpose, parameters, return type, and usage context; stale docstrings are worse than no docstring
 
+### Backwards compatibility
+- When a BC break is implemented (by any expert), the Docs agent is responsible for the migration guide — do not mark the docs task done until the guide exists
+- Migration guide must include: what changed, who is affected, step-by-step upgrade path, and a before/after example
+- BC breaks must appear under `### Removed` or `### Changed` in the changelog with an explicit "**Breaking change:**" prefix — never buried in `### Fixed`
+- If a BC break has no migration path, state it explicitly: "**Breaking change (no migration path):** …" so users can make an informed upgrade decision
+
 ### Changelog discipline
 - Every user-visible change gets a changelog entry
 - Breaking changes: clearly marked, migration steps included
@@ -112,6 +118,7 @@ When any agent creates a new `.md` file outside `.agent/`:
 - [ ] Any function or method you modified has an accurate inline docstring reflecting current behaviour
 - [ ] Any new doc files created are registered in `docs-registry.md`
 - [ ] All owned rows in `docs-registry.md` have `Last reviewed` updated to today
+- [ ] BC check: any BC break has a migration guide written; changelog entry uses "**Breaking change:**" prefix
 <!-- PLATFORM:END -->
 
 <!-- PROJECT:START -->

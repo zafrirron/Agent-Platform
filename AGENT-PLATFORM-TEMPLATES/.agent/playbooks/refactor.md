@@ -29,3 +29,5 @@
 - If tests don't exist → write them first; ship as a separate commit
 - If refactor reveals a bug → stop; file separate bug-fix task; don't fix in-line
 - If scope grows beyond original agreement → stop; discuss with user
+- **BC rule:** a refactor must preserve all public contracts — any change to an exported function signature, component prop, API response shape, or observable behavior is **not a refactor**; stop and re-classify as a feature or bug-fix task with a BC check applied
+- **If a rename or move crosses a public boundary** (exported module, published package, documented API): output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) and require user approval before proceeding

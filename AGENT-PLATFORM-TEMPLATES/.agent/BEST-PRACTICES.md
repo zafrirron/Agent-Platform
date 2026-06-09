@@ -49,3 +49,32 @@ Structure every task with five parts:
 
 **Done means:** design confirmed, tests written, suite green, handoff updated. Never mark done without all four.
 
+## Backwards compatibility policy
+
+A **BC break** is any change that forces callers, consumers, or users to update their code, config, or integrations to avoid breakage.
+
+| Domain | BC break examples |
+|--------|-------------------|
+| **API** | Remove endpoint, change HTTP method or path, remove/rename response field, change required parameters, rename `operationId` |
+| **Schema** | Drop column, rename column, change column type, remove index a query depends on |
+| **Config / env** | Remove or rename env var, change format of a config value, remove CLI flag |
+| **Code contracts** | Remove exported function/type/class, change function signature, remove module export |
+| **Auth** | Change token format, change auth header name, change session invalidation behaviour |
+| **Platform conventions** | Change handoff format, rename agent files, change registry schema |
+
+**When any agent detects a BC break, output this notice before writing any code:**
+
+```
+⚠️ BC BREAK — [what changes]
+Affected: [callers / consumers / users / services impacted]
+Severity: Non-migratable (callers will break without action) | Migratable (migration path exists)
+Migration: [step-by-step migration path, or "No migration path available"]
+Action required: explicit user approval before proceeding.
+```
+
+**Rules:**
+- Never implement a BC break silently — the notice is mandatory before writing any code
+- **Migratable** break: document migration steps before implementation starts; include in the changelog
+- **Non-migratable** break: requires a major semver bump AND explicit "I understand, proceed" from the user
+- Any BC break to a public API or platform convention: route to Architect agent and log an ADR
+

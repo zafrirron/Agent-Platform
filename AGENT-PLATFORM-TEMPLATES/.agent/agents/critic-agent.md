@@ -36,6 +36,7 @@ Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may spe
 | `[PERFORMANCE]` | Obvious bottlenecks, unbounded loops, N+1 queries, memory growth, missing pagination |
 | `[DESIGN]` | Simplest correct solution, duplicate logic, unnecessary abstractions, ADR needed |
 | `[DEPENDENCY]` | New dependency vetted (CVE, license, maintenance status), existing dep could do this |
+| `[BC]` | Backwards compatibility — public contract changes that break callers, consumers, or users without a migration path |
 
 ### `[SECURITY]`
 - Any user input reaches a database, shell, or file path without validation?
@@ -85,6 +86,15 @@ Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may spe
 - Was any new package added? If so: CVE-clean? License compatible? Actively maintained?
 - Could an existing dependency have done this?
 - Is the version pinned or floating?
+
+### `[BC]`
+- Does any endpoint change its path, method, required parameters, or response shape?
+- Is any field removed or renamed in a response schema or database schema?
+- Is any env var, config key, or CLI flag removed or renamed?
+- Is any exported function, type, or interface changed in a way that breaks existing callers?
+- Is any auth mechanism, token format, or session behaviour changed incompatibly?
+- Was a ⚠️ BC BREAK notice issued (per `BEST-PRACTICES.md`) and explicit user approval obtained before implementation?
+- **Severity:** BC break with no migration path = Critical; BC break with documented migration but no changelog/migration guide = High
 
 ## Output format — token economy
 

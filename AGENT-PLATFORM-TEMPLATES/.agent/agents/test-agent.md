@@ -47,6 +47,11 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 - For services consumed by other teams or systems, use consumer-driven contract tests (e.g. Pact) — these validate that the provider implementation satisfies the consumer's expectations independently of integration environments
 - Distinguish: a contract test within a single service (HTTP response shape testing) from a cross-service consumer-driven contract — both are required in distributed architectures
 
+### Backwards compatibility
+- A failing contract test after a change is a BC break signal — do not suppress it; surface it and require a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) from the implementing expert before proceeding
+- When a BC break is intentional and approved, update the contract tests to reflect the new contract — never delete them to make the suite green
+- Test interface stability: if renaming or removing a test helper or fixture used across multiple test files, apply the same BC check as a code contract change
+
 ### Lookup function coverage
 - Every function that fetches by identifier must be tested for BOTH the found case AND the missing/not-found case — the not-found branch is where runtime errors and security bugs most often hide
 - A test that covers only the happy path of a lookup leaves the error branch untested and gives false confidence
@@ -62,6 +67,7 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 - [ ] `{{TEST_RUNNER}}` passes with 0 failures
 - [ ] Coverage at or above `{{COVERAGE_THRESHOLD}}%`
 - [ ] Untestable paths documented in `CURRENT.md`
+- [ ] BC check: no contract test deleted or weakened to pass after a change; any failing contract test surfaced as a BC break signal
 - [ ] `docs-registry.md` checked — Test-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 

@@ -60,6 +60,12 @@
 - Mass assignment: never bind all client-supplied fields directly to ORM/model updates — use explicit field allowlists
 - PATCH endpoints: only accept and apply explicitly listed fields — reject unexpected keys
 
+### Backwards compatibility
+- Any change to an auth mechanism (token format, session scheme, header name, algorithm) is a BC break — existing sessions or integrations may stop working immediately
+- For auth BC breaks, output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) before any implementation — include: what breaks, which clients are affected (mobile, API consumers, SSO integrations), and migration steps
+- Token format changes require a transition period: accept both old and new format until all clients are updated; document the cutoff date
+- Removing or changing a CSRF or CORS policy is a BC break — verify all legitimate callers can adapt before implementing
+
 ### Threat modelling (F002 — OWASP A04)
 - Any feature involving auth, payments, bulk operations, or user-generated content requires a threat model before implementation
 - Identify business flows that can be abused by automation (password reset, checkout, bulk export, account enumeration) — document compensating controls (CAPTCHA, progressive friction, anomaly detection)
@@ -110,6 +116,7 @@ When the codebase builds, hosts, or integrates AI agents (not just uses an LLM f
 - [ ] If feature uses LLM or passes external content to a model: all 7 prompt injection types checked
 - [ ] If feature builds or integrates an AI agent: all 8 agentic risk rows reviewed
 - [ ] Findings logged in `.agent/context/known-issues.md` with severity rating
+- [ ] BC check: any auth mechanism or security policy change assessed; ⚠️ BC BREAK notice issued and user-approved if applicable
 - [ ] `docs-registry.md` checked — Security-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 

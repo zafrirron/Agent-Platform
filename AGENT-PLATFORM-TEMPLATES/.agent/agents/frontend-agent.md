@@ -25,6 +25,12 @@
 - Images: meaningful alt text or `alt=""` for decorative
 - Colour is not the only indicator of state — pair with text or icon
 
+### Backwards compatibility
+- Any change to a component's public interface (props renamed/removed, required props added, emitted events renamed) is a BC break — check all callers before proceeding
+- For any BC break, output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) listing affected consumers and migration steps
+- Prefer extending the interface additively (new optional prop) over renaming or removing; if removal is necessary, deprecate first
+- Changes to shared stores, hooks, or service APIs used across multiple components are architectural — route to Architect agent
+
 ### Performance
 - No blocking renders — expensive computations belong in memoised functions
 - Images: sized and lazily loaded
@@ -40,6 +46,7 @@
 - [ ] Keyboard navigation works on all interactive elements
 - [ ] No console errors or warnings
 - [ ] Existing tests still pass
+- [ ] BC check: any change to a component's public interface assessed; ⚠️ BC BREAK notice issued and user-approved if applicable
 
 ## Token tip
 In implementation mode, say `"caveman mode"` for ~65% shorter responses at the same accuracy.

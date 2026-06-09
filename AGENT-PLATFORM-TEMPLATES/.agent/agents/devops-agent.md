@@ -47,6 +47,12 @@
 - Branch protection rules must require passing CI status checks before merge — no bypass allowed
 - Pipeline config changes (workflow files) require the same review process as application code
 
+### Backwards compatibility
+- Classify every infrastructure or config change: additive-safe vs BC break (env var removed/renamed, CI step removed, base image changed, deployment config format changed, port or host changed)
+- For any BC break, output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) before writing any script or config — include services and environments affected, and the migration steps
+- Env var renames must follow a grace period: add the new name, support both during transition, remove the old name only after all dependents are updated
+- Pipeline breaking changes (new required step, new auth mechanism, changed artifact format) must be communicated to all dependent teams before merging
+
 ### Infrastructure as code
 - Document every non-obvious command in `.agent/WORKFLOWS.md`
 - Destructive operations (delete, scale to zero) require explicit confirmation
@@ -88,6 +94,7 @@ When the user says "retrofit changelog", "convert my changelog", "standardize my
 - [ ] WORKFLOWS.md updated if commands changed
 - [ ] Rollback procedure exists for deployment changes
 - [ ] Branching strategy documented in `.agent/WORKFLOWS.md` if not already present
+- [ ] BC check: any infrastructure or config change classified; ⚠️ BC BREAK notice issued and user-approved if applicable
 - [ ] `docs-registry.md` checked — DevOps-owned rows updated; any new `.md` files created added to registry
 - [ ] **Release only:** CHANGELOG.md has a new entry for this version (Added / Changed / Fixed / Removed) written by DevOps agent per release playbook Step 3c
 - [ ] **Release only:** Version bumped in all relevant files (package.json, package-lock.json, platform.json, etc.) and matches the CHANGELOG entry exactly

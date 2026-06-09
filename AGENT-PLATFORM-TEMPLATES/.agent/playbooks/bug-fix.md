@@ -28,6 +28,14 @@
    - **Architectural fix** (root cause requires restructuring, breaking API change, schema migration): load `architect-agent.md`, write ADR, get full design approval first
    **BLOCKED:** do not write code until the appropriate design confirmation is received.
 
+3c. **BC check** ← gate before writing the fix
+   Does the fix change any public contract (API response shape, error codes, config format, exported interface)?
+   - If **no**: proceed to Step 4.
+   - If **yes**: output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) — a bug fix that changes observable behaviour is still a BC break from the caller's perspective.
+     Include: what changed, which callers are affected, migration steps or "no migration path".
+   **BLOCKED if: fix breaks a public contract and user approval has not been received.**
+   Note: fixing a bug that was never intentionally part of the contract does not require user approval, but still requires the notice so callers are aware.
+
 4. **Fix**
    Smallest change that makes the bug impossible. Do not refactor surrounding code — note it in `CURRENT.md` for a separate task.
 

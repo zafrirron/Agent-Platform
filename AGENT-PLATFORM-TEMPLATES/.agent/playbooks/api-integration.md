@@ -18,3 +18,4 @@
 - No endpoint ships without a contract test
 - Tests must cover: success response shape, at least one 4xx, at least one auth failure (if applicable)
 - If upstream is unavailable, mock it and document the mock in `CURRENT.md`
+- **BC check:** if the integration modifies an existing endpoint contract (path, method, response shape, required params), output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) and wait for explicit user approval before implementing the change

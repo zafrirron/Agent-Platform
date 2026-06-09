@@ -38,11 +38,26 @@
    - Read `.agent/handoff/CURRENT.md` for session notes and any flagged changes
    - Read `.agent/context/known-issues.md` for resolved items
 
-   **3b. Determine semver bump level**
-   - **Major** (N.0.0): any breaking API/contract change, removed endpoint, renamed field, DB migration requiring data migration
-   - **Minor** (x.N.0): new feature, new endpoint, new config option — all backward-compatible
-   - **Patch** (x.x.N): bug fixes only, no new features, no breaking changes
-   - When in doubt, ask the user before proceeding
+   **3b. BC check + semver determination**
+   Before settling on a semver bump, scan all commits since the last tag for BC breaks:
+   ```
+   git log $(git describe --tags --abbrev=0)..HEAD --oneline
+   ```
+   For each commit, check whether it introduced a BC break as defined in `BEST-PRACTICES.md` (API contract change, schema change, config key removal, exported interface change, auth change).
+
+   For each BC break found, output:
+   ```
+   ⚠️ BC BREAK — [commit / change description]
+   Affected: [callers / consumers]
+   Severity: Non-migratable | Migratable
+   Migration: [steps, or "No migration path"]
+   ```
+   Then determine the semver bump:
+   - **Major** (N.0.0): any BC break — removing endpoint, renaming field, removing config key, breaking schema change, incompatible auth change
+   - **Minor** (x.N.0): new feature, new endpoint, new config option — all backward-compatible, no BC breaks
+   - **Patch** (x.x.N): bug fixes only, no new features, no BC breaks
+   - **When in doubt, ask the user before proceeding**
+   - **BLOCKED if:** a BC break was found, the bump is not Major, and the user has not explicitly approved the downgrade
 
    **3c. Write CHANGELOG.md entry** — DevOps agent writes this, not docs agent
    First: read the existing CHANGELOG.md to detect the format already in use.

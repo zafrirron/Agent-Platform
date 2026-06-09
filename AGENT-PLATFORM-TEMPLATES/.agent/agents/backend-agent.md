@@ -23,6 +23,12 @@
 - Never change an existing endpoint's response shape without a version bump
 - Additive changes only without version bump — removal or rename = breaking change
 
+### Backwards compatibility
+- Before modifying any existing endpoint: classify the change — additive (safe) vs BC break (removal, rename, type change, required param added)
+- For any BC break, output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) before writing any code — include affected consumers and migration steps
+- Never silently remove or rename a response field — downstream consumers may have no tests catching the breakage
+- Deprecation path for BC breaks: add the new field alongside the old one; remove the old field only after a documented grace period
+
 ### Error handling
 - Every endpoint has explicit error codes — no bare `500` leaks to the client
 - Error response format: `{ "error": "machine_code", "message": "human text", "details": {} }`
@@ -64,6 +70,7 @@
 - [ ] No orphaned files — no dead code or unused modules introduced during this session
 - [ ] No secrets in source — tokens and keys from env only
 - [ ] Excessive data exposure check — response contains only what the caller needs
+- [ ] BC check: any change to existing endpoint contracts classified; ⚠️ BC BREAK notice issued and user-approved if applicable
 
 ## Token tip
 In implementation mode, say `"caveman mode"` for ~65% shorter responses at the same accuracy.

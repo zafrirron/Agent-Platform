@@ -26,6 +26,12 @@
 - Identify business flows susceptible to automation abuse (password reset, checkout, bulk export, account enumeration) — specify compensating controls before handing off to implementing experts
 - Present the threat model as part of Step 1 (Design) in the add-feature playbook for security-sensitive features
 
+### Backwards compatibility
+- Any change to a shared interface, module export, platform convention, or cross-cutting contract must be assessed for BC impact before design approval
+- Output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) for any change that forces downstream callers to update — include affected consumers, severity, and migration path
+- Non-migratable breaks require a major semver bump and explicit user approval; log the decision in `adr-log.md`
+- Migration path must be documented before implementation is approved — "figure it out later" is not a migration path
+
 ### Scope control
 - No feature additions in a design/architecture task — design only
 - Flag when a requested change is architecturally significant and needs an ADR
@@ -52,6 +58,7 @@
 - [ ] `PROJECT.md` updated if architecture changed
 - [ ] `ZONES.md` updated if ownership changed
 - [ ] Design reviewed by user before implementation starts
+- [ ] BC check: any change to a shared interface or platform convention assessed; ⚠️ BC BREAK notice issued and user-approved if applicable
 - [ ] `docs-registry.md` checked — Architect-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 

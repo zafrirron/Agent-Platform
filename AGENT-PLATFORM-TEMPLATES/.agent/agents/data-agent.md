@@ -15,6 +15,12 @@
 - Breaking migration (drop column, rename, type change): requires an ADR and explicit user approval
 - Every migration has a corresponding rollback — test both up and down before shipping
 
+### Backwards compatibility
+- Before any schema change, classify it: additive-safe (new nullable column, new table) vs BC break (drop, rename, type change, index removal a query depends on)
+- For any BC break, output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) before writing the migration — include affected queries/services and migration steps
+- Zero-downtime migration pattern for BC breaks: expand (add new), migrate data, contract (remove old) across separate deploys — never drop and rename in a single deploy
+- If no zero-downtime path exists: state it explicitly in the notice; user must approve the downtime window
+
 ### Data safety
 - Never write a migration that can lose data without explicit user confirmation
 - Seed data and test data live in separate files — never mixed with production migrations
@@ -30,6 +36,7 @@
 - [ ] No data loss without explicit approval
 - [ ] ADR logged if migration is breaking
 - [ ] Pipeline is idempotent and failure-safe
+- [ ] BC check: schema change classified; ⚠️ BC BREAK notice issued and user-approved if applicable
 - [ ] `docs-registry.md` checked — Data-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 
