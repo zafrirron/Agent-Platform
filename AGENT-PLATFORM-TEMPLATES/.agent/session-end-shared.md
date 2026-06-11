@@ -26,6 +26,20 @@ Read `.agent/CHECKLIST.md` and verify each item. For any item that is not satisf
 - New code has no tests
 - The test suite is red
 - There are unfilled `{{placeholder}}` stubs
+- Application code changed but Critic review is not recorded (see Step 2a)
+
+### Step 2a — Critic catch-up (mandatory when application code changed)
+
+If this session modified any application source or test files (e.g. `src/`, `tests/`, `lib/`, `app/` — not only `.agent/`):
+
+1. Read the current `CURRENT.md` entry — if it already contains `Critic reviewed: yes`, skip to Step 2b.
+2. Otherwise load `.agent/agents/critic-agent.md` and run adversarial review on all files changed this session.
+3. Update `CURRENT.md`: set `Critic reviewed: yes — APPROVED` or `Critic reviewed: yes — N findings (X Critical, Y High): [summary]`.
+4. Output before continuing: `▶ Critic review — [same result line]`.
+
+**BLOCKED:** Do not proceed to Step 2c if application code changed and `Critic reviewed: yes` is not recorded.
+
+> Catches playbook Step 5b skips — session-end is the last gate before handoff.
 
 ### Step 2b — New doc file scan
 
@@ -50,13 +64,17 @@ If no new `.md` files were created: skip this step silently.
 Run `git status --short`.
 
 **If there are uncommitted changes:**
-1. Run `git add -A`
-2. Run `git commit -m "<use the one-line summary from Step 1 as the commit message>"`
-3. Run `git status --short` to confirm the working tree is clean
-4. If the commit was blocked by a hook or error — report it to the user and stop
+
+Run each git command as a **separate shell invocation**. Do **not** chain with `&&` — Windows PowerShell rejects `&&` and the commit will fail silently.
+
+1. `git add -A`
+2. `git commit -m "<use the one-line summary from Step 1 as the commit message>"`
+3. `git status --short` to confirm the working tree is clean (platform-managed `AGENTS.md` / `CLAUDE.md` changes may remain — that is OK if only those two files show modified)
+
+If step 2 fails, retry with PowerShell-safe syntax — never use `&&`. Report the error to the user and stop.
 
 You have terminal/shell tools available. Use them now to run these commands directly.
-Do not proceed to Step 3 until `git status` shows a clean working tree.
+Do not proceed to Step 3 until application changes are committed.
 
 **If working tree is already clean:** continue to Step 3 silently.
 
@@ -96,6 +114,16 @@ Ask yourself: **did this session solve a non-trivial problem in a non-trivial wa
 
 > **Why this matters:** Patterns compound. Each session that captures a reusable insight makes every future session in this codebase smarter — without any infrastructure, databases, or servers. Just structured memory.
 
+### Step 2e — Test and coverage verification (when application code changed)
+
+If this session modified application source or tests:
+
+1. Run `{{TEST_RUNNER}}` — all tests must pass before handoff.
+2. Run `{{COVERAGE_CMD}}` — record the result in `CURRENT.md` (e.g. `Coverage: 98% lines`).
+3. If coverage is below `{{COVERAGE_THRESHOLD}}` or tests are red: set `finality_state: partial` in Step 4 and note the gap in `CURRENT.md`. Do not claim a clean handoff.
+
+Skip silently if only platform or documentation files changed (no application code).
+
 ### Step 3 — Update handoff log
 
 Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:
@@ -108,14 +136,14 @@ Update the most recent entry in `.agent/handoff/CURRENT.md` with this structure:
   - <file2> — <what changed>
 **Tests:** <tests added or confirmed green>
 **Commit:** <git commit hash from Step 2c, or "none — no changes">
-**Critic reviewed:** no
+**Critic reviewed:** <yes — [summary from Step 2a] | no — explain why, only if no application code changed>
 **Next agent:** <which expert or framework, if known>
 **Notes:** <blockers, known issues, or anything the next agent should know>
 ```
 
 > **Important:** List every changed file explicitly. The next framework's session-start
 > will use this list to offer a cross-framework Critic review of your work.
-> Set `Critic reviewed: no` — the next framework's session-start will update this.
+> If application code changed, `Critic reviewed` must be `yes` (set in Step 2a).
 
 ### Step 4 — Mark framework idle + write finality state
 

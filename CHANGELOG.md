@@ -5,6 +5,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.37.0] — 2026-06-09
+
+### Added
+- **`document-api` playbook** — OpenAPI/Swagger tasks now route to `.agent/playbooks/document-api.md` instead of `*(none)*`; enforces spec-from-code alignment and mandatory Critic review before handoff
+- **Session-end Step 2a** — Critic catch-up gate when application code changed but playbook Step 5b was skipped
+- **Session-end Step 2e** — mandatory test + coverage verification when application code changed
+- **CHECKLIST quality gates** — Critic, Security gate, and playbook Step 5b output tracked explicitly
+
+### Fixed
+- **Critic gate skipped on bug-fix / add-feature** — Step 5b marked MANDATORY with required `▶ Critic review —` output and `CURRENT.md` logging; HARD RULE blocks marking work done without review
+- **PowerShell commit failure at session-end** — Step 2c forbids `&&` chaining; each git command runs as a separate shell invocation
+- **Docs route without playbook** — `AGENTS.md` docs row now points to `document-api.md` (prevents spec drift / docs-before-code)
+
+### Changed
+- **add-feature Step 5a** — Security gate outputs required `▶ Security gate —` signal when triggered
+
+---
+
 ## [2.35.2] — 2026-06-09
 
 ### Fixed

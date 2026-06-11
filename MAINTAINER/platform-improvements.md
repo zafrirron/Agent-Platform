@@ -18,6 +18,24 @@
 
 ---
 
+### [2.37.0] — 2026-06-09 — E2E gaps: Critic enforcement, PowerShell commits, document-api playbook
+
+**Failure observed:** Platform E2E on `platform-demo` (todo-app demo): bug-fix and add-feature completed without Critic (`CURRENT.md` `Critic reviewed: no`); session-end first commit failed on PowerShell `&&`; "document API" routed to docs-agent with `*(none)*` playbook — agent documented auth without implementing it; coverage not re-run at session end.
+
+**Files changed:** `bug-fix.md`, `add-feature.md`, `document-api.md` (new), `AGENTS.md`, `session-end-shared.md`, `CHECKLIST.md`, `AGENT-PLATFORM-MANIFEST.json`
+
+**Rules added:**
+- Playbook Step 5b: MANDATORY `▶ Critic review —` output + `CURRENT.md` log; HARD RULE blocks done/session-end until complete
+- Session-end Step 2a: Critic catch-up when app code changed and playbook skipped
+- Session-end Step 2c: separate git commands — no `&&` (PowerShell-safe)
+- Session-end Step 2e: run `{{TEST_RUNNER}}` + `{{COVERAGE_CMD}}` when app code changed
+- New `document-api` playbook: spec follows code, mandatory Critic `[COMPLETENESS] [CORRECTNESS]`
+- CHECKLIST: Quality gates section for Critic / Security / Step 5b
+
+**Validated:** Pending — re-run E2E Phase 3–5 on upgraded `platform-demo`
+
+---
+
 ### [2.22.0] — 2026-05-30 — Web audit: 15 OWASP/CWE/best-practice gaps closed across 6 expert agents
 
 **Source:** Mode 2 web ecosystem audit against OWASP Top 10 (2021), OWASP API Security Top 10 (2023), CWE Top 25 (2024), OWASP LLM Top 10 (2025), industry best-practice searches.

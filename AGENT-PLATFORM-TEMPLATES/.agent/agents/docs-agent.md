@@ -17,10 +17,10 @@
 
 ### OpenAPI/Swagger generation — full workflow
 
-When asked to "document the API" or generate an OpenAPI spec:
+When asked to "document the API" or generate an OpenAPI spec, follow `.agent/playbooks/document-api.md` (routed automatically). Summary:
 
-1. **Read** `.agent/context/api-contracts.md` — this is the source of truth for the API shape
-2. **Generate** the spec file at `openapi.json` (or `swagger/openapi.yaml`) from the contracts
+1. **Read** route/middleware source **and** `.agent/context/api-contracts.md` — spec follows **implemented code**, not planned behaviour
+2. **Generate** the spec file at `openapi.json` (or `swagger/openapi.yaml`) from running code; update contracts first if they disagree with code
 3. **Check for a viewer** — look for `swagger-ui-express` (Node), `flasgger` (Python), `springdoc` (Java), or equivalent in the project's dependency file (`package.json`, `requirements.txt`, `pom.xml`, etc.)
 4. **If no viewer is installed:**
    - Read `.agent/playbooks/add-dependency.md` and install the appropriate viewer for this stack

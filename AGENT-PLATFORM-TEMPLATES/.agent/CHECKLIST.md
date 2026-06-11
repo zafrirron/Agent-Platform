@@ -22,6 +22,11 @@ Run before every session end. All boxes must be checked or explicitly noted as N
 - [ ] No TODO/FIXME left without a `CURRENT.md` note
 - [ ] Existing tests still pass (or noted as failing with reason)
 
+## Quality gates
+- [ ] Critic review completed when application code changed — `CURRENT.md` contains `Critic reviewed: yes`
+- [ ] Playbook Step 5b output recorded — response included `▶ Critic review —` line (or session-end Step 2a ran)
+- [ ] Security gate (add-feature Step 5a) ran when auth/endpoints/input changed — or noted why N/A
+
 ## Security
 - [ ] No secrets, tokens, or keys in staged files
 - [ ] No `.env`, `node_modules`, `bin/`, `obj/` staged

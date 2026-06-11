@@ -53,7 +53,7 @@
    - **Verify the test PASSES on fixed code**
    - If you cannot write this test, log the reason in `CURRENT.md` before continuing
 
-5b. **Critic review** ← adversarial gate
+5b. **Critic review** ← adversarial gate (**MANDATORY — cannot skip**)
    Load `critic-agent.md`. Give it: the fix from Step 4 + the regression test from Step 5.
    Scope: `[CORRECTNESS] [TEST] [SECURITY]`
    The critic must confirm:
@@ -63,6 +63,10 @@
    - Any security implications of the change?
    **BLOCKED if: any Critical or High finding is reported. DEFER if tradeoff requires user decision.**
    Address all Critical/High findings before continuing to Step 6.
+   **Output immediately after review (required platform signal):**
+   `▶ Critic review — APPROVED` or `▶ Critic review — N findings (X Critical, Y High): [one-line summary]`
+   Log in `CURRENT.md`: `Critic reviewed: yes — [same summary]`
+   **HARD RULE:** Do not tell the user the bug fix is done, do not proceed to Step 6, and do not end the session until Step 5b completes and the `▶ Critic review` line is output.
 
 6. **Full suite**
    Run `{{TEST_RUNNER}}`. All tests must pass. If any new failures appear, fix them before continuing — do not ship a fix that breaks other tests.

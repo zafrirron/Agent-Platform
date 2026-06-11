@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bootstrap_version": "2.36.0",
+  "bootstrap_version": "2.37.0",
   "description": "Template manifest for Agent Platform Bootstrap. Consumer-project neutral.",
   "templates_root": "AGENT-PLATFORM-TEMPLATES",
   "apply_script": ".agent/bootstrap/apply.js",
@@ -303,6 +303,11 @@
     {
       "path": ".agent/playbooks/security-audit.md",
       "template": ".agent/playbooks/security-audit.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/document-api.md",
+      "template": ".agent/playbooks/document-api.md",
       "kind": "playbook"
     },
     {

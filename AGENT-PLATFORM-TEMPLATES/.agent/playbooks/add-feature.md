@@ -37,18 +37,24 @@
    - If any criterion is only partially met: note it explicitly before advancing
    **BLOCKED if: implementation does not satisfy stated acceptance criteria.**
 5. **Test** — Test agent: unit + integration; all tests green
-5a. **Security gate** ← automatic for any feature touching endpoints, auth, or data input
+5a. **Security gate** ← automatic for any feature touching endpoints, auth, or data input (**MANDATORY when triggered**)
    If the feature adds or modifies: a new endpoint, auth/authz logic, user input handling, file operations, or data queries:
    Load `security-agent.md`. Run a targeted review on the new code only — not the whole codebase.
    Check: input validation, auth enforcement, error response content, data exposure, injection vectors.
+   **Output immediately when this step runs (required platform signal):**
+   `▶ Security gate — reviewing [list of new/changed files]`
    **BLOCKED if: any Critical or High finding is reported.**
    Address findings before Step 5b.
-   If the feature adds no endpoints and no data handling: skip this step.
-5b. **Critic review** ← adversarial gate
+   If the feature adds no endpoints and no data handling: skip this step silently.
+5b. **Critic review** ← adversarial gate (**MANDATORY — cannot skip**)
    Load `critic-agent.md`. Give it the implementation + tests from Steps 4–5.
    Scope: `[SECURITY] [CORRECTNESS] [TEST] [COMPLETENESS] [DESIGN] [DEPENDENCY]`
    **BLOCKED if: any Critical or High finding is reported. DEFER if tradeoff requires user decision.**
    Address all findings before continuing to Step 6.
+   **Output immediately after review (required platform signal):**
+   `▶ Critic review — APPROVED` or `▶ Critic review — N findings (X Critical, Y High): [one-line summary]`
+   Log in `CURRENT.md`: `Critic reviewed: yes — [same summary]`
+   **HARD RULE:** Do not tell the user the feature is done, do not proceed to Step 6, and do not end the session until Step 5b completes and the `▶ Critic review` line is output.
 6. **Docs** — if user-facing: Docs agent updates README / changelog
 7. **Handoff** — update `CURRENT.md` with outcome, files changed, and next agent recommendation. Do NOT run session-end — only the user ends the session.
 
