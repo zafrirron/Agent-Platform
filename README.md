@@ -1,4 +1,4 @@
-﻿# Agent Platform Bootstrap
+# Agent Platform Bootstrap
 
 **Built by agents. For agents. To build better agents.**
 
