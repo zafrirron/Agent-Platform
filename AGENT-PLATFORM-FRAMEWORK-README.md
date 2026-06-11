@@ -38,7 +38,7 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 > **One command. A complete agentic development environment on any repository.**
 
-Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, 9 step-by-step playbooks for every common scenario, a framework-aware quick reference on every session start, built-in test enforcement, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, **18 step-by-step playbooks** (core delivery + NFR/quality + compliance/maturity), a framework-aware quick reference on every session start, built-in test enforcement, ISO 25010-style NFR register, production-readiness and compliance evidence gates, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
 
 ---
 
@@ -49,14 +49,16 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — each gets a private folder with session-start/end prompts and skill wiring |
 | **Cross-IDE coordination** | `registry.yaml` prevents two IDEs editing the same file simultaneously; `CURRENT.md` preserves full context across switches |
 | **9 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name, chain across sessions |
-| **Critic agent** | Adversarial reviewer with 6-dimension analysis (correctness, security, test quality, completeness, design, edge cases). Severity-rated findings. Built into add-feature, bug-fix, and release playbooks as mandatory quality gates. |
+| **Critic agent** | Adversarial reviewer with 10 review dimensions (correctness, security, test, completeness, performance, design, dependency, accessibility, operability, BC). Severity-rated findings. Built into add-feature, bug-fix, release, and audit playbooks as mandatory quality gates. |
 | **Cross-framework critic review** | When switching IDEs, the new framework automatically offers to run the Critic on the previous framework's work. Zero setup — different AI models reviewing each other's blind spots, every time you switch. Session end commits all changes first so the next IDE always reviews real committed code. |
 | **Agent-generated artifacts** | Test expert generates a coverage HTML report; Docs expert generates OpenAPI/Swagger spec. These are your project files — not platform files. Not gitignored by default. Keep, commit, or exclude them as you see fit. See `.agent/PLATFORM-HELP.md` → Agent-generated artifacts. |
-| **9 playbooks** | audit · add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration — step-by-step with agent assignments. add-feature includes automatic Security gate (Step 5a) for any feature touching endpoints, auth, or data input — fires before Critic, no user action needed. |
+| **18 playbooks** | **Core:** audit · add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration · document-api. **Quality & NFR:** nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. **Compliance & maturity:** compliance-review · org-maturity-assessment · incident-postmortem. add-feature includes automatic Security gate (Step 5a) for endpoints/auth/data — fires before Critic. |
+| **NFR & production readiness** | `nfr-log.md` — measurable ISO 25010 / 14-category targets (threshold + measure + verify). `production-readiness` playbook gates go-live: P0 NFRs, compliance evidence, vuln SLA, SBOM, rollback evidence. |
+| **Compliance & DORA maturity** | `compliance-evidence-log.md` maps SOC 2 / ISO 27001 SDLC controls to artifacts. `compliance-review`, `org-maturity-assessment`, and `incident-postmortem` playbooks for audit prep and DORA metrics (change failure rate, MTTR). |
 | **Quick reference on every session start** | Compact status block on every session start: last work, update status, path to full guide. Full capability guide at `.agent/QUICK-REF.md` — open in editor any time, no chat clutter. No memorisation required. |
 | **10 best-practice rules** | Golden rules, task anatomy (Spec/Implement/Test/Handoff), debug protocol, refactor discipline, dep evaluation, security baseline — in `.agent/BEST-PRACTICES.md` |
 | **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before done; coverage gate auto-detected at install; red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see line-by-line coverage. |
-| **7 living context files** | api-contracts · adr-log · known-issues · dependencies · project-overview · patterns · reputation.json (per-agent trust scores) — kept in sync as code evolves |
+| **11+ living context files** | api-contracts · adr-log · known-issues · dependencies · project-overview · patterns · nfr-log · compliance-evidence-log · incident-log · docs-registry · reputation.json — kept in sync as code evolves |
 | **📋 Docs governance** | Every project doc is registered with an owner expert, audience, and staleness threshold. All expert Done-when checklists require checking owned docs. Session end scans for new unregistered files. Release playbook blocked until Docs agent audits all docs current. Pre-commit guard warns on unregistered new doc files. |
 | **🪨 Caveman skill** | ~65% output token savings; activated with `"caveman mode"` across all 4 frameworks |
 | **Agentic update check** | `node .agent/tools/check-updates.mjs` — or tell the agent: `Read .agent/tools/upgrade.md and execute it.` Checks once per 7 days, caches result. |
@@ -297,11 +299,15 @@ repo-root/
 │   │   Each agent has a companion *.manifest.json defining capabilities, routing keywords,
 │   │   Critic dimensions, and trust ceiling — machine-readable foundation for Phase 5-6 routing
 │   ├── agents/schemas/               ← JSON Schema for agent manifests
-│   ├── playbooks/                    ← 9 step-by-step workflows
-│   │   audit · add-feature · release · debug-pipeline · bug-fix · refactor
-│   │   add-dependency · security-audit · api-integration
-│   ├── context/                      ← 7 living reference files
+│   ├── playbooks/                    ← 18 step-by-step workflows
+│   │   core: audit · add-feature · release · bug-fix · refactor · debug-pipeline
+│   │   add-dependency · security-audit · api-integration · document-api
+│   │   quality: nfr-definition · production-readiness · performance-budget
+│   │   observability-setup · accessibility-audit
+│   │   compliance: compliance-review · org-maturity-assessment · incident-postmortem
+│   ├── context/                      ← living reference files
 │   │   project-overview · api-contracts · api-patterns · adr-log · known-issues · dependencies
+│   │   nfr-log · compliance-evidence-log · incident-log · docs-registry
 │   │   reputation.json               ← per-agent trust scores (seeds Phase 5 reputation-aware gates)
 │   │   patterns                      ← reusable approaches from prior sessions (agents write + read)
 │   ├── skills/caveman/SKILL.md       ← 🪨 token-compression skill
@@ -753,6 +759,16 @@ SECURITY AUDIT      Read .agent/playbooks/security-audit.md
 ADD FEATURE         Read .agent/playbooks/add-feature.md
 RELEASE             Read .agent/playbooks/release.md
 API INTEGRATION     Read .agent/playbooks/api-integration.md
+DOCUMENT API        Read .agent/playbooks/document-api.md
+DEFINE NFRs         Read .agent/playbooks/nfr-definition.md
+PRODUCTION READY    Read .agent/playbooks/production-readiness.md
+PERFORMANCE BUDGET  Read .agent/playbooks/performance-budget.md
+OBSERVABILITY       Read .agent/playbooks/observability-setup.md
+A11Y AUDIT          Read .agent/playbooks/accessibility-audit.md
+COMPLIANCE REVIEW   Read .agent/playbooks/compliance-review.md
+MATURITY / DORA     Read .agent/playbooks/org-maturity-assessment.md
+INCIDENT POSTMORTEM Read .agent/playbooks/incident-postmortem.md
+PROJECT AUDIT       Read .agent/playbooks/audit.md
 CAVEMAN ON          "caveman mode"
 CAVEMAN OFF         "stop caveman"
 COMPRESS FILE       "caveman compress <path>"

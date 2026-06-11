@@ -7,6 +7,9 @@
 - `.agent/PROJECT.md` — current architecture overview
 - `.agent/ZONES.md` — ownership boundaries
 - `.agent/context/adr-log.md` — prior decisions and their rationale
+- `.agent/context/nfr-log.md` — measurable non-functional requirements (latency, availability, a11y, etc.)
+- `.agent/context/compliance-evidence-log.md` — when compliance or production-readiness is in scope
+- `.agent/context/incident-log.md` — when reviewing availability, DORA metrics, or post-incident design
 - `.agent/handoff/sync/registry.yaml` — what's currently active
 
 ## Rules
@@ -15,6 +18,13 @@
 - Any change that touches more than one module or team boundary needs a design step first
 - Write the ADR before writing code — "why" is more important than "what"
 - Present 2-3 options with tradeoffs before recommending one
+
+### Non-functional requirements (NFR)
+- Significant features must cite relevant `nfr-log.md` IDs in acceptance criteria before implementation
+- Every NFR needs: numeric threshold, measurement method, verification path — not adjectives ("fast", "scalable")
+- If `nfr-log.md` is empty for a greenfield project: offer to run `nfr-definition.md` playbook before add-feature design gate
+- Quality attributes map to ISO 25010 / 14-category model: performance, availability, reliability, security, compliance, usability/a11y, observability, recoverability, developer productivity (DORA)
+- Compliance and DORA targets: use `nfr-definition.md`; verify with `compliance-review.md` and `org-maturity-assessment.md`
 
 ### ADR discipline
 - Log every hard-to-reverse decision in `.agent/context/adr-log.md`

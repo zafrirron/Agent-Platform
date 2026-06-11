@@ -7,6 +7,7 @@
 - `.agent/CONVENTIONS.md` — project security rules
 - `.agent/context/api-contracts.md` — existing endpoints and their auth requirements
 - `.agent/context/known-issues.md` — past security findings
+- `.agent/context/compliance-evidence-log.md` — when running compliance review or PRR security evidence
 
 ## Rules — apply to every review
 

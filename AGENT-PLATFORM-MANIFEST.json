@@ -166,6 +166,21 @@
       "kind": "template"
     },
     {
+      "path": ".agent/context/nfr-log.md",
+      "template": ".agent/context/nfr-log.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/compliance-evidence-log.md",
+      "template": ".agent/context/compliance-evidence-log.md",
+      "kind": "template"
+    },
+    {
+      "path": ".agent/context/incident-log.md",
+      "template": ".agent/context/incident-log.md",
+      "kind": "template"
+    },
+    {
       "path": ".agent/context/patterns.md",
       "template": ".agent/context/patterns.md",
       "kind": "template"
@@ -308,6 +323,46 @@
     {
       "path": ".agent/playbooks/document-api.md",
       "template": ".agent/playbooks/document-api.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/nfr-definition.md",
+      "template": ".agent/playbooks/nfr-definition.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/production-readiness.md",
+      "template": ".agent/playbooks/production-readiness.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/performance-budget.md",
+      "template": ".agent/playbooks/performance-budget.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/observability-setup.md",
+      "template": ".agent/playbooks/observability-setup.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/accessibility-audit.md",
+      "template": ".agent/playbooks/accessibility-audit.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/compliance-review.md",
+      "template": ".agent/playbooks/compliance-review.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/org-maturity-assessment.md",
+      "template": ".agent/playbooks/org-maturity-assessment.md",
+      "kind": "playbook"
+    },
+    {
+      "path": ".agent/playbooks/incident-postmortem.md",
+      "template": ".agent/playbooks/incident-postmortem.md",
       "kind": "playbook"
     },
     {

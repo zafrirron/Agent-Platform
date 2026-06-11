@@ -5,7 +5,7 @@
   "capabilities": ["adversarial-review", "correctness", "security-review", "test-quality", "design-review", "edge-cases", "completeness-check", "amendment-proposals", "DRY-detection", "SOLID-violations", "code-structure-review", "magic-numbers", "file-modularity", "design-gate-verification"],
   "cannot_do": ["feature-implementation", "writing-production-code", "deployment", "schema-changes"],
   "governance": {
-    "critic_dimensions": ["SECURITY", "CORRECTNESS", "TEST", "COMPLETENESS", "PERFORMANCE", "DESIGN", "DEPENDENCY"],
+    "critic_dimensions": ["SECURITY", "CORRECTNESS", "TEST", "COMPLETENESS", "PERFORMANCE", "DESIGN", "DEPENDENCY", "ACCESSIBILITY", "OPERABILITY"],
     "requires_architect_for": [],
     "always_runs_security_gate": false
   },

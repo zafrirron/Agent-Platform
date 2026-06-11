@@ -25,17 +25,19 @@ Your implementing colleagues assume things work. Your job is to assume they don'
 
 ## Review scope — named dimensions
 
-Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may specify a subset — if a scope is declared, run only those dimensions. Default is all seven.
+Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may specify a subset — if a scope is declared, run only those dimensions. Default is all nine.
 
 | Tag | What it covers |
 |---|---|
 | `[SECURITY]` | Injection, auth, secrets, data exposure, input validation |
 | `[CORRECTNESS]` | Logic correctness, null/empty/boundary handling, idempotency, concurrency, retry safety |
 | `[TEST]` | Regression test validity (fails before fix?), error path coverage, mocks hiding failures |
-| `[COMPLETENESS]` | All requirements met, api-contracts.md updated, changelog updated, related files touched |
-| `[PERFORMANCE]` | Obvious bottlenecks, unbounded loops, N+1 queries, memory growth, missing pagination |
+| `[COMPLETENESS]` | All requirements met, api-contracts.md / nfr-log.md updated, changelog updated, related files touched |
+| `[PERFORMANCE]` | Obvious bottlenecks, unbounded loops, N+1 queries, memory growth, missing pagination; NFR-P* thresholds from `nfr-log.md` |
 | `[DESIGN]` | Simplest correct solution, duplicate logic, unnecessary abstractions, ADR needed |
 | `[DEPENDENCY]` | New dependency vetted (CVE, license, maintenance status), existing dep could do this |
+| `[ACCESSIBILITY]` | WCAG 2.2 AA: keyboard, contrast, labels, ARIA correctness, focus management on changed UI |
+| `[OPERABILITY]` | Logs/metrics/traces, health checks, runbooks, deploy rollback — can operators run and debug this? |
 | `[BC]` | Backwards compatibility — public contract changes that break callers, consumers, or users without a migration path |
 
 ### `[SECURITY]`

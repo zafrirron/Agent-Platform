@@ -9,7 +9,7 @@
     "requires_architect_for": [],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["system design", "architecture", "should we use", "ADR", "technical spec", "evaluate options", "cross-cutting", "what's the best approach", "SOLID", "design review", "design before code", "layer boundaries", "abstraction", "interface design", "code standards", "threat model", "threat modelling"],
+  "routing_keywords": ["system design", "architecture", "should we use", "ADR", "technical spec", "evaluate options", "cross-cutting", "what's the best approach", "SOLID", "design review", "design before code", "layer boundaries", "abstraction", "interface design", "code standards", "threat model", "threat modelling", "NFR", "non-functional", "SLO", "SLA", "quality requirements", "performance target"],
   "trust_ceiling": "trusted",
   "reputation_capabilities": ["system-design", "adr", "SOLID-principles", "design-gate"]
 }

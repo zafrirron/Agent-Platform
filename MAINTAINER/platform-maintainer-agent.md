@@ -75,6 +75,18 @@ Only ever edit the PLATFORM section. Never touch PROJECT or USER sections.
 3. **Lives in the right place** — expert rule for domain behaviour; playbook step for process; convention for universal coding standard
 4. **Has a done-when gate** — the agent cannot mark the task done without satisfying it
 
+### Playbook inventory (v2.40.0 — verify routing + docs when adding/changing)
+
+| Group | Playbooks |
+|-------|-----------|
+| **Core delivery** | audit · add-feature · bug-fix · refactor · release · debug-pipeline · add-dependency · security-audit · api-integration · document-api |
+| **Quality & NFR** | nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit |
+| **Compliance & maturity** | compliance-review · org-maturity-assessment · incident-postmortem |
+
+**Context files for enterprise readiness:** `nfr-log.md` · `compliance-evidence-log.md` · `incident-log.md` · `docs-registry.md`
+
+When shipping playbooks in the compliance/NFR group, update **all** of: `AGENTS.md` routing · `QUICK-REF.md` · `PLATFORM-HELP.md` · `AGENT-PLATFORM-FRAMEWORK-README.md` · `presentation/agent-platform-beta.html` · `audit.md` phase if applicable.
+
 ### Expert → file mapping
 | Expert | File |
 |--------|------|
@@ -415,11 +427,12 @@ level** — not individual rules, but whole features or architectural patterns t
 - [ ] **`AGENT-PLATFORM-MANIFEST.json`** — register any new files created; bump `bootstrap_version`
 
 ### D. User-facing documentation (update ALL that apply)
-- [ ] **`README.md`** — "What you get" table if a new user-visible capability was added
-- [ ] **`AGENT-PLATFORM-FRAMEWORK-README.md`** — capability table if user-facing
-- [ ] **`.agent/PLATFORM-HELP.md`** — add or update relevant section
-- [ ] **`.agent/QUICK-REF.md`** — add to playbooks/agents section if user-triggerable
-- [ ] **`MAINTAINER/GUIDE.md`** — update if maintainer workflow changed
+- [ ] **`README.md`** — version footer + maintainer commands if workflow changed
+- [ ] **`AGENT-PLATFORM-FRAMEWORK-README.md`** — capabilities table, file tree, quick-ref card, playbook count
+- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/PLATFORM-HELP.md`** — playbooks table, routing examples, Critic dimensions, context files
+- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/QUICK-REF.md`** — playbooks + project knowledge rows
+- [ ] **`presentation/agent-platform-beta.html`** — version badges, playbook count, new slides for major capabilities
+- [ ] **`MAINTAINER/GUIDE.md`** — maintainer schedule/commands if workflow changed
 
 ### E. Audit coverage
 - [ ] **`.agent/playbooks/audit.md`** — if the new capability should be audited, add it to the relevant phase checklist
@@ -449,6 +462,19 @@ level** — not individual rules, but whole features or architectural patterns t
 | Security rule (OWASP/CWE) | A + B + D (PLATFORM-HELP) + E (Phase 3 in audit) + H |
 | New install behaviour | A + C + F (tests) + D (README) + H |
 | New playbook | A + C + B (AGENTS.md routing) + D (all) + E + G + H |
+| NFR / compliance / maturity release (multi-playbook) | D (all user docs + presentation) + E (audit Phase 10+) + H — use `"Sync user-facing docs for vX.Y.Z"` |
+
+### Command: "sync user-facing docs for vX.Y.Z"
+
+```
+Execution:
+1. Read CHANGELOG.md entries since previous release tag
+2. Update README.md version footer
+3. Update AGENT-PLATFORM-FRAMEWORK-README.md — capabilities, tree, quick-ref card, playbook inventory
+4. Update QUICK-REF.md + PLATFORM-HELP.md — playbooks table, routing, context files
+5. Update presentation/agent-platform-beta.html — version, counts, slides for new highlights
+6. Report checklist D + G items checked; list any files intentionally skipped with reason
+```
 
 The Mode 1 commands above execute the checklist automatically. If doing a manual change, work through A→H in order.
 

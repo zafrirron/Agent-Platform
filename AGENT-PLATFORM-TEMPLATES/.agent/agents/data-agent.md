@@ -31,12 +31,20 @@
 - Log input row count and output row count for every pipeline run
 - Failed pipeline: leave source data untouched, log the failure, do not partially commit
 
+### Query performance
+- **N+1 detection:** any loop that issues a query per row is a defect — use joins, eager loading, or batch fetch; flag in review before merge
+- **Indexes:** new foreign keys, frequent `WHERE`/`ORDER BY` columns, and join keys need an index — verify with `EXPLAIN` / `EXPLAIN ANALYZE` (or ORM equivalent) on non-trivial queries
+- **Bounded reads:** list/report queries must use `LIMIT`/pagination — no unbounded `SELECT *` on growing tables
+- **Query timeout:** long-running analytics queries use explicit timeout or run async/offline — not on request hot path
+- **Migration performance:** additive indexes on large tables: plan concurrent index build where supported; note lock risk in ADR for breaking migrations
+
 ## Done-when — data task is not complete until
 - [ ] Migration has both up and down tested
 - [ ] No data loss without explicit approval
 - [ ] ADR logged if migration is breaking
 - [ ] Pipeline is idempotent and failure-safe
 - [ ] BC check: schema change classified; ⚠️ BC BREAK notice issued and user-approved if applicable
+- [ ] Query performance: no N+1 on new paths; indexes on new FK/filter columns or reason logged in `CURRENT.md`
 - [ ] `docs-registry.md` checked — Data-owned rows updated; any new `.md` files created added to registry
 <!-- PLATFORM:END -->
 

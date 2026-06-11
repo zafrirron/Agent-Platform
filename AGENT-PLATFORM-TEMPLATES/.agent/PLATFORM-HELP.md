@@ -75,7 +75,7 @@ YOU DESCRIBE WHAT YOU WANT
              "add a feature"     → Read .agent/playbooks/add-feature.md
              "ready to ship"     → Read .agent/playbooks/release.md
              "something's wrong" → Read .agent/playbooks/debug-pipeline.md
-             (+ 4 more playbooks)
+             (+ 14 more playbooks — NFR, PRR, compliance, observability, a11y, etc.)
 
 WORK
 ──────────────────────────────────────────────────────────────────
@@ -176,7 +176,10 @@ The agent is primed as an active router from the moment a session starts. When y
 | "ready to ship v2" | `▶ DevOps expert · release playbook` | begins release gates |
 | "hotfix the payment crash" | `▶ DevOps expert · bug-fix playbook` | emergency fix flow |
 | "the API is slow" | `▶ Backend expert · debug-pipeline playbook` | profile, isolate, fix |
-| "find what's wrong" | `▶ Critic expert` | runs 6-dimension adversarial review |
+| "go live" / "production ready" | `▶ DevOps expert · production-readiness playbook` | PRR gate before deploy |
+| "compliance review" / "SOC 2" | `▶ Security expert · compliance-review playbook` | SDLC control + evidence gaps |
+| "DORA metrics" / "maturity assessment" | `▶ Architect expert · org-maturity-assessment playbook` | quarterly process review |
+| "find what's wrong" | `▶ Critic expert` | runs multi-dimension adversarial review |
 | "sanity check this PR" | `▶ Critic expert` | adversarial review of the diff |
 | "how does the auth flow work" | *(no status line)* | answers directly — no expert or playbook loaded |
 
@@ -215,13 +218,17 @@ Read .agent/agents/critic-agent.md
 Review the [feature/fix/endpoint] just implemented above.
 ```
 
-**What it checks (all six dimensions):**
+**What it checks (named dimensions — playbooks may specify a subset):**
 1. **Correctness** — edge cases, null handling, boundary conditions, idempotency
 2. **Security** — injection, auth bypass, data exposure, secrets, JWT issues
-3. **Test quality** — does the regression test actually fail before the fix? are error paths covered?
-4. **Completeness** — all requirements met? docs updated? contracts updated?
-5. **Design** — simplest correct solution? unnecessary complexity? needs an ADR?
-6. **Edge cases** — empty input, external service down, concurrent access, boundary values
+3. **Test** — regression tests fail before fix? error paths covered?
+4. **Completeness** — requirements met? docs/contracts/NFR log updated?
+5. **Performance** — bottlenecks, NFR thresholds from `nfr-log.md`
+6. **Design** — simplest correct solution? unnecessary complexity? ADR needed?
+7. **Dependency** — new deps vetted (CVE, license)?
+8. **Accessibility** — WCAG 2.2 AA on changed UI
+9. **Operability** — logs, metrics, health checks, runbooks
+10. **BC** — backwards compatibility breaks documented and approved
 
 **Severity levels:**
 - **Critical / High** → blocks the task. Must fix before handoff.
@@ -271,6 +278,16 @@ Playbooks are step-by-step workflows with pre-conditions, ordered steps, agent a
 | **Security audit** | Explicit security review, threat model, OWASP check — NOT bare "auth" tasks | `Read .agent/playbooks/security-audit.md` | Secrets, auth, inputs, deps, permissions |
 | **Add dependency** | Need a new package/library; upgrade or pin a dependency | `Read .agent/playbooks/add-dependency.md` | Evaluate before install, audit after, document in deps file |
 | **API integration** | Integrating an external API, webhook, third-party SDK | `Read .agent/playbooks/api-integration.md` | Schema-first, mock→stub→real, contract tests required |
+| **Document API** | OpenAPI/Swagger from existing code | `Read .agent/playbooks/document-api.md` | Spec follows code; mandatory Critic |
+| **Full project audit** | Onboarding, health check, quarterly review | `Read .agent/playbooks/audit.md` | 11-phase report — architecture through governance/maturity |
+| **NFR definition** | Measurable quality targets before major work | `Read .agent/playbooks/nfr-definition.md` | ISO 25010 / DORA rows → `nfr-log.md` |
+| **Production readiness** | Go-live / PRR before first production deploy | `Read .agent/playbooks/production-readiness.md` | P0 NFRs, compliance evidence, vuln SLA, rollback |
+| **Performance budget** | p95/RPS targets on hot paths | `Read .agent/playbooks/performance-budget.md` | Define, implement, verify vs `nfr-log.md` |
+| **Observability setup** | Logs, metrics, health for a service | `Read .agent/playbooks/observability-setup.md` | Correlation ID, health endpoint, alerting hooks |
+| **Accessibility audit** | WCAG review of user-facing UI | `Read .agent/playbooks/accessibility-audit.md` | axe + keyboard pass; Critic `[ACCESSIBILITY]` |
+| **Compliance review** | SOC 2 / ISO 27001 SDLC prep | `Read .agent/playbooks/compliance-review.md` | Control checklist + `compliance-evidence-log.md` |
+| **Org maturity assessment** | DORA metrics, quarterly process review | `Read .agent/playbooks/org-maturity-assessment.md` | Report → `maturity-[date].md` |
+| **Incident postmortem** | After outage or production incident | `Read .agent/playbooks/incident-postmortem.md` | Blameless doc, MTTR, DORA rollup |
 
 **Example:**
 ```
@@ -292,6 +309,10 @@ These files accumulate knowledge about the project over time. Agents read and up
 | `.agent/context/adr-log.md` | Architecture Decision Records — why hard decisions were made | Any hard-to-reverse decision |
 | `.agent/context/known-issues.md` | Bugs and limitations not yet fixed | When you find an issue you're deferring |
 | `.agent/context/dependencies.md` | Non-obvious or important dependencies | When adding/removing a dep |
+| `.agent/context/nfr-log.md` | Measurable NFRs — threshold, measure, verify | New quality targets; PRR |
+| `.agent/context/compliance-evidence-log.md` | SOC 2 / ISO 27001 artifact mapping | Compliance review; before prod |
+| `.agent/context/incident-log.md` | Incidents, MTTR, DORA rollup | Postmortems; maturity assessment |
+| `.agent/context/docs-registry.md` | Doc ownership and freshness | Any doc created or updated |
 | `.agent/CONVENTIONS.md` | Coding, testing, git, and security rules for this project | Project-specific rule changes |
 | `.agent/BEST-PRACTICES.md` | 10 golden rules for all agentic work | Read before any non-trivial task |
 

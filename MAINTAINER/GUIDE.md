@@ -100,6 +100,7 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Quarterly | GitHub governance repo scan — discover new capabilities | `Read MAINTAINER/github-governance-scan.md and execute it.` |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
+| After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D in `platform-maintainer-agent.md` |
 
 ---
 

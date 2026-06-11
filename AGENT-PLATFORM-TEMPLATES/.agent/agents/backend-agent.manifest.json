@@ -9,7 +9,7 @@
     "requires_architect_for": ["auth", "data-shape-change", "new-service", "middleware", "external-integration"],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["endpoint", "API", "service", "server", "route", "handler", "controller", "middleware", "database query", "rate limit", "idempotency", "SSRF", "mass assignment", "REST design"],
+  "routing_keywords": ["endpoint", "API", "service", "server", "route", "handler", "controller", "middleware", "database query", "rate limit", "idempotency", "SSRF", "mass assignment", "REST design", "performance budget", "p95", "latency", "pagination"],
   "trust_ceiling": "standard",
   "reputation_capabilities": ["api", "security", "database", "auth"]
 }

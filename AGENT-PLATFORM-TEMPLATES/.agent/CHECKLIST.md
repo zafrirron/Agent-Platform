@@ -36,3 +36,15 @@ Run before every session end. All boxes must be checked or explicitly noted as N
 - [ ] New dep added → `context/dependencies.md` updated
 - [ ] Architectural decision → `context/adr-log.md` entry added
 - [ ] New known issue → `context/known-issues.md` entry added
+
+## Non-functional requirements
+- [ ] Significant feature cites relevant `context/nfr-log.md` IDs — or N/A for trivial change
+- [ ] P0 NFRs verified before production deploy (or user-approved deferral in `CURRENT.md`)
+- [ ] UI changes: WCAG 2.2 AA keyboard pass + automated a11y scan — or N/A (no UI)
+- [ ] API/list changes: pagination or explicit NFR note if unbounded — or N/A
+- [ ] Performance budget NFRs verified when hot path changed — or `performance-budget` playbook ran
+- [ ] Observability minimum (health, structured logs, correlation ID) — or N/A (no networked service)
+- [ ] Container image scan clean before prod deploy — or N/A (no containers)
+- [ ] P0 compliance evidence rows in `compliance-evidence-log.md` verified — or N/A (not production-bound)
+- [ ] `NFR-C01` vuln remediation SLA satisfied (no Critical CVE past window) — or N/A
+- [ ] Production deploy: change traceable to PR/review + rollback path documented — or N/A

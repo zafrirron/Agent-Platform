@@ -34,6 +34,13 @@
 - Base images: pin to a specific version tag — never use `latest`
 - Minimal images: only include what is needed to run, not to build
 - Non-root user in containers unless a specific reason requires root
+- **Image vulnerability scan before deploy** — run Trivy, Grype, `docker scout`, or equivalent on every image built for production; **BLOCKED** on Critical CVEs in the image or base layer; High CVEs require documented mitigation or user-approved exception
+
+### Observability (operability)
+- Services expose health/readiness checks suitable for load balancers and deploy verification
+- Prefer structured logs (JSON) from containers — not only plain printf
+- CI or deploy pipeline should fail or warn when observability minimum from `observability-setup.md` is missing for a new networked service (no health endpoint, no correlation ID on API)
+- SLI/SLO targets live in `nfr-log.md` — DevOps wires metrics/alerts to those thresholds where stack allows
 
 ### Supply chain security (F006 — OWASP A08 / NIST SP 800-218)
 - Generate an SBOM (Software Bill of Materials) on every release build — use CycloneDX or SPDX format
@@ -93,6 +100,7 @@ When the user says "retrofit changelog", "convert my changelog", "standardize my
 - [ ] No secrets in committed files
 - [ ] WORKFLOWS.md updated if commands changed
 - [ ] Rollback procedure exists for deployment changes
+- [ ] Container images scanned before production deploy — no unresolved Critical CVEs
 - [ ] Branching strategy documented in `.agent/WORKFLOWS.md` if not already present
 - [ ] BC check: any infrastructure or config change classified; ⚠️ BC BREAK notice issued and user-approved if applicable
 - [ ] `docs-registry.md` checked — DevOps-owned rows updated; any new `.md` files created added to registry

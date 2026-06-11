@@ -46,21 +46,29 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 ---
 
 ## Playbooks
-**Describe the situation — the right playbook loads automatically.**
+**Describe the situation — the right playbook loads automatically.** (18 total)
 
 | Your situation | Playbook |
 |---------------|---------|
-| First time in this repo / onboarding / health check | **Full Project Audit** — 8-domain professional report saved to `.agent/context/audit-[date].md` |
-| Starting new feature work | Add feature — scopes, designs, implements, tests, Critic reviews |
-| Something is broken | Bug fix — reproduces, root-causes, fixes, regression test |
-| "hotfix", "rollback", "emergency fix" | Bug fix playbook via devops-agent — reproduce, fix, regression test |
-| "clean up this area" (tests must exist first) | Refactor — safe incremental refactor with Critic gate |
+| First time in this repo / onboarding / health check | **Full Project Audit** — 11-phase report → `.agent/context/audit-[date].md` |
+| Starting new feature work | Add feature — design gate, Security gate, tests, Critic |
+| Something is broken | Bug fix — reproduce, fix, regression test, Critic |
+| "hotfix", "rollback", "emergency fix" | Bug fix via DevOps — emergency path |
+| "clean up this area" (tests must exist first) | Refactor — incremental, tests green before/after |
 | "something's wrong but I don't know why" | Debug pipeline — systematic diagnosis |
-| "slow", "performance", "memory leak", "bottleneck" | Debug pipeline — profile, isolate, fix |
-| Ready to ship a version | Release — docs gate, security review, tag, release notes |
-| Security review before release | Security audit — OWASP Top 10, findings with severity |
-| "I need to add [package/library]" | Add dependency — vets, installs, validates |
-| Integrating an external API or service | API integration — contract, auth, error handling, tests |
+| "slow", "bottleneck", "p95", "performance budget" | Performance budget — or debug pipeline for investigation |
+| Ready to ship a version | Release — tests, Critic, changelog, tag |
+| "go live", "production ready", "PRR" | Production readiness — P0 NFRs, compliance evidence, security |
+| Security review / OWASP / pentest prep | Security audit — secrets, CVEs, OWASP API Top 10 |
+| "I need to add [package/library]" | Add dependency — vet, CVE scan, document |
+| Integrating an external API or service | API integration — contract-first, tests |
+| "document API", "OpenAPI", "Swagger" | Document API — spec from code, Critic gate |
+| "define NFRs", "SLO", "quality targets" | NFR definition — writes `nfr-log.md` |
+| "observability", "metrics", "health check" | Observability setup — logs, correlation ID, alerts |
+| "accessibility audit", "WCAG", "a11y" | Accessibility audit — WCAG 2.2 AA + keyboard pass |
+| "compliance review", "SOC 2", "ISO 27001" | Compliance review — SDLC controls + evidence gaps |
+| "DORA metrics", "maturity assessment" | Org maturity assessment — quarterly process review |
+| "postmortem", "outage", "incident review" | Incident postmortem — MTTR, DORA rollup |
 
 ---
 
@@ -76,6 +84,9 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 | [.agent/context/patterns.md](.agent/context/patterns.md) | Reusable approaches that worked — agents check this before implementing |
 | [.agent/BEST-PRACTICES.md](.agent/BEST-PRACTICES.md) | Project-specific coding rules and golden rules |
 | [.agent/context/docs-registry.md](.agent/context/docs-registry.md) | Registered docs, owners, freshness status |
+| [.agent/context/nfr-log.md](.agent/context/nfr-log.md) | Measurable quality targets (ISO 25010 / 14-category) |
+| [.agent/context/compliance-evidence-log.md](.agent/context/compliance-evidence-log.md) | SOC 2 / ISO 27001 control → artifact mapping |
+| [.agent/context/incident-log.md](.agent/context/incident-log.md) | Incidents, MTTR, DORA rollup |
 
 ---
 

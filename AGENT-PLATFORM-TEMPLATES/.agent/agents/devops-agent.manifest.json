@@ -5,11 +5,11 @@
   "capabilities": ["CI/CD", "Docker", "infrastructure", "deployment", "build-pipeline", "monitoring", "secrets-management", "release", "linting-enforcement", "branching-strategy", "code-standards-gates", "SBOM", "supply-chain-security", "artifact-signing", "OIDC-credentials", "api-version-inventory"],
   "cannot_do": ["application-logic", "UI", "database-schema", "business-rules"],
   "governance": {
-    "critic_dimensions": ["SECURITY", "CORRECTNESS", "COMPLETENESS", "DEPENDENCY"],
+    "critic_dimensions": ["SECURITY", "CORRECTNESS", "COMPLETENESS", "DEPENDENCY", "OPERABILITY"],
     "requires_architect_for": ["new-cloud-provider", "infrastructure-overhaul", "zero-downtime-migration"],
     "always_runs_security_gate": true
   },
-  "routing_keywords": ["CI/CD", "Docker", "deploy", "pipeline", "Kubernetes", "infra", "build", "release", "ship", "publish", "linting", "lint", "branching strategy", "branch naming", "PR size"],
+  "routing_keywords": ["CI/CD", "Docker", "deploy", "pipeline", "Kubernetes", "infra", "build", "release", "ship", "publish", "linting", "lint", "branching strategy", "branch naming", "PR size", "observability", "monitoring", "metrics", "tracing", "OpenTelemetry", "health check", "container scan", "Trivy"],
   "trust_ceiling": "trusted",
   "reputation_capabilities": ["CI/CD", "security", "deployment"]
 }

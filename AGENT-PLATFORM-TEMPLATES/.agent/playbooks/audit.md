@@ -27,7 +27,7 @@ Each phase reads the actual expert agent file and applies its complete ruleset �
 ## Execution
 
 Run ALL phases in sequence. Do not skip any phase. Collect all findings.
-After all phases, generate the report (Phase 9).
+After all phases, generate the report (Phase 11).
 
 ---
 
@@ -141,6 +141,25 @@ Using the Test expert's full domain knowledge, assess:
 
 ---
 
+### Phase 4b — Performance & scalability (Backend + Test agents)
+
+**Read `.agent/agents/backend-agent.md` and `.agent/context/nfr-log.md`.** Apply performance rules and any registered NFR thresholds.
+
+**Review:**
+- List/query endpoints: pagination present? Unbounded `SELECT` or in-memory filters?
+- N+1 query patterns in ORM or manual loops
+- Rate limiting on auth and compute-heavy routes
+- Caching strategy documented where repeated reads dominate
+- Load or performance tests exist for critical paths (note if absent)
+
+**Flag gaps:**
+- Unbounded list endpoint: HIGH
+- N+1 on hot path: HIGH
+- P0 NFR in `nfr-log.md` with no verification path: HIGH
+- No pagination on user-facing list API: MEDIUM
+
+---
+
 ### Phase 5 — Code quality (Critic agent)
 
 **Read `.agent/agents/critic-agent.md` in full. Apply its full 6-dimension adversarial review framework** (correctness, security, test quality, completeness, design, edge cases) across the entire codebase — not just new code. The Critic finds what implementing agents miss. As the Critic gets more experienced, this phase catches more.
@@ -173,6 +192,24 @@ Using the Critic's full adversarial framework, review:
 - DRY violations (2+ identical blocks): MEDIUM
 - Magic numbers with business meaning: LOW
 - Files >800 lines: HIGH
+
+---
+
+### Phase 5b — Frontend & accessibility (Frontend agent)
+
+**Read `.agent/agents/frontend-agent.md` in full.** Apply WCAG 2.2 AA rules and frontend done-when gates.
+
+**Review (skip silently if no UI source — `src/components/`, `pages/`, `views/`, `app/` routes with UI):**
+- Keyboard navigation on primary flows
+- Form labels, error association, focus visibility
+- Colour contrast and non-colour-only state indicators
+- Semantic HTML vs div-soup; ARIA misuse
+- Automated a11y tooling present in CI or documented manual pass
+
+**Flag gaps:**
+- Primary flow not keyboard-operable: HIGH
+- Form inputs without labels: HIGH
+- No a11y verification path for user-facing UI: MEDIUM
 
 ---
 
@@ -254,7 +291,46 @@ Using the DevOps expert's full domain knowledge, review:
 
 ---
 
-### Phase 9 — Report generation
+### Phase 8b — Observability & operability (DevOps + Backend agents)
+
+**Read `.agent/agents/devops-agent.md` and `.agent/context/nfr-log.md` observability rows.**
+
+**Review:**
+- Structured logging format; correlation/request IDs on API paths
+- Health or readiness check for deploy verification
+- Metrics or log-derived SLIs for latency and error rate
+- Runbook or README: start, stop, env vars, common failures
+- Alerting documented for auth failures and elevated 5xx (even if manual)
+
+**Flag gaps:**
+- No health check on networked service: HIGH
+- Secrets or PII in application logs: CRITICAL
+- P0 observability NFR unverified: HIGH
+- No deploy/rollback documentation: MEDIUM
+
+---
+
+### Phase 10 — Governance, compliance & maturity
+
+**Read `.agent/playbooks/org-maturity-assessment.md` Steps 2–5 and `.agent/context/compliance-evidence-log.md`.** Apply maturity rubric and compliance evidence checks — findings only, no code changes.
+
+**Review:**
+- DORA proxies: `incident-log.md` rollup, deploy frequency from git/CI, change-related incidents
+- `nfr-log.md`: P0/P1 rows without verification path; Compliance and Developer productivity categories empty?
+- `compliance-evidence-log.md`: P0 evidence rows missing `Location` or stale `Last verified`
+- Gate execution: sample `CURRENT.md` — Critic and Security gates on recent application changes
+- Rollback and change traceability documented in `WORKFLOWS.md` / `release.md`
+
+**Flag gaps:**
+- P0 compliance evidence row status `gap`: HIGH
+- `NFR-C01` vuln SLA undefined for production-bound project: HIGH
+- No incident log but production deploys occurred: MEDIUM
+- DORA P1 thresholds in `nfr-log.md` with no measurement data: MEDIUM
+- No compliance evidence log populated for regulated/industry-stated scope: HIGH
+
+---
+
+### Phase 11 — Report generation
 
 After all phases complete, generate the audit report:
 
@@ -275,10 +351,13 @@ Generated: [timestamp] · Platform: Agent Platform v{{BOOTSTRAP_VERSION}}
 | Documentation | 🟢/🟡/🔴 | N | N | N | N |
 | Security | 🟢/🟡/🔴 | N | N | N | N |
 | Test Quality | 🟢/🟡/🔴 | N | N | N | N |
+| Performance | 🟢/🟡/🔴 | N | N | N | N |
 | Code Quality | 🟢/🟡/🔴 | N | N | N | N |
+| Frontend & a11y | 🟢/🟡/🔴 | N | N | N | N |
 | Data | 🟢/🟡/🔴 | N | N | N | N |
 | API | 🟢/🟡/🔴 | N | N | N | N |
 | DevOps & CI | 🟢/🟡/🔴 | N | N | N | N |
+| Governance & maturity | 🟢/🟡/🔴 | N | N | N | N |
 
 Health key: 🟢 Good (no Critical/High) · 🟡 Needs attention (High findings) · 🔴 Critical (Critical findings)
 
@@ -300,8 +379,14 @@ Health key: 🟢 Good (no Critical/High) · 🟡 Needs attention (High findings)
 ## Test Quality
 [Phase 4 findings, coverage numbers, gap list]
 
+## Performance & Scalability
+[Phase 4b findings, NFR gaps, gap list]
+
 ## Code Quality
 [Phase 5 findings, hotspots, gap list]
+
+## Frontend & Accessibility
+[Phase 5b findings, WCAG gaps, gap list]
 
 ## Data
 [Phase 6 findings, schema notes, gap list]
@@ -311,6 +396,12 @@ Health key: 🟢 Good (no Critical/High) · 🟡 Needs attention (High findings)
 
 ## DevOps & CI
 [Phase 8 findings, pipeline assessment, gap list]
+
+## Observability & Operability
+[Phase 8b findings, logging/metrics gaps, gap list]
+
+## Governance, Compliance & Maturity
+[Phase 10 findings, DORA summary, compliance evidence gaps, maturity scores]
 
 ## Prioritised action plan
 ### 🔴 Critical (fix before next deploy)

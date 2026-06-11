@@ -96,7 +96,7 @@ The agent responds with a **link** — it does not dump the file into chat (that
 
 **Claude Code slash command:** type `/quick-ref` in any chat — no session-start required.
 
-**What's in the guide:** session commands · 9 expert agents and their trigger phrases · 9 playbooks and when they activate · project knowledge files · token compression (caveman mode) · platform operations (upgrade, global install, guards, repair, remove)
+**What's in the guide:** session commands · 9 expert agents and their trigger phrases · 18 playbooks and when they activate · NFR/compliance context files · token compression (caveman mode) · platform operations (upgrade, global install, guards, repair, remove)
 
 ---
 
@@ -131,8 +131,10 @@ Repeat. The platform never stops improving.
 | **Critic agent** | Adversarial reviewer — finds bugs, security issues, edge cases, and test gaps that implementing agents miss. Built into bug-fix, add-feature, and release playbooks. |
 | **Cross-framework critic review** | When you switch IDEs (e.g. Claude Code → Cursor), the new agent automatically offers to review the previous model's work. Different AI models have different blind spots — cross-model review catches what the first model missed. Zero extra setup. |
 | **Emergency IDE takeover** | If an IDE runs out of credits or crashes mid-session, just start a session in any other IDE. It detects the stuck session, offers to take over, commits any uncommitted work, and continues — no manual file editing, no lost work. Switch between Claude Code, Cursor, Codex, and Antigravity freely based on credits and availability. |
-| **🔍 Full Project Audit** | 8-domain professional report generated on first session or on demand. Architecture diagram · Documentation gaps · Security findings · Test coverage · Code quality · Data layer · API inventory · DevOps health. Each domain uses the full brain of its expert — when experts get smarter, the audit gets smarter automatically. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
-| **9 playbooks** | audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration |
+| **🔍 Full Project Audit** | 11-phase professional report on first session or on demand — architecture through governance/maturity. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
+| **18 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
+| **NFR & production readiness** | `nfr-log.md` — measurable ISO 25010 targets. `production-readiness` gates go-live (P0 NFRs, compliance evidence, vuln SLA). |
+| **Compliance & DORA** | `compliance-evidence-log.md` for SOC 2 / ISO 27001 artifacts. Maturity assessment + incident postmortem for DORA metrics. |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
 | **Code standards enforcement** | SOLID principles · DRY · file modularity · no magic numbers · linting gates · branching strategy — encoded into expert agents and CONVENTIONS.md. Architect agent runs SOLID checks at design time. Critic catches DRY violations. DevOps agent blocks the pipeline on lint failures — not a suggestion, a gate. |
 | **Test enforcement** | Every function, bug fix, and API endpoint requires a test. Red suite blocks handoff. Test expert auto-generates coverage in 4 formats: HTML (`coverage/lcov-report/index.html` — open in browser), Clover XML (Jenkins/CI), LCOV (Codecov/Coveralls), and JSON. All formats generated from one `--coverage` run. |
@@ -497,6 +499,8 @@ This platform is developed using itself. All maintenance is done by telling the 
 | Quarterly full ecosystem scan | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Internal consistency audit | `Read MAINTAINER/platform-audit.md and execute it.` |
 | Release the next version | `"Release"` — agent reads CHANGELOG, calculates version bump, confirms with you, runs the release script |
+| Sync user-facing docs after a release | `"Sync user-facing docs for vX.Y.Z"` — updates README, FRAMEWORK-README, QUICK-REF, PLATFORM-HELP, presentation deck |
+| Verify playbook inventory & routing | `"List all playbooks and check AGENTS.md routing is complete"` |
 
 ---
 

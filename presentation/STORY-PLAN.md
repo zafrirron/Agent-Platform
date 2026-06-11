@@ -116,7 +116,8 @@ Talking points:
 - `npx github:zafrirron/Agent-Platform` — 30 seconds.
 - Start a session: `Read .agent/session-start.md and execute it.`
 - From that point: describe tasks, routing handles itself.
-- First session triggers the full project audit offer — 8-domain professional health check of your codebase. Free with the install.
+- First session triggers the full project audit offer — 11-phase professional health check (architecture through governance/maturity). Free with the install.
+- Enterprise playbooks since v2.38: NFR definition, production readiness (PRR), observability, a11y, compliance review, DORA maturity — mention if audience cares about go-live gates or audit prep.
 
 ---
 

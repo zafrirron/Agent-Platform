@@ -22,6 +22,9 @@
 |----------|-------|----------|-------------|---------------|
 | `README.md` | Docs | Public | Any user-visible feature change | *(not yet reviewed)* |
 | `CHANGELOG.md` | DevOps | Users | Every release | *(not yet reviewed)* |
+| `.agent/context/nfr-log.md` | Architect | Engineering | New/changed quality targets | *(not yet reviewed)* |
+| `.agent/context/compliance-evidence-log.md` | Security | Engineering / Audit | Compliance review or PRR | *(not yet reviewed)* |
+| `.agent/context/incident-log.md` | DevOps | Engineering / Ops | Incidents and postmortems | *(not yet reviewed)* |
 
 > **First session:** Docs expert scans the project for all existing doc files and adds them as rows.
 > Run: `find . -name "*.md" -not -path "./.agent/*" -not -path "./node_modules/*"` and register each.

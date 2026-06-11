@@ -18,6 +18,87 @@
 
 ---
 
+### [2.41.0] — 2026-06-09 — User-facing docs sync (post-2.37 capabilities)
+
+**Gap observed:** README, FRAMEWORK-README, QUICK-REF, PLATFORM-HELP, presentation deck, and maintainer commands still described v2.37 / 9 playbooks / 8-domain audit after v2.38–2.41 NFR/compliance releases.
+
+**Files changed:** `README.md`, `AGENT-PLATFORM-FRAMEWORK-README.md`, `QUICK-REF.md`, `PLATFORM-HELP.md`, `presentation/agent-platform-beta.html`, `presentation/STORY-PLAN.md`, `MAINTAINER/GUIDE.md`, `platform-maintainer-agent.md`
+
+**Rules added:**
+- Maintainer command: `"Sync user-facing docs for vX.Y.Z"`
+- Playbook inventory table (18 playbooks) in maintainer agent
+- Presentation slide: Enterprise & Compliance (v2.38–2.41)
+
+**Validated:** Pending
+
+---
+
+### [2.41.0] — 2026-06-09 — Compliance & maturity P0/P1 (SOC2/ISO/DORA evidence)
+
+**Gap observed:** Platform had ISO 25010 NFRs and PRR but no compliance evidence mapping, DORA measurement, SOC 2/ISO 27001 SDLC review playbook, incident/MTTR tracking, or audit governance phase.
+
+**Files changed:** `compliance-review.md`, `org-maturity-assessment.md`, `incident-postmortem.md`, `compliance-evidence-log.md`, `incident-log.md`, `production-readiness.md`, `nfr-definition.md`, `nfr-log.md`, `audit.md`, `AGENTS.md`, `CHECKLIST.md`, `architect-agent.md`, `docs-registry.md`, manifest
+
+**Rules added:**
+- Compliance evidence register with SOC 2 / ISO 27001 control crosswalk
+- Compliance-review playbook with SDLC checklist + Critic gate
+- PRR blocks on P0 evidence gaps and Critical CVE past SLA
+- DORA NFR templates (change failure rate, MTTR) + incident log rollup
+- Org maturity assessment (quarterly) + audit Phase 10
+- Incident postmortem playbook feeding DORA metrics
+
+**Validated:** Pending
+
+---
+
+### [2.40.0] — 2026-06-09 — UX golden rules in frontend-agent (Nielsen + Shneiderman)
+
+**Gap observed:** `frontend-agent.md` covered WCAG 2.2 AA and async states but lacked actionable usability heuristics — feedback timing, consistency, affordance, error prevention, progressive disclosure, responsive/touch UX beyond target size.
+
+**File changed:** `.agent/agents/frontend-agent.md`
+
+**Rules added:**
+- UX interaction principles section (visibility/feedback, consistency, affordance, error prevention, user control, clarity, responsive/touch)
+- Done-when: empty-state CTA, UX heuristic verify pass, explicit UX checklist item
+
+**Validated:** Pending
+
+---
+
+### [2.39.0] — 2026-06-11 — NFR P1: performance budget, observability, a11y audit, data query rules
+
+**Gap observed:** P0 added NFR register and PRR but lacked implementation playbooks for performance budgets, observability instrumentation, and standalone a11y audits; data-agent manifest claimed N+1/index capabilities without agent-body rules; DevOps lacked container scan enforcement.
+
+**Files changed:** `performance-budget.md`, `observability-setup.md`, `accessibility-audit.md`, `data-agent.md`, `devops-agent.md`, `AGENTS.md`, `CHECKLIST.md`, agent manifests
+
+**Rules added:**
+- Performance budget playbook with mandatory Critic PERFORMANCE
+- Observability setup: correlation ID, health, metrics, OPERABILITY Critic
+- Accessibility audit: axe + keyboard + WCAG Critic ACCESSIBILITY
+- Data-agent: N+1, indexes, bounded reads, EXPLAIN
+- DevOps: Trivy/Grype image scan BLOCKED on Critical CVEs
+
+**Validated:** Pending
+
+---
+
+### [2.38.0] — 2026-06-11 — NFR playbooks: definition, production readiness, audit expansion
+
+**Gap observed:** Platform strong on security/correctness but weak on measurable NFRs (performance budgets, observability, WCAG, PRR). `security-audit.md` was a stub; full audit had no frontend/performance/observability phases.
+
+**Files changed:** `nfr-definition.md`, `production-readiness.md`, `security-audit.md`, `nfr-log.md`, `audit.md`, `frontend-agent.md`, `architect-agent.md`, `critic-agent.md`, `add-feature.md`, `AGENTS.md`, `CHECKLIST.md`, `docs-registry.md`
+
+**Rules added:**
+- NFR register with threshold + measure + verify path per row
+- PRR playbook blocks deploy on P0 NFR / security / Critic failures
+- WCAG 2.2 AA baseline in frontend-agent
+- Critic `[ACCESSIBILITY]` + `[OPERABILITY]` dimensions
+- add-feature Critic adds `[PERFORMANCE]` / `[ACCESSIBILITY]` when triggered
+
+**Validated:** Pending — E2E with nfr-definition + production-readiness on platform-demo
+
+---
+
 ### [2.37.0] — 2026-06-09 — E2E gaps: Critic enforcement, PowerShell commits, document-api playbook
 
 **Failure observed:** Platform E2E on `platform-demo` (todo-app demo): bug-fix and add-feature completed without Critic (`CURRENT.md` `Critic reviewed: no`); session-end first commit failed on PowerShell `&&`; "document API" routed to docs-agent with `*(none)*` playbook — agent documented auth without implementing it; coverage not re-run at session end.
@@ -194,9 +275,14 @@ Items identified but not yet implemented:
 
 | Priority | Gap | Target file | Notes |
 |---------|-----|------------|-------|
-| High | Frontend agent: no accessibility rules | frontend-agent.md | Add WCAG 2.1 AA baseline |
-| High | Data agent: no query performance rules | data-agent.md | Add index check, N+1 detection |
-| Medium | DevOps agent: no container scanning rule | devops-agent.md | Add image vulnerability scan before deploy |
+| ~~High~~ | ~~Frontend agent: no accessibility rules~~ | frontend-agent.md | **Done v2.38.0** — WCAG 2.2 AA |
+| ~~High~~ | ~~security-audit stub~~ | security-audit.md | **Done v2.38.0** — structured audit |
+| ~~High~~ | ~~Data agent: no query performance rules~~ | data-agent.md | **Done v2.39.0** |
+| ~~Medium~~ | ~~accessibility-audit.md~~ | new playbook | **Done v2.39.0** |
+| ~~Medium~~ | ~~performance-budget.md~~ | new playbook | **Done v2.39.0** |
+| ~~Medium~~ | ~~observability-setup.md~~ | new playbook | **Done v2.39.0** |
+| ~~Medium~~ | ~~DevOps container scanning~~ | devops-agent.md | **Done v2.39.0** |
 | Medium | Docs agent: no broken link check | docs-agent.md | Add link validation before publish |
 | Low | Architect agent: no event storming guidance | architect-agent.md | Add for domain-driven design projects |
-| Low | All experts: no performance budget rule | CONVENTIONS.md | Perf budget per request/page |
+| ~~Low~~ | ~~`compliance-review.md` (GDPR/HIPAA/SOC2)~~ | new playbook | **Done v2.41.0** — SOC2/ISO/GDPR + evidence log |
+| Medium | `pentest.md` playbook | new playbook | ISO A.8.8 / SOC 2 CC4.1 — P2 from compliance audit |

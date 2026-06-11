@@ -5,6 +5,34 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.40.0] — 2026-06-09
+
+### Added
+- **8 new playbooks** (18 total): `nfr-definition`, `production-readiness`, `performance-budget`, `observability-setup`, `accessibility-audit`, `compliance-review`, `org-maturity-assessment`, `incident-postmortem`
+- **`context/nfr-log.md`** — ISO 25010 / 14-category NFR register (threshold + measure + verify)
+- **`context/compliance-evidence-log.md`** — SOC 2 / ISO 27001 control → artifact mapping
+- **`context/incident-log.md`** — incident register and DORA rollup table
+- **Expanded `security-audit` playbook** — structured OWASP/CVE/secrets pass with mandatory Critic (replaces stub)
+- **Full project audit** — Phases 4b/5b/8b (performance, WCAG, observability) + Phase 10 governance/compliance/maturity; report is Phase 11
+- **Critic dimensions** — `[ACCESSIBILITY]`, `[OPERABILITY]`, `[BC]` and expanded review scope
+- **WCAG 2.2 AA** — frontend-agent accessibility baseline
+- **UX interaction principles** — Nielsen + Shneiderman golden rules in frontend-agent
+- **Maintainer command** — `"Sync user-facing docs for vX.Y.Z"` and 18-playbook inventory in maintainer agent
+
+### Changed
+- **`production-readiness`** — P0 NFR verification, compliance evidence, vuln SLA, SBOM, change-management gates
+- **`nfr-definition`** — DORA KPI elicitation and compliance evidence cross-links
+- **`nfr-log.md`** — example rows for compliance (`NFR-C01`–`C02`) and DORA (`NFR-DP01`–`DP04`)
+- **data-agent** — N+1 detection, indexes, bounded reads, EXPLAIN discipline
+- **devops-agent** — container image vulnerability scan; observability operability section
+- **add-feature Step 5b** — `[PERFORMANCE]` / `[ACCESSIBILITY]` when triggered; checks `nfr-log.md` P0/P1
+- **Architect / Security agents** — NFR, compliance-evidence, and incident-log discipline
+- **AGENTS.md routing** — NFR, PRR, performance budget, observability, a11y, compliance, maturity, postmortem
+- **CHECKLIST** — NFR, a11y, observability, compliance evidence, vuln SLA, change traceability
+- **User-facing docs** — README, FRAMEWORK-README, QUICK-REF, PLATFORM-HELP, `agent-platform-beta.html`, STORY-PLAN
+
+---
+
 ## [2.37.0] — 2026-06-09
 
 ### Added

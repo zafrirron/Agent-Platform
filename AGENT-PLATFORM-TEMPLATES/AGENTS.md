@@ -51,19 +51,26 @@ You are the active router. When the user describes a task:
 | "fix a bug", "broken", "crash", "not working", "error", "exception", "failing", "regression", "incorrect", "wrong output", "throws", "404", "500", "timeout", "flaky test" | relevant `*-agent.md` | `.agent/playbooks/bug-fix.md` |
 | "refactor", "clean up", "rename", "simplify", "restructure", "reorganize", "extract", "split", "decouple", "deduplicate", "modernize" | relevant `*-agent.md` | `.agent/playbooks/refactor.md` |
 | "release", "ship", "version bump", "tag", "publish", "cut release", "ready to release", "release this" | `.agent/agents/devops-agent.md` | `.agent/playbooks/release.md` |
-| "deploy to production", "push to prod", "go live", "deploy prod", "production deploy", "take it live" | `.agent/agents/devops-agent.md` | *(none — ask for confirmation before any production deploy action)* |
+| "deploy to production", "push to prod", "go live", "deploy prod", "production deploy", "take it live", "production ready", "production readiness", "PRR", "launch checklist" | `.agent/agents/devops-agent.md` | `.agent/playbooks/production-readiness.md` |
 | "hotfix", "rollback", "revert release", "emergency fix" | `.agent/agents/devops-agent.md` | `.agent/playbooks/bug-fix.md` |
 | "security review", "auth review", "check auth", "vulnerability", "secrets", "threat model", "OWASP", "XSS", "injection", "JWT", "RBAC", "access control", "encryption", "pentest" | `.agent/agents/security-agent.md` | `.agent/playbooks/security-audit.md` |
 | "add library", "install package", "new dependency", "npm install", "yarn add", "pip install", "upgrade dependency", "update package" | relevant `*-agent.md` | `.agent/playbooks/add-dependency.md` |
 | "integrate API", "external service", "webhook", "third-party", "GraphQL", "SDK", "use [service] API", "connect to [external API]" | `.agent/agents/backend-agent.md` | `.agent/playbooks/api-integration.md` |
 | "debug", "investigate", "why is", "trace", "figure out", "what's happening", "diagnose", "check why" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
-| "slow", "performance", "optimize", "profile", "memory issue", "bottleneck", "memory leak" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
+| "slow", "profile", "memory issue", "bottleneck", "memory leak", "investigate latency" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
+| "performance budget", "latency budget", "p95", "p99", "throughput target", "set performance target", "optimize API speed" | `.agent/agents/architect-agent.md` or `backend-agent.md` | `.agent/playbooks/performance-budget.md` |
+| "observability", "add logging", "structured logs", "metrics", "tracing", "OpenTelemetry", "monitoring setup", "correlation ID", "health check endpoint" | `.agent/agents/devops-agent.md` | `.agent/playbooks/observability-setup.md` |
+| "accessibility audit", "a11y audit", "WCAG audit", "accessibility review", "screen reader check" | `.agent/agents/frontend-agent.md` | `.agent/playbooks/accessibility-audit.md` |
 | "run audit", "audit this repo", "project audit", "health check", "onboarding", "what is this project", "analyze codebase", "overview", "summarize project", "I'm new here", "get started" | all experts | `.agent/playbooks/audit.md` |
 | "write tests", "test coverage", "quality gate", "unit test", "integration test", "e2e", "end-to-end", "fix failing tests", "TDD" | `.agent/agents/test-agent.md` | *(none)* |
 | "update docs", "README", "changelog", "document", "JSDoc", "docstring", "swagger", "OpenAPI", "API docs" | `.agent/agents/docs-agent.md` | `.agent/playbooks/document-api.md` |
 | "schema", "migration", "database", "data pipeline", "ORM", "table", "column", "seed", "ETL", "aggregate", "N+1" | `.agent/agents/data-agent.md` | *(none)* |
 | "system design", "architecture", "should we use X or Y", "ADR", "technical spec", "evaluate options", "what's the best approach" | `.agent/agents/architect-agent.md` | *(none)* |
-| "CI/CD", "build pipeline", "Docker", "infra", "Kubernetes", "k8s", "terraform", "GitHub Actions", "container", "monitoring" | `.agent/agents/devops-agent.md` | *(none)* |
+| "define NFRs", "non-functional requirements", "quality requirements", "SLO", "SLA", "performance target", "availability target", "NFR" | `.agent/agents/architect-agent.md` | `.agent/playbooks/nfr-definition.md` |
+| "compliance review", "SOC 2", "ISO 27001", "GDPR review", "compliance audit", "compliance check", "audit readiness", "control mapping" | `.agent/agents/security-agent.md` | `.agent/playbooks/compliance-review.md` |
+| "maturity assessment", "org maturity", "DORA metrics", "DORA review", "process maturity", "SDLC maturity", "quarterly review" | `.agent/agents/architect-agent.md` | `.agent/playbooks/org-maturity-assessment.md` |
+| "incident postmortem", "postmortem", "blameless postmortem", "outage review", "incident review", "RCA", "root cause analysis" | `.agent/agents/devops-agent.md` | `.agent/playbooks/incident-postmortem.md` |
+| "CI/CD", "build pipeline", "Docker", "infra", "Kubernetes", "k8s", "terraform", "GitHub Actions", "container", "monitoring" | `.agent/agents/devops-agent.md` | *(none — use observability-setup row for instrumentation)* |
 | "retrofit changelog", "convert changelog", "standardize changelog", "migrate changelog", "fix changelog format", "changelog doesn't follow standard" | `.agent/agents/devops-agent.md` | *(none)* |
 | "review this", "find issues", "what could go wrong", "code review", "PR review", "check my code", "give feedback", "sanity check", "second opinion" | `.agent/agents/critic-agent.md` | *(none)* |
 | "explain", "how does X work", "walk me through", "what does", "understand this code" | *(answer directly — no expert or playbook needed)* | *(none)* |

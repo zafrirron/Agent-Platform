@@ -5,11 +5,11 @@
   "capabilities": ["UI", "components", "client-state", "styling", "accessibility", "UX-flows", "forms", "rendering", "XSS-prevention", "CSP-configuration", "CSRF-frontend", "secure-storage"],
   "cannot_do": ["server-logic", "database", "auth-implementation", "CI/CD", "infrastructure"],
   "governance": {
-    "critic_dimensions": ["CORRECTNESS", "TEST", "COMPLETENESS", "DESIGN", "SECURITY"],
+    "critic_dimensions": ["CORRECTNESS", "TEST", "COMPLETENESS", "DESIGN", "SECURITY", "ACCESSIBILITY"],
     "requires_architect_for": ["new-component-library", "state-management-change", "routing-strategy"],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["UI", "component", "page", "screen", "styling", "CSS", "client state", "form", "button", "layout", "accessibility", "a11y", "XSS", "CSP", "localStorage", "sessionStorage"],
+  "routing_keywords": ["UI", "component", "page", "screen", "styling", "CSS", "client state", "form", "button", "layout", "accessibility", "a11y", "WCAG", "accessibility audit", "XSS", "CSP", "localStorage", "sessionStorage"],
   "trust_ceiling": "standard",
   "reputation_capabilities": ["UI", "accessibility", "client-state"]
 }

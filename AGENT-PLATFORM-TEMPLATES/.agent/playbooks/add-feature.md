@@ -7,7 +7,7 @@
 ## Steps
 1. **Claim** — read `registry.yaml`; claim scope files
 
-2. **Design** — **MANDATORY before any code.** Apply the Design Gate from `.agent/BEST-PRACTICES.md`:
+2. **Design** — **MANDATORY before any code.** Read `.agent/context/nfr-log.md` — cite relevant NFR IDs in acceptance criteria. Apply the Design Gate from `.agent/BEST-PRACTICES.md`:
 
    | Feature scope | Required design step | Blocked until |
    |--------------|---------------------|---------------|
@@ -48,7 +48,11 @@
    If the feature adds no endpoints and no data handling: skip this step silently.
 5b. **Critic review** ← adversarial gate (**MANDATORY — cannot skip**)
    Load `critic-agent.md`. Give it the implementation + tests from Steps 4–5.
-   Scope: `[SECURITY] [CORRECTNESS] [TEST] [COMPLETENESS] [DESIGN] [DEPENDENCY]`
+   Base scope: `[SECURITY] [CORRECTNESS] [TEST] [COMPLETENESS] [DESIGN] [DEPENDENCY]`
+   **Add `[PERFORMANCE]`** if the feature adds or modifies: HTTP endpoints, list/query routes, batch jobs, or hot-path loops.
+   **Add `[ACCESSIBILITY]`** if the feature adds or modifies: UI components, forms, or user-facing pages.
+   **Check `nfr-log.md`:** any P0/P1 NFR for this feature must be verified or noted as gap in review.
+   Final scope line must list all active dimensions.
    **BLOCKED if: any Critical or High finding is reported. DEFER if tradeoff requires user decision.**
    Address all findings before continuing to Step 6.
    **Output immediately after review (required platform signal):**
