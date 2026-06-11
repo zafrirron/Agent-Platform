@@ -22,6 +22,19 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 
 ## Test quality rules
 
+### Test pyramid — invest effort accordingly
+| Layer | ~Share | Focus |
+|-------|--------|-------|
+| Unit | 80% | Pure logic, fast, isolated |
+| Integration | 15% | Module boundaries, contracts |
+| E2E | 5% | Critical user journeys only |
+
+### Beyoncé rule
+If you wrote new behaviour, put a test on it in the **same task** — infrastructure and helpers included. "I'll add tests later" is not acceptable.
+
+### DAMP over DRY in tests
+Tests should read as self-contained scenarios. Prefer descriptive duplication over shared helpers that hide what is being asserted. See `.agent/references/testing-patterns.md`.
+
 ### Regression tests (bug fixes)
 - The test must FAIL on the unfixed code — if it passes before the fix, it is not a regression test
 - The test must reproduce the exact input/condition that triggered the bug
@@ -59,6 +72,16 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 ### Assertion quality
 - Use fluent assertion libraries (AssertJ, pytest's assert, Jest's expect) over raw equality checks — fluent assertions produce failure messages that describe what went wrong, not just that two values differed
 - Assertion messages must be actionable from the test output alone without reading source code
+
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "I'll add tests after the feature ships" | Beyoncé rule: same task or the behaviour ships untested. |
+| "Coverage is high enough without this case" | Lookup not-found, error paths, and BC contract cases are where bugs hide. |
+| "Integration test is too slow — unit only" | Pyramid allows ~15% integration — boundaries need proof. |
+| "Shared test helper keeps it DRY" | DAMP: if the helper hides the assertion, the test fails its job. |
+| "Deleting the failing contract test unblocks CI" | That is a BC break signal — surface it, don't delete. |
 
 ## Done-when — test task is not complete until
 - [ ] All required test types written (see trigger table above)

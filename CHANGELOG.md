@@ -5,6 +5,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.41.0] — 2026-06-09
+
+### Added
+- **Agent-skills ingest (P0 + P1)** — rationalization gates, doubt review, source-driven dev, TDD pyramid/Beyoncé/DAMP, Hyrum's Law, Chesterton's Fence, CWV measure-first; attribution in `MAINTAINER/ingest/agent-skills-p0-SOURCES.md`
+- **2 new playbooks** (20 total): `requirements-clarification`, `deprecation`
+- **Reference library** — `.agent/references/` (testing, security, performance, accessibility, orchestration-patterns)
+- **Context template** — `spec-outline.md` · add-feature Step 0 (spec clarity)
+- **Lifecycle slash commands** — Claude Code (`.claude/commands/`) and Cursor (`.cursor/commands/`): `/session-start`, `/session-end`, `/spec`, `/audit`, `/review`, `/release`, `/ship`, `/quick-ref`, `/platform-help`, `/caveman` (+ helpers); Cursor-only `/implement` for Plan mode handoff
+- **Cursor Plan mode handoff** — `plan-mode-handoff.mdc` resumes `add-feature` from Step 3 after plan approval
+- **User CONTRIBUTING.md** — how to submit rules and playbook ideas
+- **docs/DISTRIBUTION.md** — install paths, IDE notes, honest comparison vs skill packs
+
+### Changed
+- **Marketing / discovery** — FRAMEWORK-README "When to use what" table; QUICK-REF key-principle column; PLATFORM-HELP "Start here" path; README named-concepts section; presentation decks + STORY-PLAN aligned with v2.41 lifecycle, slash commands, and Plan handoff
+- **Install banner** — dynamic playbook count from manifest (`apply.js`)
+- **User-facing docs** — playbook counts, agent-skills DNA callouts, slash command list
+
+---
+
 ## [2.40.0] — 2026-06-09
 
 ### Added

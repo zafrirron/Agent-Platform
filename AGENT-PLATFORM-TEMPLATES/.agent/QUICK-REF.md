@@ -21,6 +21,8 @@
 
 > **Session ended without "End session"?** No problem — session start resumes automatically. You'll see `▶ Resuming: [your last task]` and continue where you left off.
 > **Switching to a different IDE?** Session start offers a Critic review of the previous IDE's work — different AI models catch each other's blind spots. Say YES to run it.
+> **Cursor `/` commands:** `/session-start` `/session-end` `/spec` `/audit` `/review` `/release` `/ship` `/implement` `/quick-ref` — see `.cursor/commands/`
+> **Cursor Plan mode:** after plan approval, `/implement` or `"implement the plan"` — resumes `add-feature` Step 3 (`.cursor/rules/plan-mode-handoff.mdc`).
 
 ---
 
@@ -46,29 +48,33 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 ---
 
 ## Playbooks
-**Describe the situation — the right playbook loads automatically.** (18 total)
+**Describe the situation — the right playbook loads automatically.** (20 total)
 
-| Your situation | Playbook |
-|---------------|---------|
-| First time in this repo / onboarding / health check | **Full Project Audit** — 11-phase report → `.agent/context/audit-[date].md` |
-| Starting new feature work | Add feature — design gate, Security gate, tests, Critic |
-| Something is broken | Bug fix — reproduce, fix, regression test, Critic |
-| "hotfix", "rollback", "emergency fix" | Bug fix via DevOps — emergency path |
-| "clean up this area" (tests must exist first) | Refactor — incremental, tests green before/after |
-| "something's wrong but I don't know why" | Debug pipeline — systematic diagnosis |
-| "slow", "bottleneck", "p95", "performance budget" | Performance budget — or debug pipeline for investigation |
-| Ready to ship a version | Release — tests, Critic, changelog, tag |
-| "go live", "production ready", "PRR" | Production readiness — P0 NFRs, compliance evidence, security |
-| Security review / OWASP / pentest prep | Security audit — secrets, CVEs, OWASP API Top 10 |
-| "I need to add [package/library]" | Add dependency — vet, CVE scan, document |
-| Integrating an external API or service | API integration — contract-first, tests |
-| "document API", "OpenAPI", "Swagger" | Document API — spec from code, Critic gate |
-| "define NFRs", "SLO", "quality targets" | NFR definition — writes `nfr-log.md` |
-| "observability", "metrics", "health check" | Observability setup — logs, correlation ID, alerts |
-| "accessibility audit", "WCAG", "a11y" | Accessibility audit — WCAG 2.2 AA + keyboard pass |
-| "compliance review", "SOC 2", "ISO 27001" | Compliance review — SDLC controls + evidence gaps |
-| "DORA metrics", "maturity assessment" | Org maturity assessment — quarterly process review |
-| "postmortem", "outage", "incident review" | Incident postmortem — MTTR, DORA rollup |
+**Claude Code shortcuts:** `/spec` · `/audit` · `/review` · `/release` · `/ship` · `/quick-ref`
+
+| Your situation | Playbook | Key principle |
+|---------------|---------|---------------|
+| First time in this repo / onboarding / health check | **Full Project Audit** — 11-phase report → `audit-[date].md` | Know before you change |
+| Underspecified idea / "interview me" | Requirements clarification → `spec-outline.md` | No code until spec is clear |
+| Starting new feature work | Add feature | Design gate + doubt review first |
+| Something is broken | Bug fix | Reproduce → fix → regression test |
+| "hotfix", "rollback", "emergency fix" | Bug fix (DevOps path) | Stabilize before polish |
+| "clean up this area" (tests exist) | Refactor | Chesterton's Fence — understand before removing |
+| "something's wrong but I don't know why" | Debug pipeline | Hypothesis-driven narrowing |
+| "slow", "p95", "performance budget" | Performance budget | Measure before optimize (CWV) |
+| Ready to ship a version | Release | Tests + Critic before tag |
+| "go live", "production ready", "PRR" | Production readiness | P0 NFRs + evidence before go-live |
+| Security review / OWASP / pentest prep | Security audit | Secrets + CVEs + OWASP API Top 10 |
+| "I need to add [package/library]" | Add dependency | Vet CVEs before adopt |
+| Integrating external API or service | API integration | Contract-first + tests |
+| "document API", "OpenAPI", "Swagger" | Document API | Spec from code, Critic gate |
+| "define NFRs", "SLO", "quality targets" | NFR definition | Threshold + measure + verify |
+| "observability", "metrics", "health check" | Observability setup | Correlation ID + actionable alerts |
+| "accessibility audit", "WCAG", "a11y" | Accessibility audit | WCAG 2.2 AA + keyboard pass |
+| "compliance review", "SOC 2", "ISO 27001" | Compliance review | Control → artifact mapping |
+| "DORA metrics", "maturity assessment" | Org maturity assessment | Process metrics, quarterly |
+| "postmortem", "outage", "incident review" | Incident postmortem | Blameless + MTTR rollup |
+| "deprecate", "sunset", "remove legacy" | Deprecation | Zero-usage verify before removal |
 
 ---
 
@@ -87,6 +93,12 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 | [.agent/context/nfr-log.md](.agent/context/nfr-log.md) | Measurable quality targets (ISO 25010 / 14-category) |
 | [.agent/context/compliance-evidence-log.md](.agent/context/compliance-evidence-log.md) | SOC 2 / ISO 27001 control → artifact mapping |
 | [.agent/context/incident-log.md](.agent/context/incident-log.md) | Incidents, MTTR, DORA rollup |
+| [.agent/references/testing-patterns.md](.agent/references/testing-patterns.md) | Pyramid, DAMP, regression patterns |
+| [.agent/references/security-checklist.md](.agent/references/security-checklist.md) | Pre-merge security spot-check |
+| [.agent/references/performance-checklist.md](.agent/references/performance-checklist.md) | Measure-first performance gates |
+| [.agent/references/accessibility-checklist.md](.agent/references/accessibility-checklist.md) | WCAG 2.2 AA quick pass |
+| [.agent/references/orchestration-patterns.md](.agent/references/orchestration-patterns.md) | Expert chaining rules — no nested persona spawn |
+| [.agent/context/spec-outline.md](.agent/context/spec-outline.md) | Lightweight pre-implementation spec (add-feature Step 0) |
 
 ---
 

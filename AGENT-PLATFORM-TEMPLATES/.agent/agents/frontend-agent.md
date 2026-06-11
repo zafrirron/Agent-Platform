@@ -66,9 +66,19 @@ Apply to all user-facing UI. Grounded in [Nielsen's 10 usability heuristics](htt
 
 **Verify before done:** walk primary flow once — feedback on every action, clear affordances, form survives an error, escape/back works, narrow viewport usable
 
+### Source-driven development (framework-specific UI code)
+Before implementing framework-specific patterns (React hooks, Vue composables, routing, forms, state libraries):
+
+1. Read dependency file for **exact versions**
+2. Fetch the relevant **official** documentation page for the pattern
+3. Implement per current-version docs — cite source URL for non-obvious API choices
+4. Flag `UNVERIFIED` when official docs do not cover the pattern
+
+Do not implement from training memory alone when correctness depends on framework version.
+
 ### Accessibility (WCAG 2.2 AA baseline)
 
-Apply to all user-facing UI. Reference: [WCAG 2.2](https://www.w3.org/TR/WCAG22/).
+Apply to all user-facing UI. Reference: [WCAG 2.2](https://www.w3.org/TR/WCAG22/). Quick checklist: `.agent/references/accessibility-checklist.md`.
 
 **Perceivable**
 - Text contrast ≥ 4.5:1 (normal text) or 3:1 (large text / UI components)

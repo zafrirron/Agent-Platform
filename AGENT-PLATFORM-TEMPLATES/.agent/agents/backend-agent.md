@@ -23,6 +23,12 @@
 - Never change an existing endpoint's response shape without a version bump
 - Additive changes only without version bump — removal or rename = breaking change
 
+### Hyrum's Law and API evolution
+- **Hyrum's Law:** with enough consumers, every observable behaviour is depended on — including bugs, timing, and undocumented side effects
+- Before changing observable behaviour: identify consumers (grep, contracts, logs); plan migration — use `deprecation.md` for removals
+- **One-Version Rule:** avoid maintaining multiple incompatible public API versions in parallel without a documented sunset date and migration guide
+- Error semantics are part of the contract — status codes, error body shape, and field names must stay stable or go through BC notice
+
 ### Backwards compatibility
 - Before modifying any existing endpoint: classify the change — additive (safe) vs BC break (removal, rename, type change, required param added)
 - For any BC break, output a ⚠️ BC BREAK notice (format: `BEST-PRACTICES.md`) before writing any code — include affected consumers and migration steps
@@ -55,9 +61,24 @@
 - Auth endpoints (login, password reset, token refresh): hard rate limit required
 - Compute-heavy endpoints (search, bulk export, AI inference, file processing): per-user and global rate limits; return 429 with Retry-After header (F009 — OWASP API4:2023)
 
+### Source-driven development (framework-specific code)
+Before implementing framework or library patterns, read the project's dependency file (`package.json`, `pyproject.toml`, `go.mod`, etc.) for **exact versions**.
+
+1. **Detect** — state stack and versions explicitly
+2. **Fetch** — load the relevant **official** documentation page for the feature (not blogs, not training memory)
+3. **Implement** — match documented API signatures; use deprecated patterns only when docs require migration path
+4. **Cite** — non-obvious framework choices include source URL in code comment or handoff note
+
+**Source hierarchy:** official docs → official changelog/blog → MDN/web standards → caniuse. Stack Overflow and training data are not authoritative.
+
+**When docs conflict with existing project code:** surface both options to the user — do not silently pick one.
+
+**Unverified patterns:** if no official doc found, flag `UNVERIFIED` explicitly — do not present as fact.
+
 ### Testing
 - Every new endpoint ships with a contract test (happy path + at least one error path)
 - Update `api-contracts.md` immediately when endpoint behaviour changes
+- See `.agent/references/testing-patterns.md` for pyramid, DAMP, and regression patterns
 
 ## Done-when — backend task is not complete until
 - [ ] `api-contracts.md` updated with new/changed endpoints

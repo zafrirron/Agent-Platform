@@ -18,6 +18,68 @@
 
 ---
 
+### [2.41.0] — 2026-06-09 — User-facing docs + presentation sync (v2.41)
+
+**Gap observed:** Post-ingest marketing, Cursor slash commands, and Plan handoff shipped in templates but FRAMEWORK tree still said 18 playbooks; beta deck test count 172; team-adoption STORY-PLAN still said 7-dimension Critic; E2E/global docs missing `.cursor/commands/`.
+
+**Files changed:** README, FRAMEWORK-README, CHANGELOG, COPYING, MAINTAINER/GUIDE, `presentation/agent-platform-beta.html`, `presentation/team-adoption.html`, `presentation/STORY-PLAN.md`, `tests/E2E-TEST-PLAN.md`, PLATFORM-HELP
+
+**Validated:** Yes — 192/192 `npm test`
+
+---
+
+### [2.41.0] — 2026-06-09 — Cursor `/` slash commands (parity with Claude Code)
+
+**Gap observed:** Lifecycle commands shipped only in `.claude/commands/`; Cursor users expected `/spec`, `/ship`, etc. in `.cursor/commands/` per Cursor's slash-command discovery model.
+
+**Files changed:** `.cursor/commands/*.md` (14 files), `AGENT-PLATFORM-MANIFEST.json` (repo + global scope), `.cursor/README.md`, `QUICK-REF.md`, `README.md`, `docs/DISTRIBUTION.md`, tests
+
+**Rules added:** `/session-start`, `/session-end`, `/quick-ref`, `/platform-help`, `/spec`, `/audit`, `/review`, `/release`, `/ship`, `/implement`, caveman helpers — mirrored from Claude commands + Cursor-only `/implement` for plan handoff.
+
+**Validated:** Yes — 192/192 `npm test`
+
+---
+
+### [2.41.0] — 2026-06-09 — Cursor Plan mode → implementation handoff
+
+**Failure observed:** After Cursor Plan approval, agents treated implementation as a fresh task — skipped add-feature resume, no `▶` handoff line, Steps 3–5b gates inconsistent.
+
+**Files changed:** `.cursor/rules/plan-mode-handoff.mdc`, `AGENTS.md`, `add-feature.md`, `QUICK-REF.md`, `PLATFORM-HELP.md`, `.cursor/README.md`, `AGENT-PLATFORM-MANIFEST.json`, `tests/apply-integration.test.mjs`
+
+**Rules added:** On plan approval — re-read AGENTS.md, load add-feature, resume Step 3, mandatory status line `(resuming Step 3 — plan approved)`; routing row for "implement the plan" triggers.
+
+**Validated:** Yes — 190/190 `npm test`
+
+---
+
+### [2.41.0] — 2026-06-09 — P1/P2 marketing: discovery, comparison, slash commands
+
+**Gap observed:** README opener still said "nine playbooks"; FRAMEWORK-README lacked "when to use what" and skill-pack comparison; QUICK-REF had no key principles; PLATFORM-HELP buried value behind philosophy; no user CONTRIBUTING path; lifecycle not aligned across deck + docs; no `/spec` `/ship` parity with agent-skills lifecycle marketing.
+
+**Files changed:** `README.md`, `AGENT-PLATFORM-FRAMEWORK-README.md`, `QUICK-REF.md`, `PLATFORM-HELP.md`, `CONTRIBUTING.md`, `docs/DISTRIBUTION.md`, `.claude/commands/{spec,ship,audit,review,release}.md`, `AGENT-PLATFORM-MANIFEST.json`, `presentation/agent-platform-beta.html`, `presentation/team-adoption.html`, `CHANGELOG.md`
+
+**Rules added:** N/A (marketing/docs only)
+
+**Validated:** Yes — 187/187 `npm test`
+
+---
+
+### [2.41.0] — 2026-06-11 — Mode 3 ingest: agent-skills P0 + P1 (addyosmani/agent-skills)
+
+**Source:** https://github.com/addyosmani/agent-skills (MIT) — selective ingest, not wholesale copy.
+
+**Gap observed:** Platform lacked anti-rationalization gates, source-driven rules, TDD pyramid/Beyoncé/DAMP, doubt review, deprecation/clarification playbooks, reference checklists, spec template, Hyrum's Law, change sizing, Chesterton's Fence, CWV measure-first, and accurate install banner.
+
+**Files changed:**
+- New: `deprecation.md`, `requirements-clarification.md`, `spec-outline.md`, `.agent/references/*` (5 files)
+- Updated: playbooks, experts, `apply.js` (dynamic playbook count), `AGENTS.md`, `QUICK-REF.md`, user docs, presentations, `AGENT-PLATFORM-MANIFEST.json`, tests
+
+**Rules added:** P0 rationalization + doubt + source-driven + deprecation; P1 spec Step 0, requirements-clarification, orchestration-patterns, Hyrum's Law, ~100-line commits, Chesterton's Fence, CWV step 4b, extended rationalization tables.
+
+**Validated:** Yes — 187/187 `npm test`
+
+---
+
 ### [2.41.0] — 2026-06-09 — User-facing docs sync (post-2.37 capabilities)
 
 **Gap observed:** README, FRAMEWORK-README, QUICK-REF, PLATFORM-HELP, presentation deck, and maintainer commands still described v2.37 / 9 playbooks / 8-domain audit after v2.38–2.41 NFR/compliance releases.

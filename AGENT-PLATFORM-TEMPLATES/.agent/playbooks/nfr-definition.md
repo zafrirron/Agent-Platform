@@ -36,6 +36,15 @@
 
 8. **Handoff** — update `CURRENT.md` with NFR IDs added. Do not run session-end — only the user ends the session.
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "Fast and secure are good enough" | Adjectives are invalid — every NFR needs a number and measurement method. |
+| "We'll measure in production" | Every row needs a verification path before go-live — production-only measurement is a gap. |
+| "DORA doesn't apply to us" | If you deploy to production, propose P1/P2 DORA rows or document N/A with user approval. |
+| "Skip compliance rows — we're not regulated" | If user stated SOC 2/ISO/GDPR scope, `NFR-C01` and evidence log rows are mandatory. |
+
 ## Rules
 - Load `architect-agent.md` rules for ADR discipline when NFRs drive hard-to-reverse decisions
 - Do not implement code in this playbook — definition only

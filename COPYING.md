@@ -86,8 +86,8 @@ All of the above are added to `.gitignore` automatically — nothing is committe
 
 ```text
 ~/.claude/CLAUDE.md                         ← activation stub + USER section
-~/.claude/commands/caveman*.md              ← global slash commands
-~/.claude/commands/quick-ref.md
+~/.claude/commands/*.md                     ← global Claude slash commands
+~/.cursor/commands/*.md                     ← global Cursor slash commands
 ~/.cursor/rules/agent-platform-global.mdc  ← alwaysApply: true activation rule
 ~/.codex/instructions.md                   ← activation stub + USER section
 ~/.agents/rules/agent-platform-global.md  ← activation stub + USER section

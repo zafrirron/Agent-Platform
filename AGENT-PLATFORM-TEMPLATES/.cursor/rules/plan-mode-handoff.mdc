@@ -1,0 +1,34 @@
+---
+description: Cursor Plan mode → Agent mode — resume add-feature from Step 3 after plan approval
+alwaysApply: true
+---
+# Cursor Plan mode handoff
+
+When the user **approves a plan** and implementation begins, treat it as a **playbook resume** — not a brand-new task with no gates.
+
+## Triggers (any of)
+
+- User approves Cursor's plan UI (Build, Approve, Implement, or equivalent)
+- User says: "implement the plan", "build the plan", "execute the plan", "approved plan", "go ahead and implement", "build it", "ship the plan"
+- This chat moves from Plan mode (read-only) to Agent/implementation mode with an approved plan in context
+
+## Required handoff sequence
+
+1. **Re-read** `AGENTS.md` Section 2 — confirm expert + playbook (usually Backend or Frontend + `add-feature.md`)
+2. **Read** `.agent/playbooks/add-feature.md` in full
+3. **Read** `.agent/context/spec-outline.md` if it exists. If missing but the approved plan is in chat, create or update `spec-outline.md` from the plan before writing production code
+4. **Resume from Step 3** (Spec):
+   - Steps 0–2 count as done when Plan mode produced scope + design at the correct Design Gate tier
+   - Re-run **Step 2b (BC check)** only if the approved plan changes existing contracts
+   - Do **not** skip Step 3 acceptance criteria / failing test skeleton
+5. **First response line** (mandatory — not subject to compression):
+   `▶ Agent Platform · [Expert] expert · add-feature playbook (resuming Step 3 — plan approved)`
+6. Continue Steps **3 → 7** in order. Do not skip Security gate (5a) or Critic (5b)
+
+## If planning used requirements-clarification only
+
+Route to `add-feature.md`. Complete Steps 0–2 from plan context (fast path), then proceed from Step 3.
+
+## Session note
+
+If `.agent/handoff/sync/registry.yaml` shows `frameworks.cursor.status` is `idle`, still run this handoff. Append one line after the status line: *Recommend: `Read .agent/session-start.md and execute it.` for registry and handoff logging.*

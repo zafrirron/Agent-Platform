@@ -8,13 +8,15 @@
 [![License: Elastic-2.0](https://img.shields.io/badge/License-Elastic_2.0-blue.svg)](LICENSE)
 © 2024–2026 [Zafrir Ron](https://github.com/zafrirron) — Free for personal and internal use. Commercial hosting/SaaS prohibited. See [LICENSE](LICENSE).
 
-**[📊 View Interactive Presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)** — 18 slides · what it is · how it works · live demo · enterprise features
+**[📊 View Interactive Presentation](https://zafrirron.github.io/Agent-Platform/presentation/agent-platform-beta.html)** — interactive deck · lifecycle · live demo · enterprise features
 
 ---
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). Nine playbooks. Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** Test enforcement. A quick reference on every session start. No memorisation required.
+
+**Lifecycle:** `INSTALL → SESSION → ROUTE → GATES → SHIP`
 
 > **The platform coordination layer never modifies your source code.** It only adds `.agent/`, `.claude/`, etc. — all gitignored so nothing is accidentally committed. Your AI agents will write and improve your code through the platform. That's the point. The platform scaffolding itself stays completely out of your codebase.
 > **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
@@ -94,9 +96,28 @@ It lists every command, every expert agent, every playbook, and every platform o
 
 The agent responds with a **link** — it does not dump the file into chat (that would waste your context window). Open the file in your editor to see everything at a glance.
 
-**Claude Code slash command:** type `/quick-ref` in any chat — no session-start required.
+**Slash commands** (type `/` in chat):
+- **Cursor** — `.cursor/commands/`: `/session-start` · `/session-end` · `/quick-ref` · `/spec` · `/audit` · `/review` · `/release` · `/ship` · `/implement` · `/platform-help` · `/caveman` (+ helpers)
+- **Claude Code** — `.claude/commands/`: same lifecycle set (no `/implement`; use `/spec` or natural language for plan handoff)
 
-**What's in the guide:** session commands · 9 expert agents and their trigger phrases · 18 playbooks and when they activate · NFR/compliance context files · token compression (caveman mode) · platform operations (upgrade, global install, guards, repair, remove)
+**What's in the guide:** session commands · 9 expert agents and their trigger phrases · 20 playbooks (with key principles) · reference checklists · NFR/compliance context files · token compression (caveman mode) · platform operations (upgrade, global install, guards, repair, remove)
+
+---
+
+## Why Agent Platform (named discipline)
+
+Hard-won engineering habits are encoded into playbooks and experts — not left to model mood:
+
+| Concept | What it means here |
+|---------|-------------------|
+| **Rationalization gate** | Playbooks block "skip this step because…" excuses |
+| **Doubt review** | Architect challenges the design before code lands |
+| **Beyoncé Rule** | Tests assert behavior, not private implementation |
+| **Hyrum's Law** | Backend agent treats every response shape as a public contract |
+| **Chesterton's Fence** | Refactor playbook: understand legacy before deleting |
+| **Critic (10 dimensions)** | Adversarial review across security, a11y, operability, BC |
+
+**vs skill packs:** Portable skills teach *how* to think; Agent Platform adds *where* work happens — session handoff, multi-IDE registry, gated workflows, optional CI guards. See [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -132,7 +153,9 @@ Repeat. The platform never stops improving.
 | **Cross-framework critic review** | When you switch IDEs (e.g. Claude Code → Cursor), the new agent automatically offers to review the previous model's work. Different AI models have different blind spots — cross-model review catches what the first model missed. Zero extra setup. |
 | **Emergency IDE takeover** | If an IDE runs out of credits or crashes mid-session, just start a session in any other IDE. It detects the stuck session, offers to take over, commits any uncommitted work, and continues — no manual file editing, no lost work. Switch between Claude Code, Cursor, Codex, and Antigravity freely based on credits and availability. |
 | **🔍 Full Project Audit** | 11-phase professional report on first session or on demand — architecture through governance/maturity. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
-| **18 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
+| **20 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api · deprecation · requirements-clarification. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
+| **Reference checklists** | `.agent/references/` — testing, security, performance, accessibility, orchestration patterns (agent-skills–informed) |
+| **Agent-skills ingest** | Rationalization gates · doubt review · source-driven dev · Beyoncé/DAMP test rules · spec-outline template |
 | **NFR & production readiness** | `nfr-log.md` — measurable ISO 25010 targets. `production-readiness` gates go-live (P0 NFRs, compliance evidence, vuln SLA). |
 | **Compliance & DORA** | `compliance-evidence-log.md` for SOC 2 / ISO 27001 artifacts. Maturity assessment + incident postmortem for DORA metrics. |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
@@ -279,13 +302,13 @@ Install user-level stubs to your home directory so the platform activates automa
 npx github:zafrirron/Agent-Platform --mode=global
 ```
 
-Writes to `~/.claude/CLAUDE.md`, `~/.cursor/rules/`, `~/.codex/instructions.md`, `~/.agents/rules/` — all four frameworks.
+Writes to `~/.claude/CLAUDE.md`, `~/.claude/commands/`, `~/.cursor/rules/`, `~/.cursor/commands/`, `~/.codex/instructions.md`, `~/.agents/rules/` — all four frameworks.
 
 **What it does:**
 - **Repo with platform installed** → expert routing activates automatically, no manual session-start needed
 - **Repo without platform** → one-time install offer displayed at session start
 - **Repo with `.agent-platform-skip`** → offer suppressed permanently for that repo
-- **`~/.claude/commands/`** → `caveman`, `quick-ref`, and other commands available in every repo globally
+- **`~/.claude/commands/`** and **`~/.cursor/commands/`** → lifecycle slash commands (`/session-start`, `/spec`, `/audit`, `/ship`, `/implement`, `/caveman`, …) available in every repo globally
 
 **The three-layer model after global install:**
 
@@ -476,6 +499,10 @@ The platform references industry standards by name. Click any term for more deta
 | Document | For |
 |----------|-----|
 | [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md) | **Users** — complete installation, usage, and extension guide |
+| [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | **Users** — install paths, IDE slash commands, comparison vs skill packs |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | **Contributors** — submit rules, playbooks, and doc improvements |
+| [presentation/agent-platform-beta.html](presentation/agent-platform-beta.html) | **Users** — interactive product deck (v2.41) |
+| [presentation/team-adoption.html](presentation/team-adoption.html) | **Teams** — adoption deck + [STORY-PLAN.md](presentation/STORY-PLAN.md) presenter guide |
 | [SECURITY.md](SECURITY.md) | **Trust** — what the platform does and does not do, how to audit it |
 | [CHANGELOG.md](CHANGELOG.md) | **Users** — version history and upgrade paths |
 | [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md) | **Platform author** — agentic development workflow, release process |
@@ -506,7 +533,7 @@ This platform is developed using itself. All maintenance is done by telling the 
 
 ## Version
 
-**v2.40.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
+**v2.41.0** · [Changelog](CHANGELOG.md) · [GitHub Releases](https://github.com/zafrirron/Agent-Platform/releases)
 
 ---
 

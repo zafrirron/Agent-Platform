@@ -48,6 +48,7 @@ You are the active router. When the user describes a task:
 | User says something like… | Expert file | Playbook file |
 |--------------------------|-------------|---------------|
 | "add a feature", "implement", "build", "create", "new endpoint", "new component", "new page", "new screen", "scaffold" | `.agent/agents/backend-agent.md` (server/API/data) or `frontend-agent.md` (UI/component/styling) | `.agent/playbooks/add-feature.md` |
+| "implement the plan", "build the plan", "execute the plan", "approved plan", "go ahead and implement", "build it", "ship the plan" | relevant `*-agent.md` | `.agent/playbooks/add-feature.md` — **resume from Step 3** if plan/design already approved (Cursor Plan mode handoff; see `.cursor/rules/plan-mode-handoff.mdc`) |
 | "fix a bug", "broken", "crash", "not working", "error", "exception", "failing", "regression", "incorrect", "wrong output", "throws", "404", "500", "timeout", "flaky test" | relevant `*-agent.md` | `.agent/playbooks/bug-fix.md` |
 | "refactor", "clean up", "rename", "simplify", "restructure", "reorganize", "extract", "split", "decouple", "deduplicate", "modernize" | relevant `*-agent.md` | `.agent/playbooks/refactor.md` |
 | "release", "ship", "version bump", "tag", "publish", "cut release", "ready to release", "release this" | `.agent/agents/devops-agent.md` | `.agent/playbooks/release.md` |
@@ -66,10 +67,12 @@ You are the active router. When the user describes a task:
 | "update docs", "README", "changelog", "document", "JSDoc", "docstring", "swagger", "OpenAPI", "API docs" | `.agent/agents/docs-agent.md` | `.agent/playbooks/document-api.md` |
 | "schema", "migration", "database", "data pipeline", "ORM", "table", "column", "seed", "ETL", "aggregate", "N+1" | `.agent/agents/data-agent.md` | *(none)* |
 | "system design", "architecture", "should we use X or Y", "ADR", "technical spec", "evaluate options", "what's the best approach" | `.agent/agents/architect-agent.md` | *(none)* |
+| "interview me", "grill me", "clarify requirements", "help me think through", "I'm not sure what I want", "underspecified", "vague idea", "refine the idea", "explore options" | `.agent/agents/architect-agent.md` | `.agent/playbooks/requirements-clarification.md` |
 | "define NFRs", "non-functional requirements", "quality requirements", "SLO", "SLA", "performance target", "availability target", "NFR" | `.agent/agents/architect-agent.md` | `.agent/playbooks/nfr-definition.md` |
 | "compliance review", "SOC 2", "ISO 27001", "GDPR review", "compliance audit", "compliance check", "audit readiness", "control mapping" | `.agent/agents/security-agent.md` | `.agent/playbooks/compliance-review.md` |
 | "maturity assessment", "org maturity", "DORA metrics", "DORA review", "process maturity", "SDLC maturity", "quarterly review" | `.agent/agents/architect-agent.md` | `.agent/playbooks/org-maturity-assessment.md` |
 | "incident postmortem", "postmortem", "blameless postmortem", "outage review", "incident review", "RCA", "root cause analysis" | `.agent/agents/devops-agent.md` | `.agent/playbooks/incident-postmortem.md` |
+| "deprecate", "deprecation", "sunset", "remove legacy", "migrate from", "migration plan", "retire API", "EOL", "end of life", "zombie code", "remove old system" | `.agent/agents/architect-agent.md` | `.agent/playbooks/deprecation.md` |
 | "CI/CD", "build pipeline", "Docker", "infra", "Kubernetes", "k8s", "terraform", "GitHub Actions", "container", "monitoring" | `.agent/agents/devops-agent.md` | *(none — use observability-setup row for instrumentation)* |
 | "retrofit changelog", "convert changelog", "standardize changelog", "migrate changelog", "fix changelog format", "changelog doesn't follow standard" | `.agent/agents/devops-agent.md` | *(none)* |
 | "review this", "find issues", "what could go wrong", "code review", "PR review", "check my code", "give feedback", "sanity check", "second opinion" | `.agent/agents/critic-agent.md` | *(none)* |

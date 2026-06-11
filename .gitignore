@@ -4,12 +4,16 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Platform self-install artefacts — safe to ignore, should never be committed
-.agent/
-.claude/
-.cursor/
-.agents/
-.codex/
-AGENTS.md
-CLAUDE.md
-SYNC-POINTS.md
+# Platform self-install artefacts at repo root — templates under AGENT-PLATFORM-TEMPLATES/ stay tracked
+/.agent/
+/.claude/
+/.cursor/
+/.agents/
+/.codex/
+/AGENTS.md
+/CLAUDE.md
+/SYNC-POINTS.md
+
+# Local E2E rehearsal scratch (npm run test:manual --dir=...)
+/tests/e2e-scratch/
+/tests/e2e-state.json

@@ -38,7 +38,58 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 > **One command. A complete agentic development environment on any repository.**
 
-Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, **18 step-by-step playbooks** (core delivery + NFR/quality + compliance/maturity), a framework-aware quick reference on every session start, built-in test enforcement, ISO 25010-style NFR register, production-readiness and compliance evidence gates, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, **20 step-by-step playbooks** (core delivery + NFR/quality + compliance/maturity), a framework-aware quick reference on every session start, built-in test enforcement, ISO 25010-style NFR register, production-readiness and compliance evidence gates, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
+
+**Lifecycle:** `INSTALL → SESSION → ROUTE → GATES → SHIP` — see [How it works](#how-it-works) in the main README.
+
+---
+
+## When to use what
+
+| You want… | Use this | Not this |
+|-----------|----------|----------|
+| One command, whole repo, any IDE | **Agent Platform** (`npx`) | Copying individual skills by hand |
+| Clarify an idea before coding | Requirements clarification / `/spec` | Jumping straight to add-feature |
+| Onboard to an unknown repo | Full project audit / `/audit` | Random file reads without a report |
+| Fix a defect with proof | Bug-fix playbook + Test expert | Ad-hoc patches without regression tests |
+| Ship a version tag | Release playbook / `/release` | Manual version bump only |
+| Approve go-live (PRR) | Production readiness / `/ship` | Release playbook alone |
+| Adversarial quality pass | Critic agent / `/review` | Self-review by the implementing model |
+| Optional deterministic gates | `--mode=install-guards` | Hoping the model never skips a step |
+| Contribute a rule back | [CONTRIBUTING.md](CONTRIBUTING.md) | Pasting whole third-party skill packs |
+
+Full distribution comparison: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md).
+
+---
+
+## How we differ from skill packs
+
+Skill packs (e.g. [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)) excel at **portable expertise** — TDD habits, security checklists, orchestration patterns. Agent Platform is a **repo coordination layer**: multi-IDE registry, session handoff, 20 gated playbooks, living context files, and optional CI/pre-commit enforcement.
+
+| | Agent Platform | Typical skill pack |
+|--|----------------|-------------------|
+| Install unit | Entire environment per repo | One skill or plugin at a time |
+| Session model | session-start / session-end, `CURRENT.md` | Per-chat, ad hoc |
+| Quality gates | Critic + playbook steps + optional guards | Varies per skill |
+| Multi-IDE | Cross-framework Critic, conflict registry | Usually single tool |
+| Extension | Documented 7-step anatomy | Copy/fork skills |
+
+We **selectively ingest** proven patterns from skill packs into playbooks (with attribution in `MAINTAINER/ingest/`). You can still add project-specific skills under `.agent/skills/` alongside the platform.
+
+---
+
+## Engineering concepts we encode
+
+These names appear in playbooks and expert agents — they are deliberate discipline, not buzzwords:
+
+| Concept | Where it lives | One line |
+|---------|----------------|----------|
+| **Rationalization gate** | Playbook step tables | Agents cannot skip steps by inventing excuses |
+| **Doubt review** | add-feature, architect-agent | Challenge assumptions before implementation |
+| **Beyoncé Rule** | test-agent | Test behavior, not implementation details |
+| **Hyrum's Law** | backend-agent | Every exposed behavior becomes an implicit API contract |
+| **Chesterton's Fence** | refactor playbook | Understand why code exists before removing it |
+| **Measure-first (CWV)** | performance-budget | Profile and budget before optimizing |
 
 ---
 
@@ -52,7 +103,8 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | **Critic agent** | Adversarial reviewer with 10 review dimensions (correctness, security, test, completeness, performance, design, dependency, accessibility, operability, BC). Severity-rated findings. Built into add-feature, bug-fix, release, and audit playbooks as mandatory quality gates. |
 | **Cross-framework critic review** | When switching IDEs, the new framework automatically offers to run the Critic on the previous framework's work. Zero setup — different AI models reviewing each other's blind spots, every time you switch. Session end commits all changes first so the next IDE always reviews real committed code. |
 | **Agent-generated artifacts** | Test expert generates a coverage HTML report; Docs expert generates OpenAPI/Swagger spec. These are your project files — not platform files. Not gitignored by default. Keep, commit, or exclude them as you see fit. See `.agent/PLATFORM-HELP.md` → Agent-generated artifacts. |
-| **18 playbooks** | **Core:** audit · add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration · document-api. **Quality & NFR:** nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. **Compliance & maturity:** compliance-review · org-maturity-assessment · incident-postmortem. add-feature includes automatic Security gate (Step 5a) for endpoints/auth/data — fires before Critic. |
+| **20 playbooks** | **Core:** audit · add-feature · release · debug-pipeline · bug-fix · refactor · add-dependency · security-audit · api-integration · document-api · deprecation · requirements-clarification. **Quality & NFR:** nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. **Compliance & maturity:** compliance-review · org-maturity-assessment · incident-postmortem. add-feature: spec-outline Step 0, doubt review, Security gate (5a), Critic (5b). |
+| **References** | `.agent/references/` — testing-patterns · security-checklist · performance-checklist · accessibility-checklist · orchestration-patterns |
 | **NFR & production readiness** | `nfr-log.md` — measurable ISO 25010 / 14-category targets (threshold + measure + verify). `production-readiness` playbook gates go-live: P0 NFRs, compliance evidence, vuln SLA, SBOM, rollback evidence. |
 | **Compliance & DORA maturity** | `compliance-evidence-log.md` maps SOC 2 / ISO 27001 SDLC controls to artifacts. `compliance-review`, `org-maturity-assessment`, and `incident-postmortem` playbooks for audit prep and DORA metrics (change failure rate, MTTR). |
 | **Quick reference on every session start** | Compact status block on every session start: last work, update status, path to full guide. Full capability guide at `.agent/QUICK-REF.md` — open in editor any time, no chat clutter. No memorisation required. |
@@ -166,7 +218,7 @@ Install user-level stubs to your home directory so the platform auto-activates i
 npx github:zafrirron/Agent-Platform --mode=global
 ```
 
-Writes stubs to: `~/.claude/CLAUDE.md` · `~/.claude/commands/` · `~/.cursor/rules/` · `~/.codex/instructions.md` · `~/.agents/rules/`
+Writes stubs to: `~/.claude/CLAUDE.md` · `~/.claude/commands/` · `~/.cursor/rules/` · `~/.cursor/commands/` · `~/.codex/instructions.md` · `~/.agents/rules/`
 
 **Behaviour per repo after global install:**
 
@@ -299,15 +351,17 @@ repo-root/
 │   │   Each agent has a companion *.manifest.json defining capabilities, routing keywords,
 │   │   Critic dimensions, and trust ceiling — machine-readable foundation for Phase 5-6 routing
 │   ├── agents/schemas/               ← JSON Schema for agent manifests
-│   ├── playbooks/                    ← 18 step-by-step workflows
+│   ├── playbooks/                    ← 20 step-by-step workflows
 │   │   core: audit · add-feature · release · bug-fix · refactor · debug-pipeline
 │   │   add-dependency · security-audit · api-integration · document-api
+│   │   requirements-clarification · deprecation
 │   │   quality: nfr-definition · production-readiness · performance-budget
 │   │   observability-setup · accessibility-audit
 │   │   compliance: compliance-review · org-maturity-assessment · incident-postmortem
+│   ├── references/                   ← testing · security · performance · a11y · orchestration checklists
 │   ├── context/                      ← living reference files
 │   │   project-overview · api-contracts · api-patterns · adr-log · known-issues · dependencies
-│   │   nfr-log · compliance-evidence-log · incident-log · docs-registry
+│   │   spec-outline · nfr-log · compliance-evidence-log · incident-log · docs-registry
 │   │   reputation.json               ← per-agent trust scores (seeds Phase 5 reputation-aware gates)
 │   │   patterns                      ← reusable approaches from prior sessions (agents write + read)
 │   ├── skills/caveman/SKILL.md       ← 🪨 token-compression skill
@@ -322,12 +376,13 @@ repo-root/
 │       └── sync/registry.yaml        ← active-framework lock
 │
 ├── .claude/   🔒 Claude private
-│   ├── commands/  ← /caveman slash commands
+│   ├── commands/  ← lifecycle slash commands (/spec · /audit · /ship · /caveman · …)
 │   ├── rules/
 │   └── prompts/session-start.md + session-end.md
 │
 ├── .cursor/   🔒 Cursor private
-│   ├── rules/caveman.mdc
+│   ├── commands/  ← lifecycle slash commands (/session-start · /implement · /spec · …)
+│   ├── rules/     ← platform-core · plan-mode-handoff · caveman
 │   └── prompts/session-start.md + session-end.md
 │
 ├── .agents/   🔒 Antigravity private
@@ -801,7 +856,7 @@ EXTEND PLATFORM     See Extending guide in this file (AGENT-PLATFORM-FRAMEWORK-R
 | **Shared skill** | New capability (like caveman) in `.agent/skills/` — wired into all frameworks |
 | **Context file** | New living reference doc in `.agent/context/` |
 | **IDE framework** | 5th framework (Windsurf, Cline, Copilot Workspace, etc.) |
-| **Claude Code command** | New `/slash-command` in `.claude/commands/` |
+| **Slash command** | New `/command` in `.claude/commands/` and `.cursor/commands/` (mirror both IDEs) |
 | **Session protocol step** | Extra check at start or end of every session |
 | **Best practice / rule** | New golden rule, protocol, or checklist item |
 | **API agentic pattern** | Conventions for agents that build or consume HTTP APIs |

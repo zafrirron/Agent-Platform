@@ -44,7 +44,7 @@ The maintainer agent knows the full framework structure, the section model, the 
 
 ## Maintainer toolbox — what to use and when
 
-There are four maintainer tools. Each has a distinct trigger and a distinct output.
+There are five maintainer tools. Each has a distinct trigger and a distinct output.
 
 | Tool | File | Trigger | Output |
 |------|------|---------|--------|
@@ -100,7 +100,22 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Quarterly | GitHub governance repo scan — discover new capabilities | `Read MAINTAINER/github-governance-scan.md and execute it.` |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
-| After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D in `platform-maintainer-agent.md` |
+| After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation + E2E plan | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D/F/G in `platform-maintainer-agent.md` |
+
+---
+
+## Ship a release — plain-language workflow
+
+When a batch of platform changes is ready to go live:
+
+1. **Log and test locally** — `npm test` must pass (install, upgrade, uninstall, global stubs, plus any new capability assertions in `apply-integration.test.mjs`).
+2. **Write CHANGELOG** — one `[X.Y.Z]` section summarizing everything since the last tag (playbooks, experts, audit phases, docs).
+3. **Sync user-facing surfaces** — tell the agent `"Sync user-facing docs for vX.Y.Z"` so README, FRAMEWORK-README, QUICK-REF, PLATFORM-HELP, `agent-platform-beta.html`, and `team-adoption.html` match the release.
+4. **Update E2E plan** — if playbooks, routing, or audit phases changed, update `tests/E2E-TEST-PLAN.md` manual phases (assertion count in the header tracks `npm test` automatically).
+5. **Internal quality gate** — optional but recommended before release: `Read MAINTAINER/platform-audit.md and execute it.`
+6. **Release** — say `"Release"` to the maintainer agent. It confirms the version bump, runs `.\tools\release.ps1 -Version X.Y.Z` (validates CHANGELOG, bumps manifest/README, runs tests, tags, pushes, creates GitHub release).
+
+**After release:** consumer repos upgrade with `npx github:zafrirron/Agent-Platform --mode=upgrade`. No action needed in MAINTAINER/ — that folder never ships.
 
 ---
 
@@ -128,7 +143,7 @@ Agent Platform Bootstrap (framework repo)
 │
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
 │   ├── .agent/agents/             ← 9 expert agents (with PLATFORM/PROJECT sections)
-│   ├── .agent/playbooks/          ← 8 playbooks (with PLATFORM section)
+│   ├── .agent/playbooks/          ← 20 playbooks (with PLATFORM section)
 │   ├── .agent/CONVENTIONS.md      ← coding conventions (with PLATFORM/PROJECT sections)
 │   ├── global/                    ← USER-LEVEL STUBS (scope=global) — installed to ~/ via --mode=global
 │   │   ├── .claude/CLAUDE.md      ←   global activation stub for Claude Code
@@ -146,7 +161,7 @@ Agent Platform Bootstrap (framework repo)
 └── tools/release.ps1              ← single command for versioning + tagging + GitHub release
 ```
 
-> Test count: `npm test` runs 172 assertions (~4s). Count grows as governance phases add coverage.
+> Test count: `npm test` runs 192 assertions (~3s). Count grows as governance phases add coverage.
 
 ---
 
@@ -158,7 +173,8 @@ The platform installs at two independent scopes. Understanding both is important
 Scope 1 — Project (per repo)                Scope 2 — Global (per user, per machine)
 ─────────────────────────────────────────   ──────────────────────────────────────────────
 [repo]/.agent/                              ~/.claude/CLAUDE.md
-[repo]/.claude/                             ~/.claude/commands/  (caveman, quick-ref, etc.)
+[repo]/.claude/                             ~/.claude/commands/  (lifecycle + caveman)
+[repo]/.cursor/commands/                  ~/.cursor/commands/  (lifecycle + /implement)
 [repo]/.cursor/                             ~/.cursor/rules/agent-platform-global.mdc
 [repo]/.agents/                             ~/.codex/instructions.md
 [repo]/.codex/                              ~/.agents/rules/agent-platform-global.md

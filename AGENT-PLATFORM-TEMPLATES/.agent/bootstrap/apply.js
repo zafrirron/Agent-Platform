@@ -216,10 +216,23 @@ const FW_CONFIG_FILES = [
  * Files listed here are noted (not backed up individually) so Step 1c can migrate them.
  * Platform-owned filenames are excluded.
  */
+const CLAUDE_PLATFORM_COMMANDS = [
+  'caveman.md', 'caveman-commit.md', 'caveman-compress.md', 'caveman-review.md', 'caveman-stats.md',
+  'quick-ref.md', 'spec.md', 'ship.md', 'audit.md', 'review.md', 'release.md',
+];
+const CURSOR_PLATFORM_COMMANDS = [
+  'quick-ref.md', 'spec.md', 'ship.md', 'audit.md', 'review.md', 'release.md', 'implement.md',
+  'session-start.md', 'session-end.md', 'platform-help.md',
+  'caveman.md', 'caveman-commit.md', 'caveman-compress.md', 'caveman-review.md', 'caveman-stats.md',
+];
+
 const PLATFORM_FOLDER_SCANS = [
   { folder: '.claude/commands', ext: '.md',
-    platformFiles: new Set(['caveman.md','caveman-commit.md','caveman-compress.md','caveman-review.md','caveman-stats.md','quick-ref.md']),
+    platformFiles: new Set(CLAUDE_PLATFORM_COMMANDS),
     label: 'Claude Code custom command' },
+  { folder: '.cursor/commands', ext: '.md',
+    platformFiles: new Set(CURSOR_PLATFORM_COMMANDS),
+    label: 'Cursor slash command' },
   { folder: '.agents/prompts', ext: '.md',
     platformFiles: new Set(['session-start.md','session-end.md']),
     label: 'Antigravity prompt' },
@@ -403,7 +416,8 @@ if (MODE === 'global') {
   console.log('  What was installed');
   console.log(SEP);
   console.log('  ~/.claude/CLAUDE.md              global activation + per-repo install offer');
-  console.log('  ~/.claude/commands/              caveman · caveman-commit · caveman-review · quick-ref');
+  console.log('  ~/.claude/commands/              lifecycle + caveman slash commands');
+  console.log('  ~/.cursor/commands/              lifecycle + caveman slash commands');
   console.log('  ~/.cursor/rules/                 agent-platform-global.mdc  (alwaysApply: true)');
   console.log('  ~/.codex/instructions.md         global activation stub');
   console.log('  ~/.agents/rules/                 agent-platform-global.md');
@@ -459,9 +473,9 @@ if (MODE === 'uninstall-global') {
     path.join(HOME, '.agents/rules/agent-platform-global.md'),
   ];
   const commandFiles = [
-    'caveman.md', 'caveman-commit.md', 'caveman-compress.md',
-    'caveman-review.md', 'caveman-stats.md', 'quick-ref.md',
-  ].map(f => path.join(HOME, '.claude/commands', f));
+    ...CLAUDE_PLATFORM_COMMANDS.map(f => path.join(HOME, '.claude/commands', f)),
+    ...CURSOR_PLATFORM_COMMANDS.map(f => path.join(HOME, '.cursor/commands', f)),
+  ];
   const versionFile = path.join(HOME, '.agent-platform/global-version');
 
   console.log('');
@@ -1106,11 +1120,12 @@ if (MODE === 'upgrade' && noMarkers.length > 0) {
 console.log('');
 console.log('  Capabilities');
 console.log(SEP);
+const playbookCount = manifest.files.filter((f) => f.kind === 'playbook').length;
 console.log('  ✔  4 IDE frameworks    Claude Code · Cursor · Antigravity · Codex');
-console.log('  ✔  8 expert agents     Architect · Backend · Frontend · DevOps');
+console.log('  ✔  9 expert agents     Architect · Backend · Frontend · DevOps · Critic');
 console.log('                         Test · Docs · Security · Data');
-console.log('  ✔  8 playbooks         add-feature · bug-fix · refactor · release');
-console.log('                         debug · security-audit · add-dependency · api-integration');
+console.log(`  ✔  ${playbookCount} playbooks        see .agent/QUICK-REF.md for full inventory`);
+console.log('                         references · NFR · compliance · deprecation gates');
 const runnerDisplay = vars.TEST_RUNNER.startsWith('<') ? 'not detected — set in .agent/CONVENTIONS.md' : vars.TEST_RUNNER;
 console.log(`  ✔  Test enforcement    runner: ${runnerDisplay}  |  coverage gate: ${vars.COVERAGE_THRESHOLD}%`);
 console.log('  ✔  Token compression   "caveman mode" — ~65% output reduction');

@@ -21,6 +21,15 @@
 | Regression | `git log --oneline` last-good commit; bisect |
 | Memory / perf degradation | Profile before guessing; measure, don't assume |
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "I'll try a quick fix first" | Step 5 requires root cause — symptom patches create recurring bugs. |
+| "Skip reproduce — I saw it once" | Step 1: inconsistent bugs need documented repro before any fix. |
+| "Three hypotheses failed — guess again" | After 3 failed hypotheses, escalate to Architect — don't random-probe. |
+| "Fix ships without regression test" | bug-fix playbook requires regression test — debug pipeline hands off to bug-fix for the fix. |
+
 ## Rules
 - State your hypothesis before probing — don't poke randomly
 - If probe disproves hypothesis, update ranked list before probing again

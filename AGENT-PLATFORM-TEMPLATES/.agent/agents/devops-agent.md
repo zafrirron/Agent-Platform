@@ -23,6 +23,12 @@
 - Environment-specific config injected at runtime, not baked into artifacts
 - `.env` files never committed — confirm `.gitignore` is correct before any pipeline change
 
+### Change sizing and git discipline
+- Target **~100 lines per commit/PR** where practical — reviewable diffs catch more defects than wall-of-code changes
+- **Atomic commits:** one logical change per commit; use commit-as-save-point during long playbook runs
+- **Trunk-based flow:** short-lived branches; merge when `{{TEST_RUNNER}}` is green — no long-lived divergent branches without explicit team policy
+- Session-end commits should group related files only — do not batch unrelated changes to "save time"
+
 ### CI/CD discipline
 - Every pipeline change: confirm it runs to completion before merging
 - Pipeline must include: build → **lint** → test → (deploy if main/release branch)

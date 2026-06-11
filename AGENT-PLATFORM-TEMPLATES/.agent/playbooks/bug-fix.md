@@ -81,6 +81,16 @@
 8. **Close**
    If this bug was in `.agent/context/known-issues.md`, remove or update the entry.
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "I'll add the regression test after the fix" | Step 5 requires fail-then-pass proof — without it you cannot prove the bug is caught. |
+| "The test already passes — close enough" | A test that passes on unfixed code is not a regression test. Re-write it. |
+| "Quick patch, no design check needed" | Non-trivial fixes (shared logic, auth, multi-file) need Step 3b approval. |
+| "Critic is overkill for a one-line fix" | Step 5b still runs — scope is smaller, not optional. |
+| "I'll refactor while I'm here" | Refactor is a separate task — scope creep hides regressions. |
+
 ## Rules
 - Every bug fix ships with a regression test — no exceptions
 - Fix the root cause, not the symptom

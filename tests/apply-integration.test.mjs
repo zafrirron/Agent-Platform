@@ -501,6 +501,195 @@ describe('Phase 1A — agent manifest files deployed after install', () => {
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
 });
 
+// ── v2.40.0 enterprise capabilities ────────────────────────────────────────
+
+describe('install — v2.41.0 agent-skills P0 ingest', () => {
+  const dir = tmpDir();
+  const result = runApply(dir);
+
+  const PLAYBOOKS_20 = [
+    'audit.md', 'add-dependency.md', 'add-feature.md', 'api-integration.md',
+    'bug-fix.md', 'debug-pipeline.md', 'refactor.md', 'release.md',
+    'security-audit.md', 'document-api.md',
+    'nfr-definition.md', 'production-readiness.md', 'performance-budget.md',
+    'observability-setup.md', 'accessibility-audit.md', 'compliance-review.md',
+    'org-maturity-assessment.md', 'incident-postmortem.md', 'deprecation.md',
+    'requirements-clarification.md',
+  ];
+
+  const ENTERPRISE_PLAYBOOKS = [
+    'nfr-definition.md', 'production-readiness.md', 'performance-budget.md',
+    'observability-setup.md', 'accessibility-audit.md', 'compliance-review.md',
+    'org-maturity-assessment.md', 'incident-postmortem.md',
+  ];
+
+  const CONTEXT_FILES = [
+    'nfr-log.md', 'compliance-evidence-log.md', 'incident-log.md',
+  ];
+
+  test('bootstrap_version is 2.41.0 in platform.json', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.equal(pj.bootstrap_version, '2.41.0', 'expected bootstrap_version 2.41.0');
+  });
+
+  test('all 20 playbooks deployed', () => {
+    const pbDir = path.join(dir, '.agent/playbooks');
+    for (const file of PLAYBOOKS_20) {
+      assert.ok(fs.existsSync(path.join(pbDir, file)), `missing playbook: ${file}`);
+    }
+    const onDisk = fs.readdirSync(pbDir).filter(f => f.endsWith('.md'));
+    assert.equal(onDisk.length, 20, `expected 20 playbooks, got ${onDisk.length}`);
+  });
+
+  test('v2.40 enterprise playbooks are non-empty', () => {
+    for (const file of ENTERPRISE_PLAYBOOKS) {
+      const content = fs.readFileSync(path.join(dir, '.agent/playbooks', file), 'utf8');
+      assert.ok(content.length > 200, `${file} looks too short`);
+      assert.ok(content.includes('PLATFORM:START') || content.includes('##'), `${file} missing content markers`);
+    }
+  });
+
+  test('enterprise context log templates deployed', () => {
+    for (const file of CONTEXT_FILES) {
+      const p = path.join(dir, '.agent/context', file);
+      assert.ok(fs.existsSync(p), `missing context file: ${file}`);
+      const content = fs.readFileSync(p, 'utf8');
+      assert.ok(content.length > 50, `${file} looks empty`);
+    }
+  });
+
+  test('AGENTS.md routes NFR, PRR, compliance, maturity, and deprecation playbooks', () => {
+    const agents = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+    assert.ok(agents.includes('production-readiness.md'), 'PRR routing missing');
+    assert.ok(agents.includes('nfr-definition.md'), 'NFR routing missing');
+    assert.ok(agents.includes('compliance-review.md'), 'compliance routing missing');
+    assert.ok(agents.includes('org-maturity-assessment.md'), 'maturity routing missing');
+    assert.ok(agents.includes('incident-postmortem.md'), 'postmortem routing missing');
+    assert.ok(agents.includes('deprecation.md'), 'deprecation routing missing');
+    assert.ok(agents.includes('requirements-clarification.md'), 'requirements clarification routing missing');
+  });
+
+  test('audit.md includes Phase 10 governance and Phase 11 report', () => {
+    const audit = fs.readFileSync(path.join(dir, '.agent/playbooks/audit.md'), 'utf8');
+    assert.ok(audit.includes('Phase 10'), 'audit Phase 10 missing');
+    assert.ok(audit.includes('Governance, compliance & maturity'), 'audit governance phase missing');
+    assert.ok(audit.includes('Phase 11'), 'audit Phase 11 missing');
+    assert.ok(audit.includes('compliance-evidence-log.md'), 'audit compliance context ref missing');
+  });
+
+  test('QUICK-REF.md documents 20 playbooks and reference checklists', () => {
+    const qr = fs.readFileSync(path.join(dir, '.agent/QUICK-REF.md'), 'utf8');
+    assert.ok(qr.includes('20 total') || qr.includes('(20 total)'), 'QUICK-REF playbook count missing');
+    assert.ok(qr.includes('11-phase'), 'QUICK-REF 11-phase audit missing');
+    assert.ok(qr.includes('references/testing-patterns'), 'QUICK-REF testing reference missing');
+    assert.ok(qr.includes('Deprecation'), 'QUICK-REF deprecation row missing');
+  });
+
+  test('reference checklists deployed under .agent/references/', () => {
+    for (const file of ['testing-patterns.md', 'security-checklist.md', 'performance-checklist.md', 'accessibility-checklist.md', 'orchestration-patterns.md']) {
+      const p = path.join(dir, '.agent/references', file);
+      assert.ok(fs.existsSync(p), `missing reference: ${file}`);
+    }
+  });
+
+  test('add-feature playbook has spec step, doubt review, and rationalization table', () => {
+    const af = fs.readFileSync(path.join(dir, '.agent/playbooks/add-feature.md'), 'utf8');
+    assert.ok(af.includes('Spec clarity'), 'add-feature spec step missing');
+    assert.ok(af.includes('Doubt review'), 'add-feature doubt gate missing');
+    assert.ok(af.includes('Common rationalizations'), 'add-feature rationalization table missing');
+  });
+
+  test('spec-outline.md context template deployed', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.agent/context/spec-outline.md')), 'spec-outline.md missing');
+  });
+
+  test('backend-agent.md includes Hyrum\'s Law', () => {
+    const be = fs.readFileSync(path.join(dir, '.agent/agents/backend-agent.md'), 'utf8');
+    assert.ok(be.includes('Hyrum'), 'Hyrum\'s Law missing from backend-agent');
+  });
+
+  test('test-agent has Beyoncé rule and test pyramid', () => {
+    const ta = fs.readFileSync(path.join(dir, '.agent/agents/test-agent.md'), 'utf8');
+    assert.ok(ta.includes('Beyoncé') || ta.includes('Beyonce'), 'Beyoncé rule missing');
+    assert.ok(ta.includes('Test pyramid'), 'test pyramid missing');
+    assert.ok(ta.includes('DAMP'), 'DAMP rule missing');
+  });
+
+  test('critic-agent.md has 10 review dimensions including ACCESSIBILITY and BC', () => {
+    const critic = fs.readFileSync(path.join(dir, '.agent/agents/critic-agent.md'), 'utf8');
+    for (const tag of ['[ACCESSIBILITY]', '[OPERABILITY]', '[BC]']) {
+      assert.ok(critic.includes(tag), `critic missing dimension ${tag}`);
+    }
+  });
+
+  test('frontend-agent.md includes UX interaction principles', () => {
+    const fe = fs.readFileSync(path.join(dir, '.agent/agents/frontend-agent.md'), 'utf8');
+    assert.ok(fe.includes('UX interaction principles'), 'frontend UX principles missing');
+    assert.ok(fe.includes('aria-live'), 'frontend a11y guidance missing');
+  });
+
+  test('Cursor plan-mode-handoff rule deployed', () => {
+    const rule = path.join(dir, '.cursor/rules/plan-mode-handoff.mdc');
+    assert.ok(fs.existsSync(rule), 'plan-mode-handoff.mdc missing');
+    const body = fs.readFileSync(rule, 'utf8');
+    assert.ok(body.includes('resuming Step 3'), 'plan handoff resume step missing');
+    assert.ok(body.includes('add-feature.md'), 'plan handoff add-feature ref missing');
+  });
+
+  test('add-feature playbook documents Cursor Plan mode handoff', () => {
+    const af = fs.readFileSync(path.join(dir, '.agent/playbooks/add-feature.md'), 'utf8');
+    assert.ok(af.includes('Cursor Plan mode handoff'), 'add-feature plan handoff section missing');
+    assert.ok(af.includes('Resume at Step 3'), 'add-feature Step 3 resume missing');
+  });
+
+  test('AGENTS.md routes implement-the-plan to add-feature resume', () => {
+    const agents = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+    assert.ok(agents.includes('implement the plan'), 'AGENTS.md plan implement trigger missing');
+    assert.ok(agents.includes('resume from Step 3'), 'AGENTS.md Step 3 resume hint missing');
+  });
+
+  test('Cursor slash commands deployed under .cursor/commands/', () => {
+    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'implement', 'session-start', 'session-end', 'platform-help', 'caveman']) {
+      const p = path.join(dir, '.cursor/commands', `${cmd}.md`);
+      assert.ok(fs.existsSync(p), `missing Cursor command: ${cmd}.md`);
+    }
+    const spec = fs.readFileSync(path.join(dir, '.cursor/commands/spec.md'), 'utf8');
+    assert.ok(spec.includes('requirements-clarification.md'), 'Cursor /spec command body wrong');
+  });
+
+  test('Claude lifecycle slash commands deployed under .claude/commands/', () => {
+    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'caveman']) {
+      const p = path.join(dir, '.claude/commands', `${cmd}.md`);
+      assert.ok(fs.existsSync(p), `missing Claude command: ${cmd}.md`);
+    }
+    const spec = fs.readFileSync(path.join(dir, '.claude/commands/spec.md'), 'utf8');
+    assert.ok(spec.includes('requirements-clarification.md'), 'Claude /spec command body wrong');
+  });
+
+  test('install stdout shows dynamic playbook count (20 playbooks)', () => {
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('20 playbooks'), 'install banner missing dynamic playbook count');
+    assert.ok(result.stdout.includes('references'), 'install banner missing references hint');
+  });
+
+  test('PLATFORM-HELP.md has Start here and slash command guidance', () => {
+    const help = fs.readFileSync(path.join(dir, '.agent/PLATFORM-HELP.md'), 'utf8');
+    assert.ok(help.includes('Start here'), 'PLATFORM-HELP Start here section missing');
+    assert.ok(help.includes('.cursor/commands/'), 'PLATFORM-HELP Cursor commands missing');
+    assert.ok(help.includes('.claude/commands/'), 'PLATFORM-HELP Claude commands missing');
+    assert.ok(help.includes('interview me'), 'PLATFORM-HELP requirements clarification missing');
+  });
+
+  test('QUICK-REF.md has Key principle column and Plan handoff', () => {
+    const qr = fs.readFileSync(path.join(dir, '.agent/QUICK-REF.md'), 'utf8');
+    assert.ok(qr.includes('Key principle'), 'QUICK-REF Key principle column missing');
+    assert.ok(qr.includes('plan-mode-handoff'), 'QUICK-REF Plan handoff missing');
+    assert.ok(qr.includes('/implement'), 'QUICK-REF /implement missing');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
 // ── Phase 1B: Reputation vectors ───────────────────────────────────────────
 
 describe('Phase 1B — reputation.json deployed after install', () => {

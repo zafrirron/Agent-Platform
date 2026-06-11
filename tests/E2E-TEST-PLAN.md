@@ -5,8 +5,11 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (125 assertions, ~4s)
+npm test   ← runs all automated checks (197 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
+                   v2.41 playbooks (20) + references + spec-outline + plan handoff,
+                   Cursor + Claude slash commands, PLATFORM-HELP + QUICK-REF updates,
+                   enterprise context logs + routing rows, dynamic install banner,
                    upgrade PROJECT preservation, uninstall + restore,
                    global install, global uninstall, USER content preservation,
                    global/project scope independence
@@ -16,7 +19,7 @@ npm test   ← runs all automated checks (125 assertions, ~4s)
 
 | Phase | What | Test file |
 |-------|------|-----------|
-| 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers | `apply-integration.test.mjs` |
+| 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers, v2.41 playbooks/context/routing/references/commands | `apply-integration.test.mjs` |
 | 1 | Install: global stubs suggestion in stdout | `apply-integration.test.mjs` |
 | 8 | Upgrade: PROJECT section preserved, PLATFORM section updated | `apply-integration.test.mjs` |
 | 9 | Uninstall dry-run + confirm: platform removed, user files intact, CLAUDE.md restored | `apply-integration.test.mjs` |
@@ -32,8 +35,10 @@ npm test   ← runs all automated checks (125 assertions, ~4s)
 | Phase | Why manual |
 |-------|-----------|
 | 2 | Session start — requires Claude Code to execute session-start.md |
-| 2b | Full project audit — requires AI to run 8 expert passes |
-| 3 | Auto-routing — requires AI to route 6 prompt types silently |
+| 2b | Full project audit — requires AI to run 11 phases (incl. governance/compliance) |
+| 2c | Slash commands — requires AI to honour `/spec`, `/audit`, `/ship`, etc. (Claude + optional Cursor) |
+| 2d | Cursor Plan handoff — requires `/implement` or "implement the plan" after Plan approval |
+| 3 | Auto-routing — requires AI to route core + enterprise + v2.41 prompt types silently |
 | 4 | Security gate — requires AI to implement auth and trigger Step 5a |
 | 5 | Session end — requires AI to derive summary and commit via shell tools |
 | 5rep | Reputation delta — requires AI to update reputation.json at session end |
@@ -104,7 +109,8 @@ npx github:zafrirron/Agent-Platform
 ```
 
 ### Verify install summary shows:
-- [ ] Version: v2.25.0
+- [ ] Version: v2.41.0
+- [ ] Capabilities line: `✔  20 playbooks` (dynamic count from manifest — not a hardcoded "8")
 - [ ] `npx jest` detected as test runner
 - [ ] Pre-existing CLAUDE.md and AGENTS.md noted as backed up
 - [ ] MIGRATION-NOTES.md created
@@ -147,10 +153,31 @@ grep -c "PLATFORM:START\|PROJECT:START" <TEST_DIR>/.agent/agents/backend-agent.m
 ### Verify platform.json:
 ```bash
 node -e "const p=require('<TEST_DIR>/.agent/platform.json'); console.log(p.bootstrap_version, p.test_runner, p.platform_repo, p.platform_npx)"
-# 2.25.0  npx jest  zafrirron/Agent-Platform  github:zafrirron/Agent-Platform
+# 2.41.0  npx jest  zafrirron/Agent-Platform  github:zafrirron/Agent-Platform
 ```
 - [ ] `platform_repo` field present and correct
 - [ ] `platform_npx` field present and correct
+
+### Verify v2.41.0 artifacts (automated in `npm test`; spot-check manually):
+```bash
+ls <TEST_DIR>/.agent/playbooks/*.md | wc -l          # 20
+test -f <TEST_DIR>/.agent/context/nfr-log.md
+test -f <TEST_DIR>/.agent/context/compliance-evidence-log.md
+test -f <TEST_DIR>/.agent/context/incident-log.md
+grep -c "production-readiness.md" <TEST_DIR>/AGENTS.md   # ≥1
+grep -c "compliance-review.md" <TEST_DIR>/AGENTS.md      # ≥1
+grep "Phase 10" <TEST_DIR>/.agent/playbooks/audit.md
+grep "20 total" <TEST_DIR>/.agent/QUICK-REF.md
+test -f <TEST_DIR>/.agent/context/spec-outline.md
+test -f <TEST_DIR>/.agent/references/orchestration-patterns.md
+test -f <TEST_DIR>/.cursor/commands/spec.md
+test -f <TEST_DIR>/.cursor/commands/implement.md
+test -f <TEST_DIR>/.cursor/rules/plan-mode-handoff.mdc
+test -f <TEST_DIR>/.claude/commands/spec.md
+test -f <TEST_DIR>/.claude/commands/ship.md
+grep "Start here" <TEST_DIR>/.agent/PLATFORM-HELP.md
+grep "Key principle" <TEST_DIR>/.agent/QUICK-REF.md
+```
 
 ### Verify gitignore block written:
 ```bash
@@ -174,7 +201,7 @@ Read .agent/session-start.md and execute it.
   ```
   ┌──────────────────────────────────────────────────────────────────┐
   │  First session detected — Full Project Audit available           │
-  │  Run a professional audit across 8 domains...                    │
+  │  Run a professional audit across 11 phases...                    │
   │  Run audit now? YES / NO (run manually later)                    │
   └──────────────────────────────────────────────────────────────────┘
   ```
@@ -189,10 +216,6 @@ Read .agent/session-start.md and execute it.
 ### Verify Step 1d does NOT fire on second session:
 End and restart the session. Verify the audit offer does NOT appear again (CURRENT.md now has a session entry).
 - [ ] Audit offer absent on second and subsequent sessions
-
-### Test `/quick-ref` slash command (Claude Code):
-Type `/quick-ref` in the chat.
-- [ ] Full QUICK-REF.md displayed
 
 ### Test "show quick reference" trigger:
 Type `show quick reference`
@@ -211,15 +234,20 @@ In the same session as Phase 2, type:
 Run project audit
 ```
 
-### Verify expert sequencing (8 domains):
-- [ ] **Phase 1 — Architect:** produces component inventory, dependency map, ASCII architecture diagram
+### Verify expert sequencing (11 phases):
+- [ ] **Phase 1 — Architect:** component inventory, dependency map, ASCII architecture diagram
 - [ ] **Phase 2 — Docs:** documentation inventory, staleness check, gap identification
-- [ ] **Phase 3 — Security:** secrets scan result, OWASP Top 10 assessment, CVE check
-- [ ] **Phase 4 — Test:** coverage assessment, missing regression tests identified
+- [ ] **Phase 3 — Security:** secrets scan, OWASP Top 10, CVE check
+- [ ] **Phase 4 — Test:** coverage assessment, missing regression tests
+- [ ] **Phase 4b — Performance:** NFR-P* rows from `nfr-log.md`, obvious bottlenecks
 - [ ] **Phase 5 — Critic:** dead code, error handling gaps, complexity hotspots
+- [ ] **Phase 5b — Frontend & a11y:** WCAG 2.2 checks on UI surfaces
 - [ ] **Phase 6 — Data:** schema quality, migration safety, PII handling
-- [ ] **Phase 7 — Backend:** API endpoint inventory, auth coverage, api-contracts.md completeness
+- [ ] **Phase 7 — Backend:** API inventory, auth coverage, api-contracts.md
 - [ ] **Phase 8 — DevOps:** CI/CD health, secrets management, rollback strategy
+- [ ] **Phase 8b — Observability:** logging, health checks, runbooks
+- [ ] **Phase 10 — Governance & maturity:** DORA proxies, compliance evidence log, gate execution
+- [ ] **Phase 11 — Report:** executive summary includes Governance & maturity row
 
 ### Verify report output:
 ```bash
@@ -248,16 +276,45 @@ Read .agent/session-start.md and execute it.
 
 When the Step 1d offer appears, reply **YES**.
 
-- [ ] Audit runs immediately — all 8 expert passes complete
+- [ ] Audit runs immediately — all 11 phases complete
 - [ ] Report generated at `.agent/context/audit-YYYY-MM-DD-HH-MM.md`
 - [ ] After audit completes, session proceeds to Step 2 (not stuck or stopped)
 - [ ] `Ready. Tell me what you want to do.` shown after audit
 
 ---
 
-## Phase 3 — Auto-routing (6 prompts)
+## Phase 2c — Slash commands (Claude Code + optional Cursor)
 
-Type each prompt. Agent routes silently — no announcement of which file was loaded.
+In Claude Code, type each command. Agent must load the referenced playbook or file — no "I don't have slash commands" response.
+
+| Command | Expected behaviour |
+|---------|-------------------|
+| `/quick-ref` | Points to `.agent/QUICK-REF.md` — does **not** dump full table in chat |
+| `/spec` | Loads `requirements-clarification.md` (Architect expert) |
+| `/audit` | Loads `audit.md` (all experts) |
+| `/review` | Loads `critic-agent.md` |
+| `/release` | Loads `release.md` (DevOps expert) |
+| `/ship` | Same as release — loads `release.md` |
+
+**Cursor (optional):** repeat `/session-start`, `/spec`, `/platform-help` in Cursor on the same repo.
+- [ ] `/session-start` executes session-start.md (same as the paste prompt)
+- [ ] `/platform-help` displays or reads `PLATFORM-HELP.md` (full guide)
+
+---
+
+## Phase 2d — Cursor Plan mode handoff (optional)
+
+In Cursor, start an add-feature task that enters Plan mode. Approve the plan, then type `/implement` or `implement the plan`.
+
+- [ ] Status line includes `resuming Step 3 — plan approved` (or equivalent per `plan-mode-handoff.mdc`)
+- [ ] Agent loads `add-feature.md` and **skips** Steps 0–2 (spec/design already done)
+- [ ] Implementation begins at Step 3 without re-asking design questions
+
+---
+
+## Phase 3 — Auto-routing (core + enterprise + v2.41 prompts)
+
+Type each prompt. Agent routes silently — first line shows `▶ Expert · playbook` when routing fires.
 
 | Prompt | Expected routing |
 |--------|-----------------|
@@ -265,8 +322,15 @@ Type each prompt. Agent routes silently — no announcement of which file was lo
 | `add a due date field to todos` | Backend + add-feature |
 | `check if the API is secure` | Security + security-audit |
 | `write tests for the todos router` | Test expert |
-| `document the API` | Docs expert → OpenAPI/Swagger |
+| `document the API` | Docs expert → document-api |
 | `I'm ready to cut a release` | DevOps + release playbook |
+| `define NFRs for this API — p95 under 200ms` | Architect + nfr-definition |
+| `run a production readiness review before go-live` | DevOps + production-readiness |
+| `compliance review for SOC 2 SDLC controls` | Security + compliance-review |
+| `accessibility audit on the todo form` | Frontend + accessibility-audit |
+| `DORA maturity assessment for our team` | Architect + org-maturity-assessment |
+| `interview me about adding push notifications` | Architect + requirements-clarification |
+| `deprecate the legacy v1 todos endpoint` | Architect + deprecation |
 
 ---
 
@@ -282,7 +346,7 @@ Users authenticate with a token in the Authorization header.
 - [ ] Backend: implements JWT auth (sub claim, owner field, 404 on wrong owner)
 - [ ] **Step 5a fires automatically**: Security expert reviews new auth code
 - [ ] Test expert: tests for auth logic
-- [ ] Critic: 6-dimension adversarial review
+- [ ] Critic: 10-dimension adversarial review (incl. ACCESSIBILITY, OPERABILITY, BC)
 - [ ] No handoff until all gates pass
 
 ---
@@ -329,7 +393,7 @@ Read .agent/session-start.md and execute it.
 **Key check:** If this box does NOT appear, the `previous_framework` capture bug has returned.
 
 Say **YES**. Verify:
-- [ ] Critic runs cold 6-dimension review on files from CURRENT.md
+- [ ] Critic runs cold 10-dimension review on files from CURRENT.md
 - [ ] Findings shown with severity ratings
 - [ ] CURRENT.md updated: `Critic reviewed: yes — X Critical, Y High, Z Medium`
 - [ ] Offer not shown again in this session
@@ -476,7 +540,8 @@ npx github:zafrirron/Agent-Platform --mode=global
 - [ ] Header: `Agent Platform Bootstrap vX.Y.Z — Global Install`
 - [ ] Target path shown: your home directory
 - [ ] `✔ Created: ~/.claude/CLAUDE.md`
-- [ ] `✔ Created: ~/.claude/commands/caveman.md` (and other commands)
+- [ ] `✔ Created: ~/.claude/commands/caveman.md` (and other lifecycle commands)
+- [ ] `✔ Created: ~/.cursor/commands/spec.md` (and other lifecycle commands)
 - [ ] `✔ Created: ~/.cursor/rules/agent-platform-global.mdc`
 - [ ] `✔ Created: ~/.codex/instructions.md`
 - [ ] `✔ Created: ~/.agents/rules/agent-platform-global.md`
@@ -489,6 +554,7 @@ npx github:zafrirron/Agent-Platform --mode=global
 # Linux/macOS
 test -f ~/.claude/CLAUDE.md                                 && echo "OK"
 test -f ~/.claude/commands/caveman.md                       && echo "OK"
+test -f ~/.cursor/commands/session-start.md                && echo "OK"
 test -f ~/.cursor/rules/agent-platform-global.mdc           && echo "OK"
 test -f ~/.codex/instructions.md                            && echo "OK"
 test -f ~/.agents/rules/agent-platform-global.md            && echo "OK"
@@ -499,6 +565,7 @@ test -f ~/.agent-platform/global-version                    && echo "OK"
 # Windows
 Test-Path "~\.claude\CLAUDE.md"                              # True
 Test-Path "~\.claude\commands\caveman.md"                    # True
+Test-Path "~\.cursor\commands\spec.md"                      # True
 Test-Path "~\.cursor\rules\agent-platform-global.mdc"        # True
 Test-Path "~\.codex\instructions.md"                         # True
 Test-Path "~\.agents\rules\agent-platform-global.md"         # True
@@ -522,7 +589,7 @@ grep "PLATFORM_NPX"  ~/.claude/CLAUDE.md    && echo "FAIL — placeholder not su
 ### Verify version file content:
 ```bash
 node -e "const v=require(require('os').homedir()+'/.agent-platform/global-version'); console.log(v.version, v.platform_repo)"
-# 2.25.0  zafrirron/Agent-Platform
+# 2.41.0  zafrirron/Agent-Platform
 ```
 
 ### Step B — Re-run project install; verify summary shows global stubs installed
@@ -534,7 +601,7 @@ cd <TEST_DIR>
 npx github:zafrirron/Agent-Platform --mode=repair
 ```
 
-- [ ] Install summary shows: `✔  Global stubs  installed (v2.25.0) — platform activates in all your repos`
+- [ ] Install summary shows: `✔  Global stubs  installed (v2.41.0) — platform activates in all your repos`
 - [ ] The `○  Global stubs  not installed` suggestion line is **absent**
 
 ### Step C — Upgrade global stubs (idempotent run)
@@ -644,7 +711,7 @@ Verify dry run output:
 - [ ] `⚠️  DRY RUN — nothing deleted`
 - [ ] `~/.claude/CLAUDE.md` listed under **Will be PATCHED** (has USER content)
 - [ ] Other stub files (no USER content) listed under **Will be DELETED**
-- [ ] `~/.claude/commands/caveman.md` etc. listed under **Will be DELETED**
+- [ ] `~/.claude/commands/caveman.md` and `~/.cursor/commands/spec.md` etc. listed under **Will be DELETED**
 - [ ] Nothing actually changed on disk
 
 ### Step B — Confirm uninstall
@@ -666,7 +733,8 @@ test ! -f ~/.codex/instructions.md                   && echo "OK: codex stub rem
 test ! -f ~/.agents/rules/agent-platform-global.md   && echo "OK: agents stub removed"
 
 # Commands: DELETED
-test ! -f ~/.claude/commands/caveman.md              && echo "OK: command removed"
+test ! -f ~/.claude/commands/caveman.md              && echo "OK: claude command removed"
+test ! -f ~/.cursor/commands/spec.md                 && echo "OK: cursor command removed"
 
 # Version tracking: DELETED
 test ! -f ~/.agent-platform/global-version           && echo "OK: version file removed"
@@ -695,11 +763,11 @@ After completing a task through a full add-feature or bug-fix playbook:
 2. Trigger a routine bug-fix task
 
 Verify:
-- [ ] Critic gate runs with reduced scope: `[CORRECTNESS] [TEST]` only (not all 7 dimensions)
+- [ ] Critic gate runs with reduced scope: `[CORRECTNESS] [TEST]` only (not all 10 dimensions)
 - [ ] Agent reports reduced scope in status line, e.g. `✅ Critic [CORRECTNESS, TEST]: 0C 0H`
 
 To test expanded scope: manually set `backend-agent.overall` to 250 in `reputation.json`, run same task.
-- [ ] Critic uses all 7 dimensions
+- [ ] Critic uses all 10 dimensions (incl. ACCESSIBILITY, OPERABILITY, BC)
 
 ---
 
@@ -740,22 +808,24 @@ Verify:
 | Phase | Test | Pass condition |
 |-------|------|----------------|
 | 0 | Clean state | Pre-existing CLAUDE.md + AGENTS.md present, .agent/ absent |
-| 1 | Install | v2.25.0, jest detected, backup created, MIGRATION-NOTES.md exists, two-section markers present, global stub suggestion shown, platform.json has platform_repo + platform_npx |
-| 2 | Session start | Step 1d audit offer appears (first session); NO path proceeds; offer absent on second session; compact status block; /quick-ref works |
-| 2b | Full project audit — manual | 8 expert passes complete, report at correct path, executive summary + findings sections present |
-| 2b | Full project audit — YES path | Fresh repo: offer appears, YES runs all 8 passes, session continues after audit |
-| 3 | Auto-routing | 6 prompts routed silently to correct expert/playbook |
+| 1 | Install | v2.41.0, 20 playbooks, references + spec-outline, install banner shows dynamic playbook count, jest detected, backup created, MIGRATION-NOTES.md exists, two-section markers present, platform.json has platform_repo + platform_npx |
+| 2 | Session start | Step 1d audit offer (first session); NO path; offer absent on second session; compact status block; `show quick reference` points to file |
+| 2b | Full project audit — manual | 11 phases complete, report at correct path, executive summary incl. Governance & maturity row |
+| 2b | Full project audit — YES path | Fresh repo: offer appears, YES runs all 11 phases, session continues after audit |
+| 2c | Slash commands — manual | `/quick-ref` `/spec` `/audit` `/review` `/release` `/ship` load correct targets (Claude; Cursor optional) |
+| 2d | Plan handoff — manual (Cursor) | `/implement` after Plan approval resumes add-feature Step 3 with plan-approved status line |
+| 3 | Auto-routing | 13 prompts routed silently to correct expert/playbook (core + enterprise + interview + deprecate) |
 | 4 | Security gate | add-feature Step 5a fires automatically for auth feature |
 | 5 | Session end | Agent derives summary, commits work via shell, CURRENT.md has commit hash |
 | 5rep | Reputation delta — manual | sessions_completed incremented, scores updated, last_updated set in reputation.json |
-| 5gate | Reputation gate scope — manual | High score → reduced Critic dimensions; low score → all 7 mandatory |
-| 6 | Cross-framework Critic | Offer box appears in Antigravity, YES triggers 6-dim cold review |
+| 5gate | Reputation gate scope — manual | High score → reduced Critic dimensions; low score → all 10 mandatory |
+| 6 | Cross-framework Critic | Offer box appears in Antigravity, YES triggers 10-dim cold review |
 | 7 | Framework takeover | Offer appears for stuck session, takeover completes cleanly |
 | 7b | Partial resume — manual | Partial finality triggers resume offer; step 1 resumes from first incomplete step |
 | 8 | Upgrade two-section | PROJECT section preserved, PLATFORM updated, pure platform files replaced |
 | 9 | Project uninstall dry-run | Lists all files, zero changes made |
 | 9 | Project uninstall confirm | Platform gone, original CLAUDE.md + AGENTS.md restored, src/ intact |
-| 10A | Global install | 6 stub files created, version file created, no raw {{placeholders}} in deployed files |
+| 10A | Global install | Stubs + Claude/Cursor lifecycle commands created, version file v2.41.0, no raw {{placeholders}} |
 | 10B | Post-install summary | Repair run shows ✔ Global stubs installed with version |
 | 10C | Global upgrade (idempotent) | Re-run --mode=global: updated without duplicate blocks, USER section preserved |
 | 11A | Global activation — installed repo | Claude routes silently, no offer |

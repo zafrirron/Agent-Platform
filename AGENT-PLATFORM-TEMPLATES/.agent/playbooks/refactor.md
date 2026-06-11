@@ -23,6 +23,20 @@
 | **Simplify** | Complex expression → readable equivalent with same semantics |
 | **Dedup** | Copy-paste blocks → shared function |
 
+## Simplification discipline (Chesterton's Fence)
+- **Chesterton's Fence:** before removing or simplifying code, understand why it exists — if the reason is not obvious, document it in `CURRENT.md` before changing
+- **Rule of 500:** files approaching 500+ lines are simplify/split candidates — address in a dedicated refactor pass, not mixed with other change types
+- Simplification must preserve **exact behaviour** — if behaviour changes, stop and re-classify as bug-fix or add-feature with BC check
+
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "I'll simplify and add the feature in one PR" | Refactor and feature are separate diffs — mixed diffs hide regressions. |
+| "No tests — I'll be careful" | Pre-condition: tests must exist. Write tests first in a separate commit. |
+| "This code is ugly — delete it" | Chesterton's Fence — understand purpose before removal. |
+| "Rename + extract in one go" | One change type per PR — easier review and bisect. |
+
 ## Rules
 - One type per PR / commit — never mix rename + extract in same diff
 - Never: add features, change behavior, or update deps in a refactor diff

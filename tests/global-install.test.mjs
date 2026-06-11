@@ -66,6 +66,24 @@ describe('global install — fresh home directory', () => {
     assert.ok(fs.existsSync(path.join(home, '.claude/commands/caveman.md')), 'caveman command missing');
   });
 
+  test('creates Claude lifecycle command files', () => {
+    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'caveman']) {
+      assert.ok(
+        fs.existsSync(path.join(home, '.claude/commands', `${cmd}.md`)),
+        `claude /${cmd} missing`
+      );
+    }
+  });
+
+  test('creates Cursor lifecycle command files', () => {
+    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'implement', 'session-start', 'session-end', 'platform-help', 'caveman']) {
+      assert.ok(
+        fs.existsSync(path.join(home, '.cursor/commands', `${cmd}.md`)),
+        `cursor /${cmd} missing`
+      );
+    }
+  });
+
   test('creates ~/.agent-platform/global-version', () => {
     assert.ok(fs.existsSync(path.join(home, '.agent-platform/global-version')), 'version file missing');
   });
@@ -74,6 +92,7 @@ describe('global install — fresh home directory', () => {
     const vf = JSON.parse(fs.readFileSync(path.join(home, '.agent-platform/global-version'), 'utf8'));
     assert.ok(vf.version, 'version field missing');
     assert.match(vf.version, /^\d+\.\d+\.\d+$/, 'version is not semver');
+    assert.equal(vf.version, '2.41.0', 'expected global-version 2.41.0');
   });
 
   test('~/.claude/CLAUDE.md has PLATFORM:START/END markers', () => {
@@ -196,6 +215,7 @@ describe('global uninstall --confirm — pure platform files deleted', () => {
 
   test('command files deleted', () => {
     assert.ok(!fs.existsSync(path.join(home, '.claude/commands/caveman.md')), 'caveman.md still exists');
+    assert.ok(!fs.existsSync(path.join(home, '.cursor/commands/spec.md')), 'cursor spec.md still exists');
   });
 
   test('version file deleted', () => {

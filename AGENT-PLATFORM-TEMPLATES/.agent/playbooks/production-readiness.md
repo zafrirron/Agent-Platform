@@ -69,6 +69,16 @@
 
 9. **Handoff** — update `CURRENT.md`. User must confirm deploy explicitly. Do not run session-end.
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "P0 NFR can be verified after go-live" | Step 1 blocks deploy on unverified P0 — deferral requires explicit user approval. |
+| "Compliance evidence is paperwork — skip" | Step 1b: P0 evidence gaps block PRR pass for regulated or stated scope. |
+| "We tested in staging — good enough" | Step 6c requires rollback tested or user confirms this cycle. |
+| "Critic already ran on the feature PR" | Step 7 is release-scope Critic — different artifact than feature review. |
+| "PRR passed so auto-deploy" | Step 9: user must confirm production deploy explicitly. |
+
 ## Rules
 - This playbook reviews readiness — it does not execute production deploy unless user explicitly requests after PRR pass
 - Pair with `release.md` for version tag; PRR is the gate *before* go-live

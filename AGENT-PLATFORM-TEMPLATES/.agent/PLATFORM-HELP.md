@@ -7,7 +7,34 @@
 > **Re-show this file any time:** say `"platform help"` or `"how does this work"`
 > **Re-show quick reference any time:** say `"show quick reference"` or `"show help"`
 
-**Sections:** Session workflow · Expert agents · Critic agent · Playbooks · Project knowledge · Testing · Docs governance · Caveman · Switching IDEs · Extending · Maintenance
+**Sections:** Start here · Session workflow · Expert agents · Critic agent · Playbooks · Project knowledge · Testing · Docs governance · Caveman · Switching IDEs · Extending · Maintenance
+
+---
+
+## Start here — 60 seconds to value
+
+| Step | What to do |
+|------|------------|
+| **1. Install** (once per repo) | `npx {{PLATFORM_NPX}}` |
+| **2. Every session** | `"Read .agent/session-start.md and execute it."` |
+| **3. Describe your goal** | Plain language — agent declares `▶ Expert · playbook`, then begins |
+| **4. Session end** | `"Read .agent/session-end.md and execute it."` |
+
+**Lifecycle:** `INSTALL → SESSION → ROUTE → GATES → SHIP`
+
+| Phase | Say this (examples) | Playbook |
+|-------|---------------------|----------|
+| **Discover** | "audit this repo" / first session | Full project audit |
+| **Specify** | "interview me" / underspecified idea | Requirements clarification |
+| **Build** | "add a feature" / "fix the login bug" | Add feature · Bug fix |
+| **Improve** | "refactor this module" / "why is it slow?" | Refactor · Debug · Performance budget |
+| **Assure** | "security review" / "accessibility audit" | Security audit · Accessibility audit |
+| **Ship** | "release v1.2" / "ready for production" | Release · Production readiness |
+
+**Slash commands (`/`):** Cursor → `.cursor/commands/` · Claude Code → `.claude/commands/`  
+`/session-start` `/session-end` `/spec` `/audit` `/review` `/release` `/ship` `/quick-ref` · Cursor also: `/implement` `/platform-help`
+
+**Commands only:** `Read .agent/QUICK-REF.md` · **Full offline guide:** you are reading it.
 
 ---
 
@@ -75,7 +102,8 @@ YOU DESCRIBE WHAT YOU WANT
              "add a feature"     → Read .agent/playbooks/add-feature.md
              "ready to ship"     → Read .agent/playbooks/release.md
              "something's wrong" → Read .agent/playbooks/debug-pipeline.md
-             (+ 14 more playbooks — NFR, PRR, compliance, observability, a11y, etc.)
+             (+ 18 more playbooks — clarification, deprecation, NFR, PRR, compliance, etc.)
+             Reference checklists: .agent/references/ · spec template: .agent/context/spec-outline.md
 
 WORK
 ──────────────────────────────────────────────────────────────────
@@ -556,6 +584,21 @@ Reply **1** — the playbook resumes from the first incomplete step, skipping wh
 Reply **2** — clears partial state and starts the session normally.
 
 > **Nothing is lost between sessions.** The registry, handoff log, and idempotency map preserve full state. Even if your session ends unexpectedly mid-task, the next session picks up cleanly.
+
+### Cursor Plan mode → implementation
+
+Plan mode is read-only. After you **approve** a plan and Cursor switches to implementation:
+
+| Step | What happens |
+|------|----------------|
+| Trigger | Approve in UI, `/implement`, or say `"implement the plan"` / `"build it"` |
+| Platform | `.cursor/rules/plan-mode-handoff.mdc` — re-read `AGENTS.md`, load `add-feature.md` |
+| Resume | **Step 3** onward (acceptance criteria / failing tests before code) |
+| Gates | Steps 0–2 treated as done if the plan included scope + design; **5a Security** and **5b Critic** still mandatory |
+
+Expected first line: `▶ Agent Platform · [Expert] expert · add-feature playbook (resuming Step 3 — plan approved)`
+
+For full session features (registry, handoff), run session-start before or right after approving the plan.
 
 ---
 

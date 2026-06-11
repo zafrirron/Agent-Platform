@@ -75,13 +75,17 @@ Only ever edit the PLATFORM section. Never touch PROJECT or USER sections.
 3. **Lives in the right place** — expert rule for domain behaviour; playbook step for process; convention for universal coding standard
 4. **Has a done-when gate** — the agent cannot mark the task done without satisfying it
 
-### Playbook inventory (v2.40.0 — verify routing + docs when adding/changing)
+### Playbook inventory (v2.41.0 — verify routing + docs when adding/changing)
 
 | Group | Playbooks |
 |-------|-----------|
-| **Core delivery** | audit · add-feature · bug-fix · refactor · release · debug-pipeline · add-dependency · security-audit · api-integration · document-api |
+| **Core delivery** | audit · add-feature · bug-fix · refactor · release · debug-pipeline · add-dependency · security-audit · api-integration · document-api · deprecation · requirements-clarification |
 | **Quality & NFR** | nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit |
 | **Compliance & maturity** | compliance-review · org-maturity-assessment · incident-postmortem |
+
+**Reference checklists:** `.agent/references/` — testing-patterns · security-checklist · performance-checklist · accessibility-checklist · orchestration-patterns (condensed from addyosmani/agent-skills, MIT)
+
+**Context templates:** `spec-outline.md` — lightweight pre-implementation spec (add-feature Step 0)
 
 **Context files for enterprise readiness:** `nfr-log.md` · `compliance-evidence-log.md` · `incident-log.md` · `docs-registry.md`
 
@@ -432,17 +436,20 @@ level** — not individual rules, but whole features or architectural patterns t
 - [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/PLATFORM-HELP.md`** — playbooks table, routing examples, Critic dimensions, context files
 - [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/QUICK-REF.md`** — playbooks + project knowledge rows
 - [ ] **`presentation/agent-platform-beta.html`** — version badges, playbook count, new slides for major capabilities
+- [ ] **`presentation/team-adoption.html`** — team deck: playbook count, audit phases, Critic dimensions, enterprise highlights
 - [ ] **`MAINTAINER/GUIDE.md`** — maintainer schedule/commands if workflow changed
 
 ### E. Audit coverage
 - [ ] **`.agent/playbooks/audit.md`** — if the new capability should be audited, add it to the relevant phase checklist
 
 ### F. Tests
-- [ ] **`tests/apply-integration.test.mjs`** — add test if new installer behavior was introduced
-- [ ] **Run `npm test`** — 172/172 (or current count) must pass before commit
+- [ ] **`tests/apply-integration.test.mjs`** — add install assertions for new playbooks, context files, routing rows
+- [ ] **`tests/E2E-TEST-PLAN.md`** — update version, assertion count, manual audit phases, routing prompts
+- [ ] **Run `npm test`** — all assertions must pass before commit
 
 ### G. Presentation
 - [ ] **`presentation/agent-platform-beta.html`** — update or add slide if this is a user-facing highlight worth presenting
+- [ ] **`presentation/team-adoption.html`** — keep in sync with beta deck counts (playbooks, audit, Critic)
 
 ### H. Release
 - [ ] **`CHANGELOG.md`** — document what changed, why, upgrade path
@@ -473,7 +480,9 @@ Execution:
 3. Update AGENT-PLATFORM-FRAMEWORK-README.md — capabilities, tree, quick-ref card, playbook inventory
 4. Update QUICK-REF.md + PLATFORM-HELP.md — playbooks table, routing, context files
 5. Update presentation/agent-platform-beta.html — version, counts, slides for new highlights
-6. Report checklist D + G items checked; list any files intentionally skipped with reason
+6. Update presentation/team-adoption.html — same counts and enterprise highlights for team onboarding
+7. Update tests/E2E-TEST-PLAN.md + tests/apply-integration.test.mjs if new install artifacts shipped
+8. Report checklist D + F + G items checked; list any files intentionally skipped with reason
 ```
 
 The Mode 1 commands above execute the checklist automatically. If doing a manual change, work through A→H in order.

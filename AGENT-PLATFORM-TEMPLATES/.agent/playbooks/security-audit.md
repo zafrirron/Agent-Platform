@@ -33,8 +33,18 @@
 
 11. **Handoff** — update `CURRENT.md` and `known-issues.md` for Critical/High items. Do not run session-end.
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "I'll fix Critical findings silently" | Report findings first — user decides fix scope in audit playbook. |
+| "npm audit failed — skip CVE step" | Step 4 is mandatory — High/Critical CVEs block until patched or documented. |
+| "Auth looks fine from the handler" | Step 5 checks every endpoint — missing route auth is High severity. |
+| "Critic is redundant after OWASP pass" | Step 9 is mandatory — Critic catches completeness gaps in the audit deliverable. |
+
 ## Rules
 - Audit is read-only on code unless user explicitly requests fixes in the same session
+- See `.agent/references/security-checklist.md` for pre-merge spot-checks
 - Re-use Phase 3 checklist from `audit.md` as minimum floor; security-agent.md is the ceiling
 - LLM/agentic features: include F008/F015 prompt-injection checks
 <!-- PLATFORM:END -->

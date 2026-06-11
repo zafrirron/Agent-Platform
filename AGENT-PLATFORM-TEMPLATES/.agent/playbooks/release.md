@@ -136,6 +136,16 @@
    - Only "deploy to production", "push to prod", "go live on prod", or equivalent explicit instruction triggers a production deploy
    - If the user said "deploy" in the same message that triggered this playbook, stop here and ask: *"Release is done. Should I also deploy vX.Y.Z to production now?"* — wait for confirmation before proceeding
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "One failing test is fine — we'll fix after release" | Step 1 is a hard stop. Broken tests = blocked release. |
+| "Coverage dropped slightly — ship anyway" | Coverage gate exists for a reason; add tests or document gap with user approval. |
+| "Changelog can wait until after tag" | Step 3c must precede tag — consumers need accurate release notes. |
+| "Release means deploy to production" | Step 9 explicitly separates tag from prod deploy. |
+| "Skip Critic — we reviewed in PR" | Step 1b is a cold diff review — PR review is not a substitute. |
+
 ## Rules
 - **Broken tests = blocked release — no exceptions, no `--skip-tests` flags**
 - **Release ≠ deploy** — releasing to GitHub and deploying to production are two separate actions; never combine them without explicit instruction for both

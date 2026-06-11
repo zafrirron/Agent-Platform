@@ -63,6 +63,22 @@
 
 > **Applying SOLID:** when reviewing a design, ask: "What changes would require modifying this class?" (SRP). "Could I add this feature without touching existing code?" (OCP). "Could I swap this implementation for another?" (DIP). These questions surface the design before it becomes technical debt.
 
+### Doubt-driven review (in-flight — not post-hoc Critic)
+Use during `add-feature` Step 2a and before irreversible architectural commits. Complements Critic (Step 5b); does not replace it.
+
+A decision is **non-trivial** when any of: introduces/modifies branching logic; crosses module or service boundary; asserts invariants the compiler cannot verify; correctness depends on invisible context; blast radius is irreversible (prod deploy, migration, public API).
+
+**When NOT to use:** mechanical edits, unambiguous user instructions, read-only analysis, one-line obvious fixes.
+
+**Cycle (before implementation):**
+1. **CLAIM** — state the decision and why it matters
+2. **EXTRACT** — isolate artifact + contract; strip prior reasoning
+3. **DOUBT** — load `critic-agent.md`; adversarial review of the design only (not finished code)
+4. **RECONCILE** — classify each finding against the artifact; fix or defer with user
+5. **STOP** — proceed when zero Critical/High on design, or user accepts deferrals
+
+**BLOCKED if:** Critical/High design findings remain unresolved before code starts.
+
 ## Done-when — architect task is not complete until
 - [ ] ADR logged if decision is hard-to-reverse
 - [ ] `PROJECT.md` updated if architecture changed

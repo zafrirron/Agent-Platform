@@ -69,6 +69,7 @@ Talking points:
 - `npx github:zafrirron/Agent-Platform` — one command, your repo is platform-equipped.
 - Every session now has a structured lifecycle: start → work → end. Context is loaded. Registry prevents conflicts. Handoff log persists across sessions.
 - You describe the task in plain language. The platform declares what it loaded: `▶ Backend expert · bug-fix playbook`. You know exactly what's governing the session.
+- **Slash commands** (Cursor + Claude): `/session-start`, `/spec`, `/audit`, `/review`, `/release`, `/ship` — type `/` in chat instead of pasting long prompts.
 - Session ends: work is committed, context logged, next session (or next dev, or next IDE) picks up from there.
 
 Key point: *this is not a prompt template. It's a coordination layer.*
@@ -81,7 +82,7 @@ This is where developer skeptics get convinced. **Slow down.**
 Talking points:
 - **Design Gate**: agent cannot write a single line of production code until the design is confirmed at the right tier. Trivial fix = one sentence. New endpoint = written design. Cross-cutting change = ADR. Silence is not approval.
 - **Security Gate (Step 5a)**: fires automatically on any feature touching endpoints, auth, or data input. Security expert reviews the new code before Critic. No user action needed.
-- **Critic Review**: 7-dimension adversarial review. The Critic's job is to assume things are wrong. 0 Critical, 0 High before anything is marked done. Findings include file and line number.
+- **Critic Review**: 10-dimension adversarial review (`[SECURITY]` through `[BC]`). The Critic's job is to assume things are wrong. 0 Critical, 0 High before anything is marked done. Findings include file and line number.
 - **BC Check (new)**: any change that would break an existing API, schema, or config outputs a structured warning — who's affected, migration path, severity — and blocks until you explicitly approve.
 
 These are not suggestions. They are hard stops.
@@ -96,7 +97,8 @@ Address the top developer concern: "Will this force me into a rigid style?"
 Talking points:
 - Works in Cursor, Claude Code, Codex, Antigravity. Your IDE choice stays your choice.
 - Each expert file has two sections. PLATFORM section = OWASP rules, quality gates — upgraded automatically. PROJECT section = your stack, your conventions, your rules — **never overwritten, ever**.
-- Cursor multi-model: all Cursor models (GPT-4o, Claude, Gemini) inherit the same platform rules automatically. Model switches mid-task = treat like a framework switch; run session-end first.
+- Cursor multi-model: all Cursor models (GPT-4o, Claude, Gemini) inherit the same `.cursor/rules/` and `.cursor/commands/` automatically. Model switches mid-task = treat like a framework switch; run session-end first.
+- **Cursor Plan mode:** after approving a plan, `/implement` (or `"implement the plan"`) resumes `add-feature` from Step 3 — Security (5a) and Critic (5b) still mandatory.
 - Cross-framework Critic: when you switch tools, the new session offers a cold review of what the previous model did. Different model = different blind spots = genuine independent review.
 
 *"Your team conventions go in PROJECT. They survive every upgrade. The platform improves around them."*
@@ -114,10 +116,11 @@ Close with the concrete action. Don't leave it abstract.
 Talking points:
 - Pick any repo where you're starting new work this sprint.
 - `npx github:zafrirron/Agent-Platform` — 30 seconds.
-- Start a session: `Read .agent/session-start.md and execute it.`
-- From that point: describe tasks, routing handles itself.
+- Start a session: `/session-start` (Cursor/Claude) or `Read .agent/session-start.md and execute it.`
+- From that point: describe tasks or use `/spec` `/audit` `/ship` — routing handles itself.
 - First session triggers the full project audit offer — 11-phase professional health check (architecture through governance/maturity). Free with the install.
-- Enterprise playbooks since v2.38: NFR definition, production readiness (PRR), observability, a11y, compliance review, DORA maturity — mention if audience cares about go-live gates or audit prep.
+- **20 playbooks** since v2.41: core delivery (12) + quality/NFR (5) + compliance/maturity (3); agent-skills DNA (rationalization gates, doubt review, reference checklists).
+- Enterprise highlights: NFR definition, production readiness (PRR), observability, a11y, compliance review, DORA maturity — mention if audience cares about go-live gates or audit prep.
 
 ---
 
@@ -187,7 +190,7 @@ Point out:
 - Global stubs suggestion
 
 ### Step 3 — Session start (60s)
-Open your IDE now (live, in front of the room). Paste:
+Open your IDE now (live, in front of the room). **Cursor:** type `/session-start`. **Claude Code:** same or paste:
 ```
 Read .agent/session-start.md and execute it.
 ```

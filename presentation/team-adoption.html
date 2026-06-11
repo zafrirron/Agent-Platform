@@ -117,15 +117,15 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
 <!-- ═══ S1 TITLE ═══ -->
 <div class="slide active" id="s1">
   <div class="center" style="max-width:820px">
-    <div class="kicker">Team Adoption · 2026</div>
+    <div class="kicker">Team Adoption · v2.41.0</div>
     <h1 style="background:linear-gradient(135deg,var(--acc),var(--pur));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Agent Platform Bootstrap</h1>
     <p class="tagline">Consistent, quality-gated AI development — for every session, every developer, every IDE.</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0">
       <span class="b bb">4 IDE Frameworks</span>
       <span class="b bg">9 Expert Agents</span>
-      <span class="b bp">9 Playbooks</span>
+      <span class="b bp">20 Playbooks</span>
       <span class="b br">Quality Gates</span>
-      <span class="b bo">BC Check · NEW</span>
+      <span class="b bo">NFR · Compliance</span>
     </div>
     <div class="mono" style="margin-top:12px">npx github:zafrirron/Agent-Platform</div>
     <p style="margin-top:16px;font-size:12px;color:var(--txt2)">30 seconds to install · Zero code impact · Fully reversible</p>
@@ -206,7 +206,7 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
 <!-- ═══ S4 SESSION LIFECYCLE ═══ -->
 <div class="slide" id="s4">
   <div class="mw">
-    <div class="kicker">Architecture · Session Model</div>
+    <div class="kicker">INSTALL → SESSION → ROUTE → GATES → SHIP</div>
     <h2>From <span class="hl">"what do I do now?"</span> to production-quality code</h2>
     <div class="gap"></div>
     <div class="hiw">
@@ -239,13 +239,20 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
         <p>Derives summary · commits work · updates handoff log · framework marked idle</p>
         <div style="margin-top:6px"><code style="font-size:10px;color:var(--grn)">session-end.md</code></div>
       </div>
+      <div class="hiwarr">→</div>
+      <div class="hiwbox" style="border-color:var(--org)">
+        <span class="ic">🚢</span><h3>SHIP</h3>
+        <p>Release (version tag) · Production readiness (PRR) · team-wide gates</p>
+        <div style="margin-top:6px"><span class="b bo">go-live</span></div>
+      </div>
     </div>
     <div class="gap"></div>
     <div style="background:rgba(210,168,255,.07);border:1px solid rgba(210,168,255,.3);border-radius:10px;padding:14px;text-align:center">
       <span style="font-size:13px;color:var(--pur)">⟳ &nbsp; Switch IDE → New session → Critic reviews prior work cold → Continue with a fresh model perspective</span>
     </div>
     <div class="gs center">
-      <p style="font-size:12px;color:var(--txt2)">First session? An 8-domain <strong>Full Project Audit</strong> is offered automatically — architecture, security, tests, APIs, DevOps, data, docs, code quality.</p>
+      <p style="font-size:12px;color:var(--txt2)">First session? An <strong>11-phase Full Project Audit</strong> is offered — through governance, compliance evidence, and DORA maturity proxies.</p>
+      <p style="font-size:11px;margin-top:8px;color:var(--txt2)">Cursor/Claude: <code>/session-start</code> <code>/spec</code> <code>/audit</code> <code>/ship</code> <code>/implement</code> (Plan approval handoff)</p>
     </div>
   </div>
 </div>
@@ -266,10 +273,11 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
       <div class="acard"><span class="ic">📚</span><div><h3 class="hl">Docs</h3><p>OpenAPI/Swagger spec, README, changelog, migration guides</p></div></div>
       <div class="acard"><span class="ic">🔒</span><div><h3 class="hr">Security</h3><p>OWASP Top 10, LLM injection, audit logging, auth BC breaks</p></div></div>
       <div class="acard"><span class="ic">📊</span><div><h3 class="hp">Data</h3><p>Schema, migrations, zero-downtime patterns, PII, BC breaks</p></div></div>
-      <div class="acard" style="border-color:var(--red)"><span class="ic">🔍</span><div><h3 class="hr">Critic</h3><p>7-dimension adversarial review. Catches what implementors miss. Cold review across frameworks.</p></div></div>
+      <div class="acard" style="border-color:var(--red)"><span class="ic">🔍</span><div><h3 class="hr">Critic</h3><p>10-dimension adversarial review incl. a11y, operability, BC. Cold review across frameworks.</p></div></div>
     </div>
     <div class="gs center">
-      <p style="font-size:12px"><span class="hg">9 playbooks:</span> add-feature · bug-fix · release · refactor · api-integration · add-dependency · security-audit · debug-pipeline · full-project-audit</p>
+      <p style="font-size:12px"><span class="hg">20 playbooks:</span> core delivery (12) + quality/NFR (5) + compliance/maturity (3)</p>
+      <p style="font-size:11px;margin-top:6px;color:var(--txt2)">Say <code style="color:var(--grn)">interview me</code> · <code style="color:var(--grn)">production ready</code> · <code style="color:var(--grn)">deprecate legacy API</code> · <code style="color:var(--grn)">compliance review</code></p>
     </div>
   </div>
 </div>
@@ -301,16 +309,24 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
         </div>
         <!-- Critic -->
         <div style="background:var(--bg2);border-left:4px solid var(--org);border-radius:0 10px 10px 0;padding:14px 16px">
-          <div style="font-size:13px;font-weight:700;color:var(--org);margin-bottom:6px">🔍 Critic Review — adversarial, 7 dimensions</div>
+          <div style="font-size:13px;font-weight:700;color:var(--org);margin-bottom:6px">🔍 Critic Review — adversarial, 10 dimensions</div>
           <div style="font-size:12px;color:var(--txt3);line-height:1.8">
-            <code style="font-size:11px">[SECURITY] [CORRECTNESS] [TEST] [COMPLETENESS] [PERFORMANCE] [DESIGN] [DEPENDENCY]</code><br>
+            <code style="font-size:11px">[SECURITY] [CORRECTNESS] [TEST] [COMPLETENESS] [PERFORMANCE] [DESIGN] [DEPENDENCY] [ACCESSIBILITY] [OPERABILITY] [BC]</code><br>
             0 Critical, 0 High before anything is marked done. Findings include file:line + fix.<br>
             <span style="color:var(--txt2)">Cross-framework mode: different model reviews cold — different blind spots, genuine independence.</span>
           </div>
         </div>
+        <!-- Enterprise readiness -->
+        <div style="background:rgba(88,166,255,.07);border-left:4px solid var(--acc);border-radius:0 10px 10px 0;padding:14px 16px">
+          <div style="font-size:13px;font-weight:700;color:var(--acc);margin-bottom:6px">🏢 Enterprise readiness — NFR · PRR · compliance</div>
+          <div style="font-size:12px;color:var(--txt3);line-height:1.8">
+            Measurable targets in <code style="font-size:10px">nfr-log.md</code> · go-live gate via <code style="font-size:10px">production-readiness</code><br>
+            SOC 2 / ISO SDLC prep via <code style="font-size:10px">compliance-review</code> · WCAG 2.2 + UX rules in Frontend expert
+          </div>
+        </div>
         <!-- BC Check -->
         <div style="background:rgba(255,166,87,.07);border-left:4px solid var(--org);border:1px solid rgba(255,166,87,.3);border-radius:0 10px 10px 0;padding:14px 16px">
-          <div style="font-size:13px;font-weight:700;color:var(--org);margin-bottom:6px">⚠️ BC Check — backwards compatibility · <span class="bo">NEW</span></div>
+          <div style="font-size:13px;font-weight:700;color:var(--org);margin-bottom:6px">⚠️ BC Check — backwards compatibility</div>
           <div style="font-size:12px;color:var(--txt3);line-height:1.8">
             Any change to an API, schema, config key, auth mechanism, or exported interface triggers:<br>
             <code style="font-size:11px;color:var(--org)">⚠️ BC BREAK — [what] · Affected: [who] · Migration: [how] · Action required</code><br>
@@ -327,7 +343,7 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
             <div style="display:flex;gap:8px"><span class="hl">3</span> Backend implements JWT — sub claim, owner field, bcrypt</div>
             <div style="display:flex;gap:8px"><span class="hr">4</span> Step 5a: Security gate fires automatically</div>
             <div style="display:flex;gap:8px"><span class="hg">5</span> Test agent: 41 tests written, coverage gate checked</div>
-            <div style="display:flex;gap:8px"><span class="ho">6</span> Critic: 7-dimension review — 0 Critical, 2 High resolved</div>
+            <div style="display:flex;gap:8px"><span class="ho">6</span> Critic: 10-dimension review — 0 Critical, 2 High resolved</div>
             <div style="display:flex;gap:8px"><span class="hg">✓</span> Done — nothing skipped, nothing assumed</div>
           </div>
         </div>
@@ -360,8 +376,8 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
           <p style="margin-top:6px">When you switch tools, the new session offers a cold review of what the previous model built. A different model has different blind spots — that's the value, not a bug.</p>
         </div>
         <div style="background:rgba(255,166,87,.07);border:1px solid rgba(255,166,87,.3);border-radius:10px;padding:14px">
-          <div style="font-size:12px;font-weight:700;color:var(--org);margin-bottom:6px">🖱 Cursor multi-model note</div>
-          <p style="font-size:12px">Cursor can route to GPT-4o, Claude, Gemini in the same project. The platform tracks at the <strong>framework level</strong> (Cursor), not the model level. All models inherit the same <code>.cursor/rules/</code> automatically. <br><span style="color:var(--txt2)">Model switch mid-task? Treat it like a framework switch: run session-end first. See <code>.cursor/README.md</code>.</span></p>
+          <div style="font-size:12px;font-weight:700;color:var(--org);margin-bottom:6px">🖱 Cursor: multi-model + Plan mode</div>
+          <p style="font-size:12px">All Cursor models inherit <code>.cursor/rules/</code> and <code>.cursor/commands/</code> (<code>/session-start</code>, <code>/implement</code>, …). Model switch mid-task → session-end first.<br><span style="color:var(--txt2)"><strong>Plan mode:</strong> after plan approval, <code>/implement</code> resumes <code>add-feature</code> Step 3 with full gates (5a Security, 5b Critic).</span></p>
         </div>
       </div>
       <div>
@@ -369,7 +385,7 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
             <span style="font-size:13px">Cursor</span>
-            <code style="color:var(--grn);font-size:11px">Read .cursor/prompts/session-start.md and execute it.</code>
+            <code style="color:var(--grn);font-size:11px">/session-start</code>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
             <span style="font-size:13px">Claude Code</span>
@@ -475,7 +491,7 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
           <div class="dnum">3</div>
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--txt)">Session start (60s)</div>
-            <code style="font-size:11px;color:var(--grn)">Read .agent/session-start.md and execute it.</code>
+            <code style="font-size:11px;color:var(--grn)">/session-start</code> <span style="color:var(--txt2)">or</span> <code style="font-size:11px;color:var(--grn)">Read .agent/session-start.md and execute it.</code>
             <p style="font-size:11px;margin-top:3px">Show: conflict check → first-session audit offer (say NO) → "Ready."</p>
           </div>
         </div>
@@ -659,6 +675,7 @@ p{font-size:clamp(12px,1.15vw,16px);line-height:1.7;color:var(--txt3);}
       <span class="b br">Zero code changes ✓</span>
       <span class="b bg">BC checks ✓</span>
       <span class="b bb">OWASP gates ✓</span>
+      <span class="b bp">v2.41.0</span>
     </div>
     <div class="gap">
       <div class="mono" style="font-size:15px;display:inline-block">npx github:zafrirron/Agent-Platform</div>

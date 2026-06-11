@@ -3,7 +3,7 @@
  * Guided manual E2E test runner for Agent Platform Bootstrap.
  *
  * Automated phases (0, 1, 8, 9, 10, 12) run without interaction.
- * Manual phases (2, 2b, 3, 4, 5, 6, 7, 11) show instructions and wait for your verdict.
+ * Manual phases (2, 2b, 2c, 2d, 3, 4, 5, 6, 7, 11) show instructions and wait for your verdict.
  *
  * Usage:
  *   npm run test:manual
@@ -209,6 +209,35 @@ autoCheck('No stderr from installer', !install.stderr.trim(),
 const globalSuggestion = install.stdout.includes('Global stubs');
 autoCheck('Global stubs status shown in install summary', globalSuggestion);
 
+autoCheck('bootstrap_version is 2.41.0', pj.bootstrap_version === '2.41.0',
+  `got ${pj.bootstrap_version}`);
+autoCheck('Install banner shows 20 playbooks (dynamic count)',
+  install.stdout.includes('20 playbooks'));
+
+const pbDir = path.join(TEST_DIR, '.agent/playbooks');
+const pbCount = fs.existsSync(pbDir)
+  ? fs.readdirSync(pbDir).filter(f => f.endsWith('.md')).length : 0;
+autoCheck('20 playbooks on disk', pbCount === 20, `got ${pbCount}`);
+
+autoCheck('spec-outline.md deployed',
+  fs.existsSync(path.join(TEST_DIR, '.agent/context/spec-outline.md')));
+autoCheck('references/ checklists deployed',
+  fs.existsSync(path.join(TEST_DIR, '.agent/references/orchestration-patterns.md')));
+autoCheck('plan-mode-handoff.mdc deployed',
+  fs.existsSync(path.join(TEST_DIR, '.cursor/rules/plan-mode-handoff.mdc')));
+autoCheck('Cursor /spec command deployed',
+  fs.existsSync(path.join(TEST_DIR, '.cursor/commands/spec.md')));
+autoCheck('Claude /spec command deployed',
+  fs.existsSync(path.join(TEST_DIR, '.claude/commands/spec.md')));
+
+const quickRefV41 = fs.readFileSync(path.join(TEST_DIR, '.agent/QUICK-REF.md'), 'utf8');
+autoCheck('QUICK-REF has Key principle column', quickRefV41.includes('Key principle'));
+autoCheck('QUICK-REF documents 20 playbooks',
+  quickRefV41.includes('20 total') || quickRefV41.includes('(20 total)'));
+
+const platformHelp = fs.readFileSync(path.join(TEST_DIR, '.agent/PLATFORM-HELP.md'), 'utf8');
+autoCheck('PLATFORM-HELP has Start here section', platformHelp.includes('Start here'));
+
 console.log('');
 console.log(c('grey', '  Install stdout (last 8 lines):'));
 install.stdout.trim().split('\n').slice(-8).forEach(l => console.log(c('grey', '  ' + l)));
@@ -231,7 +260,7 @@ console.log('   [ ] Step 5: Compact status block — NOT the full QUICK-REF tabl
 console.log('   [ ] Step 5: .agent/QUICK-REF.md link is clickable');
 console.log('   [ ] Step 8: "Ready. Tell me what you want to do."');
 console.log('');
-console.log('  Also verify /quick-ref slash command shows full QUICK-REF.md.');
+console.log('  Also verify `show quick reference` points to `.agent/QUICK-REF.md` (no full table dump).');
 await verdict(2, 'Session Start');
 
 /* ── Phase 2b — Full Project Audit ───────────────────────────────────────── */
@@ -242,7 +271,7 @@ console.log('');
 console.log(c('green', '     Run project audit'));
 console.log('');
 console.log('  Verify:');
-console.log('   [ ] All 8 expert passes run: Architect · Docs · Security · Test · Critic · Data · Backend · DevOps');
+console.log('   [ ] All 11 audit phases run (incl. Performance, Frontend/a11y, Observability, Governance & maturity)');
 console.log('   [ ] Report created at .agent/context/audit-YYYY-MM-DD-HH-MM.md');
 console.log('   [ ] Report has executive summary table with domain health (🟢🟡🔴)');
 console.log('   [ ] Report has findings by severity and Quick wins section');
@@ -251,9 +280,39 @@ console.log(c('grey', '  Tip: Run audit on a NEW scratch folder to also test the
 console.log(c('grey', '  first-session offer (start a new repo, install, open — offer appears, reply YES).'));
 await verdict('2b', 'Full Project Audit');
 
+/* ── Phase 2c — Slash commands ───────────────────────────────────────────── */
+
+phaseHeader('2c', 'Slash commands — Claude Code (+ optional Cursor)', 'manual');
+console.log('  In Claude Code, type each slash command:');
+console.log('');
+const slashCmds = [
+  ['/quick-ref',  'Points to .agent/QUICK-REF.md — no full table dump'],
+  ['/spec',       'Architect + requirements-clarification'],
+  ['/audit',      'All experts + audit playbook'],
+  ['/review',     'Critic expert'],
+  ['/release',    'DevOps + release'],
+  ['/ship',       'DevOps + release (alias)'],
+];
+slashCmds.forEach(([cmd, exp], i) => {
+  console.log(`  ${c('cyan', (i+1) + '.')} ${c('bold', cmd)}`);
+  console.log(c('grey', `     → expected: ${exp}`));
+});
+console.log('');
+console.log(c('grey', '  Optional in Cursor: /session-start · /platform-help · /implement (see Phase 2d)'));
+await verdict('2c', 'Slash commands');
+
+/* ── Phase 2d — Cursor Plan handoff ──────────────────────────────────────── */
+
+phaseHeader('2d', 'Cursor Plan mode handoff (optional)', 'manual');
+console.log('  In Cursor: start add-feature → approve Plan → type `/implement` or "implement the plan".');
+console.log('');
+console.log('   [ ] Status line: resuming Step 3 — plan approved');
+console.log('   [ ] add-feature.md loads; Steps 0–2 skipped; implementation starts at Step 3');
+await verdict('2d', 'Cursor Plan handoff');
+
 /* ── Phase 3 — Auto-routing ───────────────────────────────────────────────── */
 
-phaseHeader(3, 'Auto-routing — 6 prompts', 'manual');
+phaseHeader(3, 'Auto-routing — 13 prompts', 'manual');
 console.log('  In Claude Code, type each prompt. Agent must route SILENTLY (no announcement).');
 console.log('');
 const prompts = [
@@ -261,8 +320,15 @@ const prompts = [
   ['add a due date field to todos',                                   'Backend + add-feature'],
   ['check if the API is secure',                                      'Security + security-audit'],
   ['write tests for the todos router',                                'Test expert'],
-  ['document the API',                                                'Docs expert'],
+  ['document the API',                                                'Docs + document-api'],
   ['I\'m ready to cut a release',                                     'DevOps + release'],
+  ['define NFRs for this API — p95 under 200ms',                     'Architect + nfr-definition'],
+  ['run a production readiness review before go-live',                'DevOps + production-readiness'],
+  ['compliance review for SOC 2 SDLC controls',                       'Security + compliance-review'],
+  ['accessibility audit on the todo form',                            'Frontend + accessibility-audit'],
+  ['DORA maturity assessment for our team',                           'Architect + org-maturity-assessment'],
+  ['interview me about adding push notifications',                    'Architect + requirements-clarification'],
+  ['deprecate the legacy v1 todos endpoint',                          'Architect + deprecation'],
 ];
 prompts.forEach(([p, e], i) => {
   console.log(`  ${c('cyan', (i+1) + '.')} "${p}"`);
@@ -285,7 +351,7 @@ console.log('   [ ] Architect: cross-cutting scope noted, ADR before code');
 console.log('   [ ] Backend: implements JWT auth (sub claim, owner field, 404 on wrong owner)');
 console.log('   [ ] Step 5a fires automatically: Security expert reviews new auth code');
 console.log('   [ ] Test expert: tests for auth logic added');
-console.log('   [ ] Critic: 6-dimension adversarial review');
+console.log('   [ ] Critic: 10-dimension adversarial review');
 console.log('   [ ] Nothing marked done until all gates pass');
 await verdict(4, 'Security gate');
 
@@ -320,7 +386,7 @@ console.log(c('grey', '  │  Reply YES to review, NO to proceed directly.      
 console.log(c('grey', '  └──────────────────────────────────────────────────────────┘'));
 console.log('');
 console.log('   [ ] Offer box appears (if not → previous_framework capture bug has returned)');
-console.log('   [ ] Reply YES → Critic runs cold 6-dimension review');
+console.log('   [ ] Reply YES → Critic runs cold 10-dimension review');
 console.log('   [ ] CURRENT.md updated: Critic reviewed: yes — X Critical, Y High, Z Medium');
 await verdict(6, 'Cross-framework Critic');
 
@@ -410,10 +476,14 @@ autoCheck('~/.cursor/rules/agent-platform-global.mdc',  fs.existsSync(path.join(
 autoCheck('~/.codex/instructions.md',                   fs.existsSync(path.join(fakeHome, '.codex/instructions.md')));
 autoCheck('~/.agents/rules/agent-platform-global.md',   fs.existsSync(path.join(fakeHome, '.agents/rules/agent-platform-global.md')));
 autoCheck('~/.claude/commands/caveman.md',              fs.existsSync(path.join(fakeHome, '.claude/commands/caveman.md')));
+autoCheck('~/.claude/commands/spec.md',                fs.existsSync(path.join(fakeHome, '.claude/commands/spec.md')));
+autoCheck('~/.cursor/commands/spec.md',                fs.existsSync(path.join(fakeHome, '.cursor/commands/spec.md')));
+autoCheck('~/.cursor/commands/implement.md',            fs.existsSync(path.join(fakeHome, '.cursor/commands/implement.md')));
 autoCheck('~/.agent-platform/global-version',           fs.existsSync(path.join(fakeHome, '.agent-platform/global-version')));
 
 const gv = JSON.parse(fs.readFileSync(path.join(fakeHome, '.agent-platform/global-version'), 'utf8'));
 autoCheck('Version JSON has version field', !!gv.version && /\d+\.\d+\.\d+/.test(gv.version));
+autoCheck('global-version is 2.41.0', gv.version === '2.41.0', `got ${gv.version}`);
 
 const claudeStub = fs.readFileSync(path.join(fakeHome, '.claude/CLAUDE.md'), 'utf8');
 autoCheck('PLATFORM:START/END in ~/.claude/CLAUDE.md',
@@ -475,6 +545,10 @@ autoCheck('USER content preserved',
   fs.readFileSync(claudePath, 'utf8').includes('Always use caveman lite.'));
 autoCheck('Cursor stub deleted',
   !fs.existsSync(path.join(fakeHome, '.cursor/rules/agent-platform-global.mdc')));
+autoCheck('Cursor commands deleted',
+  !fs.existsSync(path.join(fakeHome, '.cursor/commands/spec.md')));
+autoCheck('Claude commands deleted',
+  !fs.existsSync(path.join(fakeHome, '.claude/commands/spec.md')));
 autoCheck('Version file deleted',
   !fs.existsSync(path.join(fakeHome, '.agent-platform/global-version')));
 
