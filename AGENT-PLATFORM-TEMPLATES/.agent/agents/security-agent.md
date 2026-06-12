@@ -22,6 +22,8 @@
 - Session tokens: confirm they are invalidated on logout
 - Privilege escalation: confirm user can only access their own resources
 - Missing function-level auth is the #1 backend vulnerability — check every route
+- **Sensitive account mutations** (email, password, 2FA device, recovery email): require current-password confirmation or fresh MFA — token-only auth is insufficient (OWASP API2:2023)
+- **Auth rate limits vs batching:** login/password-reset/token-refresh limits must count **each credential attempt** — reject or rate-limit batched auth mutations (GraphQL batch arrays, HTTP/2 abuse) that bypass per-request limits; return 429 with Retry-After
 
 ### Input validation
 - Every user-supplied value is validated at the trust boundary, not deep in logic
@@ -32,6 +34,8 @@
 ### Dependencies
 - New dependency added: run `npm audit` / `pip-audit` / `cargo audit` immediately
 - Flag any dependency with a known CVE — do not approve until patched or mitigated
+- **Typosquatting / dependency confusion (OWASP 2025 A03):** verify exact package name, publisher, and registry metadata before approve — reject homoglyph names and suspicious first-time publishers
+- **IDE / MCP / plugin extensions:** vet third-party editor extensions and MCP servers before install — same trust bar as production dependencies; unvetted plugins can exfiltrate code or inject tool results
 
 ### Data protection (F001 — OWASP A02)
 - All data in transit must use TLS — no HTTP endpoints in production
@@ -94,6 +98,10 @@
 
 **Detection approach:** for any feature that passes external content (document text, API responses, user messages, search results) to an LLM, review the data flow and confirm external content is isolated from instruction context — either via strict message-role separation, or content-aware sanitisation before forwarding.
 
+**Action screening (OWASP LLM cheat sheet):** before executing each agent tool call, verify the call still matches the user's stated task — reject calls that drift after poisoned tool output, RAG content, or indirect injection; evaluate proposed action against original intent without merging untrusted intermediate context into the decision.
+
+**Injection attempt logging:** log suspected prompt-injection events (direct, indirect, tool-output, jailbreak) to security audit log with same alerting threshold as repeated auth failures — absence of detection means attacks go unobserved.
+
 ### Agentic AI risks — apply when reviewing AI agent features
 
 When the codebase builds, hosts, or integrates AI agents (not just uses an LLM for text generation):
@@ -115,6 +123,7 @@ When the codebase builds, hosts, or integrates AI agents (not just uses an LLM f
 - [ ] All new inputs validated at trust boundary
 - [ ] Dependency audit clean (or CVEs documented in known-issues.md with mitigations)
 - [ ] If feature uses LLM or passes external content to a model: all 7 prompt injection types checked
+- [ ] If feature uses agent tool calls: action screening applied — each call matches user intent
 - [ ] If feature builds or integrates an AI agent: all 8 agentic risk rows reviewed
 - [ ] Findings logged in `.agent/context/known-issues.md` with severity rating
 - [ ] BC check: any auth mechanism or security policy change assessed; ⚠️ BC BREAK notice issued and user-approved if applicable

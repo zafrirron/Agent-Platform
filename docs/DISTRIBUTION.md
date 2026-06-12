@@ -1,16 +1,64 @@
 # Distribution options
 
-Agent Platform is installed **per repository** with one command. Skill packs and IDE plugins are complementary — this doc explains how we differ and how to combine them.
+Agent Platform ships in **three profiles**. Skill packs and IDE plugins are complementary — this doc explains install paths and how Cursor differs from Claude Code.
 
 ---
 
-## Primary install (recommended)
+## Install profiles
+
+| Profile | Command | What you get |
+|---------|---------|--------------|
+| **lite** | `--profile=lite [--framework=cursor\|claude]` | Skills pack: `/spec` `/plan` `/build` `/test` `/review` `/ship`, `.agent/skills/`, no handoff/enterprise layer |
+| **core** | `--profile=core` | All playbooks except enterprise; full session model |
+| **full** | default / `--profile=full` | Complete platform (multi-IDE, handoff, enterprise gates) |
+
+```bash
+# Skills pack for Cursor (lightweight)
+npx github:zafrirron/Agent-Platform --profile=lite --framework=cursor
+
+# Full team platform
+npx github:zafrirron/Agent-Platform
+```
+
+---
+
+## Claude Code marketplace (plugin)
+
+```text
+/plugin marketplace add https://github.com/zafrirron/Agent-Platform.git
+/plugin install agent-platform-skills@zafrirron
+```
+
+Plugin manifest: `.claude-plugin/plugin.json` — bundles `AGENT-PLATFORM-TEMPLATES/.agent/skills` and lifecycle `.claude/commands`.
+
+**Upgrade to full platform in a repo:** `npx github:zafrirron/Agent-Platform --profile=full`
+
+---
+
+## Cursor — no marketplace
+
+Cursor does **not** have a `/plugin install` marketplace. Use `npx` (recommended) or copy skills to `.cursor/rules/`. See **[docs/cursor-setup.md](cursor-setup.md)**.
+
+---
+
+## Cherry-pick skills (à la carte)
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=list --list=skills
+npx github:zafrirron/Agent-Platform --mode=add --add=skill:interview-me,skill:tdd --framework=cursor
+```
+
+Aliases: `skill:tdd` → `test-driven-development`, `skill:interview` → `interview-me`.
+
+---
+
+## Primary install (full — recommended for teams)
 
 ```bash
 npx github:zafrirron/Agent-Platform
 ```
 
-Installs `.agent/`, IDE private folders, playbooks, experts, session prompts, and optional Claude slash commands. Everything platform-related is gitignored by default.
+Installs `.agent/`, IDE private folders, playbooks, experts, session prompts, and slash commands. Everything platform-related is gitignored by default.
 
 **Global activation** (once per machine):
 
@@ -32,13 +80,20 @@ After install, lifecycle shortcuts are available as `/` commands in **Cursor** a
 | `/session-end` | `.agent/session-end.md` |
 | `/quick-ref` | Open `.agent/QUICK-REF.md` |
 | `/platform-help` | Full `.agent/PLATFORM-HELP.md` (Cursor) |
-| `/spec` | Requirements clarification → `spec-outline.md` |
-| `/audit` | Full project audit playbook |
-| `/review` | Critic agent adversarial review |
-| `/release` | Release playbook (version, changelog, tag) |
+| `/spec` | `interview-me` skill → `spec-outline.md` |
+| `/plan` | `planning-and-task-breakdown` skill |
+| `/build` | `incremental-implementation` skill (`build auto` = full plan) |
+| `/test` | `test-driven-development` skill |
+| `/code-simplify` | `code-simplification` skill |
+| `/webperf` | `web-performance-audit` skill (CWV Quick/Deep) |
+| `/context` | `context-engineering` skill |
+| `/verify` | `verification-before-completion` skill |
+| `/audit` | Full project audit (full profile) |
+| `/review` | Critic / code review |
+| `/release` | Release playbook |
 | `/ship` | Production readiness gate (PRR) |
-| `/implement` | Plan approval → add-feature Step 3 (Cursor) |
-| `/caveman` | Token compression mode (+ `caveman-commit`, `caveman-review`, …) |
+| `/implement` | Plan approval → add-feature Step 3 (Cursor, full profile) |
+| `/caveman` | Token compression (+ helpers) |
 
 | IDE | Location | Global (`--mode=global`) |
 |-----|----------|--------------------------|
@@ -58,7 +113,7 @@ Filename (without `.md`) becomes the command name. Commands are thin routers —
 | **Antigravity** | `.agents/` prompts |
 | **Codex** | `.codex/` prompts |
 
-There is **no separate Cursor marketplace listing** today. Install via `npx` in the repo root — same as CI or a new clone. Optional: add a team rule in Cursor Settings pointing new hires to `README.md` Quick Start.
+Cursor has **no plugin marketplace**. See **[docs/cursor-setup.md](cursor-setup.md)** for the full Cursor path (`--profile=lite --framework=cursor` recommended).
 
 ---
 

@@ -40,6 +40,8 @@ Task: [your goal — e.g. "audit the security expert for gaps", "add a new rule 
 
 The maintainer agent knows the full framework structure, the section model, the extension anatomy, and the release process. You do not need to explain any of this.
 
+**Do not repeat:** "update manifests", "sync user docs", "fix changelog", "update E2E", or "update presentation". Those are **PSG** — mandatory at the end of every task. The agent must output a **PSG Report** before saying done.
+
 ---
 
 ## Maintainer toolbox — what to use and when
@@ -50,12 +52,14 @@ There are five maintainer tools. Each has a distinct trigger and a distinct outp
 |------|------|---------|--------|
 | **Add rule** (Mode 1) | `platform-maintainer-agent.md` | Observed a failure, have a specific rule to add | One rule added to the right PLATFORM section, logged, version bumped |
 | **Internal platform audit** | `platform-audit.md` | Platform feels stale, before a release, or after many changes — check the platform's own health | Quality report: undertrained experts, weak playbooks, coverage gaps, vague rules, duplicates |
-| **Web ecosystem audit** (Mode 2) | `web-audit.md` | Monthly schedule, or after an OWASP/CWE update | Structured findings report F001-Fxxx from OWASP, CWE, best-practice sources |
+| **Web ecosystem audit** (Mode 2) | `web-audit.md` | Monthly schedule, or after an OWASP/CWE update | Structured findings F001-Fxxx from OWASP, CWE, best practices, **+ skill packs/playbooks (Phase 2F)** |
 | **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/` | Structured findings report I001-Ixxx from user's production-proven rules |
-| **GitHub governance scan** (Mode 4) | `github-governance-scan.md` | Quarterly — discover new governance/coordination tools on GitHub | Structured findings report R001-Rxxx; findings may become new phases or capabilities |
+| **GitHub ecosystem scan** (Mode 4) | `github-governance-scan.md` | Quarterly — discover governance/coordination **and skill-pack** repos on GitHub | Structured findings report R001-Rxxx; findings may become new phases, skills, or capabilities |
 
 **The improvement cycle always ends the same way regardless of which tool triggered it:**
-Add rule to PLATFORM section → log in `platform-improvements.md` → bump version → ship via `tools/release.ps1`.
+Template change → log in `platform-improvements.md` → **Platform Sync Gate (PSG)** → CHANGELOG `[Unreleased]` → `npm test` → (when ready) release via `tools/release.ps1`.
+
+> **You never remind the agent to sync docs.** PSG runs automatically after every Mode 1–4 change. See `platform-maintainer-agent.md` § Platform Sync Gate.
 
 ---
 
@@ -96,9 +100,9 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Anytime | Observed a failure → add a targeted rule | `"Add rule to [expert]: [rule]"` via maintainer agent |
 | When files arrive | User dropped files into `MAINTAINER/ingest/` | `Read MAINTAINER/platform-ingest.md and execute it.` |
 | Before release | Quality gate — check platform's own health | `Read MAINTAINER/platform-audit.md and execute it.` |
-| Monthly | Web ecosystem check (OWASP, CWE, best practices) | `Read MAINTAINER/web-audit.md and execute it.` |
+| Monthly | Web ecosystem check (OWASP, CWE, best practices, **skill packs Phase 2F**) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
-| Quarterly | GitHub governance repo scan — discover new capabilities | `Read MAINTAINER/github-governance-scan.md and execute it.` |
+| Quarterly | GitHub ecosystem scan — governance **+ skill packs** | `Read MAINTAINER/github-governance-scan.md and execute it.` |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 | After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation + E2E plan | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D/F/G in `platform-maintainer-agent.md` |
 
@@ -136,10 +140,14 @@ Agent Platform Bootstrap (framework repo)
 │   │   ├── .gitkeep                   ←   keeps folder in git when empty
 │   │   └── archive/                   ←   processed submissions (auto-created on first ingest)
 │   ├── platform-improvements.md       ← improvement log (all rules traced to source)
-│   ├── github-governance-scan.md      ← Mode 4: quarterly GitHub governance repo scan
-│   └── governance-scan/               ← Mode 4 output
-│       ├── scan-log.md                ←   running log of all scanned repos + dispositions
-│       └── archive/                   ←   full scan reports (auto-created on first scan)
+│   ├── github-governance-scan.md      ← Mode 4: quarterly GitHub scan (coordination + skill packs)
+│   ├── scan-results/                  ← UNIFIED scan registry (all modes — read before every scan)
+│   │   ├── registry.md                ←   findings + dispositions + actions taken
+│   │   ├── REPORT-SCHEMA.md           ←   required report format
+│   │   ├── mode4/ · web-audit/ · ingest/ · internal/  ← per-mode archives
+│   └── governance-scan/               ← Mode 4 legacy output (mirrored to scan-results/)
+│       ├── scan-log.md                ←   Mode 4 summary (points to registry.md)
+│       └── archive/                   ←   full scan reports (legacy path)
 │
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
 │   ├── .agent/agents/             ← 9 expert agents (with PLATFORM/PROJECT sections)

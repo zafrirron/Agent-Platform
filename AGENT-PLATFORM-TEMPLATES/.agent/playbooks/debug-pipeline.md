@@ -7,7 +7,7 @@
 3. **Hypothesise** — list 2-3 most likely causes ranked by probability; state them before probing
 4. **Probe** — test top hypothesis; one variable at a time; add targeted log or assertion
 5. **Fix** — smallest change that eliminates the root cause (not just the symptom)
-6. **Verify** — original repro case now passes; run full test suite; no new failures
+6. **Verify** — original repro case now passes; run full test suite; no new failures. If claiming done, load `.agent/skills/verification-before-completion/SKILL.md` or type `/verify` for evidence checklist.
 7. **Log** — root cause + fix summary in `CURRENT.md`
 
 ## Common patterns

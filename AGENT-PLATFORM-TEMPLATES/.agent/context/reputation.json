@@ -13,7 +13,7 @@
     },
     "backend-agent": {
       "overall": 500,
-      "by_capability": { "api": 500, "security": 500, "database": 500, "auth": 500 },
+      "by_capability": { "api": 500, "security": 500, "database": 500, "auth": 500, "error-handling": 500 },
       "sessions_completed": 0,
       "gate_passes": 0,
       "gate_blocks": 0,
@@ -21,7 +21,7 @@
     },
     "frontend-agent": {
       "overall": 500,
-      "by_capability": { "UI": 500, "accessibility": 500, "client-state": 500 },
+      "by_capability": { "UI": 500, "accessibility": 500, "client-state": 500, "web-performance": 500 },
       "sessions_completed": 0,
       "gate_passes": 0,
       "gate_blocks": 0,
@@ -29,7 +29,7 @@
     },
     "devops-agent": {
       "overall": 500,
-      "by_capability": { "CI/CD": 500, "security": 500, "deployment": 500 },
+      "by_capability": { "CI/CD": 500, "security": 500, "deployment": 500, "supply-chain": 500 },
       "sessions_completed": 0,
       "gate_passes": 0,
       "gate_blocks": 0,
@@ -53,7 +53,7 @@
     },
     "security-agent": {
       "overall": 500,
-      "by_capability": { "auth-review": 500, "vulnerability": 500, "threat-modelling": 500 },
+      "by_capability": { "auth-review": 500, "vulnerability": 500, "threat-modelling": 500, "LLM-security": 500, "supply-chain-audit": 500 },
       "sessions_completed": 0,
       "gate_passes": 0,
       "gate_blocks": 0,

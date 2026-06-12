@@ -3,7 +3,7 @@
  * Guided manual E2E test runner for Agent Platform Bootstrap.
  *
  * Automated phases (0, 1, 8, 9, 10, 12) run without interaction.
- * Manual phases (2, 2b, 2c, 2d, 3, 4, 5, 6, 7, 11) show instructions and wait for your verdict.
+ * Automated phase 1lite runs lite profile smoke. Manual phases (2, 2b, 2c, 2d, 3, 4, 5, 6, 7, 11) show instructions and wait for your verdict.
  *
  * Usage:
  *   npm run test:manual
@@ -98,10 +98,10 @@ function autoCheck(label, pass, failMsg = '') {
   return pass;
 }
 
-function runApply(extraArgs = [], extraEnv = {}) {
+function runApply(extraArgs = [], extraEnv = {}, target = TEST_DIR) {
   return spawnSync(
     process.execPath,
-    [APPLY, `--pack=${PACK_ROOT}`, `--target=${TEST_DIR}`, ...extraArgs],
+    [APPLY, `--pack=${PACK_ROOT}`, `--target=${target}`, ...extraArgs],
     { encoding: 'utf8', timeout: 60_000, env: { ...process.env, ...extraEnv } }
   );
 }
@@ -229,6 +229,12 @@ autoCheck('Cursor /spec command deployed',
   fs.existsSync(path.join(TEST_DIR, '.cursor/commands/spec.md')));
 autoCheck('Claude /spec command deployed',
   fs.existsSync(path.join(TEST_DIR, '.claude/commands/spec.md')));
+autoCheck('Lifecycle commands deployed (plan/build/test/code-simplify/webperf/context/verify)',
+  ['plan', 'build', 'test', 'code-simplify', 'webperf', 'context', 'verify'].every(c =>
+    fs.existsSync(path.join(TEST_DIR, `.claude/commands/${c}.md`)) &&
+    fs.existsSync(path.join(TEST_DIR, `.cursor/commands/${c}.md`))));
+autoCheck('interview-me skill deployed',
+  fs.existsSync(path.join(TEST_DIR, '.agent/skills/interview-me/SKILL.md')));
 
 const quickRefV41 = fs.readFileSync(path.join(TEST_DIR, '.agent/QUICK-REF.md'), 'utf8');
 autoCheck('QUICK-REF has Key principle column', quickRefV41.includes('Key principle'));
@@ -243,6 +249,43 @@ console.log(c('grey', '  Install stdout (last 8 lines):'));
 install.stdout.trim().split('\n').slice(-8).forEach(l => console.log(c('grey', '  ' + l)));
 
 recordResult(1, 'Install', ok ? 'PASS' : 'FAIL');
+
+/* ── Phase 1lite — Lite profile (skills pack) ─────────────────────────────── */
+
+phaseHeader('1lite', 'Lite profile — skills pack smoke (--profile=lite)', 'auto');
+const TEST_DIR_LITE = path.join(path.dirname(TEST_DIR), path.basename(TEST_DIR) + '-lite');
+if (fs.existsSync(TEST_DIR_LITE)) {
+  fs.rmSync(TEST_DIR_LITE, { recursive: true, force: true });
+}
+fs.mkdirSync(TEST_DIR_LITE, { recursive: true });
+copyDir(TODO_APP, TEST_DIR_LITE);
+spawnSync('git', ['-C', TEST_DIR_LITE, 'init'], { encoding: 'utf8' });
+spawnSync('git', ['-C', TEST_DIR_LITE, 'add', '-A'], { encoding: 'utf8' });
+spawnSync('git', ['-C', TEST_DIR_LITE, 'commit', '-m', 'chore: lite profile e2e'], { encoding: 'utf8' });
+
+console.log('  Running installer --profile=lite --framework=cursor...');
+const liteInstall = runApply(['--profile=lite', '--framework=cursor'], {}, TEST_DIR_LITE);
+const liteOk = liteInstall.status === 0;
+
+autoCheck('Lite installer exits 0', liteOk, liteInstall.stderr || liteInstall.stdout);
+autoCheck('interview-me skill present',
+  fs.existsSync(path.join(TEST_DIR_LITE, '.agent/skills/interview-me/SKILL.md')));
+autoCheck('planning skill present',
+  fs.existsSync(path.join(TEST_DIR_LITE, '.agent/skills/planning-and-task-breakdown/SKILL.md')));
+autoCheck('No backend-agent.md (experts skipped)',
+  !fs.existsSync(path.join(TEST_DIR_LITE, '.agent/agents/backend-agent.md')));
+autoCheck('No registry.yaml (handoff skipped)',
+  !fs.existsSync(path.join(TEST_DIR_LITE, '.agent/handoff/sync/registry.yaml')));
+autoCheck('Cursor /plan command deployed',
+  fs.existsSync(path.join(TEST_DIR_LITE, '.cursor/commands/plan.md')));
+
+const pjLite = JSON.parse(fs.readFileSync(path.join(TEST_DIR_LITE, '.agent/platform.json'), 'utf8'));
+autoCheck('platform.json profile=lite', pjLite.profile === 'lite', `got ${pjLite.profile}`);
+
+const agentsLite = fs.readFileSync(path.join(TEST_DIR_LITE, 'AGENTS.md'), 'utf8');
+autoCheck('AGENTS.md mentions lite profile', agentsLite.includes('lite'));
+
+recordResult('1lite', 'Lite profile install', liteOk ? 'PASS' : 'FAIL');
 
 /* ── Phase 2 — Session Start ──────────────────────────────────────────────── */
 
@@ -286,12 +329,19 @@ phaseHeader('2c', 'Slash commands — Claude Code (+ optional Cursor)', 'manual'
 console.log('  In Claude Code, type each slash command:');
 console.log('');
 const slashCmds = [
-  ['/quick-ref',  'Points to .agent/QUICK-REF.md — no full table dump'],
-  ['/spec',       'Architect + requirements-clarification'],
-  ['/audit',      'All experts + audit playbook'],
-  ['/review',     'Critic expert'],
-  ['/release',    'DevOps + release'],
-  ['/ship',       'DevOps + release (alias)'],
+  ['/quick-ref',      'Points to .agent/QUICK-REF.md — no full table dump'],
+  ['/spec',           'interview-me skill → spec-outline.md'],
+  ['/plan',           'planning-and-task-breakdown skill'],
+  ['/build',          'incremental-implementation skill (try build auto after plan)'],
+  ['/test',           'test-driven-development skill'],
+  ['/code-simplify',  'code-simplification skill'],
+  ['/webperf',        'web-performance-audit skill (Quick/Deep CWV)'],
+  ['/context',        'context-engineering skill'],
+  ['/verify',         'verification-before-completion skill (evidence before done)'],
+  ['/audit',          'All experts + audit playbook (full profile)'],
+  ['/review',         'Critic / code review'],
+  ['/release',        'DevOps + release'],
+  ['/ship',           'Release or PRR (context-dependent)'],
 ];
 slashCmds.forEach(([cmd, exp], i) => {
   console.log(`  ${c('cyan', (i+1) + '.')} ${c('bold', cmd)}`);
@@ -327,7 +377,7 @@ const prompts = [
   ['compliance review for SOC 2 SDLC controls',                       'Security + compliance-review'],
   ['accessibility audit on the todo form',                            'Frontend + accessibility-audit'],
   ['DORA maturity assessment for our team',                           'Architect + org-maturity-assessment'],
-  ['interview me about adding push notifications',                    'Architect + requirements-clarification'],
+  ['interview me about adding push notifications',                    'Architect + interview-me skill'],
   ['deprecate the legacy v1 todos endpoint',                          'Architect + deprecation'],
 ];
 prompts.forEach(([p, e], i) => {
@@ -479,6 +529,8 @@ autoCheck('~/.claude/commands/caveman.md',              fs.existsSync(path.join(
 autoCheck('~/.claude/commands/spec.md',                fs.existsSync(path.join(fakeHome, '.claude/commands/spec.md')));
 autoCheck('~/.cursor/commands/spec.md',                fs.existsSync(path.join(fakeHome, '.cursor/commands/spec.md')));
 autoCheck('~/.cursor/commands/implement.md',            fs.existsSync(path.join(fakeHome, '.cursor/commands/implement.md')));
+autoCheck('~/.claude/commands/plan.md',                 fs.existsSync(path.join(fakeHome, '.claude/commands/plan.md')));
+autoCheck('~/.cursor/commands/build.md',               fs.existsSync(path.join(fakeHome, '.cursor/commands/build.md')));
 autoCheck('~/.agent-platform/global-version',           fs.existsSync(path.join(fakeHome, '.agent-platform/global-version')));
 
 const gv = JSON.parse(fs.readFileSync(path.join(fakeHome, '.agent-platform/global-version'), 'utf8'));

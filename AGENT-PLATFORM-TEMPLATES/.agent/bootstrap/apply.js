@@ -16,16 +16,30 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  shouldInstallEntry,
+  resolveTemplate,
+  expandAddTokens,
+} from './profile-filter.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /* ── CLI args ─────────────────────────────────────────────────────────────── */
-const modeArg   = process.argv.find((a) => a.startsWith('--mode='));
-const packArg   = process.argv.find((a) => a.startsWith('--pack='));
-const targetArg = process.argv.find((a) => a.startsWith('--target='));
+const modeArg      = process.argv.find((a) => a.startsWith('--mode='));
+const packArg      = process.argv.find((a) => a.startsWith('--pack='));
+const targetArg    = process.argv.find((a) => a.startsWith('--target='));
+const profileArg   = process.argv.find((a) => a.startsWith('--profile='));
+const frameworkArg = process.argv.find((a) => a.startsWith('--framework='));
+const addArg       = process.argv.find((a) => a.startsWith('--add='));
+const listArg      = process.argv.find((a) => a.startsWith('--list='));
 
-const MODE    = modeArg ? modeArg.split('=')[1] : 'install';
-const CONFIRM = process.argv.includes('--confirm');
+const MODE       = modeArg ? modeArg.split('=')[1] : 'install';
+const CONFIRM    = process.argv.includes('--confirm');
+const PROFILE    = profileArg ? profileArg.split('=')[1] : (MODE === 'add' ? 'lite' : 'full');
+const FRAMEWORK  = frameworkArg ? frameworkArg.split('=')[1] : null;
+const ADD_TOKENS = addArg
+  ? expandAddTokens(addArg.split('=')[1].split(','))
+  : null;
 
 /* ── Root resolution ──────────────────────────────────────────────────────── */
 function findManifestDir() {
@@ -218,10 +232,12 @@ const FW_CONFIG_FILES = [
  */
 const CLAUDE_PLATFORM_COMMANDS = [
   'caveman.md', 'caveman-commit.md', 'caveman-compress.md', 'caveman-review.md', 'caveman-stats.md',
-  'quick-ref.md', 'spec.md', 'ship.md', 'audit.md', 'review.md', 'release.md',
+  'quick-ref.md', 'spec.md', 'plan.md', 'build.md', 'test.md', 'code-simplify.md',
+  'ship.md', 'audit.md', 'review.md', 'release.md',
 ];
 const CURSOR_PLATFORM_COMMANDS = [
-  'quick-ref.md', 'spec.md', 'ship.md', 'audit.md', 'review.md', 'release.md', 'implement.md',
+  'quick-ref.md', 'spec.md', 'plan.md', 'build.md', 'test.md', 'code-simplify.md',
+  'ship.md', 'audit.md', 'review.md', 'release.md', 'implement.md',
   'session-start.md', 'session-end.md', 'platform-help.md',
   'caveman.md', 'caveman-commit.md', 'caveman-compress.md', 'caveman-review.md', 'caveman-stats.md',
 ];
@@ -445,7 +461,54 @@ const _installResolved = path.resolve(INSTALL_ROOT);
 const _isPlatformRepo  = ['AGENT-PLATFORM-MANIFEST.json', 'AGENT-PLATFORM-TEMPLATES'].every(
   m => fs.existsSync(path.join(_installResolved, m))
 );
-const INSTALL_MODES = new Set(['install', 'upgrade', 'repair', 'force', 'install-guards', 'remove-guards']);
+const INSTALL_MODES = new Set(['install', 'upgrade', 'repair', 'force', 'install-guards', 'remove-guards', 'add']);
+
+/* ── List catalog (--mode=list --list=skills|playbooks|commands) ─────────── */
+if (MODE === 'list') {
+  const kind = listArg ? listArg.split('=')[1] : 'skills';
+  const catalog = manifest.skills_catalog || [];
+  console.log('');
+  console.log(`  Agent Platform — install catalog (${kind})`);
+  console.log('─'.repeat(50));
+  if (kind === 'skills') {
+    for (const s of catalog) {
+      console.log(`  skill:${s.id}  — ${s.description || s.id}`);
+    }
+    console.log('');
+    console.log('  Install one: npx ' + (manifest.platform_npx || 'github:zafrirron/Agent-Platform') +
+      ' --mode=add --add=skill:interview-me');
+  } else if (kind === 'playbooks') {
+    for (const e of manifest.files.filter((f) => f.kind === 'playbook')) {
+      const id = e.path.split('/').pop().replace('.md', '');
+      console.log(`  playbook:${id}`);
+    }
+  } else if (kind === 'commands') {
+    const cmds = new Set();
+    for (const e of manifest.files) {
+      if (e.path.includes('/commands/') && e.path.endsWith('.md')) {
+        cmds.add(e.path.split('/').pop().replace('.md', ''));
+      }
+    }
+    [...cmds].sort().forEach((c) => console.log(`  /${c}`));
+  } else if (kind === 'profiles') {
+    console.log('  full   — complete platform (default)');
+    console.log('  core   — full minus enterprise playbooks');
+    console.log('  lite   — skills pack + core playbooks, no handoff layer');
+  }
+  console.log('');
+  process.exit(0);
+}
+
+if (MODE === 'add' && (!ADD_TOKENS || ADD_TOKENS.size === 0)) {
+  console.error('  --mode=add requires --add=skill:id or --add=playbook:name (comma-separated)');
+  process.exit(1);
+}
+const effectiveProfile = ['upgrade', 'repair', 'force'].includes(MODE) ? 'full' : PROFILE;
+const filterOpts = {
+  profile: effectiveProfile,
+  framework: FRAMEWORK,
+  addOnly: MODE === 'add' ? ADD_TOKENS : null,
+};
 if (_isPlatformRepo && INSTALL_MODES.has(MODE)) {
   process.stderr.write('\n');
   process.stderr.write('  ✗  ERROR: Target directory is the Agent Platform repo itself.\n');
@@ -577,8 +640,11 @@ if (MODE === 'install') writeMigrationNotes(INSTALL_ROOT, preArtifacts, backupDi
 
 for (const entry of manifest.files) {
   if (entry.scope === 'global') continue; // global-only stubs — installed via --mode=global
+  if (!shouldInstallEntry(entry, filterOpts)) continue;
+
   const target = path.join(INSTALL_ROOT, entry.path);
-  const src    = path.join(templatesRoot, entry.template);
+  const tpl    = resolveTemplate(entry, PROFILE);
+  const src    = path.join(templatesRoot, tpl);
   if (!fs.existsSync(src)) continue;
 
   let content = sub(fs.readFileSync(src, 'utf8'), vars);
@@ -694,6 +760,7 @@ if (fs.existsSync(platformPath)) {
   try {
     const pj = JSON.parse(fs.readFileSync(platformPath, 'utf8'));
     pj.bootstrap_version  = manifest.bootstrap_version;
+    pj.profile            = PROFILE;
     pj.updated_at         = new Date().toISOString();
     pj.updated_by         = 'bootstrap-apply';
     pj.test_runner        = vars.TEST_RUNNER;
@@ -1090,11 +1157,12 @@ const LINE = '═'.repeat(66);
 const SEP  = '  ' + '─'.repeat(62);
 const fw = ['claude', 'cursor', 'agents', 'codex'];
 const fwLabel = { claude: 'Claude Code', cursor: 'Cursor', agents: 'Antigravity', codex: 'Codex (VS Code)' };
-const modeLabel = { install: 'Installed', upgrade: 'Upgraded', repair: 'Repaired', force: 'Reset' };
+const modeLabel = { install: 'Installed', upgrade: 'Upgraded', repair: 'Repaired', force: 'Reset', add: 'Added' };
 
 console.log('');
 console.log(LINE);
-console.log(`  Agent Platform Bootstrap v${manifest.bootstrap_version} — ${modeLabel[MODE] || 'Done'} on ${vars.PROJECT_NAME}`);
+const profileNote = effectiveProfile !== 'full' ? ` (profile: ${effectiveProfile})` : '';
+console.log(`  Agent Platform Bootstrap v${manifest.bootstrap_version} — ${modeLabel[MODE] || 'Done'}${profileNote} on ${vars.PROJECT_NAME}`);
 console.log(LINE);
 console.log('');
 console.log('  What was installed');

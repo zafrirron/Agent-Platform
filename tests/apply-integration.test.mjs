@@ -649,21 +649,27 @@ describe('install — v2.41.0 agent-skills P0 ingest', () => {
   });
 
   test('Cursor slash commands deployed under .cursor/commands/', () => {
-    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'implement', 'session-start', 'session-end', 'platform-help', 'caveman']) {
+    for (const cmd of ['quick-ref', 'spec', 'plan', 'build', 'test', 'code-simplify', 'webperf', 'context', 'verify', 'ship', 'audit', 'review', 'release', 'implement', 'session-start', 'session-end', 'platform-help', 'caveman']) {
       const p = path.join(dir, '.cursor/commands', `${cmd}.md`);
       assert.ok(fs.existsSync(p), `missing Cursor command: ${cmd}.md`);
     }
     const spec = fs.readFileSync(path.join(dir, '.cursor/commands/spec.md'), 'utf8');
-    assert.ok(spec.includes('requirements-clarification.md'), 'Cursor /spec command body wrong');
+    assert.ok(spec.includes('interview-me'), 'Cursor /spec command body wrong');
   });
 
   test('Claude lifecycle slash commands deployed under .claude/commands/', () => {
-    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'caveman']) {
+    for (const cmd of ['quick-ref', 'spec', 'plan', 'build', 'test', 'code-simplify', 'webperf', 'context', 'verify', 'ship', 'audit', 'review', 'release', 'caveman']) {
       const p = path.join(dir, '.claude/commands', `${cmd}.md`);
       assert.ok(fs.existsSync(p), `missing Claude command: ${cmd}.md`);
     }
     const spec = fs.readFileSync(path.join(dir, '.claude/commands/spec.md'), 'utf8');
-    assert.ok(spec.includes('requirements-clarification.md'), 'Claude /spec command body wrong');
+    assert.ok(spec.includes('interview-me'), 'Claude /spec command body wrong');
+  });
+
+  test('lifecycle skills deployed under .agent/skills/', () => {
+    for (const id of ['interview-me', 'idea-refine', 'planning-and-task-breakdown', 'incremental-implementation', 'test-driven-development', 'code-simplification', 'web-performance-audit', 'context-engineering', 'verification-before-completion', 'using-platform']) {
+      assert.ok(fs.existsSync(path.join(dir, '.agent/skills', id, 'SKILL.md')), `missing skill: ${id}`);
+    }
   });
 
   test('install stdout shows dynamic playbook count (20 playbooks)', () => {
@@ -688,6 +694,69 @@ describe('install — v2.41.0 agent-skills P0 ingest', () => {
   });
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── Profiles: lite + add + list ───────────────────────────────────────────
+
+describe('install — profile=lite (skills pack)', () => {
+  const dir = tmpDir();
+  const result = runApply(dir, ['--profile=lite', '--framework=cursor']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, result.stderr);
+  });
+
+  test('uses AGENTS-lite router', () => {
+    const agents = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+    assert.ok(agents.includes('profile') && agents.includes('lite'), 'AGENTS-lite not deployed');
+  });
+
+  test('deploys skills not expert agents', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.agent/skills/interview-me/SKILL.md')));
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/agents/backend-agent.md')));
+  });
+
+  test('skips enterprise and handoff layer', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/context/reputation.json')));
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/handoff/sync/registry.yaml')));
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/playbooks/compliance-review.md')));
+  });
+
+  test('platform.json records profile lite', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.equal(pj.profile, 'lite');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('install — mode=add cherry-pick skill', () => {
+  const dir = tmpDir();
+  const result = runApply(dir, ['--mode=add', '--add=skill:interview-me', '--framework=claude']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, result.stderr);
+  });
+
+  test('installs skill and /spec command dep', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.agent/skills/interview-me/SKILL.md')));
+    assert.ok(fs.existsSync(path.join(dir, '.claude/commands/spec.md')));
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('install — mode=list skills', () => {
+  const result = spawnSync(
+    process.execPath,
+    [APPLY, `--pack=${PACK_ROOT}`, `--target=${tmpDir()}`, '--mode=list', '--list=skills'],
+    { encoding: 'utf8', timeout: 10_000 }
+  );
+
+  test('exits 0 and lists interview-me', () => {
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('skill:interview-me'), result.stdout);
+  });
 });
 
 // ── Phase 1B: Reputation vectors ───────────────────────────────────────────

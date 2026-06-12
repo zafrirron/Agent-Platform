@@ -24,6 +24,25 @@
     "antigravity",
     "codex"
   ],
+  "profiles": {
+    "lite": "Skills pack — lifecycle commands, cherry-pick skills, no handoff/enterprise layer",
+    "core": "All playbooks except enterprise; full session model",
+    "full": "Complete platform (default)"
+  },
+  "skills_catalog": [
+    { "id": "using-platform", "description": "Pick the right skill or playbook" },
+    { "id": "interview-me", "description": "One-question-at-a-time requirements interview" },
+    { "id": "idea-refine", "description": "Diverge/converge on vague ideas" },
+    { "id": "planning-and-task-breakdown", "description": "Spec to ordered task list" },
+    { "id": "incremental-implementation", "description": "Vertical slices; supports build auto" },
+    { "id": "test-driven-development", "description": "Red-Green-Refactor, test pyramid" },
+    { "id": "code-simplification", "description": "Simplify without behavior change" },
+    { "id": "browser-testing-devtools", "description": "Browser MCP testing (optional)" },
+    { "id": "web-performance-audit", "description": "CWV / API perf audit — Quick/Deep, /webperf" },
+    { "id": "context-engineering", "description": "Context hierarchy, selective loading, confusion gates — /context" },
+    { "id": "verification-before-completion", "description": "Evidence before done — /verify" },
+    { "id": "caveman", "description": "Token compression mode" }
+  ],
   "files": [
     {
       "path": ".agent/.shared-hub",
@@ -413,7 +432,62 @@
     {
       "path": ".agent/skills/caveman/SKILL.md",
       "template": ".agent/skills/caveman/SKILL.md",
-      "kind": "template"
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/using-platform/SKILL.md",
+      "template": ".agent/skills/using-platform/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/interview-me/SKILL.md",
+      "template": ".agent/skills/interview-me/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/idea-refine/SKILL.md",
+      "template": ".agent/skills/idea-refine/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/planning-and-task-breakdown/SKILL.md",
+      "template": ".agent/skills/planning-and-task-breakdown/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/incremental-implementation/SKILL.md",
+      "template": ".agent/skills/incremental-implementation/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/test-driven-development/SKILL.md",
+      "template": ".agent/skills/test-driven-development/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/code-simplification/SKILL.md",
+      "template": ".agent/skills/code-simplification/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/browser-testing-devtools/SKILL.md",
+      "template": ".agent/skills/browser-testing-devtools/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/web-performance-audit/SKILL.md",
+      "template": ".agent/skills/web-performance-audit/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/context-engineering/SKILL.md",
+      "template": ".agent/skills/context-engineering/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/verification-before-completion/SKILL.md",
+      "template": ".agent/skills/verification-before-completion/SKILL.md",
+      "kind": "skill"
     },
     {
       "path": ".agent/PLATFORM-HELP.md",
@@ -538,7 +612,42 @@
     {
       "path": ".claude/commands/spec.md",
       "template": ".claude/commands/spec.md",
-      "kind": "template"
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/plan.md",
+      "template": ".claude/commands/plan.md",
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/build.md",
+      "template": ".claude/commands/build.md",
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/test.md",
+      "template": ".claude/commands/test.md",
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/code-simplify.md",
+      "template": ".claude/commands/code-simplify.md",
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/webperf.md",
+      "template": ".claude/commands/webperf.md",
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/context.md",
+      "template": ".claude/commands/context.md",
+      "kind": "command"
+    },
+    {
+      "path": ".claude/commands/verify.md",
+      "template": ".claude/commands/verify.md",
+      "kind": "command"
     },
     {
       "path": ".claude/commands/ship.md",
@@ -663,27 +772,62 @@
     {
       "path": ".cursor/commands/spec.md",
       "template": ".cursor/commands/spec.md",
-      "kind": "template"
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/plan.md",
+      "template": ".cursor/commands/plan.md",
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/build.md",
+      "template": ".cursor/commands/build.md",
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/test.md",
+      "template": ".cursor/commands/test.md",
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/code-simplify.md",
+      "template": ".cursor/commands/code-simplify.md",
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/webperf.md",
+      "template": ".cursor/commands/webperf.md",
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/context.md",
+      "template": ".cursor/commands/context.md",
+      "kind": "command"
+    },
+    {
+      "path": ".cursor/commands/verify.md",
+      "template": ".cursor/commands/verify.md",
+      "kind": "command"
     },
     {
       "path": ".cursor/commands/ship.md",
       "template": ".cursor/commands/ship.md",
-      "kind": "template"
+      "kind": "command"
     },
     {
       "path": ".cursor/commands/audit.md",
       "template": ".cursor/commands/audit.md",
-      "kind": "template"
+      "kind": "command"
     },
     {
       "path": ".cursor/commands/review.md",
       "template": ".cursor/commands/review.md",
-      "kind": "template"
+      "kind": "command"
     },
     {
       "path": ".cursor/commands/release.md",
       "template": ".cursor/commands/release.md",
-      "kind": "template"
+      "kind": "command"
     },
     {
       "path": ".cursor/commands/implement.md",
@@ -790,13 +934,55 @@
     {
       "path": ".claude/commands/spec.md",
       "template": ".claude/commands/spec.md",
-      "kind": "template",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/plan.md",
+      "template": ".claude/commands/plan.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/build.md",
+      "template": ".claude/commands/build.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/test.md",
+      "template": ".claude/commands/test.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/code-simplify.md",
+      "template": ".claude/commands/code-simplify.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/webperf.md",
+      "template": ".claude/commands/webperf.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/context.md",
+      "template": ".claude/commands/context.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".claude/commands/verify.md",
+      "template": ".claude/commands/verify.md",
+      "kind": "command",
       "scope": "global"
     },
     {
       "path": ".claude/commands/ship.md",
       "template": ".claude/commands/ship.md",
-      "kind": "template",
+      "kind": "command",
       "scope": "global"
     },
     {
@@ -832,13 +1018,55 @@
     {
       "path": ".cursor/commands/spec.md",
       "template": ".cursor/commands/spec.md",
-      "kind": "template",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/plan.md",
+      "template": ".cursor/commands/plan.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/build.md",
+      "template": ".cursor/commands/build.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/test.md",
+      "template": ".cursor/commands/test.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/code-simplify.md",
+      "template": ".cursor/commands/code-simplify.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/webperf.md",
+      "template": ".cursor/commands/webperf.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/context.md",
+      "template": ".cursor/commands/context.md",
+      "kind": "command",
+      "scope": "global"
+    },
+    {
+      "path": ".cursor/commands/verify.md",
+      "template": ".cursor/commands/verify.md",
+      "kind": "command",
       "scope": "global"
     },
     {
       "path": ".cursor/commands/ship.md",
       "template": ".cursor/commands/ship.md",
-      "kind": "template",
+      "kind": "command",
       "scope": "global"
     },
     {

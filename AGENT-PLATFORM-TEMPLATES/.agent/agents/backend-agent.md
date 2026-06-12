@@ -39,6 +39,8 @@
 - Every endpoint has explicit error codes — no bare `500` leaks to the client
 - Error response format: `{ "error": "machine_code", "message": "human text", "details": {} }`
 - Distinguish client errors (4xx) from server errors (5xx) — never return 500 for bad input
+- **Production responses:** never return stack traces, SQL fragments, internal paths, or raw exception messages — stable machine codes only (OWASP 2025 A10 / CWE-209)
+- **Multi-step mutations:** payment, transfer, order, or multi-table writes use explicit transaction boundaries — on failure, roll back entirely (fail closed); do not resume mid-transaction
 
 ### Auth and secrets
 - Auth tokens and API keys come from env — never hardcoded

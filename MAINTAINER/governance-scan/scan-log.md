@@ -1,7 +1,60 @@
 # Governance Scan Log
 
-Running log of all Mode 4 GitHub governance repo scans.
-Full reports at `MAINTAINER/governance-scan/archive/YYYY-MM-DD/scan-report.md`.
+Running log of all Mode 4 GitHub agent ecosystem scans (coordination + skill packs).
+**Unified registry (all modes):** `MAINTAINER/scan-results/registry.md`  
+Full reports: `MAINTAINER/scan-results/mode4/` + legacy `MAINTAINER/governance-scan/archive/YYYY-MM-DD/scan-report.md`
+
+---
+
+## [2026-06-09] — Mode 4 scan (10 repos, 12 findings)
+
+**Queries used:** `topic:agent-skills` · `agent skills SKILL.md in:readme` · `slash commands spec plan build agent in:readme` · `AGENTS.md skills commands in:readme` · `claude code skills slash commands in:readme` · `multi-agent coordination framework in:readme` · `agent orchestration session handoff in:readme` · `agent manifest capabilities routing in:readme` · `AI agent quality gate workflow in:readme` · `playbook quality gate AI agent workflow in:readme`
+
+**Repos analysed:**
+
+| Repo | Stars | Key finding | Status |
+|------|------:|-------------|--------|
+| addyosmani/agent-skills | 55,309 | `context-engineering` ingested (R001) | R001 Implemented |
+| obra/superpowers | 225,132 | verification-before-completion (R005) | R005 Implemented; R003–R004 Deferred |
+| github/spec-kit | 111,570 | `/speckit.constitution` first-class artifact | Pending R010 |
+| Fission-AI/OpenSpec | 54,366 | Per-change folder artifact model | Pending R011 |
+| OthmanAdi/planning-with-files | 23,061 | File plans + completion gate v3 | Pending R006 |
+| numman-ali/openskills | 10,383 | Universal skills XML in AGENTS.md | Pending R007 |
+| muratcankoylan/Agent-Skills-for-Context-Engineering | 16,494 | Harness engineering + router benchmarks | Pending R008, R009 |
+| wshobson/agents | 36,645 | plugin-eval quality certification | Pending R012 |
+| builderz-labs/mission-control | 5,279 | Dashboard orchestration — shallow, no finding | Skipped |
+
+**Findings summary:**
+- R001: context-engineering skill — **Implemented** 2026-06-09
+- R002: agent-skills P3 parity — Deferred
+- R003: subagent-driven-development — Deferred
+- R004: git worktree isolation — Deferred
+- R005: verification-before-completion — **Implemented** 2026-06-09
+- R006: planning-with-files completion gate — Deferred
+- R007: openskills interoperability — Deferred
+- R008: harness-engineering skill — Deferred
+- R009: routing benchmark harness — Deferred
+- R010: constitution command — Deferred
+- R011: per-change artifact folders — Deferred
+- R012: plugin-eval certification — Deferred
+
+**Archive:** `MAINTAINER/governance-scan/archive/2026-06-09/scan-report.md` · **Registry:** `MAINTAINER/scan-results/mode4/2026-06-09-report.md`
+
+**Next scan:** Vary toward agent observability, rollback/undo, multi-model consensus gates. Re-check DashClaw and nobulex after 2026-12-02. Diff `addyosmani/agent-skills` via web-audit Phase 2F monthly.
+
+---
+
+## [2026-06-11] — Scan keyword fix (agent-skills miss post-mortem)
+
+**Issue:** `addyosmani/agent-skills` (~55k stars) never appeared in founding scan or Mode 4 queries.
+
+**Root cause:** Queries targeted governance/orchestration vocabulary; skill packs use "skills", "SKILL.md", lifecycle slash commands. Triage favored session handoff over playbook libraries. Deep-read file patterns omitted `skill`/`playbook`/`commands`.
+
+**Remediation:** Updated `github-governance-scan.md` (skill-pack query block, seed repos, triage fast-path, Q9–Q10) and `web-audit.md` Phase **2F** (monthly skill-pack diff).
+
+**Disposition:** Repo ingested manually via Mode 3 — see `MAINTAINER/ingest/agent-skills-p0-SOURCES.md`. Next Mode 4 run: include seed-repo diff; do not re-ingest wholesale.
+
+**Next scan queries to rotate:** `topic:agent-skills`, `"slash commands" "/spec" "/plan"`, `"rationalization" table skill agent`, `"AGENTS.md" skills commands`.
 
 ---
 

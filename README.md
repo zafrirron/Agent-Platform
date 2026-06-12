@@ -14,9 +14,9 @@
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
 
-**Lifecycle:** `INSTALL → SESSION → ROUTE → GATES → SHIP`
+**Lifecycle:** `DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP` (full profile adds session handoff + enterprise gates)
 
 > **The platform coordination layer never modifies your source code.** It only adds `.agent/`, `.claude/`, etc. — all gitignored so nothing is accidentally committed. Your AI agents will write and improve your code through the platform. That's the point. The platform scaffolding itself stays completely out of your codebase.
 > **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
@@ -60,9 +60,59 @@ Expert rules and playbooks are plain-text instructions that tell AI agents how t
 
 ## Install
 
+**Three profiles** — same lifecycle skills, different coordination depth. Pick based on team size and how much structure you want on day one.
+
+| Profile | Command | Best for |
+|---------|---------|----------|
+| **lite** (skills pack) | `npx github:zafrirron/Agent-Platform --profile=lite --framework=cursor` | Solo dev, Cursor or Claude, skills-first workflow |
+| **core** | `npx github:zafrirron/Agent-Platform --profile=core` | Full playbooks + experts, no enterprise/compliance layer |
+| **full** (default) | `npx github:zafrirron/Agent-Platform` | Teams, multi-IDE handoff, session registry, enterprise gates |
+
+### Which profile should I use?
+
+| You are… | Recommended | Why |
+|----------|-------------|-----|
+| Solo dev trying Agent Platform or coming from skill packs | **lite** | Same `/spec`→`/ship` lifecycle, minimal footprint — skills + slash commands only |
+| Cursor user, no plugin marketplace | **lite** + `--framework=cursor` | Installs `.cursor/commands/` and `.agent/skills/` — see [docs/cursor-setup.md](docs/cursor-setup.md) |
+| Claude Code user wanting skills only | **lite** or marketplace plugin | Plugin = skills pack; `npx --profile=lite` adds project-local commands |
+| One dev who wants playbooks + expert routing | **core** or **full** | Experts and 20 playbooks auto-load from plain-language tasks |
+| Team on multiple IDEs (Cursor + Claude + …) | **full** | Session handoff, `CURRENT.md`, conflict registry, cross-IDE Critic review |
+| Need NFR, compliance, PRR, org maturity playbooks | **full** | Enterprise playbook layer not included in lite or core |
+
+### What each profile includes
+
+| Capability | lite | core | full |
+|------------|:----:|:----:|:----:|
+| 11 lifecycle skills + `/spec` … `/verify` `/ship` | ✓ | ✓ | ✓ |
+| Slash commands (Cursor / Claude) | ✓ | ✓ | ✓ |
+| Cherry-pick `--mode=add --add=skill:…` | ✓ | ✓ | ✓ |
+| 9 expert agents + auto-routing | — | ✓ | ✓ |
+| 20 playbooks (bug-fix, release, debug, …) | — | ✓ | ✓ |
+| Session start/end + handoff (`CURRENT.md`) | — | ✓ | ✓ |
+| Multi-IDE sync registry | — | ✓ | ✓ |
+| Enterprise playbooks (NFR, compliance, PRR, …) | — | — | ✓ |
+| `/audit` · `/release` · `/implement` (Plan handoff) | — | — | ✓ |
+| Optional CI guards (`--mode=install-guards`) | — | — | ✓ |
+
+**Start lite, grow into full:** lite is not a dead end — upgrade anytime without losing skills:
+
+```bash
+npx github:zafrirron/Agent-Platform --profile=full
+```
+
+Your project-specific content in `AGENTS.md` / `CLAUDE.md` PROJECT sections is preserved on upgrade.
+
 ```bash
 # Any OS — Node.js 18+
 npx github:zafrirron/Agent-Platform
+
+# Cherry-pick one skill
+npx github:zafrirron/Agent-Platform --mode=list --list=skills
+npx github:zafrirron/Agent-Platform --mode=add --add=skill:interview-me --framework=cursor
+
+# Claude Code marketplace plugin (skills + commands)
+# /plugin marketplace add https://github.com/zafrirron/Agent-Platform.git
+# /plugin install agent-platform-skills@zafrirron
 
 # Linux / macOS
 curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.sh | bash
@@ -70,6 +120,8 @@ curl -fsSL https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/insta
 # Windows PowerShell
 iwr -useb https://raw.githubusercontent.com/zafrirron/Agent-Platform/main/install.ps1 | iex
 ```
+
+**Cursor has no plugin marketplace** — use `npx` or see [docs/cursor-setup.md](docs/cursor-setup.md).
 
 Start your first session — one command, any IDE:
 
@@ -96,11 +148,16 @@ It lists every command, every expert agent, every playbook, and every platform o
 
 The agent responds with a **link** — it does not dump the file into chat (that would waste your context window). Open the file in your editor to see everything at a glance.
 
-**Slash commands** (type `/` in chat):
-- **Cursor** — `.cursor/commands/`: `/session-start` · `/session-end` · `/quick-ref` · `/spec` · `/audit` · `/review` · `/release` · `/ship` · `/implement` · `/platform-help` · `/caveman` (+ helpers)
-- **Claude Code** — `.claude/commands/`: same lifecycle set (no `/implement`; use `/spec` or natural language for plan handoff)
+**Slash commands** (type `/` in chat) — full lifecycle:
 
-**What's in the guide:** session commands · 9 expert agents and their trigger phrases · 20 playbooks (with key principles) · reference checklists · NFR/compliance context files · token compression (caveman mode) · platform operations (upgrade, global install, guards, repair, remove)
+`/spec` · `/plan` · `/build` · `/test` · `/review` · `/code-simplify` · `/webperf` · `/context` · `/verify` · `/ship` (+ `/audit` `/release` on full profile)
+
+- **Cursor** — `.cursor/commands/`: above + `/session-start` · `/session-end` · `/implement` (Plan handoff) · `/platform-help` · `/caveman`
+- **Claude Code** — `.claude/commands/`: lifecycle set + marketplace plugin `agent-platform-skills`
+
+**Skills** (cherry-pick under `.agent/skills/`): all 11 lifecycle skills — see `.agent/QUICK-REF.md` for when to use each (`/webperf`, `/context`, `/verify`, etc.)
+
+**What's in the guide:** session commands · profiles (lite/core/full) · 9 expert agents · 20 playbooks · 11 lifecycle skills · reference checklists · NFR/compliance · caveman · platform operations
 
 ---
 
@@ -155,7 +212,9 @@ Repeat. The platform never stops improving.
 | **🔍 Full Project Audit** | 11-phase professional report on first session or on demand — architecture through governance/maturity. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
 | **20 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api · deprecation · requirements-clarification. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
 | **Reference checklists** | `.agent/references/` — testing, security, performance, accessibility, orchestration patterns (agent-skills–informed) |
-| **Agent-skills ingest** | Rationalization gates · doubt review · source-driven dev · Beyoncé/DAMP test rules · spec-outline template |
+| **Install profiles** | `lite` skills pack · `core` (no enterprise) · `full` team platform · `--mode=add` cherry-pick |
+| **11 lifecycle skills** | `SKILL.md` modules — interview-me, TDD, plan/build slices, code-simplify, web-performance-audit, context-engineering, verification-before-completion |
+| **Agent-skills ingest** | Rationalization gates · doubt review · source-driven dev · Beyoncé/DAMP · spec-outline template |
 | **NFR & production readiness** | `nfr-log.md` — measurable ISO 25010 targets. `production-readiness` gates go-live (P0 NFRs, compliance evidence, vuln SLA). |
 | **Compliance & DORA** | `compliance-evidence-log.md` for SOC 2 / ISO 27001 artifacts. Maturity assessment + incident postmortem for DORA metrics. |
 | **Smart upgrade model** | `mode=upgrade` improves your agents' rules without touching your project customisations |
@@ -499,9 +558,10 @@ The platform references industry standards by name. Click any term for more deta
 | Document | For |
 |----------|-----|
 | [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md) | **Users** — complete installation, usage, and extension guide |
-| [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | **Users** — install paths, IDE slash commands, comparison vs skill packs |
+| [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | **Users** — profiles (lite/core/full), slash commands, cherry-pick, vs skill packs |
+| [docs/cursor-setup.md](docs/cursor-setup.md) | **Cursor users** — no marketplace; `npx --profile=lite`, `--mode=add` |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | **Contributors** — submit rules, playbooks, and doc improvements |
-| [presentation/agent-platform-beta.html](presentation/agent-platform-beta.html) | **Users** — interactive product deck (v2.41) |
+| [presentation/agent-platform-beta.html](presentation/agent-platform-beta.html) | **Users** — interactive product deck (profiles, lifecycle skills) |
 | [presentation/team-adoption.html](presentation/team-adoption.html) | **Teams** — adoption deck + [STORY-PLAN.md](presentation/STORY-PLAN.md) presenter guide |
 | [SECURITY.md](SECURITY.md) | **Trust** — what the platform does and does not do, how to audit it |
 | [CHANGELOG.md](CHANGELOG.md) | **Users** — version history and upgrade paths |

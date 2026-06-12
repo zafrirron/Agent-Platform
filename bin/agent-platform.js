@@ -9,6 +9,9 @@
  *   npx github:zafrirron/Agent-Platform --mode=force
  *   npx github:zafrirron/Agent-Platform --mode=uninstall
  *   npx github:zafrirron/Agent-Platform --mode=global  # install user-level stubs to ~/
+ *   npx github:zafrirron/Agent-Platform --profile=lite --framework=cursor  # skills pack only
+ *   npx github:zafrirron/Agent-Platform --mode=list --list=skills
+ *   npx github:zafrirron/Agent-Platform --mode=add --add=skill:interview-me
  *   npx github:zafrirron/Agent-Platform#v2.5.0         # pin to a tag
  */
 import path from 'path';

@@ -69,7 +69,8 @@ Talking points:
 - `npx github:zafrirron/Agent-Platform` — one command, your repo is platform-equipped.
 - Every session now has a structured lifecycle: start → work → end. Context is loaded. Registry prevents conflicts. Handoff log persists across sessions.
 - You describe the task in plain language. The platform declares what it loaded: `▶ Backend expert · bug-fix playbook`. You know exactly what's governing the session.
-- **Slash commands** (Cursor + Claude): `/session-start`, `/spec`, `/audit`, `/review`, `/release`, `/ship` — type `/` in chat instead of pasting long prompts.
+- **Lifecycle slash commands** (Cursor + Claude): `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` — plus `/session-start` `/audit` on full profile.
+- **Profiles:** default `full` for teams; solo devs can start with `--profile=lite --framework=cursor` (skills pack, no handoff layer).
 - Session ends: work is committed, context logged, next session (or next dev, or next IDE) picks up from there.
 
 Key point: *this is not a prompt template. It's a coordination layer.*
@@ -117,9 +118,9 @@ Talking points:
 - Pick any repo where you're starting new work this sprint.
 - `npx github:zafrirron/Agent-Platform` — 30 seconds.
 - Start a session: `/session-start` (Cursor/Claude) or `Read .agent/session-start.md and execute it.`
-- From that point: describe tasks or use `/spec` `/audit` `/ship` — routing handles itself.
+- From that point: describe tasks or use lifecycle `/spec` `/plan` `/build` `/test` `/ship` — routing handles itself.
 - First session triggers the full project audit offer — 11-phase professional health check (architecture through governance/maturity). Free with the install.
-- **20 playbooks** since v2.41: core delivery (12) + quality/NFR (5) + compliance/maturity (3); agent-skills DNA (rationalization gates, doubt review, reference checklists).
+- **20 playbooks** + **11 lifecycle skills** incl. `/webperf` `/context` `/verify` (lite/core/full profiles); agent-skills DNA (rationalization gates, doubt review, reference checklists).
 - Enterprise highlights: NFR definition, production readiness (PRR), observability, a11y, compliance review, DORA maturity — mention if audience cares about go-live gates or audit prep.
 
 ---

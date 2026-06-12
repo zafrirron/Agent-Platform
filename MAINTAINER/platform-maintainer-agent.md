@@ -17,7 +17,64 @@ Task: [describe your platform improvement goal]
 - **Mode 2 — Web ecosystem audit (Option B, monthly):** `Read MAINTAINER/web-audit.md and execute it.`
 - **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
 - **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
-- **Mode 4 — GitHub governance repo scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
+- **Mode 4 — GitHub agent ecosystem scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
+
+> **You never need to remind the agent to sync manifests, docs, changelog, tests, or presentation.**
+> Every maintainer task ends with the **Platform Sync Gate (PSG)** below — automatically, before "done".
+
+---
+
+## Platform Sync Gate (PSG) — MANDATORY, every change
+
+**When:** After **every** platform change — Mode 1 commands, Mode 2/3/4 finding implementation, manual template edits, scan keyword fixes, new skills/commands, agent rule additions, or audit report processing.
+
+**Hard stop:** Do **not** say "done", "complete", "ready to commit", or "all findings implemented" until PSG passes and you output a **PSG Report**.
+
+**The maintainer should never have to say:** "also update manifests", "sync user-facing docs", "update changelog", "fix E2E", or "update presentation". That is PSG's job.
+
+### PSG execution (work A→H; skip only with explicit N/A + reason)
+
+```
+1. Classify the change (rule / playbook / skill / command / agent / install behaviour / docs-only)
+2. Run every applicable checklist item in § Platform change checklist (A→H)
+3. Grep for stale counts and commands — playbook count, lifecycle skill count, slash-command lists must match everywhere
+4. Run npm test — all assertions must pass
+5. Output PSG Report (table below) — then and only then mark the task complete
+```
+
+### PSG Report (required final output)
+
+| Area | Files checked | Status | Notes |
+|------|---------------|--------|-------|
+| Manifests | `*-agent.manifest.json`, `reputation.json` | updated / N/A | |
+| Registry | `AGENT-PLATFORM-MANIFEST.json` | updated / N/A | |
+| User docs | README, FRAMEWORK-README, DISTRIBUTION, cursor-setup, QUICK-REF, PLATFORM-HELP, lite variants | updated / N/A | |
+| Routing | `AGENTS.md`, `AGENTS-lite.md`, `using-platform/SKILL.md` | updated / N/A | |
+| Presentation | `presentation/*.html`, `STORY-PLAN.md` | updated / N/A | |
+| Tests | `apply-integration.test.mjs`, `global-install.test.mjs`, `E2E-TEST-PLAN.md`, `run-manual.mjs` | updated / N/A | |
+| Changelog | `CHANGELOG.md` [Unreleased] | updated / N/A | |
+| Improvements log | `platform-improvements.md` | updated / N/A | |
+| Tests run | `npm test` | pass / fail | count |
+
+**Counts invariant:** If playbooks, lifecycle skills, slash commands, or expert agents changed, these must agree across README · QUICK-REF · PLATFORM-HELP · presentation badges · E2E plan header · integration test arrays.
+
+### Scan results (read before every audit)
+
+```
+Read MAINTAINER/scan-results/registry.md
+Read MAINTAINER/scan-results/REPORT-SCHEMA.md
+```
+
+All maintainer scan modes archive to `MAINTAINER/scan-results/{mode}/` and prepend to `registry.md`.
+
+### PSG triggers by mode (automatic — no user reminder)
+|------|----------------|
+| Mode 1 (add rule / step / expert / framework) | Immediately after template edit, before final report |
+| Mode 2 (web audit) | After **each** implemented finding batch — not only at release |
+| Mode 3 (ingest) | After **each** implemented finding batch |
+| Mode 4 (GitHub scan) | After **each** implemented finding batch |
+| Manual / ad-hoc edits | Before you report back to the maintainer |
+| `"Sync user-facing docs for vX.Y.Z"` | Full PSG with emphasis on §D + §F + §G |
 
 ---
 
@@ -31,7 +88,7 @@ The meta-philosophy: **AI writing the rules that make other AIs better at softwa
 - **Mode 1** — real failures observed in consumer repos → specific rules that prevent recurrence
 - **Mode 2** — the global knowledge ecosystem (OWASP, CWE, best practices) → rules from research
 - **Mode 3** — users' own deployed agentic intelligence → rules already proven in production
-- **Mode 4** — GitHub governance/coordination repo ecosystem → new platform-level capabilities
+- **Mode 4** — GitHub coordination + skill-pack ecosystem → new platform-level capabilities
 
 ---
 
@@ -128,8 +185,9 @@ Execution:
    - Failure it prevents
    - Rule added (exact text)
    - Version it will ship in
-6. Bump bootstrap_version in AGENT-PLATFORM-MANIFEST.json
-7. Report: "Added to [file] PLATFORM section. Log updated. Ready to commit."
+6. Execute **Platform Sync Gate (PSG)** — manifests, docs, tests, presentation, CHANGELOG [Unreleased]
+7. Bump `bootstrap_version` in AGENT-PLATFORM-MANIFEST.json only when shipping (release); otherwise document in CHANGELOG [Unreleased]
+8. Report with **PSG Report** table: "Added to [file] PLATFORM section."
 ```
 
 **Example trigger:**
@@ -146,8 +204,8 @@ Execution:
 3. Add a BLOCKED/STOP condition after the step:
    "BLOCKED if: <condition>. Resolve before continuing."
 4. Log to platform-improvements.md
-5. Bump version
-6. Report: "Quality gate added to [playbook] Step N."
+5. Execute **PSG**
+6. Report with **PSG Report**: "Quality gate added to [playbook] Step N."
 ```
 
 **Example trigger:**
@@ -166,8 +224,9 @@ Execution:
    - Verifiable outcome
    - Hard rule if applicable
 4. Insert, renumber subsequent steps
-5. Log + bump version
-6. Report: "Step added to [playbook] as Step N."
+5. Log + CHANGELOG [Unreleased]
+6. Execute **PSG**
+7. Report with **PSG Report**: "Step added to [playbook] as Step N."
 ```
 
 ---
@@ -306,8 +365,9 @@ After the audit produces a report, the maintainer selects findings to add:
 After processing all selections:
 1. All added rules logged in `platform-improvements.md` with source URLs
 2. Skipped/deferred findings logged with reason
-3. Version bumped if any rules were added
-4. Report: "X rules added from web audit. Y skipped. Z deferred to backlog."
+3. **Execute PSG** if any findings were implemented (manifests + all user-facing surfaces)
+4. CHANGELOG [Unreleased] entry for implemented findings
+5. Report with **PSG Report**: "X rules added from web audit. Y skipped. Z deferred to backlog."
 
 ---
 
@@ -323,7 +383,7 @@ When platform users share their agent definitions, playbooks, skills, CLAUDE.md,
 
 | | Mode 1 | Mode 2 | Mode 3 | Mode 4 |
 |---|---|---|---|---|
-| **Source** | Failure observed in a consumer repo | OWASP / CWE / web ecosystem | User's own deployed agent files | GitHub governance/coordination repos |
+| **Source** | Failure observed in a consumer repo | OWASP / CWE / web ecosystem **+ skill packs** | User's own deployed agent files | GitHub coordination **+ skill/playbook** repos |
 | **Trigger** | "I saw X break" | Monthly/quarterly schedule | User submits files to `MAINTAINER/ingest/` | Quarterly GitHub scan |
 | **Signal quality** | Single failure case | Research + community consensus | Production-proven rules | Open-source implementations |
 | **Output granularity** | One rule at a time | Rules for expert agents | Rules for expert agents | Platform-level capabilities + new phases |
@@ -378,21 +438,24 @@ After the ingest report is presented:
 After processing:
 1. Implemented rules logged in `platform-improvements.md` with source: `User submission — [filename]`
 2. Skipped/deferred findings logged with reason
-3. Version bumped if any rules were added
-4. Submitted files archived to `MAINTAINER/ingest/archive/YYYY-MM-DD/`
-5. Report: "N rules added from M submissions. K skipped. J deferred. Files archived."
+3. **Execute PSG** if any findings were implemented
+4. CHANGELOG [Unreleased] entry for implemented findings
+5. Submitted files archived to `MAINTAINER/ingest/archive/YYYY-MM-DD/`
+6. Report with **PSG Report**: "N rules added from M submissions. K skipped. J deferred. Files archived."
 
 ---
 
-## Mode 4 — GitHub governance repo scan
+## Mode 4 — GitHub agent ecosystem scan
 
 **Triggered by:** `Read MAINTAINER/github-governance-scan.md and execute it.`
 
 See `MAINTAINER/github-governance-scan.md` for the full scan playbook.
 
-Searches GitHub for repos with agent governance, coordination, session management, or routing
-patterns. Compares against the current platform and surfaces findings at the **platform capability
-level** — not individual rules, but whole features or architectural patterns the platform could adopt.
+Searches GitHub for repos with agent governance, coordination, session management, routing
+patterns, **and production skill packs / playbook libraries**. Compares against the current
+platform (experts, playbooks, `.agent/skills/`, manifest catalog) and surfaces findings at the
+**platform capability level** — not individual rules, but whole features or architectural patterns
+the platform could adopt.
 
 ### Selection commands (after the report is presented)
 
@@ -431,61 +494,73 @@ level** — not individual rules, but whole features or architectural patterns t
 - [ ] **`AGENT-PLATFORM-MANIFEST.json`** — register any new files created; bump `bootstrap_version`
 
 ### D. User-facing documentation (update ALL that apply)
-- [ ] **`README.md`** — version footer + maintainer commands if workflow changed
+- [ ] **`README.md`** — playbook/skill counts, lifecycle slash commands, version footer
 - [ ] **`AGENT-PLATFORM-FRAMEWORK-README.md`** — capabilities table, file tree, quick-ref card, playbook count
-- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/PLATFORM-HELP.md`** — playbooks table, routing examples, Critic dimensions, context files
-- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/QUICK-REF.md`** — playbooks + project knowledge rows
-- [ ] **`presentation/agent-platform-beta.html`** — version badges, playbook count, new slides for major capabilities
-- [ ] **`presentation/team-adoption.html`** — team deck: playbook count, audit phases, Critic dimensions, enterprise highlights
+- [ ] **`docs/DISTRIBUTION.md`** — install profiles, slash-command table, skill catalog
+- [ ] **`docs/cursor-setup.md`** — lifecycle commands list for Cursor lite install
+- [ ] **`CONTRIBUTING.md`** — contributor checklist if workflow or counts changed
+- [ ] **`AGENT-PLATFORM-TEMPLATES/AGENTS.md`** — routing table (§2 PLATFORM section)
+- [ ] **`AGENT-PLATFORM-TEMPLATES/AGENTS-lite.md`** — lite routing + lifecycle table
+- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/PLATFORM-HELP.md`** — lifecycle phases, slash commands, playbooks table
+- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/QUICK-REF.md`** — lifecycle commands, playbooks, skills rows
+- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/QUICK-REF-lite.md`** — lite commands + skills
+- [ ] **`AGENT-PLATFORM-TEMPLATES/.agent/skills/using-platform/SKILL.md`** — routing table for skills
+- [ ] **`presentation/agent-platform-beta.html`** — version badges, playbook/skill counts, lifecycle commands, new slides
+- [ ] **`presentation/team-adoption.html`** — same counts and enterprise highlights as beta deck
+- [ ] **`presentation/STORY-PLAN.md`** — talking points: counts, slash commands, demo beats
 - [ ] **`MAINTAINER/GUIDE.md`** — maintainer schedule/commands if workflow changed
+- [ ] **`MAINTAINER/ingest/*-SOURCES.md`** — if ingest or external skill-pack parity changed
 
 ### E. Audit coverage
 - [ ] **`.agent/playbooks/audit.md`** — if the new capability should be audited, add it to the relevant phase checklist
 
 ### F. Tests
-- [ ] **`tests/apply-integration.test.mjs`** — add install assertions for new playbooks, context files, routing rows
-- [ ] **`tests/E2E-TEST-PLAN.md`** — update version, assertion count, manual audit phases, routing prompts
+- [ ] **`tests/apply-integration.test.mjs`** — playbooks, skills, commands, routing, manifest deploy assertions
+- [ ] **`tests/global-install.test.mjs`** — global slash commands if lifecycle commands changed
+- [ ] **`tests/E2E-TEST-PLAN.md`** — version header, assertion count, Phase 2c slash commands, manual rows
+- [ ] **`tests/run-manual.mjs`** — manual slash-command checklist for Phase 2c
 - [ ] **Run `npm test`** — all assertions must pass before commit
 
 ### G. Presentation
 - [ ] **`presentation/agent-platform-beta.html`** — update or add slide if this is a user-facing highlight worth presenting
 - [ ] **`presentation/team-adoption.html`** — keep in sync with beta deck counts (playbooks, audit, Critic)
 
-### H. Release
-- [ ] **`CHANGELOG.md`** — document what changed, why, upgrade path
-- [ ] **Commit** — one logical commit per change
-- [ ] **Push** — push to origin
-- [ ] **Release** — say "Release" when ready; agent calculates version and runs `release.ps1`
+### H. Changelog and release
+- [ ] **`CHANGELOG.md`** — `[Unreleased]` entry for every shipped-to-templates change (what, why, upgrade note)
+- [ ] **`bootstrap_version`** — bump only on release (`"Release"` command), not on every WIP change
+- [ ] **Commit** — one logical commit per change (when maintainer asks)
+- [ ] **Push / Release** — only when maintainer explicitly asks
 
 ---
 
-**Quick reference — what to update for common change types:**
+**Quick reference — what PSG must touch for common change types:**
 
-| Change type | Must update |
-|------------|-------------|
-| New rule in expert agent | B (manifest) + D (docs) + E (audit) + H (changelog) |
-| New playbook step | D (PLATFORM-HELP, QUICK-REF) + E (audit if applicable) + H |
-| New expert agent | A + B (manifest + reputation + AGENTS.md) + C (manifest.json) + D (all) + E + F + G + H |
-| Security rule (OWASP/CWE) | A + B + D (PLATFORM-HELP) + E (Phase 3 in audit) + H |
-| New install behaviour | A + C + F (tests) + D (README) + H |
-| New playbook | A + C + B (AGENTS.md routing) + D (all) + E + G + H |
-| NFR / compliance / maturity release (multi-playbook) | D (all user docs + presentation) + E (audit Phase 10+) + H — use `"Sync user-facing docs for vX.Y.Z"` |
+| Change type | PSG sections (minimum) |
+|------------|------------------------|
+| New rule in expert agent | A + B + D + E (if auditable) + F + H |
+| New playbook step | A + D + E (if applicable) + H |
+| New expert agent | A + B + C + D + E + F + G + H |
+| Security rule (OWASP/CWE) | A + B + D + E (audit Phase 3) + F + H |
+| New skill or `/` command | A + C + B (routing) + D (all lifecycle lists) + F + G + H |
+| New install behaviour | A + C + F + D (README, DISTRIBUTION) + H |
+| New playbook | A + C + B + D + E + F + G + H |
+| Mode 2/3/4 finding batch | A + B (if agents) + D + F + G + H — **full PSG even if user didn't ask** |
+| NFR / compliance / multi-playbook release | Full PSG — or `"Sync user-facing docs for vX.Y.Z"` |
 
 ### Command: "sync user-facing docs for vX.Y.Z"
 
+Alias for **full PSG** before a release tag:
+
 ```
 Execution:
-1. Read CHANGELOG.md entries since previous release tag
-2. Update README.md version footer
-3. Update AGENT-PLATFORM-FRAMEWORK-README.md — capabilities, tree, quick-ref card, playbook inventory
-4. Update QUICK-REF.md + PLATFORM-HELP.md — playbooks table, routing, context files
-5. Update presentation/agent-platform-beta.html — version, counts, slides for new highlights
-6. Update presentation/team-adoption.html — same counts and enterprise highlights for team onboarding
-7. Update tests/E2E-TEST-PLAN.md + tests/apply-integration.test.mjs if new install artifacts shipped
-8. Report checklist D + F + G items checked; list any files intentionally skipped with reason
+1. Read CHANGELOG.md [Unreleased] and recent platform-improvements.md
+2. Execute PSG §D + §F + §G in full (all files in those sections)
+3. Grep counts invariant — playbooks, lifecycle skills, slash commands
+4. Run npm test
+5. Output PSG Report; list any N/A skips with reason
 ```
 
-The Mode 1 commands above execute the checklist automatically. If doing a manual change, work through A→H in order.
+**Mode 1 commands edit templates only.** PSG always runs afterward — never assume docs/tests/presentation synced themselves.
 
 ---
 

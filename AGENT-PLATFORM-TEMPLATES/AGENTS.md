@@ -59,6 +59,9 @@ You are the active router. When the user describes a task:
 | "integrate API", "external service", "webhook", "third-party", "GraphQL", "SDK", "use [service] API", "connect to [external API]" | `.agent/agents/backend-agent.md` | `.agent/playbooks/api-integration.md` |
 | "debug", "investigate", "why is", "trace", "figure out", "what's happening", "diagnose", "check why" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
 | "slow", "profile", "memory issue", "bottleneck", "memory leak", "investigate latency" | relevant `*-agent.md` | `.agent/playbooks/debug-pipeline.md` |
+| "webperf", "Core Web Vitals", "CWV audit", "LCP", "INP", "CLS audit", "Lighthouse audit", "performance audit" | `.agent/agents/frontend-agent.md` | *(skill: `web-performance-audit` — or `performance-budget.md` for implementation)* |
+| "context stale", "agent ignoring conventions", "reload context", "lost focus", "hallucinating APIs" | *(skill: `context-engineering` — `/context`)* | *(none)* |
+| "verify done", "are we really done", "prove it works", "show test output", "evidence before ship" | *(skill: `verification-before-completion` — `/verify`)* | *(none)* |
 | "performance budget", "latency budget", "p95", "p99", "throughput target", "set performance target", "optimize API speed" | `.agent/agents/architect-agent.md` or `backend-agent.md` | `.agent/playbooks/performance-budget.md` |
 | "observability", "add logging", "structured logs", "metrics", "tracing", "OpenTelemetry", "monitoring setup", "correlation ID", "health check endpoint" | `.agent/agents/devops-agent.md` | `.agent/playbooks/observability-setup.md` |
 | "accessibility audit", "a11y audit", "WCAG audit", "accessibility review", "screen reader check" | `.agent/agents/frontend-agent.md` | `.agent/playbooks/accessibility-audit.md` |

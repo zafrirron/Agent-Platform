@@ -1,0 +1,13 @@
+{
+  "name": "agent-platform-skills",
+  "description": "Agent Platform Skills — lifecycle slash commands and cherry-pickable engineering skills (lite profile). Upgrade to full platform via npx when your team needs multi-IDE handoff.",
+  "author": {
+    "name": "Zafrir Ron",
+    "url": "https://github.com/zafrirron"
+  },
+  "homepage": "https://github.com/zafrirron/Agent-Platform",
+  "repository": "https://github.com/zafrirron/Agent-Platform",
+  "license": "Elastic-2.0",
+  "commands": "./AGENT-PLATFORM-TEMPLATES/.claude/commands",
+  "skills": "./AGENT-PLATFORM-TEMPLATES/.agent/skills"
+}

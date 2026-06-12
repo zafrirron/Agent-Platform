@@ -11,6 +11,15 @@ All findings use Mode 1 commands to fix: `"add rule to <expert>: <rule>"` etc.
 
 ---
 
+## Before you start
+
+```
+Read MAINTAINER/scan-results/registry.md
+Read MAINTAINER/scan-results/REPORT-SCHEMA.md
+```
+
+---
+
 ## Steps
 
 ### Step 1 — Expert capability matrix
@@ -110,3 +119,9 @@ Produce:
 7. **Documentation sync issues** — features in docs not in platform, or features in platform not in docs
 8. **Presentation sync issues** — slides that need updating
 9. Recommended next improvements (priority-ordered)
+
+### Step 8 — Archive and registry
+
+1. Write `MAINTAINER/scan-results/internal/YYYY-MM-DD-report.md` per `REPORT-SCHEMA.md` (use P-prefix for findings)
+2. Prepend summary to `MAINTAINER/scan-results/registry.md`
+3. If fixes applied: run **PSG**

@@ -18,6 +18,59 @@
 
 ---
 
+### [Unreleased] — 2026-06-09 — Mode 4 R001 + R005 + unified scan registry
+
+**Source:** Mode 4 GitHub scan 2026-06-09 — addyosmani/agent-skills R001; obra/superpowers R005
+
+**Files changed:** `context-engineering/SKILL.md`, `verification-before-completion/SKILL.md`, `/context` `/verify` commands, manifest, AGENTS routing, debug-pipeline, docs/tests/presentation, `MAINTAINER/scan-results/` (registry + schema), scan playbooks
+
+**Rules/skills added:**
+- R001: `context-engineering` skill — five-level hierarchy, confusion gates, selective loading
+- R005: `verification-before-completion` skill — evidence checklist before declaring done
+- Unified `MAINTAINER/scan-results/registry.md` — all maintainer modes read/write findings + actions
+
+**Validated:** Yes — 218/218 `npm test`
+
+---
+
+### [Unreleased] — 2026-06-09 — Platform Sync Gate (PSG) — mandatory auto-sync after every change
+
+**Gap observed:** Maintainer had to repeat "update manifests, docs, changelog, E2E, presentation" after every audit batch; agents stopped at template edits.
+**Files changed:** `MAINTAINER/platform-maintainer-agent.md`, `MAINTAINER/GUIDE.md`, `MAINTAINER/web-audit.md`, `MAINTAINER/platform-ingest.md`, `MAINTAINER/github-governance-scan.md`, `CONTRIBUTING.md`, `.cursor/rules/platform-maintainer-sync.mdc`
+**Rule added:** PSG — hard stop before "done"; automatic after Mode 1–4; PSG Report table required; counts invariant across all user-facing surfaces.
+**Validated:** Pending — governance process change
+
+---
+
+### [Unreleased] — 2026-06-09 — Mode 2 web audit: F001–F004 + F013 implemented
+
+**Source:** Mode 2 web audit 2026-06-09 — OWASP Top 10:2025, OWASP API2:2023, OWASP LLM cheat sheet, addyosmani/agent-skills web-performance-auditor
+
+**Files changed:** `security-agent.md`, `devops-agent.md`, `backend-agent.md`, `CONVENTIONS.md`, `.agent/skills/web-performance-audit/SKILL.md`, `.claude/commands/webperf.md`, `.cursor/commands/webperf.md`, `AGENT-PLATFORM-MANIFEST.json`, `AGENTS.md`, `using-platform/SKILL.md`, `QUICK-REF.md`, `PLATFORM-HELP.md`, `apply-integration.test.mjs`, `global-install.test.mjs`
+
+**Rules added:**
+- OWASP 2025 A03: typosquatting checks, signed artifact promote, build infra hardening (devops + security)
+- OWASP API2: batched auth rate limits, re-auth on sensitive account mutations (security)
+- OWASP 2025 A10: fail-closed multi-step transactions, resource cleanup, no sensitive errors to client (CONVENTIONS + backend)
+- LLM action screening + injection attempt logging (security)
+- `/webperf` + `web-performance-audit` skill (agent-skills-shaped CWV audit)
+
+**Validated:** Yes — 218/218 `npm test`
+
+---
+
+### [Unreleased] — 2026-06-11 — Mode 2/4 scan: skill packs + playbooks coverage
+
+**Gap observed:** `addyosmani/agent-skills` (~55k stars) never surfaced in Mode 4 governance queries or Mode 2 web audit — discovered only via maintainer Mode 3 ingest. Scan vocabulary targeted orchestration/session/trust, not `SKILL.md`, lifecycle slash commands, or playbook libraries.
+
+**Files changed:** `MAINTAINER/web-audit.md` (Phase 2F), `MAINTAINER/github-governance-scan.md` (skill-pack queries, seed repos, triage fast-path, Q9–Q10), `MAINTAINER/web-audit-report-template.md`, `MAINTAINER/governance-scan/scan-log.md`, `MAINTAINER/GUIDE.md`, `MAINTAINER/platform-maintainer-agent.md`
+
+**Rule added:** N/A — maintainer scan playbook update, not consumer rule.
+
+**Validated:** Pending — next quarterly scan should list seed repos + any new skill-pack hits.
+
+---
+
 ### [2.41.0] — 2026-06-09 — User-facing docs + presentation sync (v2.41)
 
 **Gap observed:** Post-ingest marketing, Cursor slash commands, and Plan handoff shipped in templates but FRAMEWORK tree still said 18 playbooks; beta deck test count 172; team-adoption STORY-PLAN still said 7-dimension Critic; E2E/global docs missing `.cursor/commands/`.

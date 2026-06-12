@@ -3,7 +3,7 @@
 > **When executing this as a user command:** display the FULL contents of this file.
 > Do NOT summarise or paraphrase — output every section, every table, every row.
 
-> **Quick reference (commands only):** `Read .agent/QUICK-REF.md`
+> **Quick reference (when & how):** `Read .agent/QUICK-REF.md`
 > **Re-show this file any time:** say `"platform help"` or `"how does this work"`
 > **Re-show quick reference any time:** say `"show quick reference"` or `"show help"`
 
@@ -15,26 +15,31 @@
 
 | Step | What to do |
 |------|------------|
-| **1. Install** (once per repo) | `npx {{PLATFORM_NPX}}` |
-| **2. Every session** | `"Read .agent/session-start.md and execute it."` |
-| **3. Describe your goal** | Plain language — agent declares `▶ Expert · playbook`, then begins |
-| **4. Session end** | `"Read .agent/session-end.md and execute it."` |
+| **1. Install** (once per repo) | `npx {{PLATFORM_NPX}}` (full) or `--profile=lite` for skills pack |
+| **2. Every session** | `/session-start` or `"Read .agent/session-start.md and execute it."` |
+| **3. Describe your goal** | Plain language or lifecycle `/` command |
+| **4. Session end** | `/session-end` or session-end prompt (full profile) |
 
-**Lifecycle:** `INSTALL → SESSION → ROUTE → GATES → SHIP`
+**Profiles:** `lite` = skills + commands only · `core` = no enterprise playbooks · `full` = team platform (default)
 
-| Phase | Say this (examples) | Playbook |
-|-------|---------------------|----------|
-| **Discover** | "audit this repo" / first session | Full project audit |
-| **Specify** | "interview me" / underspecified idea | Requirements clarification |
-| **Build** | "add a feature" / "fix the login bug" | Add feature · Bug fix |
-| **Improve** | "refactor this module" / "why is it slow?" | Refactor · Debug · Performance budget |
-| **Assure** | "security review" / "accessibility audit" | Security audit · Accessibility audit |
-| **Ship** | "release v1.2" / "ready for production" | Release · Production readiness |
+**Lifecycle:** `DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP`
 
-**Slash commands (`/`):** Cursor → `.cursor/commands/` · Claude Code → `.claude/commands/`  
-`/session-start` `/session-end` `/spec` `/audit` `/review` `/release` `/ship` `/quick-ref` · Cursor also: `/implement` `/platform-help`
+| Phase | Command / say | Loads |
+|-------|---------------|-------|
+| **Define** | `/spec` · "interview me" | `interview-me` / `idea-refine` skill |
+| **Plan** | `/plan` | `planning-and-task-breakdown` skill |
+| **Build** | `/build` · `build auto` | `incremental-implementation` skill |
+| **Verify** | `/test` | `test-driven-development` skill |
+| **Review** | `/review` · `/code-simplify` | Critic patterns · `code-simplification` skill |
+| **Perf audit** | `/webperf` | `web-performance-audit` skill (Quick/Deep CWV) |
+| **Context** | `/context` | `context-engineering` skill |
+| **Evidence** | `/verify` | `verification-before-completion` skill |
+| **Ship** | `/ship` `/release` | Release · production readiness (full) |
 
-**Commands only:** `Read .agent/QUICK-REF.md` · **Full offline guide:** you are reading it.
+**Slash commands (`/`):** Cursor → `.cursor/commands/` · Claude → `.claude/commands/` or marketplace plugin  
+`/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` `/quick-ref` · full profile: `/audit` `/session-start` `/implement` (Cursor)
+
+**Quick reference:** `Read .agent/QUICK-REF.md` (lifecycle, skills, when to use) · **Full offline guide:** you are reading it.
 
 ---
 

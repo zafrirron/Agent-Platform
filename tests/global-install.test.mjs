@@ -67,7 +67,7 @@ describe('global install — fresh home directory', () => {
   });
 
   test('creates Claude lifecycle command files', () => {
-    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'caveman']) {
+    for (const cmd of ['quick-ref', 'spec', 'plan', 'build', 'test', 'code-simplify', 'webperf', 'context', 'verify', 'ship', 'audit', 'review', 'release', 'caveman']) {
       assert.ok(
         fs.existsSync(path.join(home, '.claude/commands', `${cmd}.md`)),
         `claude /${cmd} missing`
@@ -76,7 +76,7 @@ describe('global install — fresh home directory', () => {
   });
 
   test('creates Cursor lifecycle command files', () => {
-    for (const cmd of ['quick-ref', 'spec', 'ship', 'audit', 'review', 'release', 'implement', 'session-start', 'session-end', 'platform-help', 'caveman']) {
+    for (const cmd of ['quick-ref', 'spec', 'plan', 'build', 'test', 'code-simplify', 'webperf', 'context', 'verify', 'ship', 'audit', 'review', 'release', 'implement', 'session-start', 'session-end', 'platform-help', 'caveman']) {
       assert.ok(
         fs.existsSync(path.join(home, '.cursor/commands', `${cmd}.md`)),
         `cursor /${cmd} missing`

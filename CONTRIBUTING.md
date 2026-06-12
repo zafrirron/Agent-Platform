@@ -46,7 +46,7 @@ Open a GitHub issue with this template:
 <How you verified the rule would have helped>
 ```
 
-Maintainers route serious proposals through **Mode 3 ingest** (see `MAINTAINER/platform-maintainer-agent.md`): gap analysis → template edit → `npm test` → docs sync → changelog.
+Maintainers route serious proposals through **Mode 3 ingest** (see `MAINTAINER/platform-maintainer-agent.md`): gap analysis → template edit → **Platform Sync Gate (PSG)** → `npm test` → CHANGELOG. PSG syncs manifests, user docs, tests, and presentation automatically — no separate reminder step.
 
 ---
 
@@ -54,10 +54,11 @@ Maintainers route serious proposals through **Mode 3 ingest** (see `MAINTAINER/p
 
 1. Fork and clone `https://github.com/zafrirron/Agent-Platform`
 2. Edit under `AGENT-PLATFORM-TEMPLATES/` (installed files are gitignored in consumer repos)
-3. Run `npm test` — integration tests must pass (currently 187+)
-4. Update user-facing docs if counts or capabilities change: `README.md`, `AGENT-PLATFORM-FRAMEWORK-README.md`, `.agent/QUICK-REF.md`, `.agent/PLATFORM-HELP.md`
-5. Log the improvement in `MAINTAINER/platform-improvements.md`
-6. Open a PR with: failure observed, files changed, test result
+3. Run `npm test` — integration tests must pass (currently 218)
+4. Run **PSG** — see `MAINTAINER/platform-maintainer-agent.md` § Platform Sync Gate (manifests, all user docs, presentation, E2E, CHANGELOG)
+5. Run `npm test` — must pass
+6. Log the improvement in `MAINTAINER/platform-improvements.md`
+7. Open a PR with: failure observed, files changed, PSG Report summary, test result
 
 **Framework-only repo?** See [COPYING.md](COPYING.md) and [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md).
 
@@ -68,8 +69,8 @@ Maintainers route serious proposals through **Mode 3 ingest** (see `MAINTAINER/p
 If you maintain a fork or internal distribution:
 
 - [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md) — release workflow
-- [MAINTAINER/platform-maintainer-agent.md](MAINTAINER/platform-maintainer-agent.md) — agent-driven upgrades
-- `"Sync user-facing docs for vX.Y.Z"` — doc inventory command
+- [MAINTAINER/platform-maintainer-agent.md](MAINTAINER/platform-maintainer-agent.md) — agent-driven upgrades + **PSG** (auto-sync gate)
+- `"Sync user-facing docs for vX.Y.Z"` — full PSG before release tag
 
 ---
 

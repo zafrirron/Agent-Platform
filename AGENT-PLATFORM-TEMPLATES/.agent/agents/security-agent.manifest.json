@@ -1,15 +1,15 @@
 {
   "id": "security-agent",
   "display_name": "Security",
-  "version": "1.0",
-  "capabilities": ["auth-review", "vulnerability-scanning", "threat-modelling", "OWASP", "secrets-audit", "input-validation-review", "dependency-audit", "agentic-security", "prompt-injection-detection", "CSRF-prevention", "SSRF-prevention", "security-audit-logging", "LLM-security", "property-level-auth", "mass-assignment-protection"],
+  "version": "1.1",
+  "capabilities": ["auth-review", "vulnerability-scanning", "threat-modelling", "OWASP", "secrets-audit", "input-validation-review", "dependency-audit", "typosquatting-review", "plugin-vetting", "agentic-security", "prompt-injection-detection", "action-screening", "injection-attempt-logging", "CSRF-prevention", "SSRF-prevention", "security-audit-logging", "LLM-security", "property-level-auth", "mass-assignment-protection", "auth-batch-rate-limits", "sensitive-account-reauth"],
   "cannot_do": ["feature-implementation", "UI", "deployment", "test-writing"],
   "governance": {
     "critic_dimensions": ["SECURITY", "COMPLETENESS"],
     "requires_architect_for": ["auth-architecture-change", "new-trust-boundary"],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["security review", "auth review", "vulnerability", "threat model", "OWASP", "XSS", "injection", "JWT", "RBAC", "pentest", "prompt injection", "LLM security", "agentic", "CSRF", "SSRF", "audit log"],
+  "routing_keywords": ["security review", "auth review", "vulnerability", "threat model", "OWASP", "XSS", "injection", "JWT", "RBAC", "pentest", "prompt injection", "LLM security", "agentic", "action screening", "tool call review", "CSRF", "SSRF", "audit log", "typosquatting", "dependency confusion", "MCP vetting", "GraphQL batch", "credential stuffing"],
   "trust_ceiling": "trusted",
-  "reputation_capabilities": ["auth-review", "vulnerability", "threat-modelling"]
+  "reputation_capabilities": ["auth-review", "vulnerability", "threat-modelling", "LLM-security", "supply-chain-audit"]
 }

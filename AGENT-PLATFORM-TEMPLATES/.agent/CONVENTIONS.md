@@ -54,6 +54,8 @@ Coverage gate:  {{COVERAGE_THRESHOLD}}%
 ## Error handling
 
 - Never swallow exceptions silently — catch, log with identifying context (entity id, operation name), then rethrow or handle explicitly; an empty or logging-only catch block is always a bug unless the silence is intentional and documented
+- **Fail closed on multi-step work (OWASP 2025 A10):** database/API/file transactions with multiple steps must roll back **all** prior steps on any failure — never leave partial state (debit without credit, half-written files, orphaned locks)
+- **Resource cleanup:** every catch/finally path that acquires files, connections, or locks must release them — verify in review for new I/O code
 - Return empty collections instead of null from list-returning functions — null-returning list functions push null checks onto every caller
 - Model absent values explicitly: use the language's nullable wrapper type (Optional, Maybe, T | null) for lookups that may not exist; for required lookups, use the language's throw-on-absent idiom directly rather than a manual two-step presence check and get
 

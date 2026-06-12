@@ -5,10 +5,13 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (197 tests, ~3s)
+npm test   ← runs all automated checks (218 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
-                   v2.41 playbooks (20) + references + spec-outline + plan handoff,
-                   Cursor + Claude slash commands, PLATFORM-HELP + QUICK-REF updates,
+                   v2.41 playbooks (20) + 11 lifecycle skills + install profiles (lite/core/full),
+                   --mode=add cherry-pick + --mode=list catalog, profile-filter unit tests,
+                   references + spec-outline + plan handoff,
+                   lifecycle slash commands (/plan /build /test /code-simplify /webperf /context /verify),
+                   Cursor + Claude commands, PLATFORM-HELP + QUICK-REF updates,
                    enterprise context logs + routing rows, dynamic install banner,
                    upgrade PROJECT preservation, uninstall + restore,
                    global install, global uninstall, USER content preservation,
@@ -19,7 +22,9 @@ npm test   ← runs all automated checks (197 tests, ~3s)
 
 | Phase | What | Test file |
 |-------|------|-----------|
-| 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers, v2.41 playbooks/context/routing/references/commands | `apply-integration.test.mjs` |
+| 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers, v2.41 playbooks/context/routing/references/commands/skills | `apply-integration.test.mjs` |
+| 1 | Install: `--profile=lite`, `--mode=add`, `--mode=list` | `apply-integration.test.mjs` |
+| 1 | Profile filter rules (lite/core/full) | `profile-filter.test.mjs` |
 | 1 | Install: global stubs suggestion in stdout | `apply-integration.test.mjs` |
 | 8 | Upgrade: PROJECT section preserved, PLATFORM section updated | `apply-integration.test.mjs` |
 | 9 | Uninstall dry-run + confirm: platform removed, user files intact, CLAUDE.md restored | `apply-integration.test.mjs` |
@@ -36,7 +41,8 @@ npm test   ← runs all automated checks (197 tests, ~3s)
 |-------|-----------|
 | 2 | Session start — requires Claude Code to execute session-start.md |
 | 2b | Full project audit — requires AI to run 11 phases (incl. governance/compliance) |
-| 2c | Slash commands — requires AI to honour `/spec`, `/audit`, `/ship`, etc. (Claude + optional Cursor) |
+| 2c | Slash commands — requires AI to honour full lifecycle `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` (Claude + optional Cursor) |
+| 1lite | Lite profile install — optional automated rehearsal with `--profile=lite --framework=cursor` |
 | 2d | Cursor Plan handoff — requires `/implement` or "implement the plan" after Plan approval |
 | 3 | Auto-routing — requires AI to route core + enterprise + v2.41 prompt types silently |
 | 4 | Security gate — requires AI to implement auth and trigger Step 5a |
@@ -177,6 +183,25 @@ test -f <TEST_DIR>/.claude/commands/spec.md
 test -f <TEST_DIR>/.claude/commands/ship.md
 grep "Start here" <TEST_DIR>/.agent/PLATFORM-HELP.md
 grep "Key principle" <TEST_DIR>/.agent/QUICK-REF.md
+ls <TEST_DIR>/.agent/skills/interview-me/SKILL.md
+ls <TEST_DIR>/.agent/skills/planning-and-task-breakdown/SKILL.md
+test -f <TEST_DIR>/.claude/commands/plan.md
+test -f <TEST_DIR>/.cursor/commands/build.md
+```
+
+### Optional — lite profile (skills pack) automated smoke:
+
+```bash
+cd <TEST_DIR_LITE>
+npx github:zafrirron/Agent-Platform --profile=lite --framework=cursor
+```
+
+```bash
+test -f <TEST_DIR_LITE>/.agent/skills/interview-me/SKILL.md
+test ! -f <TEST_DIR_LITE>/.agent/agents/backend-agent.md   # experts skipped
+test ! -f <TEST_DIR_LITE>/.agent/handoff/sync/registry.yaml
+node -e "const p=require('<TEST_DIR_LITE>/.agent/platform.json'); console.assert(p.profile==='lite')"
+grep "profile.*lite" <TEST_DIR_LITE>/AGENTS.md
 ```
 
 ### Verify gitignore block written:
@@ -290,11 +315,18 @@ In Claude Code, type each command. Agent must load the referenced playbook or fi
 | Command | Expected behaviour |
 |---------|-------------------|
 | `/quick-ref` | Points to `.agent/QUICK-REF.md` — does **not** dump full table in chat |
-| `/spec` | Loads `requirements-clarification.md` (Architect expert) |
-| `/audit` | Loads `audit.md` (all experts) |
-| `/review` | Loads `critic-agent.md` |
+| `/spec` | Loads `interview-me` skill (or `idea-refine` if exploratory) |
+| `/plan` | Loads `planning-and-task-breakdown` skill |
+| `/build` | Loads `incremental-implementation` skill (`build auto` after approved plan) |
+| `/test` | Loads `test-driven-development` skill |
+| `/code-simplify` | Loads `code-simplification` skill |
+| `/webperf` | Loads `web-performance-audit` skill (Quick or Deep CWV) |
+| `/context` | Loads `context-engineering` skill |
+| `/verify` | Loads `verification-before-completion` skill (evidence before done) |
+| `/audit` | Loads `audit.md` (all experts — full profile) |
+| `/review` | Critic / code review |
 | `/release` | Loads `release.md` (DevOps expert) |
-| `/ship` | Same as release — loads `release.md` |
+| `/ship` | Production readiness or release (context-dependent) |
 
 **Cursor (optional):** repeat `/session-start`, `/spec`, `/platform-help` in Cursor on the same repo.
 - [ ] `/session-start` executes session-start.md (same as the paste prompt)
@@ -329,7 +361,7 @@ Type each prompt. Agent routes silently — first line shows `▶ Expert · play
 | `compliance review for SOC 2 SDLC controls` | Security + compliance-review |
 | `accessibility audit on the todo form` | Frontend + accessibility-audit |
 | `DORA maturity assessment for our team` | Architect + org-maturity-assessment |
-| `interview me about adding push notifications` | Architect + requirements-clarification |
+| `interview me about adding push notifications` | Architect + interview-me skill (or requirements-clarification playbook) |
 | `deprecate the legacy v1 todos endpoint` | Architect + deprecation |
 
 ---
@@ -812,7 +844,8 @@ Verify:
 | 2 | Session start | Step 1d audit offer (first session); NO path; offer absent on second session; compact status block; `show quick reference` points to file |
 | 2b | Full project audit — manual | 11 phases complete, report at correct path, executive summary incl. Governance & maturity row |
 | 2b | Full project audit — YES path | Fresh repo: offer appears, YES runs all 11 phases, session continues after audit |
-| 2c | Slash commands — manual | `/quick-ref` `/spec` `/audit` `/review` `/release` `/ship` load correct targets (Claude; Cursor optional) |
+| 2c | Slash commands — manual | `/spec` `/plan` `/build` `/test` `/code-simplify` `/webperf` `/context` `/verify` `/review` `/ship` load correct skills/playbooks (Claude; Cursor optional) |
+| 1lite | Lite profile — auto | `--profile=lite`: skills + commands, no agents/registry/enterprise; `platform.json.profile=lite` |
 | 2d | Plan handoff — manual (Cursor) | `/implement` after Plan approval resumes add-feature Step 3 with plan-approved status line |
 | 3 | Auto-routing | 13 prompts routed silently to correct expert/playbook (core + enterprise + interview + deprecate) |
 | 4 | Security gate | add-feature Step 5a fires automatically for auth feature |

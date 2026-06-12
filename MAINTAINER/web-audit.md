@@ -2,17 +2,28 @@
 
 > **Trigger:** `Read MAINTAINER/web-audit.md and execute it.`
 > **Requires:** Maintainer agent loaded — `Read MAINTAINER/platform-maintainer-agent.md`
-> **Scope:** Security (OWASP, CVEs, CWEs) + Engineering best practices (stack-specific)
+> **Scope:** Security (OWASP, CVEs, CWEs) + Engineering best practices (stack-specific) + **Agent skill packs & playbook ecosystems**
 > **Output:** Structured findings report → maintainer selects what to add
 
 ---
 
 ## Before you start
 
+```
+Read MAINTAINER/scan-results/registry.md
+Read MAINTAINER/scan-results/REPORT-SCHEMA.md
+```
+
+Skip F/E findings already **Implemented** or **Skipped**. Note prior **Next scan hints**.
+
 Read the current state of all experts and conventions:
 1. Read all files in `AGENT-PLATFORM-TEMPLATES/.agent/agents/`
-2. Read `AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md`
-3. Build a mental map of what is already covered — you will need this to classify each finding as COVERED / PARTIALLY / NOT COVERED
+2. Read all files in `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/`
+3. Read `AGENT-PLATFORM-TEMPLATES/.agent/skills/*/SKILL.md` — lifecycle skill modules
+4. Read `AGENT-PLATFORM-MANIFEST.json` — `skills_catalog`, profiles, slash commands
+5. Read `MAINTAINER/ingest/agent-skills-p0-SOURCES.md` — already-ingested skill-pack patterns
+6. Read `AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md`
+7. Build a mental map of what is already covered — you will need this to classify each finding as COVERED / PARTIALLY / NOT COVERED
 
 ---
 
@@ -98,6 +109,55 @@ Look for: prompt injection risks, LLM output validation, agent memory security, 
 
 Compare against ALL expert files — these are new patterns that may not be covered anywhere.
 
+### 2F — Agent skill packs & playbook ecosystems *(required — monthly)*
+
+> **Why this phase exists:** Popular skill packs (e.g. `addyosmani/agent-skills`) were missed by
+> OWASP/best-practice searches and by governance-only GitHub scans. They encode workflow patterns,
+> rationalization gates, and lifecycle commands — not CVE classes.
+
+**GitHub / web searches (run ≥6, rotate each audit):**
+- `"agent skills" "SKILL.md" GitHub [current year]`
+- `"AI coding agent skills pack" site:github.com`
+- `"claude code" marketplace skills plugin`
+- `"cursor" agent skills rules workflow`
+- `addyosmani agent-skills` *(baseline diff — always check README + skills/ index)*
+- `"slash commands" "/spec" "/plan" agent development workflow"`
+- `"rationalization" "red flags" agent skill workflow"`
+- `"interview me" skill specification agent`
+- `"test-driven development" skill agent Beyoncé DAMP`
+- `"agent playbook" "quality gate" steps verification"`
+- `"SKILL.md" frontmatter "Use when" agent`
+
+**Seed repos — always fetch README + skills index (even if search rank is low):**
+| Repo | Check for |
+|------|-----------|
+| `https://github.com/addyosmani/agent-skills` | New skills since last ingest; `/build auto`; hooks; plugin.json changes |
+| `https://github.com/anthropics/skills` | Official Anthropic skill anatomy updates |
+| Community packs surfaced by searches above | Novel workflow steps, checklists, command parity |
+
+**For each candidate skill or playbook pattern found, compare against:**
+- `.agent/skills/*/SKILL.md` — do we have an equivalent module?
+- `.agent/playbooks/*.md` — is the workflow covered with same verification gates?
+- `.agent/references/` — are checklists missing items?
+- `.claude/commands/` + `.cursor/commands/` — lifecycle command parity
+- `AGENT-PLATFORM-MANIFEST.json` `skills_catalog` — catalog gap?
+
+**Create a finding when:**
+- A skill pack teaches a **specific verifiable workflow** we lack (NOT COVERED)
+- Our playbook/skill covers the topic but **weaker gates** (PARTIALLY COVERED — rationalization table, verification evidence, anti-skip rules)
+- A **new distribution pattern** (plugin install, cherry-pick flag, IDE-specific setup) we don't document
+
+**Finding target mapping:**
+| Pattern type | Target |
+|--------------|--------|
+| Universal workflow step | Relevant `.agent/skills/*/SKILL.md` or playbook |
+| Expert-specific rule inside a skill | Matching `*-agent.md` PLATFORM section |
+| Reference checklist | `.agent/references/` |
+| Slash command / lifecycle entry point | `.claude/commands/`, `.cursor/commands/`, manifest |
+| Install/distribution UX | `docs/DISTRIBUTION.md`, `docs/cursor-setup.md`, `apply.js` |
+
+**Do NOT create findings for:** skills already logged in `MAINTAINER/ingest/` as Done unless the upstream repo added **new** steps since ingest date.
+
 ---
 
 ## Phase 3 — Full Ecosystem Horizon Scan *(Option C — run only when scope=full)*
@@ -139,7 +199,13 @@ Search: `"Black Hat [current year] web application new attack"`
 Search: `"DEF CON [current year] software security finding"`
 Search: `"arxiv agentic LLM security [current year]"`
 
-Look for: newly disclosed attack classes not yet reflected in OWASP top lists, academic research on AI/agent security that practitioners haven't encoded yet.
+**Agent skill-pack horizon (add to every scope=full run):**
+Search: `"agent skills ecosystem [current year] trending"`
+Search: `"AI agent workflow pack" "SKILL.md" [current year]"`
+Search: `"claude code plugin marketplace skills [current year]"`
+Fetch README or docs from top 3 GitHub results. Compare skill count and lifecycle coverage vs our manifest.
+
+Look for: newly disclosed attack classes not yet reflected in OWASP top lists, academic research on AI/agent security that practitioners haven't encoded yet, **and skill packs gaining adoption faster than governance frameworks**.
 
 > **Horizon scan findings** use the `E-prefix` (E001, E002...) and the `EMERGING PRACTICE` classification — see Phase 4.
 
@@ -180,6 +246,7 @@ For each finding, identify which expert file or playbook should receive the rule
 - DevOps/CI → devops-agent.md
 - Data/migration → data-agent.md
 - Agentic patterns → applicable expert(s) + CONVENTIONS.md
+- Skill-pack workflow / rationalization / lifecycle command → relevant `.agent/skills/`, playbook, or `docs/DISTRIBUTION.md`
 
 ---
 
@@ -229,8 +296,21 @@ For deferred findings:
 - Add to `MAINTAINER/platform-improvements.md` backlog section with the proposed rule text
 
 After all selections processed:
-- If any rules were added: remind the maintainer to update CHANGELOG.md and run `.\tools\release.ps1 -Version X.Y.Z`
-- Report summary: "X rules added, Y skipped, Z deferred. Log updated. Run release when ready."
+- If any findings were implemented: execute **Platform Sync Gate (PSG)** — `MAINTAINER/platform-maintainer-agent.md` § Platform Sync Gate (manifests, user docs, presentation, E2E, CHANGELOG `[Unreleased]`, `npm test`)
+- Do **not** tell the maintainer to "also update docs/manifests" — PSG is automatic
+- Output **PSG Report** + summary: "X rules added, Y skipped, Z deferred."
+- Say `"Release"` only when the maintainer wants a version tag — not as part of audit completion
+
+---
+
+## Phase 7 — Archive and log
+
+After Phase 5 presentation (and Phase 6 if selections made):
+
+1. **Write archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-report.md` per `REPORT-SCHEMA.md`
+2. **Update registry:** Prepend to `MAINTAINER/scan-results/registry.md` — findings table, dispositions, actions taken, next scan hints
+3. **Implementation log:** Append to report's **Actions taken** section; log in `platform-improvements.md`
+4. If implemented: run **PSG** before marking complete
 
 ---
 
@@ -238,8 +318,10 @@ After all selections processed:
 
 | Frequency | Command | Phases |
 |-----------|---------|--------|
-| Monthly | `Read MAINTAINER/web-audit.md and execute it.` | 1 + 2 (Option B) |
-| Quarterly | `Read MAINTAINER/web-audit.md and execute it. scope=full` | 1 + 2 + 3 (Option C) |
+| Monthly | `Read MAINTAINER/web-audit.md and execute it.` | 1 + 2 incl. **2F** (Option B) |
+| Quarterly | `Read MAINTAINER/web-audit.md and execute it. scope=full` | 1 + 2 incl. **2F** + 3 (Option C) |
+| Quarterly | `Read MAINTAINER/github-governance-scan.md and execute it.` | Mode 4 — coordination **+ skill packs** |
 | After OWASP update | `Read MAINTAINER/web-audit.md and execute it.` phase=1 | Phase 1 only |
 | After production incident | Mode 1 targeted addition (immediate) | N/A |
 | After major framework release | `Read MAINTAINER/web-audit.md and execute it.` phase=2E | Phase 2E only |
+| After skill-pack release (e.g. agent-skills v0.7+) | `Read MAINTAINER/web-audit.md and execute it.` phase=2F | Phase 2F only — diff against ingest log |

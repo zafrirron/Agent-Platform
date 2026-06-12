@@ -48,8 +48,14 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 
 | You want… | Use this | Not this |
 |-----------|----------|----------|
-| One command, whole repo, any IDE | **Agent Platform** (`npx`) | Copying individual skills by hand |
-| Clarify an idea before coding | Requirements clarification / `/spec` | Jumping straight to add-feature |
+| One command, whole repo, any IDE | **Agent Platform** `npx` (default `--profile=full`) | Copying individual skills by hand |
+| Solo dev, lightweight skills pack | `--profile=lite --framework=cursor` or Claude plugin | Full platform install |
+| One skill only | `--mode=add --add=skill:interview-me` | Whole platform |
+| Clarify an idea before coding | `/spec` → `interview-me` skill | Jumping straight to add-feature |
+| Break spec into tasks | `/plan` | Ad-hoc todo lists in chat |
+| Build in slices | `/build` (`build auto` after plan) | One giant implementation pass |
+| Prove behavior | `/test` (TDD skill) | "Looks right" without tests |
+| Audit UI/API performance | `/webperf` (CWV skill) | Guessing without Lighthouse/APM |
 | Onboard to an unknown repo | Full project audit / `/audit` | Random file reads without a report |
 | Fix a defect with proof | Bug-fix playbook + Test expert | Ad-hoc patches without regression tests |
 | Ship a version tag | Release playbook / `/release` | Manual version bump only |
@@ -68,13 +74,26 @@ Skill packs (e.g. [addyosmani/agent-skills](https://github.com/addyosmani/agent-
 
 | | Agent Platform | Typical skill pack |
 |--|----------------|-------------------|
-| Install unit | Entire environment per repo | One skill or plugin at a time |
-| Session model | session-start / session-end, `CURRENT.md` | Per-chat, ad hoc |
+| Install unit | `full` / `core` / `lite` profiles + `--mode=add` | One skill or plugin at a time |
+| Claude marketplace | `.claude-plugin/plugin.json` (`agent-platform-skills`) | N/A on Cursor (use `npx`) |
+| Session model | session-start / session-end, `CURRENT.md` (full profile) | Per-chat, ad hoc |
 | Quality gates | Critic + playbook steps + optional guards | Varies per skill |
-| Multi-IDE | Cross-framework Critic, conflict registry | Usually single tool |
-| Extension | Documented 7-step anatomy | Copy/fork skills |
+| Multi-IDE | Cross-framework Critic, conflict registry (full) | Usually single tool |
+| Extension | Documented 7-step anatomy + `SKILL.md` modules | Copy/fork skills |
 
-We **selectively ingest** proven patterns from skill packs into playbooks (with attribution in `MAINTAINER/ingest/`). You can still add project-specific skills under `.agent/skills/` alongside the platform.
+We **selectively ingest** proven patterns from skill packs into playbooks and `.agent/skills/` (attribution in `MAINTAINER/ingest/`). Lite profile competes with skill packs on install shape; full profile adds coordination.
+
+**Profiles:**
+
+```bash
+npx github:zafrirron/Agent-Platform --profile=lite --framework=cursor   # skills pack
+npx github:zafrirron/Agent-Platform --profile=core                    # no enterprise playbooks
+npx github:zafrirron/Agent-Platform                                   # full (default)
+npx github:zafrirron/Agent-Platform --mode=list --list=skills
+npx github:zafrirron/Agent-Platform --mode=add --add=skill:tdd
+```
+
+See [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) and [docs/cursor-setup.md](docs/cursor-setup.md).
 
 ---
 

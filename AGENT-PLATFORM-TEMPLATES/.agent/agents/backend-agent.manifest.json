@@ -1,15 +1,15 @@
 {
   "id": "backend-agent",
   "display_name": "Backend",
-  "version": "1.0",
-  "capabilities": ["api", "service", "database", "auth", "validation", "middleware", "server-logic", "error-handling", "rate-limiting", "idempotency-keys", "SSRF-prevention", "mass-assignment-protection", "OWASP-API-compliance"],
+  "version": "1.1",
+  "capabilities": ["api", "service", "database", "auth", "validation", "middleware", "server-logic", "error-handling", "fail-closed-transactions", "production-error-sanitization", "rate-limiting", "idempotency-keys", "SSRF-prevention", "mass-assignment-protection", "OWASP-API-compliance"],
   "cannot_do": ["UI", "styling", "client-state", "CSS", "components", "CI/CD", "infrastructure", "schema-migrations"],
   "governance": {
     "critic_dimensions": ["SECURITY", "CORRECTNESS", "TEST", "COMPLETENESS", "PERFORMANCE", "DESIGN", "DEPENDENCY"],
     "requires_architect_for": ["auth", "data-shape-change", "new-service", "middleware", "external-integration"],
     "always_runs_security_gate": false
   },
-  "routing_keywords": ["endpoint", "API", "service", "server", "route", "handler", "controller", "middleware", "database query", "rate limit", "idempotency", "SSRF", "mass assignment", "REST design", "performance budget", "p95", "latency", "pagination"],
+  "routing_keywords": ["endpoint", "API", "service", "server", "route", "handler", "controller", "middleware", "database query", "rate limit", "idempotency", "SSRF", "mass assignment", "REST design", "performance budget", "p95", "latency", "pagination", "transaction rollback", "fail closed"],
   "trust_ceiling": "standard",
   "reputation_capabilities": ["api", "security", "database", "auth"]
 }

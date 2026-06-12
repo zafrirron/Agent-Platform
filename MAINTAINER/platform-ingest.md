@@ -17,6 +17,15 @@ Users drop their own agent definitions, playbooks, skills, `CLAUDE.md`, `AGENTS.
 
 ## Execute these steps
 
+### Step 0 — Read prior scan results
+
+```
+Read MAINTAINER/scan-results/registry.md
+Read MAINTAINER/scan-results/REPORT-SCHEMA.md
+```
+
+Do not re-ingest patterns already marked **Implemented** from prior ingest or Mode 4 scans.
+
 ### Step 1 — Scan submissions
 
 List all files in `MAINTAINER/ingest/` (ignore: `README.md`, `archive/`, `.gitkeep`).
@@ -205,15 +214,16 @@ For each selected finding, execute the full Mode 1 workflow:
    Target  : [file] PLATFORM section
    Version : [bootstrap_version after bump]
    ```
-6. Bump `bootstrap_version` in `AGENT-PLATFORM-MANIFEST.json`
+6. Execute **Platform Sync Gate (PSG)** — `platform-maintainer-agent.md` § Platform Sync Gate (manifests, user docs, presentation, E2E, CHANGELOG `[Unreleased]`, `npm test`). Do not wait for the maintainer to ask.
 
-After all selected findings are implemented, report:
+After all selected findings are implemented, report with **PSG Report**:
 ```
 Implemented N findings:
   I001 → backend-agent.md PLATFORM
   I003 → security-agent.md PLATFORM
   ...
-Skipped K. Deferred J. Version bumped to X.Y.Z.
+Skipped K. Deferred J.
+PSG: [table]
 ```
 
 ---
@@ -226,6 +236,12 @@ MAINTAINER/ingest/archive/YYYY-MM-DD/
 ```
 
 Report: "Archived N files → MAINTAINER/ingest/archive/YYYY-MM-DD/"
+
+### Step 9 — Archive and registry
+
+1. Write `MAINTAINER/scan-results/ingest/YYYY-MM-DD-report.md` per `REPORT-SCHEMA.md`
+2. Prepend summary to `MAINTAINER/scan-results/registry.md` (findings + dispositions + actions taken)
+3. If implemented: run **PSG** before marking complete
 
 The archive folder is not deleted — it serves as a record of what was reviewed and when.
 

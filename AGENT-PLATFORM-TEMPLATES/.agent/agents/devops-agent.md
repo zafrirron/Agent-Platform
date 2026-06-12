@@ -48,11 +48,13 @@
 - CI or deploy pipeline should fail or warn when observability minimum from `observability-setup.md` is missing for a new networked service (no health endpoint, no correlation ID on API)
 - SLI/SLO targets live in `nfr-log.md` — DevOps wires metrics/alerts to those thresholds where stack allows
 
-### Supply chain security (F006 — OWASP A08 / NIST SP 800-218)
-- Generate an SBOM (Software Bill of Materials) on every release build — use CycloneDX or SPDX format
-- Sign release artifacts with provenance attestation (Sigstore/cosign or equivalent) — unsigned artifacts are not deployable
-- Pin all dependencies to exact versions with hash verification in lock files — never allow floating version ranges in production builds
+### Supply chain security (F006 — OWASP A08 / NIST SP 800-218; OWASP 2025 A03)
+- Generate an SBOM (Software Bill of Materials) on every release build — use CycloneDX or SPDX format; monitor SBOM output for newly disclosed CVEs on deployed components
+- Sign release artifacts with provenance attestation (Sigstore/cosign or equivalent) — **unsigned artifacts are not deployable**; verify signatures before promote to each environment (do not rebuild per environment — promote signed artifacts)
+- Pin all dependencies to exact versions with hash verification in lock files — never allow floating version ranges or unpinned `latest` tags in production builds
 - Run `npm audit` / `pip-audit` / `cargo audit` on every CI build — fail the pipeline on High/Critical CVEs
+- **Dependency confusion / typosquatting:** before adding a new package, verify publisher identity, exact package name (homoglyphs), and registry age/download anomaly — BLOCK install if suspicious; log decision in `.agent/context/dependencies.md`
+- **Build infrastructure:** treat CI runners, artifact registries, and build secrets as production targets — MFA on maintainer accounts, least-privilege on publish credentials, tamper-evident pipeline logs
 
 ### CI/CD pipeline security (F014 — supply chain / CISA guidance)
 - CI runners must use short-lived credentials via OIDC token exchange — no long-lived static secrets stored in CI

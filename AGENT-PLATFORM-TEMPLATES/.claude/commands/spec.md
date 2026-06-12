@@ -2,6 +2,8 @@
 description: Clarify requirements before coding — fills spec-outline.md
 ---
 
-Read `.agent/playbooks/requirements-clarification.md` and execute it.
+Read `.agent/skills/interview-me/SKILL.md` and execute it.
 
-Goal: interview the user until the idea is concrete, then write `.agent/context/spec-outline.md`. Do not implement until the spec is approved.
+If the idea is still exploratory (not ready to interview), use `.agent/skills/idea-refine/SKILL.md` first.
+
+Goal: concrete spec in `.agent/context/spec-outline.md`. No implementation until user approves.

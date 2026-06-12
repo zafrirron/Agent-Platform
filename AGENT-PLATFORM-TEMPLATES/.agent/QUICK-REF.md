@@ -21,8 +21,92 @@
 
 > **Session ended without "End session"?** No problem — session start resumes automatically. You'll see `▶ Resuming: [your last task]` and continue where you left off.
 > **Switching to a different IDE?** Session start offers a Critic review of the previous IDE's work — different AI models catch each other's blind spots. Say YES to run it.
-> **Cursor `/` commands:** `/session-start` `/session-end` `/spec` `/audit` `/review` `/release` `/ship` `/implement` `/quick-ref` — see `.cursor/commands/`
-> **Cursor Plan mode:** after plan approval, `/implement` or `"implement the plan"` — resumes `add-feature` Step 3 (`.cursor/rules/plan-mode-handoff.mdc`).
+> **Lifecycle `/` commands:** `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` (+ `/audit` `/release` on full profile)
+> **Cursor:** `.cursor/commands/` — also `/session-start` `/session-end` `/implement` `/platform-help`
+> **Cursor Plan mode (full):** `/implement` after plan approval — resumes `add-feature` Step 3 (`.cursor/rules/plan-mode-handoff.mdc`).
+> **Claude Code:** `.claude/commands/` — or marketplace plugin `agent-platform-skills`
+> **Profiles:** `lite` skills pack · `core` · `full` — `npx {{PLATFORM_NPX}} --profile=lite --framework=cursor`
+> **Cherry-pick:** `npx {{PLATFORM_NPX}} --mode=add --add=skill:interview-me`
+> **Need more detail?** Say `"platform help"` → `.agent/PLATFORM-HELP.md` · `"show quick reference"` → this file
+
+---
+
+## Profiles — which install?
+
+| Profile | Best for | You get | You don't get |
+|---------|----------|---------|---------------|
+| **lite** | Solo dev, Cursor/Claude skills-first | 11 skills, lifecycle `/` commands, lite router | Expert agents, handoff registry, enterprise playbooks |
+| **core** | Full playbooks, no compliance layer | All playbooks + experts + session model | NFR/compliance/maturity playbooks only |
+| **full** (default) | Teams, multi-IDE, enterprise gates | Everything | — |
+
+Upgrade: `npx {{PLATFORM_NPX}} --profile=full` · List skills: `--mode=list --list=skills`
+
+---
+
+## When to use what — lifecycle commands
+
+**Plain language works too** — auto-routing loads the same skill/playbook. Use `/` commands when you want a predictable workflow every time.
+
+| Command | Use when… | Loads | How |
+|---------|-----------|-------|-----|
+| `/spec` | Idea is vague; need requirements before code | `interview-me` or `idea-refine` skill | Answer one question at a time; output → `spec-outline.md` |
+| `/plan` | Spec exists; need ordered tasks | `planning-and-task-breakdown` skill | Small verifiable slices; no coding yet |
+| `/build` | Plan approved; ready to implement | `incremental-implementation` skill | One slice at a time; say `/build auto` for autonomous slices after plan OK |
+| `/test` | Writing or fixing tests; TDD | `test-driven-development` skill | Red → green → refactor; tests are proof of behavior |
+| `/review` | Code review, sanity check, PR feedback | Critic expert patterns | Adversarial review — not implementation |
+| `/code-simplify` | Refactor for clarity; behavior must not change | `code-simplification` skill | Chesterton's Fence — understand before removing |
+| `/webperf` | Page feels slow; CWV/Lighthouse; API latency | `web-performance-audit` skill | Ask Quick vs Deep; **measure first** — no guessing |
+| `/context` | Agent invents APIs, ignores rules, or you **switched tasks** | `context-engineering` skill | Reload rules + only task-relevant files; ask on ambiguity |
+| `/verify` | Agent says "done" but you want **proof** | `verification-before-completion` skill | Re-run repro/tests; cite command output — no "looks fixed" |
+| `/ship` | Cut a release / tag | `release` playbook | Tests + gates before version bump |
+| `/audit` | First time in repo; health check (full) | All experts · `audit.md` | 11-phase report |
+| `/release` | Production go-live checklist (full) | `production-readiness` playbook | P0 NFRs + evidence |
+| `/implement` | Cursor Plan approved → code (full) | `add-feature` from Step 3 | After plan UI approval only |
+| `/quick-ref` | Forgot a command | This file | — |
+| `/platform-help` | Full offline guide (full) | `PLATFORM-HELP.md` | — |
+| `/caveman` | Long session; save tokens | `caveman` skill | Shorter output; rules unchanged |
+
+### Common confusions
+
+| Question | Answer |
+|----------|--------|
+| `/test` vs `/verify`? | **`/test`** = write/run tests (TDD). **`/verify`** = prove the fix/feature is actually done (evidence gate). |
+| `/webperf` vs performance-budget playbook? | **`/webperf`** = audit/measure CWV or API now. **Performance budget** = define targets in `nfr-log.md` then optimize. |
+| `/context` vs new chat? | **`/context`** = reload the *right* files/rules mid-session. **New chat** = full reset when context is heavily polluted. |
+| Skill vs playbook? | **Skill** = focused workflow (`SKILL.md`). **Playbook** = multi-step process with expert gates (`.agent/playbooks/`). |
+| Expert vs skill? | **Expert** = domain rules (backend, security…). **Skill** = lifecycle slice (plan, test, verify…). Router picks both when needed. |
+
+---
+
+## Skills catalog (11) — when & how
+
+Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load `using-platform` skill or say *"which skill should I use?"*
+
+| Skill | When | How / command |
+|-------|------|---------------|
+| `interview-me` | Underspecified feature; "grill me" | `/spec` · one question at a time → `spec-outline.md` |
+| `idea-refine` | Explore options before committing | `/spec` when idea is exploratory |
+| `planning-and-task-breakdown` | Spec ready; need task list | `/plan` |
+| `incremental-implementation` | Build approved plan in slices | `/build` · `/build auto` after plan OK |
+| `test-driven-development` | TDD, coverage, failing tests | `/test` |
+| `code-simplification` | Simplify without behavior change | `/code-simplify` |
+| `web-performance-audit` | CWV, Lighthouse, API latency audit | `/webperf` · Quick or Deep mode |
+| `context-engineering` | Hallucinations, stale chat, task switch | `/context` · reload hierarchy; ask if spec ≠ code |
+| `verification-before-completion` | Before ship; "is it really fixed?" | `/verify` · show test/repro output |
+| `browser-testing-devtools` | Browser MCP UI debugging (optional) | `--mode=add` · when you use browser automation |
+| `using-platform` | "Which workflow?" at session start (lite) | Read skill · pick one workflow only |
+| `caveman` | Token compression for long sessions | `/caveman` or "caveman mode" |
+
+---
+
+## Help & discovery
+
+| You say | You get |
+|---------|---------|
+| `"show quick reference"` / `"show help"` | This file (commands + when to use) |
+| `"platform help"` / `"how does this work"` | Full `.agent/PLATFORM-HELP.md` |
+| `"what version"` / `"check for updates"` | Version from `.agent/platform.json` + update check |
+| Describe task in plain English | Auto-routing → `▶ [Expert] · [playbook]` status line |
 
 ---
 
@@ -50,18 +134,26 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 ## Playbooks
 **Describe the situation — the right playbook loads automatically.** (20 total)
 
-**Claude Code shortcuts:** `/spec` · `/audit` · `/review` · `/release` · `/ship` · `/quick-ref`
+**Lifecycle shortcuts:** `/spec` · `/plan` · `/build` · `/test` · `/review` · `/code-simplify` · `/webperf` · `/context` · `/verify` · `/ship`
 
-| Your situation | Playbook | Key principle |
+| Your situation | Playbook / skill | Key principle |
 |---------------|---------|---------------|
 | First time in this repo / onboarding / health check | **Full Project Audit** — 11-phase report → `audit-[date].md` | Know before you change |
-| Underspecified idea / "interview me" | Requirements clarification → `spec-outline.md` | No code until spec is clear |
+| Underspecified idea / "interview me" | `interview-me` skill → `spec-outline.md` | No code until spec is clear |
+| Explore vague concepts | `idea-refine` skill | Diverge then converge |
+| Spec approved, need tasks | `planning-and-task-breakdown` skill · `/plan` | Small verifiable slices |
+| Ready to implement | `incremental-implementation` skill · `/build` | One slice at a time |
+| Tests / TDD | `test-driven-development` skill · `/test` | Tests are proof |
+| Simplify without behavior change | `code-simplification` skill · `/code-simplify` | Chesterton's Fence |
+| Page slow / CWV / Lighthouse / API latency | `web-performance-audit` skill · `/webperf` | Measure before optimize — Quick or Deep |
+| Agent inventing APIs / task switch / stale chat | `context-engineering` skill · `/context` | Reload rules + scoped files only |
+| "Done" but no proof / before ship | `verification-before-completion` skill · `/verify` | Evidence from tests/repro — not vibes |
 | Starting new feature work | Add feature | Design gate + doubt review first |
 | Something is broken | Bug fix | Reproduce → fix → regression test |
 | "hotfix", "rollback", "emergency fix" | Bug fix (DevOps path) | Stabilize before polish |
 | "clean up this area" (tests exist) | Refactor | Chesterton's Fence — understand before removing |
 | "something's wrong but I don't know why" | Debug pipeline | Hypothesis-driven narrowing |
-| "slow", "p95", "performance budget" | Performance budget | Measure before optimize (CWV) |
+| "slow", "p95", "performance budget" | Performance budget playbook | Define targets in `nfr-log.md` — then optimize |
 | Ready to ship a version | Release | Tests + Critic before tag |
 | "go live", "production ready", "PRR" | Production readiness | P0 NFRs + evidence before go-live |
 | Security review / OWASP / pentest prep | Security audit | Secrets + CVEs + OWASP API Top 10 |
