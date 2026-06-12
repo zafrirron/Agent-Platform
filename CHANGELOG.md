@@ -7,18 +7,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+---
+
+## [2.42.0] — 2026-06-09
+
 ### Added
-- **Install profiles** — `--profile=lite|core|full`; lite = skills pack without handoff/enterprise layer
+- **Install profiles** — `--profile=lite|core|full`; lite = skills pack without handoff/enterprise layer; `profile-filter.mjs` + `AGENTS-lite.md` + `QUICK-REF-lite.md`
 - **Cherry-pick install** — `--mode=add --add=skill:id` and `--mode=list --list=skills`
-- **11 lifecycle skills** — above + `context-engineering` (`/context`) + `verification-before-completion` (`/verify`) from Mode 4 R001/R005
+- **11 lifecycle skills** — modular `SKILL.md` pack including `context-engineering` (`/context`) and `verification-before-completion` (`/verify`) from Mode 4 R001/R005
 - **Lifecycle commands** — `/plan` `/build` `/test` `/code-simplify` `/webperf` `/context` `/verify` (Cursor + Claude)
-- **Unified scan registry** — `MAINTAINER/scan-results/registry.md` + `REPORT-SCHEMA.md` for all maintainer scan modes
-- **Mode 2 web audit (2026-06)** — OWASP 2025 A03 supply chain, A10 fail-closed errors, API2 auth batching, LLM action screening + injection logging
 - **Claude marketplace plugin** — `.claude-plugin/plugin.json` for `agent-platform-skills`
-- **docs/cursor-setup.md** — honest Cursor distribution guide (no marketplace)
+- **docs/cursor-setup.md** — Cursor distribution guide (no marketplace; `--profile=lite`)
+- **Unified scan registry** — `MAINTAINER/scan-results/registry.md` + `REPORT-SCHEMA.md`; Mode 4 governance scan archive (2026-06-09)
+- **Platform Sync Gate (PSG)** — mandatory maintainer auto-sync after Mode 1–4 changes; `platform-maintainer-sync.mdc`
 
 ### Changed
-- `/spec` routes to `interview-me` skill (idea-refine when exploratory)
+- `/spec` routes to `interview-me` skill (`idea-refine` when exploratory)
+- **QUICK-REF** — profiles matrix, lifecycle when/how table, skills catalog, common confusions (`/test` vs `/verify`, etc.)
+- **README Install** — profile recommendation table + capability matrix + lite→full upgrade path
+- **Mode 2 web audit (2026-06)** — OWASP 2025 supply chain, fail-closed errors, API auth batching, LLM action screening in security/backend/devops agents
 
 ---
 

@@ -503,7 +503,7 @@ describe('Phase 1A — agent manifest files deployed after install', () => {
 
 // ── v2.40.0 enterprise capabilities ────────────────────────────────────────
 
-describe('install — v2.41.0 agent-skills P0 ingest', () => {
+describe('install — v2.42.0 lifecycle skills + profiles', () => {
   const dir = tmpDir();
   const result = runApply(dir);
 
@@ -527,9 +527,9 @@ describe('install — v2.41.0 agent-skills P0 ingest', () => {
     'nfr-log.md', 'compliance-evidence-log.md', 'incident-log.md',
   ];
 
-  test('bootstrap_version is 2.41.0 in platform.json', () => {
+  test('bootstrap_version is 2.42.0 in platform.json', () => {
     const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
-    assert.equal(pj.bootstrap_version, '2.41.0', 'expected bootstrap_version 2.41.0');
+    assert.equal(pj.bootstrap_version, '2.42.0', 'expected bootstrap_version 2.42.0');
   });
 
   test('all 20 playbooks deployed', () => {
@@ -691,6 +691,7 @@ describe('install — v2.41.0 agent-skills P0 ingest', () => {
     assert.ok(qr.includes('Key principle'), 'QUICK-REF Key principle column missing');
     assert.ok(qr.includes('plan-mode-handoff'), 'QUICK-REF Plan handoff missing');
     assert.ok(qr.includes('/implement'), 'QUICK-REF /implement missing');
+    assert.ok(qr.includes('When to use what'), 'QUICK-REF lifecycle when/how section missing');
   });
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
