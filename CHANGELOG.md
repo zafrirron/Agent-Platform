@@ -7,6 +7,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+### Fixed
+- **Install banner** — consolidated Notes footer (no repeated separator blocks); guard against duplicate summary if `apply.js` loads twice; corrected Quick reference line (on-demand, not streamed at session start)
+
 ---
 
 ## [2.42.0] — 2026-06-09

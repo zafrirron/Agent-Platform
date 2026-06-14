@@ -1153,6 +1153,11 @@ if (MODE === 'remove-guards') {
 }
 
 /* ── Install summary ──────────────────────────────────────────────────────── */
+// Guard: apply.js can be loaded via two module URLs (bin/ vs AGENT-PLATFORM-APPLY.js).
+// Prevent duplicate install banners if both resolve in one process.
+if (globalThis.__AP_INSTALL_SUMMARY_DONE) process.exit(0);
+globalThis.__AP_INSTALL_SUMMARY_DONE = true;
+
 const LINE = '═'.repeat(66);
 const SEP  = '  ' + '─'.repeat(62);
 const fw = ['claude', 'cursor', 'agents', 'codex'];
@@ -1197,7 +1202,7 @@ console.log('                         references · NFR · compliance · depreca
 const runnerDisplay = vars.TEST_RUNNER.startsWith('<') ? 'not detected — set in .agent/CONVENTIONS.md' : vars.TEST_RUNNER;
 console.log(`  ✔  Test enforcement    runner: ${runnerDisplay}  |  coverage gate: ${vars.COVERAGE_THRESHOLD}%`);
 console.log('  ✔  Token compression   "caveman mode" — ~65% output reduction');
-console.log('  ✔  Quick reference     displayed on every session start');
+console.log('  ✔  Quick reference     .agent/QUICK-REF.md — say "show quick reference"');
 console.log('  ✔  Update check        node .agent/tools/check-updates.mjs');
 console.log('  ✔  Context docs        api-contracts · adr-log · known-issues · dependencies');
 console.log('  ✔  Zero code impact     platform files gitignored — your source code is untouched');
@@ -1248,22 +1253,15 @@ console.log('');
 console.log('  Works in: Claude Code · Cursor · Antigravity · Codex');
 console.log('  ⚠  This is an agent chat message — do not run it in the terminal.');
 console.log('');
+console.log('  Notes');
 console.log(SEP);
-console.log('  ℹ  Rules are guidance — not deterministic enforcement');
-console.log(SEP);
-console.log('  Platform rules are read by your AI agent and followed most of the');
-console.log('  time — but AI agents are probabilistic, not deterministic. A rule');
-console.log('  may occasionally be skipped depending on model, context, or session.');
+console.log('  ℹ  Rules are guidance — not deterministic enforcement.');
+console.log('     Platform rules are read by your AI agent and followed most of the time,');
+console.log('     but agents are probabilistic. For gates that must ALWAYS fire (tests,');
+console.log('     secrets, coverage): npx ' + vars.PLATFORM_NPX + ' --mode=install-guards');
 console.log('');
-console.log('  For gates that must ALWAYS fire (tests, secrets, coverage), install');
-console.log('  real pre-commit hooks and CI that block regardless of agent behaviour:');
-console.log('');
-console.log(`    npx ${vars.PLATFORM_NPX} --mode=install-guards`);
-console.log('');
-console.log(SEP);
-console.log('  To REMOVE all platform files, run in terminal:');
-console.log('');
-console.log(`    npx ${vars.PLATFORM_NPX} --mode=uninstall`);
+console.log('  To REMOVE all platform files: npx ' + vars.PLATFORM_NPX + ' --mode=uninstall');
 console.log('');
 console.log(LINE);
 console.log('');
+process.exit(0);

@@ -678,6 +678,11 @@ describe('install — v2.42.0 lifecycle skills + profiles', () => {
     assert.ok(result.stdout.includes('references'), 'install banner missing references hint');
   });
 
+  test('install stdout prints enforcement note once', () => {
+    const matches = result.stdout.match(/Rules are guidance/g) || [];
+    assert.equal(matches.length, 1, `expected 1 enforcement note, got ${matches.length}`);
+  });
+
   test('PLATFORM-HELP.md has Start here and slash command guidance', () => {
     const help = fs.readFileSync(path.join(dir, '.agent/PLATFORM-HELP.md'), 'utf8');
     assert.ok(help.includes('Start here'), 'PLATFORM-HELP Start here section missing');
