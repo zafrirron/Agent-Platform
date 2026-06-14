@@ -92,7 +92,7 @@ describe('global install — fresh home directory', () => {
     const vf = JSON.parse(fs.readFileSync(path.join(home, '.agent-platform/global-version'), 'utf8'));
     assert.ok(vf.version, 'version field missing');
     assert.match(vf.version, /^\d+\.\d+\.\d+$/, 'version is not semver');
-    assert.equal(vf.version, '2.42.0', 'expected global-version 2.42.0');
+    assert.equal(vf.version, '2.42.1', 'expected global-version 2.42.1');
   });
 
   test('~/.claude/CLAUDE.md has PLATFORM:START/END markers', () => {
