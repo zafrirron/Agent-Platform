@@ -146,7 +146,7 @@ Check if `.agent/MIGRATION-NOTES.md` exists.
 
 1. Read `.agent/MIGRATION-NOTES.md` — find the backup folder path (e.g. `.agent/backup/pre-install-*/`)
 2. Read `manifest.json` in that backup folder — it maps every backed-up filename to its original path
-3. For EVERY backed-up file (all frameworks — Claude, Cursor, Codex, Antigravity, any others):
+3. For EVERY backed-up file (all frameworks — Claude, Cursor, Codex, Antigravity, OpenCode, any others):
    - Read the file content
    - Identify which framework it came from by its original path:
      - `CLAUDE.md` → Claude Code instructions

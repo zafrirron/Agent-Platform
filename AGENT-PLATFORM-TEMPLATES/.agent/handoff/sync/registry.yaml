@@ -43,6 +43,15 @@ frameworks:
     files: []
     finality_state: clean
     step_manifest: []
+  opencode:
+    status: idle
+    started_at: null
+    last_active: null
+    agent_label: ""
+    task: ""
+    files: []
+    finality_state: clean
+    step_manifest: []
 
 # Phase 2B: idempotency keys — prevents double-execution on retry or cross-IDE takeover
 # Key: sha256(action_type + target + content_hash)[:16]

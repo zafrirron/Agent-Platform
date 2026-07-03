@@ -18,6 +18,24 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Add OpenCode as the 5th supported IDE framework (Mode 4: R036–R039)
+
+**Source:** Mode 4 targeted scan of `anomalyco/opencode` (resolved from https://opencode.ai/). OpenCode is a peer AI coding-agent runtime that natively reads `AGENTS.md`/`CLAUDE.md`/`SKILL.md` and supports `.opencode/commands`, `.opencode/agents`, and `opencode.json`.
+
+**Failure observed (opportunity):** the platform was invisible-but-usable in OpenCode (AGENTS.md auto-loads) yet had **no first-class support** — no slash commands, no invokable Critic, no config, no cross-IDE handoff registration. Users switching to/from OpenCode fell outside the multi-framework coordination model.
+
+**Files changed:** followed `MAINTAINER/add-framework.md` end-to-end.
+- **New templates** — `AGENT-PLATFORM-TEMPLATES/.opencode/`: `FRAMEWORK.json`, `opencode.json`, `sync.md`, `prompts/session-start.md`+`session-end.md`, `agents/critic.md`, `commands/*.md` (13 lifecycle commands).
+- **Installer** — `AGENT-PLATFORM-MANIFEST.json` (`frameworks[]` + 19 file entries), `profile-filter.mjs` (`FRAMEWORK_PREFIX.opencode` incl. root `opencode.json`), `apply.js` (fw list/labels, gitignore `.opencode/`+`opencode.json`, uninstall managed dirs/files, `FW_CONFIG_FILES`, `PLATFORM_FOLDER_SCANS`, `OPENCODE_PLATFORM_COMMANDS`, "5 IDE frameworks" banner, "Works in" line).
+- **Shared files** — registry.yaml, SYNC.md, ZONES.md, `.agent/session-start.md`+`session-end.md`, SYNC-POINTS.md, handoff/TEMPLATE.md, `.agent/README.md`, `AGENTS.md` private-folder list; "do not edit" lists in all four existing frameworks' prompts + `agent-sync.mdc` / `00-multi-framework-sync.md` / `.codex/instructions.md`.
+- **Docs/decks** — README, FRAMEWORK-README, BOOTSTRAP, `docs/DISTRIBUTION.md` (OpenCode interoperability section), PLATFORM-HELP, CONTRIBUTING, COPYING, `package.json`, both presentation decks; roadmap R040/R041.
+
+**Rule added:** OpenCode is a supported framework; installs are non-clobbering for `opencode.json`; `.opencode/` uses OpenCode's canonical plural subdir names (`commands/`, `agents/`).
+
+**Validated:** Yes — `npm test` 258/258 green (+13: default + scoped install, command/subagent/`opencode.json` emission, non-clobber of existing `opencode.json`, gitignore, no cross-framework leakage under `--framework=opencode`).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Fix: pack detection false positive (`stack-react` on every Node repo)
 
 **Failure observed:** A dry-run of pack detect-and-suggest on the E2E `tests/todo-app/` fixture (a plain Express REST API — no React) wrongly proposed `--add=pack:stack-react`. Root cause: `stack-react`'s `detect.files` included the generic `package.json`, and `detectPacks` treats every declared signal as match-any, so any repo with a `package.json` matched. Compounding: `detectPacks` silently ignored the `globs` and `keywords` signals the catalog declared, so React's real `**/*.tsx`/`**/*.jsx` signal never ran.

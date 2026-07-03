@@ -298,6 +298,7 @@ const LEGACY_ROOT_FILES = [
 const FW_CONFIG_FILES = [
   { file: '.codex/instructions.md',     label: 'Codex instructions' },
   { file: '.claude/settings.local.json',label: 'Claude Code local settings' },
+  { file: 'opencode.json',              label: 'OpenCode config' },
 ];
 
 /**
@@ -316,6 +317,10 @@ const CURSOR_PLATFORM_COMMANDS = [
   'session-start.md', 'session-end.md', 'platform-help.md',
   'caveman.md', 'caveman-commit.md', 'caveman-compress.md', 'caveman-review.md', 'caveman-stats.md',
 ];
+const OPENCODE_PLATFORM_COMMANDS = [
+  'quick-ref.md', 'spec.md', 'plan.md', 'build.md', 'test.md', 'code-simplify.md',
+  'webperf.md', 'context.md', 'verify.md', 'ship.md', 'audit.md', 'review.md', 'release.md',
+];
 
 const PLATFORM_FOLDER_SCANS = [
   { folder: '.claude/commands', ext: '.md',
@@ -330,6 +335,12 @@ const PLATFORM_FOLDER_SCANS = [
   { folder: '.agents/rules', ext: '.md',
     platformFiles: new Set(['00-multi-framework-sync.md']),
     label: 'Antigravity rule' },
+  { folder: '.opencode/commands', ext: '.md',
+    platformFiles: new Set(OPENCODE_PLATFORM_COMMANDS),
+    label: 'OpenCode command' },
+  { folder: '.opencode/agents', ext: '.md',
+    platformFiles: new Set(['critic.md']),
+    label: 'OpenCode agent' },
 ];
 
 function scanPreExistingArtifacts(root) {
@@ -807,9 +818,11 @@ const GI_BLOCK = `${GI_START}
 .cursor/
 .agents/
 .codex/
+.opencode/
 AGENTS.md
 SYNC-POINTS.md
 CLAUDE.md
+opencode.json
 ${GI_END}`;
 
 // Only add the gitignore block for project-modifying modes (not uninstall-global which uses HOME)
@@ -868,8 +881,8 @@ if (fs.existsSync(platformPath)) {
 /* ── Uninstall mode ───────────────────────────────────────────────────────── */
 if (MODE === 'uninstall') {
   const LINE = '═'.repeat(62);
-  const managedDirs  = ['.agent', '.claude', '.cursor', '.agents', '.codex'];
-  const managedFiles = ['AGENTS.md', 'SYNC-POINTS.md', 'CLAUDE.md'];
+  const managedDirs  = ['.agent', '.claude', '.cursor', '.agents', '.codex', '.opencode'];
+  const managedFiles = ['AGENTS.md', 'SYNC-POINTS.md', 'CLAUDE.md', 'opencode.json'];
   const all = [...managedDirs, ...managedFiles];
 
   console.log('');
@@ -1252,8 +1265,8 @@ globalThis.__AP_INSTALL_SUMMARY_DONE = true;
 
 const LINE = '═'.repeat(66);
 const SEP  = '  ' + '─'.repeat(62);
-const fw = ['claude', 'cursor', 'agents', 'codex'];
-const fwLabel = { claude: 'Claude Code', cursor: 'Cursor', agents: 'Antigravity', codex: 'Codex (VS Code)' };
+const fw = ['claude', 'cursor', 'agents', 'codex', 'opencode'];
+const fwLabel = { claude: 'Claude Code', cursor: 'Cursor', agents: 'Antigravity', codex: 'Codex (VS Code)', opencode: 'OpenCode' };
 const modeLabel = { install: 'Installed', upgrade: 'Upgraded', repair: 'Repaired', force: 'Reset', add: 'Added' };
 
 console.log('');
@@ -1286,7 +1299,7 @@ console.log('');
 console.log('  Capabilities');
 console.log(SEP);
 const playbookCount = manifest.files.filter((f) => f.kind === 'playbook').length;
-console.log('  ✔  4 IDE frameworks    Claude Code · Cursor · Antigravity · Codex');
+console.log('  ✔  5 IDE frameworks    Claude Code · Cursor · Antigravity · Codex · OpenCode');
 console.log('  ✔  9 expert agents     Architect · Backend · Frontend · DevOps · Critic');
 console.log('                         Test · Docs · Security · Data');
 console.log(`  ✔  ${playbookCount} playbooks        see .agent/QUICK-REF.md for full inventory`);
@@ -1342,7 +1355,7 @@ console.log('  ┌────────────────────�
 console.log('  │  Read .agent/session-start.md and execute it.              │');
 console.log('  └─────────────────────────────────────────────────────────────┘');
 console.log('');
-console.log('  Works in: Claude Code · Cursor · Antigravity · Codex');
+console.log('  Works in: Claude Code · Cursor · Antigravity · Codex · OpenCode');
 console.log('  ⚠  This is an agent chat message — do not run it in the terminal.');
 console.log('');
 if (['install', 'upgrade'].includes(MODE)) {

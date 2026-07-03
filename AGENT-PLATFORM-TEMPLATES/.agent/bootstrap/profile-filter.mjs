@@ -71,6 +71,7 @@ const FRAMEWORK_PREFIX = {
   cursor:      ['.cursor/'],
   antigravity: ['.agents/'],
   codex:       ['.codex/'],
+  opencode:    ['.opencode/', 'opencode.json'],
 };
 
 export function playbookBasename(entry) {

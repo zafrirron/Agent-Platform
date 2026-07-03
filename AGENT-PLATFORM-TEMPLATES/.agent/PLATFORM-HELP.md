@@ -36,7 +36,7 @@
 | **Evidence** | `/verify` | `verification-before-completion` skill |
 | **Ship** | `/ship` `/release` | Release · production readiness (full) |
 
-**Slash commands (`/`):** Cursor → `.cursor/commands/` · Claude → `.claude/commands/` or marketplace plugin  
+**Slash commands (`/`):** Cursor → `.cursor/commands/` · Claude → `.claude/commands/` or marketplace plugin · OpenCode → `.opencode/commands/`  
 `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` `/quick-ref` · full profile: `/audit` `/session-start` `/implement` (Cursor)
 
 **Quick reference:** `Read .agent/QUICK-REF.md` (lifecycle, skills, when to use) · **Full offline guide:** you are reading it.
@@ -76,7 +76,7 @@ INSTALL (once)
 npx {{PLATFORM_NPX}}
   │
   ├─ Backs up any existing AI configs (CLAUDE.md, Cursor rules, etc.)
-  ├─ Installs .agent/ .claude/ .cursor/ .agents/ .codex/
+  ├─ Installs .agent/ .claude/ .cursor/ .agents/ .codex/ .opencode/
   ├─ Fills stubs: project name, stack, test runner, coverage
   ├─ Adds platform block to .gitignore
   └─ Prints install summary with capability list + session-start command
@@ -680,7 +680,7 @@ GitHub: `https://github.com/microsoft/agent-governance-toolkit`
 
 | Guarantee | What it means |
 |-----------|--------------|
-| **No code changes on install** | Only `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` and 3 root files are added. Your source files are never modified. |
+| **No code changes on install** | Only `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` `.opencode/` and root files (`AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md` `opencode.json`) are added. Your source files are never modified. |
 | **Nothing committed accidentally** | All platform files are gitignored on install. `git status` stays clean. |
 | **Clean removal** | `--mode=uninstall` removes the platform coordination layer and restores your original AI configs from backup. Your AI agents improved your code while you used the platform — those improvements are yours to keep. The scaffolding that guided them is what gets removed. |
 | **Customisations survive upgrades** | `mode=upgrade` only updates PLATFORM sections. Your project rules are never overwritten. |

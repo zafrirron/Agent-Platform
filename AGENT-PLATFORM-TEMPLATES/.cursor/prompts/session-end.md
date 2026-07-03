@@ -4,6 +4,6 @@
 
 My framework folder name is: `cursor`
 
-Do not edit `.claude/`, `.agents/`, or `.codex/` during this session.
+Do not edit `.claude/`, `.agents/`, `.codex/`, or `.opencode/` during this session.
 
 Read `.agent/session-end-shared.md` and execute it, replacing every `<fw>` with `cursor`.

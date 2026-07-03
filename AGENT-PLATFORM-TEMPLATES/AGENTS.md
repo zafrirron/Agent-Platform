@@ -136,7 +136,7 @@ A task is dev-related if it references code, a file, a function, a component, an
 ## 4 · Cross-framework coordination
 
 - Shared hub: `.agent/` — all frameworks read and write here
-- Private folders: `.claude/` `.cursor/` `.agents/` `.codex/` — never edit other frameworks' private folders
+- Private folders: `.claude/` `.cursor/` `.agents/` `.codex/` `.opencode/` — never edit other frameworks' private folders
 - Registry: `.agent/handoff/sync/registry.yaml` — active-framework lock
 - Handoff log: `.agent/handoff/CURRENT.md` — session history and next-agent notes
 <!-- PLATFORM:END -->

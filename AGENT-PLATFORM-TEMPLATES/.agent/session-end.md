@@ -15,6 +15,7 @@ You know which IDE you are. Map it to a framework folder name:
 | Cursor | `cursor` |
 | Antigravity | `agents` |
 | Codex (VS Code) | `codex` |
+| OpenCode | `opencode` |
 
 ---
 

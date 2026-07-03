@@ -15,8 +15,9 @@ You know which IDE you are. Map it to a framework folder name:
 | Cursor | `cursor` |
 | Antigravity | `agents` |
 | Codex (VS Code) | `codex` |
+| OpenCode | `opencode` |
 
-If uncertain, check which private folder exists in this repo (`.claude/`, `.cursor/`, `.agents/`, `.codex/`), or default to `claude`.
+If uncertain, check which private folder exists in this repo (`.claude/`, `.cursor/`, `.agents/`, `.codex/`, `.opencode/`), or default to `claude`.
 
 ---
 

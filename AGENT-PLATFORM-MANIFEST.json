@@ -22,7 +22,8 @@
     "cursor",
     "claude",
     "antigravity",
-    "codex"
+    "codex",
+    "opencode"
   ],
   "profiles": {
     "lite": "Skills pack — lifecycle commands, cherry-pick skills, no handoff/enterprise layer",
@@ -737,6 +738,101 @@
       "path": ".codex/prompts/session-start.md",
       "template": ".codex/prompts/session-start.md",
       "kind": "template"
+    },
+    {
+      "path": ".opencode/FRAMEWORK.json",
+      "template": ".opencode/FRAMEWORK.json",
+      "kind": "template"
+    },
+    {
+      "path": "opencode.json",
+      "template": ".opencode/opencode.json",
+      "kind": "template"
+    },
+    {
+      "path": ".opencode/prompts/session-start.md",
+      "template": ".opencode/prompts/session-start.md",
+      "kind": "template"
+    },
+    {
+      "path": ".opencode/prompts/session-end.md",
+      "template": ".opencode/prompts/session-end.md",
+      "kind": "template"
+    },
+    {
+      "path": ".opencode/sync.md",
+      "template": ".opencode/sync.md",
+      "kind": "template"
+    },
+    {
+      "path": ".opencode/agents/critic.md",
+      "template": ".opencode/agents/critic.md",
+      "kind": "template"
+    },
+    {
+      "path": ".opencode/commands/quick-ref.md",
+      "template": ".opencode/commands/quick-ref.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/spec.md",
+      "template": ".opencode/commands/spec.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/plan.md",
+      "template": ".opencode/commands/plan.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/build.md",
+      "template": ".opencode/commands/build.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/test.md",
+      "template": ".opencode/commands/test.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/code-simplify.md",
+      "template": ".opencode/commands/code-simplify.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/webperf.md",
+      "template": ".opencode/commands/webperf.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/context.md",
+      "template": ".opencode/commands/context.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/verify.md",
+      "template": ".opencode/commands/verify.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/review.md",
+      "template": ".opencode/commands/review.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/ship.md",
+      "template": ".opencode/commands/ship.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/audit.md",
+      "template": ".opencode/commands/audit.md",
+      "kind": "command"
+    },
+    {
+      "path": ".opencode/commands/release.md",
+      "template": ".opencode/commands/release.md",
+      "kind": "command"
     },
     {
       "path": ".cursor/FRAMEWORK.json",

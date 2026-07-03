@@ -14,12 +14,12 @@
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** **Opt-in language/stack/domain Packs** (curated expertise layered on the agnostic core — [see below](#language-technology-stack--domain-packs-opt-in)). Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, Codex, and OpenCode work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** **Opt-in language/stack/domain Packs** (curated expertise layered on the agnostic core — [see below](#language-technology-stack--domain-packs-opt-in)). Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
 
 **Lifecycle:** `DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP` (full profile adds session handoff + enterprise gates)
 
 > **The platform coordination layer never modifies your source code.** It only adds `.agent/`, `.claude/`, etc. — all gitignored so nothing is accidentally committed. Your AI agents will write and improve your code through the platform. That's the point. The platform scaffolding itself stays completely out of your codebase.
-> **Already using Claude Code, Cursor, Antigravity, or Codex?** Your existing `CLAUDE.md`, `AGENTS.md`, and Cursor rules are preserved, backed up, and never overwritten. Remove the platform and your originals are restored.
+> **Already using Claude Code, Cursor, Antigravity, Codex, or OpenCode?** Your existing `CLAUDE.md`, `AGENTS.md`, Cursor rules, and `opencode.json` are preserved, backed up, and never overwritten. Remove the platform and your originals are restored. (OpenCode reads the platform's `AGENTS.md`, `CLAUDE.md`, and `.claude/skills` natively — no adapter needed.)
 
 ---
 
@@ -50,9 +50,9 @@ Expert rules and playbooks are plain-text instructions that tell AI agents how t
 
 | Guarantee | Detail |
 |-----------|--------|
-| **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md`. Zero modifications to your existing files. |
+| **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` `.opencode/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md` `opencode.json`. Zero modifications to your existing files. |
 | **Nothing committed accidentally** | All platform folders and files are added to `.gitignore` automatically on install. `git status` stays clean. Your team never sees platform noise. |
-| **Existing AI configs are preserved** | Already using Claude Code, Cursor, Antigravity, or Codex? Your `CLAUDE.md`, `AGENTS.md`, Cursor rules, and any other AI config files are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
+| **Existing AI configs are preserved** | Already using Claude Code, Cursor, Antigravity, Codex, or OpenCode? Your `CLAUDE.md`, `AGENTS.md`, Cursor rules, `opencode.json`, and any other AI config files are **never overwritten**. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains how to connect them to the platform. |
 | **Clean removal** | `--mode=uninstall` removes all platform AI coordination files and restores your original AI configs from backup. The platform coordination layer never modifies your source code — your AI agents write code for you, the platform just makes them smarter. |
 | **Your customisations survive upgrades** | `mode=upgrade` only updates the `<!-- PLATFORM:START/END -->` section of each file. Your project-specific content is never overwritten. |
 
@@ -224,11 +224,11 @@ Repeat. The platform never stops improving.
 
 | Capability | Description |
 |------------|-------------|
-| **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — coordinated, no conflicts |
+| **5 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex · OpenCode — coordinated, no conflicts |
 | **9 expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name |
 | **Critic agent** | Adversarial reviewer — finds bugs, security issues, edge cases, and test gaps that implementing agents miss. Built into bug-fix, add-feature, and release playbooks. |
 | **Cross-framework critic review** | When you switch IDEs (e.g. Claude Code → Cursor), the new agent automatically offers to review the previous model's work. Different AI models have different blind spots — cross-model review catches what the first model missed. Zero extra setup. |
-| **Emergency IDE takeover** | If an IDE runs out of credits or crashes mid-session, just start a session in any other IDE. It detects the stuck session, offers to take over, commits any uncommitted work, and continues — no manual file editing, no lost work. Switch between Claude Code, Cursor, Codex, and Antigravity freely based on credits and availability. |
+| **Emergency IDE takeover** | If an IDE runs out of credits or crashes mid-session, just start a session in any other IDE. It detects the stuck session, offers to take over, commits any uncommitted work, and continues — no manual file editing, no lost work. Switch between Claude Code, Cursor, Codex, Antigravity, and OpenCode freely based on credits and availability. |
 | **🔍 Full Project Audit** | 11-phase professional report on first session or on demand — architecture through governance/maturity. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
 | **20 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api · deprecation · requirements-clarification. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
 | **Reference checklists** | `.agent/references/` — testing, security, performance, accessibility, orchestration patterns (agent-skills–informed) |
@@ -247,7 +247,7 @@ Repeat. The platform never stops improving.
 | **Docs governance** | Every doc has a registered owner expert. Done-when checklists enforce updates. Session end catches new unregistered files. Release playbook blocked until Docs agent approves all docs current. New docs added by users are detected automatically and added to the registry. |
 | **Token compression** | `"caveman mode"` — ~65% shorter output, same accuracy, all IDEs |
 | **Enforcement guards** | `--mode=install-guards` wires real pre-commit hooks and GitHub Actions CI — secrets scan, test suite, coverage gate, unregistered doc detection. Aspiration becomes enforcement. |
-| **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/`. Nothing else changes. All platform files gitignored by default. Remove completely with one command — nothing left behind. |
+| **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` `.opencode/`. Nothing else changes. All platform files gitignored by default. Remove completely with one command — nothing left behind. |
 
 ---
 
@@ -258,7 +258,7 @@ Repeat. The platform never stops improving.
 │  INSTALL  (once)                                                      │
 │  npx github:zafrirron/Agent-Platform                                 │
 │                                                                       │
-│  Detects stack · Installs .agent/ .claude/ .cursor/ .agents/ .codex/ │
+│  Detects stack · Installs .agent/ + 5 IDE framework folders         │
 │  Backs up any existing AI configs · Gitignores platform files        │
 │  Prints: capability list + one session-start command                 │
 └──────────────────────────────────┬──────────────────────────────────┘
@@ -381,7 +381,7 @@ Install user-level stubs to your home directory so the platform activates automa
 npx github:zafrirron/Agent-Platform --mode=global
 ```
 
-Writes to `~/.claude/CLAUDE.md`, `~/.claude/commands/`, `~/.cursor/rules/`, `~/.cursor/commands/`, `~/.codex/instructions.md`, `~/.agents/rules/` — all four frameworks.
+Writes to `~/.claude/CLAUDE.md`, `~/.claude/commands/`, `~/.cursor/rules/`, `~/.cursor/commands/`, `~/.codex/instructions.md`, `~/.agents/rules/` — the Claude, Cursor, Codex, and Antigravity global layers. (OpenCode is configured per-project via `AGENTS.md` + `opencode.json`; a global `~/.config/opencode/` layer is on the roadmap.)
 
 **What it does:**
 - **Repo with platform installed** → expert routing activates automatically, no manual session-start needed

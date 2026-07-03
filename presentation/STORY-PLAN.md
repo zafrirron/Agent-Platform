@@ -96,7 +96,7 @@ These are not suggestions. They are hard stops.
 Address the top developer concern: "Will this force me into a rigid style?"
 
 Talking points:
-- Works in Cursor, Claude Code, Codex, Antigravity. Your IDE choice stays your choice.
+- Works in Cursor, Claude Code, Codex, Antigravity, OpenCode. Your IDE choice stays your choice.
 - Each expert file has two sections. PLATFORM section = OWASP rules, quality gates — upgraded automatically. PROJECT section = your stack, your conventions, your rules — **never overwritten, ever**.
 - Cursor multi-model: all Cursor models (GPT-4o, Claude, Gemini) inherit the same `.cursor/rules/` and `.cursor/commands/` automatically. Model switches mid-task = treat like a framework switch; run session-end first.
 - **Cursor Plan mode:** after approving a plan, `/implement` (or `"implement the plan"`) resumes `add-feature` from Step 3 — Security (5a) and Critic (5b) still mandatory.
@@ -357,7 +357,7 @@ If slide numbers don't match, say: *"Slide shows a full session ceiling — we h
 |-----------|----------|
 | "Will it slow me down?" | The gates catch things that become PRs or bugs. Catching them before code is faster. Caveman mode cuts output 65% for routine sessions. |
 | "Will it mess up my existing setup?" | Zero code impact. All platform files gitignored. Original AI configs backed up and restorable. One command uninstalls cleanly. |
-| "What about my IDE / model preference?" | Cursor, Claude Code, Codex, Antigravity all supported. Cursor multi-model works — all models inherit the same rules automatically. |
+| "What about my IDE / model preference?" | Cursor, Claude Code, Codex, Antigravity, OpenCode all supported. Cursor multi-model works — all models inherit the same rules automatically. |
 | "The gates are too strict for quick fixes" | Design gate scales: trivial fix = one sentence and "ok". No friction for small changes. |
 | "What if I disagree with a rule?" | Add it to your PROJECT section. Rules there override the platform section and survive every upgrade. |
 | "AI agents aren't reliable enough for this" | The platform assumes the agent is unreliable — that's why the Critic exists. The gates catch what the implementing agent misses. |

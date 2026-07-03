@@ -8,6 +8,7 @@
 | Claude | `.claude/` + `CLAUDE.md` |
 | Antigravity | `.agents/` |
 | Codex | `.codex/` |
+| OpenCode | `.opencode/` + `opencode.json` |
 
 `.agent/` (singular) = **shared hub**.
 

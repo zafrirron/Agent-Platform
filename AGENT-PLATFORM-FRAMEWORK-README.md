@@ -38,7 +38,7 @@ Human guides (installation, usage, extending) are **in this file**. Templates ar
 
 > **One command. A complete agentic development environment on any repository.**
 
-Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 4 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, **20 step-by-step playbooks** (core delivery + NFR/quality + compliance/maturity), a framework-aware quick reference on every session start, built-in test enforcement, ISO 25010-style NFR register, production-readiness and compliance evidence gates, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
+Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds it builds a full coordination platform: 5 IDE frameworks working together without conflicts, 9 software-expert agents (including the Critic — adversarial reviewer) you activate by name, **20 step-by-step playbooks** (core delivery + NFR/quality + compliance/maturity), a framework-aware quick reference on every session start, built-in test enforcement, ISO 25010-style NFR register, production-readiness and compliance evidence gates, docs governance (every doc has a registered owner — release blocked until Docs agent approves all docs current), living project-knowledge docs, built-in token compression, zero footprint (all files gitignored, clean uninstall), and a self-documenting extension system. Your existing code is never touched.
 
 **Lifecycle:** `INSTALL → SESSION → ROUTE → GATES → SHIP` — see [How it works](#how-it-works) in the main README.
 
@@ -148,7 +148,7 @@ These names appear in playbooks and expert agents — they are deliberate discip
 
 | Capability | What it does |
 |------------|-------------|
-| **4 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex — each gets a private folder with session-start/end prompts and skill wiring |
+| **5 IDE frameworks** | Claude Code · Cursor · Antigravity · Codex · OpenCode — each gets a private folder with session-start/end prompts and skill wiring |
 | **Cross-IDE coordination** | `registry.yaml` prevents two IDEs editing the same file simultaneously; `CURRENT.md` preserves full context across switches |
 | **9 software-expert agents** | Architect · Backend · Frontend · DevOps · Test · Docs · Security · Data · **Critic** — activate by name, chain across sessions |
 | **Critic agent** | Adversarial reviewer with 10 review dimensions (correctness, security, test, completeness, performance, design, dependency, accessibility, operability, BC). Severity-rated findings. Built into add-feature, bug-fix, release, and audit playbooks as mandatory quality gates. |
@@ -163,13 +163,13 @@ These names appear in playbooks and expert agents — they are deliberate discip
 | **Test enforcement** | Every new public function, bug fix, and API endpoint requires a test before done; coverage gate auto-detected at install; red suite blocks handoff. Test expert auto-generates a visual coverage report (`coverage/lcov-report/index.html`) — open in browser to see line-by-line coverage. |
 | **11+ living context files** | api-contracts · adr-log · known-issues · dependencies · project-overview · patterns · nfr-log · compliance-evidence-log · incident-log · docs-registry · reputation.json — kept in sync as code evolves |
 | **📋 Docs governance** | Every project doc is registered with an owner expert, audience, and staleness threshold. All expert Done-when checklists require checking owned docs. Session end scans for new unregistered files. Release playbook blocked until Docs agent audits all docs current. Pre-commit guard warns on unregistered new doc files. |
-| **🪨 Caveman skill** | ~65% output token savings; activated with `"caveman mode"` across all 4 frameworks |
+| **🪨 Caveman skill** | ~65% output token savings; activated with `"caveman mode"` across all 5 frameworks |
 | **Agentic update check** | `node .agent/tools/check-updates.mjs` — or tell the agent: `Read .agent/tools/upgrade.md and execute it.` Checks once per 7 days, caches result. |
 | **3 install paths** | npx · curl/iwr shell one-liner · agent-direct. No file copying. Version-pinnable. |
 | **API agentic patterns** | 12 conventions for agents that build or consume APIs: schema-first, contract discipline, idempotency, structured errors, auth injection, rate-limit backoff, mock-first, contract tests |
 | **Extensible by prompt** | 7-step extension anatomy + ready-to-paste prompts for adding new agents, playbooks, skills, IDE frameworks, or context files — permanently, so every future repo gets them |
 | **Self-customising** | Phase 0 scans your codebase and fills project name, stack, test runner, coverage command, and entry points automatically |
-| **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` — your source files are never modified. All platform files gitignored automatically. Remove with one command and nothing remains. |
+| **Zero code impact** | Installs only into `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` `.opencode/` — your source files are never modified. All platform files gitignored automatically. Remove with one command and nothing remains. |
 
 ---
 
@@ -302,7 +302,7 @@ Upgrade global stubs later with the same command: `npx github:zafrirron/Agent-Pl
 | Requirement | Notes |
 |-------------|-------|
 | A git repository | `git init` if starting fresh |
-| Any agentic IDE | Claude Code, Cursor, Antigravity, or Codex (VS Code) |
+| Any agentic IDE | Claude Code, Cursor, Antigravity, Codex (VS Code), or OpenCode |
 | Node.js 18+ | Required for `npx` path only; shell one-liners handle this automatically |
 
 ---
@@ -335,9 +335,9 @@ Same commands — the installer **never overwrites existing files** in default m
 npx github:zafrirron/Agent-Platform
 ```
 
-**Zero changes to your existing code.** The installer adds only platform coordination folders (`.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`) and three root files (`AGENTS.md`, `SYNC-POINTS.md`, `CLAUDE.md`). All of these are added to `.gitignore` automatically — your `git status` stays clean and nothing is accidentally committed with your code.
+**Zero changes to your existing code.** The installer adds only platform coordination folders (`.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`, `.opencode/`) and root files (`AGENTS.md`, `SYNC-POINTS.md`, `CLAUDE.md`, `opencode.json`). All of these are added to `.gitignore` automatically — your `git status` stays clean and nothing is accidentally committed with your code.
 
-**Already using Claude Code, Cursor, Antigravity, or Codex before installing?** The installer scans for pre-existing AI artifacts before touching anything:
+**Already using Claude Code, Cursor, Antigravity, Codex, or OpenCode before installing?** The installer scans for pre-existing AI artifacts before touching anything:
 
 | Found | What happens |
 |-------|-------------|
@@ -394,7 +394,7 @@ repo-root/
 ├── .agent/                           ← SHARED hub (all frameworks)
 │   ├── BEST-PRACTICES.md             ← 10 golden rules + protocols
 │   ├── QUICK-REF.md                  ← capability quick reference (shown every session start)
-│   ├── session-start-shared.md       ← shared session-start logic for all 4 frameworks
+│   ├── session-start-shared.md       ← shared session-start logic for all 5 frameworks
 │   ├── PROJECT.md, CONVENTIONS.md, WORKFLOWS.md, FILE_MAP.md
 │   ├── ZONES.md, SYNC.md, CHECKLIST.md
 │   ├── agents/                       ← 9 software-expert personas + machine-readable manifests
@@ -440,7 +440,12 @@ repo-root/
 │   ├── skills/caveman.md
 │   └── prompts/session-start.md + session-end.md
 │
-└── .codex/    🔒 Codex private
+├── .codex/    🔒 Codex private
+│   └── prompts/session-start.md + session-end.md
+│
+└── .opencode/ 🔒 OpenCode private (+ opencode.json at root)
+    ├── commands/  ← lifecycle slash commands (/spec · /plan · /build · …)
+    ├── agents/    ← critic subagent (@critic)
     └── prompts/session-start.md + session-end.md
 ```
 
@@ -494,6 +499,7 @@ Pick your IDE and paste the start command. The agent reads the registry, checks 
 | **Cursor** | `Read .cursor/prompts/session-start.md and execute it.` |
 | **Antigravity** | `Read .agents/prompts/session-start.md and execute it.` |
 | **Codex (VS Code)** | `Read .codex/prompts/session-start.md and execute it.` |
+| **OpenCode** | `Read .opencode/prompts/session-start.md and execute it.` |
 
 ---
 
@@ -507,6 +513,7 @@ Always run before switching tools or closing the IDE. The agent marks itself idl
 | **Cursor** | `Read .cursor/prompts/session-end.md and execute it.` |
 | **Antigravity** | `Read .agents/prompts/session-end.md and execute it.` |
 | **Codex (VS Code)** | `Read .codex/prompts/session-end.md and execute it.` |
+| **OpenCode** | `Read .opencode/prompts/session-end.md and execute it.` |
 
 ---
 
@@ -598,7 +605,7 @@ Most projects have the same problem: documentation drifts behind the code becaus
 
 ### 6 · 🪨 Caveman — token compression mode
 
-Caveman cuts AI output by ~65% while keeping full technical accuracy. Activate it any time using natural language — the same commands work across all 4 frameworks.
+Caveman cuts AI output by ~65% while keeping full technical accuracy. Activate it any time using natural language — the same commands work across all 5 frameworks.
 
 ```
 caveman mode          → full compression (default)
@@ -844,7 +851,7 @@ Full audit: `Read .agent/agents/security-agent.md` + `Read .agent/playbooks/secu
 ### Quick-reference card
 
 > The full quick reference is also displayed automatically at every session start.
-> `<fw>` = your active framework folder: `claude` · `cursor` · `agents` · `codex`
+> `<fw>` = your active framework folder: `claude` · `cursor` · `agents` · `codex` · `opencode`
 
 ```
 SESSION START       Read .<fw>/prompts/session-start.md and execute it.
@@ -1018,6 +1025,7 @@ Follow the extension anatomy (all 7 steps):
    - .cursor/rules/[skill-name].mdc       (Cursor MDC rule, alwaysApply: false)
    - .agents/skills/[skill-name].md       (Antigravity wiring)
    - note in .codex/instructions.md template (Codex plain-language activation)
+   - .opencode/commands/[skill-name].md   (OpenCode slash command)
 5. Phase 3 — no stub needed (skill is universal, not project-specific)
 6. Manifest rebuild + version bump — add compliance checks for each framework wiring file
 7. AGENTS.md template §6 or new section — describe how to activate the skill
@@ -1198,7 +1206,7 @@ Finally bump the version in the footer line.
 
 Capability to add: [DESCRIBE IN ONE SENTENCE]
 Files it creates: [LIST PATHS]
-Frameworks it touches: [all | cursor | claude | antigravity | codex]
+Frameworks it touches: [all | cursor | claude | antigravity | codex | opencode]
 ```
 
 Use this prompt verbatim — every part maps to a concrete location in the file. The agent will know exactly where to make each change.

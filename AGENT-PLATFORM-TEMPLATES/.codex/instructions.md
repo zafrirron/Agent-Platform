@@ -7,7 +7,7 @@ Read `AGENTS.md` and `.agent/CONVENTIONS.md` every session.
 Session start: `Read .codex/prompts/session-start.md and execute it.`
 Session end:   `Read .codex/prompts/session-end.md and execute it.`
 
-Do not edit `.cursor/`, `.claude/`, `.agents/`.
+Do not edit `.cursor/`, `.claude/`, `.agents/`, `.opencode/`.
 
 ## Session awareness (check once per chat)
 

@@ -9,6 +9,7 @@
     "claude",
     "cursor",
     "codex",
+    "opencode",
     "multi-agent",
     "agentic"
   ],
@@ -26,7 +27,7 @@
     "agent-platform": "bin/agent-platform.js"
   },
   "scripts": {
-    "pretest": "node -e \"const fs=require('fs'); ['.agent','.claude','.cursor','.agents','.codex','AGENTS.md','CLAUDE.md','SYNC-POINTS.md'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true})}catch{}})\"",
+    "pretest": "node -e \"const fs=require('fs'); ['.agent','.claude','.cursor','.agents','.codex','.opencode','AGENTS.md','CLAUDE.md','SYNC-POINTS.md','opencode.json'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true})}catch{}})\"",
     "test": "node --test tests/apply-utils.test.mjs tests/profile-filter.test.mjs tests/apply-integration.test.mjs tests/global-install.test.mjs",
     "test:manual": "node tests/run-manual.mjs",
     "manifest": "node tools/build-bootstrap-manifest.js",

@@ -23,7 +23,7 @@ We do **not** accept wholesale copies of third-party skill packs. We **selective
 1. **Search existing issues** — duplicates slow review.
 2. **Describe the failure** — what went wrong in a real session or repo? Vague "make agents better" is hard to act on.
 3. **Point to the file** — if you know it: `.agent/playbooks/…`, `.agent/agents/…`, `AGENT-PLATFORM-TEMPLATES/…`
-4. **Say which IDE** — Claude Code, Cursor, Antigravity, or Codex (routing differs slightly).
+4. **Say which IDE** — Claude Code, Cursor, Antigravity, Codex, or OpenCode (routing differs slightly).
 
 ---
 

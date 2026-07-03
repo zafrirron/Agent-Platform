@@ -12,6 +12,7 @@ Switch tools with two commands: **session-start** when you arrive, **session-end
 | **Claude Code** | `Read .claude/prompts/session-start.md and execute it.` | `Read .claude/prompts/session-end.md and execute it.` |
 | **Antigravity** | `Read .agents/prompts/session-start.md and execute it.` | `Read .agents/prompts/session-end.md and execute it.` |
 | **Codex (VS Code)** | `Read .codex/prompts/session-start.md and execute it.` | `Read .codex/prompts/session-end.md and execute it.` |
+| **OpenCode** | `Read .opencode/prompts/session-start.md and execute it.` | `Read .opencode/prompts/session-end.md and execute it.` |
 
 ## Private areas
 
@@ -21,6 +22,7 @@ Switch tools with two commands: **session-start** when you arrive, **session-end
 | Claude | `.claude/` + `CLAUDE.md` |
 | Antigravity | `.agents/` |
 | Codex | `.codex/` |
+| OpenCode | `.opencode/` + `opencode.json` |
 
 ## Shared sync (all frameworks)
 

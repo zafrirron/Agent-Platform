@@ -92,9 +92,11 @@ From **this repository's** scan, fill:
 .cursor/
 .agents/
 .codex/
+.opencode/
 AGENTS.md
 SYNC-POINTS.md
 CLAUDE.md
+opencode.json
 # Agent Platform Bootstrap — END
 ```
 
@@ -108,7 +110,7 @@ Report mode, created/updated/skipped counts, bootstrap version, and session-star
 
 ## Installed layout (output)
 
-Private IDE folders (`.cursor/`, `.claude/`, `.agents/`, `.codex/`), shared `.agent/`, `AGENTS.md`, `SYNC-POINTS.md`, `CLAUDE.md`.
+Private IDE folders (`.cursor/`, `.claude/`, `.agents/`, `.codex/`, `.opencode/`), shared `.agent/`, `AGENTS.md`, `SYNC-POINTS.md`, `CLAUDE.md`, `opencode.json`.
 
 **.agent/** (singular) = shared hub · **.agents/** (plural) = Antigravity private only.
 

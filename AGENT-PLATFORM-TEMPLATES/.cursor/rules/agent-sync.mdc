@@ -9,4 +9,4 @@ Framework: **cursor**. Protocol: `.agent/SYNC.md`
 Session start: `Read .cursor/prompts/session-start.md and execute it.`
 Session end: `Read .cursor/prompts/session-end.md and execute it.`
 
-Do not edit `.claude/`, `.agents/`, `.codex/`.
+Do not edit `.claude/`, `.agents/`, `.codex/`, `.opencode/`.

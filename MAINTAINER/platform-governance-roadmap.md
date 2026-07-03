@@ -296,6 +296,33 @@ When returning to this plan in a new session:
 
 ---
 
+### R040 — Map platform guards to OpenCode `permission` config (from opencode.ai, 2026-07-03)
+
+**Source:** `anomalyco/opencode` — `opencode.json` supports a `permission` block (allow/ask/deny for `bash`, `edit`, `write`, etc.), the runtime-level analog of the platform's `--mode=install-guards` (hooks + CI) and the Critic/security gates.
+
+**What to evaluate:**
+- Emit a starter `permission` block in the installed `opencode.json` (e.g. `edit: "allow"`, sensitive `bash` patterns → `"ask"`) that mirrors the platform's safety posture without blocking normal work.
+- Keep it opt-in / conservative so it never clobbers a user's existing `permission` config (current installer already skips a pre-existing `opencode.json`).
+- Align wording with `install-guards` so the two enforcement layers are described as complementary (runtime permission prompts vs. commit/CI gates).
+
+**Suggested path:** small installer enhancement to the `opencode.json` template behind the same non-clobber rule; document in `docs/DISTRIBUTION.md` OpenCode section.
+
+**Effort:** Low | **Impact:** Medium | **Status:** Roadmapped (not scheduled)
+
+---
+
+### R041 — Parallel OpenCode sessions → coordination layer (from opencode.ai, 2026-07-03)
+
+**Source:** `anomalyco/opencode` — supports multiple concurrent sessions/agents and shareable session links. This is the same pressure that motivates R014: several agents editing one repo faster than git sync points can coordinate.
+
+**What to evaluate:** folds into **R014** (team coordination server). OpenCode's multi-session model is a concrete first consumer for an event-driven claim/heartbeat protocol beyond the single-team `registry.yaml`.
+
+**Suggested path:** track under R014; no separate work item. When the coord MVP is scoped, include OpenCode parallel sessions as a validation scenario.
+
+**Effort:** — | **Impact:** High | **Status:** Merged into R014
+
+---
+
 ### Stack & domain "Packs" layer (2026-07-03)
 
 **Design:** [`MAINTAINER/adr/ADR-001-stack-domain-packs.md`](adr/ADR-001-stack-domain-packs.md)

@@ -176,8 +176,21 @@ Filename (without `.md`) becomes the command name. Commands are thin routers —
 | **Claude Code** | `CLAUDE.md` + slash commands |
 | **Antigravity** | `.agents/` prompts |
 | **Codex** | `.codex/` prompts |
+| **OpenCode** | Native `AGENTS.md` + `opencode.json` `instructions` + `.opencode/commands/*.md` slash commands + `.opencode/agents/*` subagents (e.g. `@critic`) |
 
 Cursor has **no plugin marketplace**. See **[docs/cursor-setup.md](cursor-setup.md)** for the full Cursor path (`--profile=lite --framework=cursor` recommended).
+
+### OpenCode interoperability (zero-adapter)
+
+[OpenCode](https://opencode.ai) reads the platform's artifacts natively — no translation layer:
+
+- **Rules** — OpenCode auto-loads `AGENTS.md` (and `CLAUDE.md`) from the project root, so the platform's expert-router and hard rules are active the moment you open the repo. The platform's `opencode.json` adds `.opencode/sync.md` to `instructions` so multi-framework awareness and session detection work too.
+- **Skills** — OpenCode loads `SKILL.md` modules from `.opencode/skills/` (and `~/.config/opencode/skills/`), the same format the platform ships.
+- **Commands** — the platform emits its lifecycle slash commands to `.opencode/commands/*.md` (`/spec` `/plan` `/build` `/test` `/review` `/verify` `/ship` …).
+- **Subagents** — `.opencode/agents/critic.md` exposes the adversarial **Critic** as an invokable subagent (`@critic`); other experts route through `AGENTS.md`.
+- **Config precedence** — a project `opencode.json` is written only if one doesn't already exist; your provider/model settings are never clobbered.
+
+Install everything for OpenCode with the default `npx github:zafrirron/Agent-Platform`, or scope to it with `--framework=opencode`.
 
 ---
 

@@ -1,5 +1,5 @@
 ### YYYY-MM-DD — <title>
-- **Framework:** cursor | claude | antigravity | codex
+- **Framework:** cursor | claude | antigravity | codex | opencode
 - **Status:** in_progress | done | blocked
 - **Expert agent:** architect | backend | frontend | devops | test | docs | security | data
 - **Files:**

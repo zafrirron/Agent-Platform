@@ -25,6 +25,7 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 
 | Date | Mode | Findings | Implemented | Skipped | Deferred | Archive |
 |------|------|----------|-------------|---------|----------|---------|
+| 2026-07-03 | Mode 4 targeted | 6 (R036–R041) | 4 (R036–R039) | 0 | 2 (R040 roadmap; R041→R014) | [mode4/2026-07-03-targeted-opencode-report.md](mode4/2026-07-03-targeted-opencode-report.md) |
 | 2026-07-03 | Mode 4 targeted | 5 (R031–R035) | 2 (R031, R032) | 0 | 3 (R033 opt-in; R034 roadmap; R035) | [mode4/2026-07-03-targeted-ponytail-report.md](mode4/2026-07-03-targeted-ponytail-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R025–R030) | 3 (R025, R028, R029) | 0 | 3 (R026 roadmap; R027 opt-in; R030) | [mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md](mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R019–R024) | 3 (R019, R020, R021) | 0 | 3 (R022/R023/R024) | [mode4/2026-07-03-targeted-awesome-agent-skills-report.md](mode4/2026-07-03-targeted-awesome-agent-skills-report.md) |
@@ -33,6 +34,32 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 | 2026-06-09 | Mode 2 | 15 | 5 (F001–F004, F013) | 0 | 10 | *(see platform-improvements.md)* |
 | 2026-06-11 | Mode 4 | — | scan keyword fix | — | — | governance-scan/scan-log |
 | 2026-06-02 | Mode 4 | 8 repos | 14 phases | — | — | founding scan |
+
+---
+
+## [2026-07-03] — Mode 4 targeted — anomalyco/opencode (6 findings: 4 implemented, 2 deferred)
+
+**Selection:** R036 + R037 + R038 + R039 implemented (OpenCode as 5th framework); R040 deferred (roadmap); R041 merged into R014  
+**Archive:** [mode4/2026-07-03-targeted-opencode-report.md](mode4/2026-07-03-targeted-opencode-report.md)
+
+**Scan mode:** targeted  
+**Target repo:** anomalyco/opencode (opencode.ai)  
+**Repo type:** peer AI coding-agent runtime — native `AGENTS.md`/`CLAUDE.md`/skills, `.opencode/` (commands/agents/skills), `opencode.json`, multi-session (MIT)
+
+### Findings summary
+
+| ID | Title | Disposition |
+|----|-------|-------------|
+| R036 | Native AGENTS.md/CLAUDE.md/skills compat | **Implemented** — README + `docs/DISTRIBUTION.md` |
+| R037 | First-class framework + lifecycle commands | **Implemented** — `.opencode/` + `--framework=opencode` |
+| R038 | Critic exposed as `@critic` subagent | **Implemented** — `.opencode/agents/critic.md` |
+| R039 | `opencode.json` instructions | **Implemented** — root config (non-clobber) + `.opencode/sync.md` |
+| R040 | Map guards to `permission` config | Deferred (roadmap) |
+| R041 | Parallel sessions → coordination | Merged into R014 |
+
+**Recommended adoption P0:** R036 ✅ · **P1:** R037 ✅, R039 ✅ · **P2:** R038 ✅ · **Roadmap:** R040, R041→R014
+
+**Do not re-propose:** R036, R037, R038, R039 (Implemented) · `.opencode/skills/` path (COVERED, R019)
 
 ---
 

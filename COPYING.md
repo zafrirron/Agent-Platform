@@ -75,9 +75,11 @@ package.json
 .cursor/         ← Cursor private folder
 .agents/         ← Antigravity private folder
 .codex/          ← Codex private folder
+.opencode/       ← OpenCode private folder (commands, agents, sync)
 AGENTS.md        ← framework router
 SYNC-POINTS.md   ← cross-IDE switch cheat sheet
 CLAUDE.md        ← Claude Code entry point
+opencode.json    ← OpenCode config (instructions → AGENTS.md + sync)
 ```
 
 All of the above are added to `.gitignore` automatically — nothing is committed to the user's repo.

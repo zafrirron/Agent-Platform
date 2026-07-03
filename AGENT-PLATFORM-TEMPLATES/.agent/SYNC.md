@@ -1,6 +1,6 @@
 # Multi-framework sync protocol
 
-Frameworks: **cursor**, **claude**, **antigravity**, **codex**
+Frameworks: **cursor**, **claude**, **antigravity**, **codex**, **opencode**
 
 ## Session start
 

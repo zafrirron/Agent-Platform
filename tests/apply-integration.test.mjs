@@ -16,9 +16,11 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACK_ROOT  = path.resolve(__dirname, '..');
 const APPLY      = path.join(PACK_ROOT, 'AGENT-PLATFORM-APPLY.js');
-const MANIFEST_VERSION = JSON.parse(
+const MANIFEST = JSON.parse(
   fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-MANIFEST.json'), 'utf8')
-).bootstrap_version;
+);
+const MANIFEST_VERSION = MANIFEST.bootstrap_version;
+const FRAMEWORK_COUNT = (MANIFEST.frameworks || []).length;
 
 function tmpDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'ap-int-'));
@@ -84,13 +86,13 @@ describe('install — clean empty directory', () => {
   test('registry.yaml has finality_state: clean for all frameworks (Phase 2A)', () => {
     const reg = fs.readFileSync(path.join(dir, '.agent/handoff/sync/registry.yaml'), 'utf8');
     const matches = (reg.match(/finality_state: clean/g) || []).length;
-    assert.equal(matches, 4, `expected 4 finality_state: clean entries (one per framework), got ${matches}`);
+    assert.equal(matches, FRAMEWORK_COUNT, `expected ${FRAMEWORK_COUNT} finality_state: clean entries (one per framework), got ${matches}`);
   });
 
   test('registry.yaml has step_manifest: [] for all frameworks (Phase 2A)', () => {
     const reg = fs.readFileSync(path.join(dir, '.agent/handoff/sync/registry.yaml'), 'utf8');
     const matches = (reg.match(/step_manifest: \[\]/g) || []).length;
-    assert.equal(matches, 4, `expected 4 step_manifest: [] entries (one per framework), got ${matches}`);
+    assert.equal(matches, FRAMEWORK_COUNT, `expected ${FRAMEWORK_COUNT} step_manifest: [] entries (one per framework), got ${matches}`);
   });
 
   test('registry.yaml has completed_actions: {} at top level (Phase 2B)', () => {
@@ -999,6 +1001,80 @@ describe('Phase 1B — reputation.json deployed after install', () => {
   test('reputation.json has required schema_version field', () => {
     const rep = JSON.parse(fs.readFileSync(repPath, 'utf8'));
     assert.ok(rep.schema_version, 'reputation.json missing schema_version');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── OpenCode framework (R037/R038/R039) ─────────────────────────────────────
+
+describe('OpenCode framework — default install', () => {
+  const dir = tmpDir();
+  const result = runApply(dir);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}\nstdout: ${result.stdout}`);
+  });
+
+  test('manifest registers opencode as a framework', () => {
+    assert.ok((MANIFEST.frameworks || []).includes('opencode'), 'opencode missing from manifest.frameworks');
+  });
+
+  test('creates .opencode/ private folder', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.opencode')), '.opencode/ missing');
+  });
+
+  test('emits lifecycle slash commands to .opencode/commands/', () => {
+    for (const c of ['spec.md', 'plan.md', 'build.md', 'test.md', 'review.md', 'ship.md']) {
+      assert.ok(fs.existsSync(path.join(dir, '.opencode/commands', c)), `.opencode/commands/${c} missing`);
+    }
+  });
+
+  test('emits Critic subagent to .opencode/agents/critic.md', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.opencode/agents/critic.md')), 'critic subagent missing');
+  });
+
+  test('emits opencode.json with instructions', () => {
+    const p = path.join(dir, 'opencode.json');
+    assert.ok(fs.existsSync(p), 'opencode.json missing');
+    const cfg = JSON.parse(fs.readFileSync(p, 'utf8'));
+    assert.ok(Array.isArray(cfg.instructions) && cfg.instructions.includes('AGENTS.md'), 'opencode.json instructions must include AGENTS.md');
+  });
+
+  test('opencode.json is not clobbered when it already exists', () => {
+    const dir2 = tmpDir();
+    const custom = '{\n  "$schema": "https://opencode.ai/config.json",\n  "provider": { "anthropic": {} }\n}\n';
+    fs.writeFileSync(path.join(dir2, 'opencode.json'), custom);
+    runApply(dir2);
+    assert.equal(fs.readFileSync(path.join(dir2, 'opencode.json'), 'utf8'), custom, 'existing opencode.json must be preserved');
+    fs.rmSync(dir2, { recursive: true });
+  });
+
+  test('gitignore block lists .opencode/ and opencode.json', () => {
+    const gi = fs.readFileSync(path.join(dir, '.gitignore'), 'utf8');
+    assert.ok(gi.includes('.opencode/'), '.opencode/ missing from gitignore block');
+    assert.ok(gi.includes('opencode.json'), 'opencode.json missing from gitignore block');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('OpenCode framework — scoped install (--framework=opencode)', () => {
+  const dir = tmpDir();
+  const result = runApply(dir, ['--framework=opencode']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}\nstdout: ${result.stdout}`);
+  });
+
+  test('installs .opencode/ and opencode.json', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.opencode/commands/spec.md')), '.opencode command missing under scoped install');
+    assert.ok(fs.existsSync(path.join(dir, 'opencode.json')), 'opencode.json missing under scoped install');
+  });
+
+  test('does NOT install other frameworks private folders', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.cursor')), '.cursor/ should not install for --framework=opencode');
+    assert.ok(!fs.existsSync(path.join(dir, '.codex')), '.codex/ should not install for --framework=opencode');
   });
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });

@@ -1,6 +1,6 @@
 # Agent platform hub — {{PROJECT_NAME}}
 
-Shared by **Cursor**, **Claude**, **Antigravity**, **Codex**. Not owned by one IDE.
+Shared by **Cursor**, **Claude**, **Antigravity**, **Codex**, **OpenCode**. Not owned by one IDE.
 
 | Doc | Purpose |
 |-----|---------|
@@ -15,4 +15,4 @@ Shared by **Cursor**, **Claude**, **Antigravity**, **Codex**. Not owned by one I
 
 **Switch prompts:** [SWITCH-PROMPTS.md](SWITCH-PROMPTS.md) · **Bootstrap:** [../AGENT-PLATFORM-BOOTSTRAP.md](../AGENT-PLATFORM-BOOTSTRAP.md)
 
-Private folders: `.cursor/` `.claude/` `.agents/` `.codex/`
+Private folders: `.cursor/` `.claude/` `.agents/` `.codex/` `.opencode/`

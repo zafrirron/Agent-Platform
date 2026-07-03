@@ -353,7 +353,7 @@ Processed files move to `MAINTAINER/ingest/archive/YYYY-MM-DD/` automatically.
 
 ## Multi-framework consistency rule — MANDATORY
 
-The platform runs on **4 frameworks** (Claude Code, Cursor, Antigravity, Codex). Every change to agent behaviour, routing, or session instructions must be applied to all four. Missing one means that framework silently diverges.
+The platform runs on **5 frameworks** (Claude Code, Cursor, Antigravity, Codex, OpenCode). Every change to agent behaviour, routing, or session instructions must be applied to all five. Missing one means that framework silently diverges.
 
 ### Always-loaded files — check all four on every behavioural change
 
