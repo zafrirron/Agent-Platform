@@ -1,0 +1,24 @@
+{
+  "id": "language-java",
+  "kind": "language",
+  "display_name": "Java",
+  "version": "1.0.0",
+  "requires_core": ">=2.44.0",
+  "confidence": "curated",
+  "last_verified": "2026-07-03",
+  "detect": {
+    "files": ["pom.xml", "build.gradle", "build.gradle.kts"],
+    "deps": [],
+    "extensions": [".java"]
+  },
+  "provides": {
+    "agent_overlays": {
+      "backend-agent": "code.overlay.md",
+      "data-agent": "code.overlay.md",
+      "test-agent": "code.overlay.md"
+    },
+    "references": ["references/java-pitfalls.md"],
+    "routing_rows": "routing.md"
+  },
+  "attribution": "Curated from Effective Java + JLS/concurrency docs + failure-derived platform pitfalls (Mode 2/4 pack-scoped)."
+}

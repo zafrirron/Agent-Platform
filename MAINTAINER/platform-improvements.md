@@ -18,6 +18,60 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Mode 3 ingest → pack lane (maintainer-only)
+
+**Source:** Platform architecture — while documenting "how each of the 4 maintainer modes grows a pack brain", found Mode 3 (ingest) was the only mode with no pack path: a user's stack/domain/platform-specific rule would be classified PROJECT-SPECIFIC and discarded rather than routed into a pack.
+
+**Gap observed:** Modes 1 (`add rule to pack`), 2 (`pack=` refresh), and 4 (`repo=… pack=`) could all feed packs; Mode 3 could only feed core (universal bar), so production-proven user rules that are language/stack/platform/domain-specific had nowhere to go.
+
+**Files changed (MAINTAINER/* only — no consumer template change):**
+- `platform-ingest.md` — `pack=<id>` trigger; two-lane model (core vs pack); new **PACK-CANDIDATE** status (distinct from PROJECT-SPECIFIC = repo/team-tied); Step 3 dedup now includes `.agent/packs/**`; Step 4 pack integration-path table (overlay/references/`reference_sources`/reference-architecture) + attachment-by-kind; Step 5 report gains pack findings + New-pack-candidates + counts; Step 6 pack selection commands; Step 7b pack-lane implementation (bump `version`+`last_verified`, routing sync, **PSG pack lane**, pack-tagged provenance); Step 9 pack archive path + `Scope: pack`; quality bar gains a pack (non-universal) variant.
+- `GUIDE.md` — Mode 3 row + "Grow a pack brain" row + Mode 3 section note the pack lane; two-lane note under the sources diagram.
+- `REPORT-SCHEMA.md` — ingest pack archive path + PACK-CANDIDATE; `registry.md` — pack-scoped note includes Mode 3; `platform-maintainer-agent.md` — "grow packs" note includes Mode 3.
+
+**Capability added:** all four maintainer modes can now grow pack brains; user submissions are a first-class feeder for packs; pack writes stay on the independent PSG pack lane and never block a core release.
+
+**Validated:** N/A (docs/playbook-only; `npm test` unaffected — no manifest/code change).
+
+---
+
+### [Unreleased] — 2026-07-03 — Packs model → 4 axes: `platform` (execution/deployment target) kind formalized (design only)
+
+**Source:** Platform architecture — user question "how are hardware and OS handled? are they the technology stack or a new orthogonal axis?" with a drone use case (domain: drone mission brain · language: C++ · Docker · Airvolute DroneCore 2 + NVIDIA Jetson + STM32H7).
+
+**Gap observed:** the 3-axis model (language/stack/domain) had nowhere for *where code runs* — hardware target (Jetson/STM32/carrier board), OS/RTOS (Linux/L4T, FreeRTOS, bare-metal), and container runtime (Docker/k8s). Folding these into `stack` would duplicate them across every framework pack (the same failure that split `language` out of `stack`).
+
+**Decision:** add a 4th orthogonal `kind: "platform"` = execution/deployment target. Key insight recorded: a `kind` does not constrain composition (multiple same-kind packs can be active), so hardware+OS are one axis — activate several `platform` packs for heterogeneous systems; extract a standalone OS pack (`platform-freertos`) only on duplication. Boundary tightened: language runtime (Node/JVM) → language/stack; container/OS runtime (Docker/Linux) → platform. Drone example maps to `language:cpp` + `stack:ros2` + `platform:jetson-orin` + `platform:stm32h7` + `platform:docker` + `domain:drone-autonomy`; the SoC↔MCU split lives in the domain pack's reference architecture.
+
+**Files changed (design/spec + maintainer only — no consumer template/behavior change):** `MAINTAINER/adr/ADR-001-stack-domain-packs.md` (Principle 1 → four axes + platform rationale + composition note; schema kind enum + platform detection note; Phase 2p; status), `MAINTAINER/platform-governance-roadmap.md`, `.agent/packs/README.md` (four-kinds table + platform section + schema), `MAINTAINER/platform-maintainer-agent.md` (`add pack` accepts `platform-<name>` + attachment/detection guidance).
+
+**Scope:** design formalization per user request — **no curated `platform-*` packs, no code, no detection change** yet. End-user docs/decks intentionally left unchanged until platform packs ship (avoid advertising an empty kind).
+
+**Validated:** N/A (docs-only; `npm test` unaffected — no manifest/code change).
+
+---
+
+### [Unreleased] — 2026-07-03 — Programming-language packs (Phase 2) — new `language` kind
+
+**Source:** Platform architecture — user question "are programming languages (Java, TypeScript, C++) technology packs?". They aren't the same axis: a language is reusable across every framework in it, so folding language rules into each `stack` pack would duplicate them N times.
+
+**Gap observed:** packs had only `stack`/`domain` kinds; no way to carry language-level footguns (TS type safety, Java concurrency, C++ ownership/UB). The detector also ignored `detect.globs`, so language-only repos (e.g. C++ with no dependency manifest) were never suggested. The overlay loader assumed a `<expert>.overlay.md` filename, blocking a shared-across-experts overlay.
+
+**Files changed:**
+- New packs: `.agent/packs/language-typescript/`, `language-java/`, `language-cpp/` (each: `pack.json` kind `language`, shared `code.overlay.md` mapped to all code experts, `references/<lang>-pitfalls.md`, `routing.md`).
+- `.agent/bootstrap/apply.js` — `detectPacks` now evaluates `detect.extensions` via a bounded, shallow (depth ≤2, ≤4000 files, skips heavy/dot dirs) source-extension scan.
+- Overlay loader made map-driven (`provides.agent_overlays[<expert>]`): `AGENTS.md` Step 3b, `AGENTS-lite.md`, `session-start-shared.md`, `using-platform` skill.
+- Manifest `packs_catalog` (3 language entries, kind `language`, `detect.extensions`) + `kind:"pack"` files.
+- Docs/presentation → three-kind model: README, `docs/DISTRIBUTION.md`, QUICK-REF (+lite), PLATFORM-HELP, `.agent/packs/README.md`, ADR-001, both decks; `platform-maintainer-agent.md` add-pack command (language id + shared overlay guidance).
+
+**Capability added:**
+- Third orthogonal pack axis (`language`) that overlays every code-writing expert — once active, the language's rules apply to all code in the session (no keyword needed), composing with `stack`/`domain`.
+- Language detection by marker file **and** source extension (catches manifest-less repos).
+
+**Validated:** Done — `npm test` green (243 tests; +8: catalog kind check, language-pack activation + shared-overlay map, tsconfig + `.cpp`-extension detection).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Packs maintainer growth loop (Phase 3, maintainer-only)
 
 **Source:** Platform architecture — closing the ADR-001 loop so maintainers can *grow* stack/domain pack brains (Phase 1 shipped consumer-side only).

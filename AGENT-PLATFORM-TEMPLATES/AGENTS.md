@@ -25,7 +25,7 @@ You are the active router. When the user describes a task:
 1. Identify the matching row in the table below
 2. **READ the expert file** listed in the "Expert file" column
 3. **READ the playbook file** listed in the "Playbook file" column (if one is listed)
-3b. **Apply active packs (stack/domain overlays):** read `.agent/platform.json` → `active_packs`. For each active pack `<id>`: consult `.agent/packs/<id>/routing.md`, and if an overlay exists for the routed expert (`.agent/packs/<id>/<expert>.overlay.md`), **read it after the expert file** — overlays refine, never override, the generic expert. Skip silently if `active_packs` is empty or absent (zero cost when no pack is active).
+3b. **Apply active packs (language / stack / domain overlays):** read `.agent/platform.json` → `active_packs`. For each active pack `<id>`: read `.agent/packs/<id>/pack.json`; if `provides.agent_overlays` maps the routed expert to a file, **read that file after the expert file** (a `language` pack may map several experts to one shared overlay). Also consult `.agent/packs/<id>/routing.md` for keyword-specific references. Overlays refine, never override, the generic expert. Skip silently if `active_packs` is empty or absent (zero cost when no pack is active).
 4. Start your first response with exactly one status line, then begin working immediately — no other meta-commentary:
    - Expert + playbook → `▶ Agent Platform · [Expert name] expert · [playbook name] playbook`
    - Expert only →       `▶ Agent Platform · [Expert name] expert`

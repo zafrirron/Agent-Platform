@@ -92,25 +92,27 @@ Aliases: `skill:tdd` → `test-driven-development`, `skill:interview` → `inter
 
 ---
 
-## Technology-stack & domain packs (opt-in overlays)
+## Language, technology-stack & domain packs (opt-in overlays)
 
-The core platform is **stack- and domain-agnostic** — it applies general software-engineering discipline to any project. **Packs** add curated, opinionated, failure-derived knowledge for a specific technology stack (React, Django…) or business domain (fintech…) **on top of** the agnostic core, without changing it.
+The core platform is **language-, stack- and domain-agnostic** — it applies general software-engineering discipline to any project. **Packs** add curated, opinionated, failure-derived knowledge for a specific programming language (TypeScript, Java, C++…), technology stack (React, Django…), or business domain (fintech…) **on top of** the agnostic core, without changing it.
 
 ```bash
 npx github:zafrirron/Agent-Platform --mode=list --list=packs
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
 npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
 npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
 ```
 
-- **Two kinds:** `stack:*` (framework idioms/pitfalls) and `domain:*` (compliance, invariants, **reference architectures**). They compose — activate several at once.
+- **Three kinds:** `language:*` (language semantics/footguns — TypeScript, Java, C++), `stack:*` (framework/library idioms & pitfalls), `domain:*` (compliance, invariants, **reference architectures**). They compose — a repo can run `language:typescript` + `stack:react` + `domain:fintech` at once.
+  - **Language vs stack:** a language pack is the language itself and is reusable across every framework in it (a TS pack applies to React, Angular, Node); a stack pack is a framework/library *built in* a language. Separate kinds → no duplicated rules, no combo packs.
 - **Opt-in, never bloat:** packs are **not** installed by any profile. They only install via `--mode=add --add=pack:<id>` and are recorded in `.agent/platform.json` → `active_packs`. Zero cost when none are active.
-- **Detect-and-suggest:** on install/upgrade, the installer detects your stack (from `package.json`, `manage.py`, etc.) and *suggests* matching packs — it never auto-installs them.
-- **Overlays, not new experts:** a pack refines a generic expert via `<expert>.overlay.md`, read only when the pack is active. Core files are never modified.
+- **Detect-and-suggest:** on install/upgrade, the installer detects your language/stack (from `package.json`, `tsconfig.json`, `pom.xml`, `CMakeLists.txt`, `manage.py`, or a shallow source-extension scan) and *suggests* matching packs — it never auto-installs them.
+- **Overlays, not new experts:** a stack/domain pack refines one generic expert via `<expert>.overlay.md`; a language pack maps one shared `code.overlay.md` to every code-writing expert — read only when the pack is active. Core files are never modified.
 - **Domain reference architectures:** domain packs link back to real source apps (`reference_sources` in `pack.json`). Ask your agent *"give me a reference architecture for a fintech app"* and it reads the pack's `reference-architecture.md` and points you at the linked implementations (license-aware).
 
 Full spec: `.agent/packs/README.md` (installed with any pack) · design: [`MAINTAINER/adr/ADR-001-stack-domain-packs.md`](../MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 
-Available packs (v1): `stack-react`, `stack-django`, `domain-fintech`. More via community contribution and maintainer pack-scoped scans.
+Available packs: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. More via community contribution and maintainer pack-scoped scans.
 
 ---
 

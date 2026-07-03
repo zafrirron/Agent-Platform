@@ -302,11 +302,11 @@ When returning to this plan in a new session:
 
 **Problem:** platform is (verified) stack/domain agnostic — it cannot give React/Django/HIPAA/PCI-specific help, and loading all stacks/domains into every repo would bloat unused content.
 
-**Decision (2026-07-03):** selectable **Packs** layer — two orthogonal `kind`s (`stack`, `domain`), composed additively, **no combo packs**. Overlay model (packs augment generic experts via `*.overlay.md`, never edit core). Detect-and-suggest activation (user confirms; `active_packs` in `platform.json`; reuse `--mode=add --add=pack:<id>`). Maintainer growth via `pack=<id>` scope on Modes 2/4 + "add pack" command. Packs versioned/tested independently — never block a core release; excluded from core count invariants.
+**Decision (2026-07-03):** selectable **Packs** layer — **four** orthogonal `kind`s (`language`, `stack`, `platform`, `domain`), composed additively, **no combo packs**. `platform` = execution/deployment target (hardware SoC/board/MCU, OS/RTOS, container/orchestration runtime); it's a distinct axis because that knowledge is reusable across languages/frameworks/domains, and a `kind` doesn't restrict composition (a heterogeneous system activates several `platform` packs). Overlay model (packs augment generic experts via `*.overlay.md`, never edit core; language packs map one shared overlay to every code expert; platform packs attach to devops/architect/backend). Detect-and-suggest activation (user confirms; `active_packs` in `platform.json`; reuse `--mode=add --add=pack:<id>`; detection by dependency, marker file, source extension, and — for platform — target markers). Maintainer growth via `pack=<id>` scope on Modes 2/4 + "add pack" command. Packs versioned/tested independently — never block a core release; excluded from core count invariants.
 
-**Phased path:** (1) foundation + 2–3 curated stack packs, overlay-only ✅; (2) domain/compliance packs; (3) maintainer growth loop + PSG pack lane ✅; (4) distribution/catalog + confidence tiers.
+**Phased path:** (1) foundation + 2–3 curated stack packs, overlay-only ✅; (2) domain/compliance packs (fintech ✅) + **language packs** (`language` kind — TS/Java/C++ ✅); (2p) **`platform` axis** (hardware/OS/deployment) — design formalized ([Unreleased]), curated packs (docker/jetson/stm32) TBD; (3) maintainer growth loop + PSG pack lane ✅; (4) distribution/catalog + confidence tiers.
 
-**Effort:** High | **Impact:** High | **Status:** Phases 1 & 3 shipped ([Unreleased]); Phase 2 + 4 remaining
+**Effort:** High | **Impact:** High | **Status:** Phases 1 & 3 shipped; Phase 2 language layer shipped; Phase 2p `platform` axis formalized (design only) ([Unreleased]); Phase 2p platform packs + more domain packs + Phase 4 remaining
 
 ---
 

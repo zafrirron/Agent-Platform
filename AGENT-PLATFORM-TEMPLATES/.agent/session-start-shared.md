@@ -284,7 +284,7 @@ From this point until session end, follow the routing table exactly:
 
 **Manifest-augmented routing:** The routing keywords in the table above are the primary source. Each agent also declares `routing_keywords` in their `.agent/agents/<name>-agent.manifest.json`. When the routing table has no clear match, read the manifest files from `.agent/agents/` and check their `routing_keywords` before asking the user for clarification — this eliminates drift between the routing table and agent capabilities.
 
-**Active packs (stack/domain overlays):** Read `.agent/platform.json` → `active_packs`. If non-empty, note the active pack ids — when routing to an expert during this session, also read that expert's overlay (`.agent/packs/<id>/<expert>.overlay.md`) and the pack's `routing.md` if present. Overlays refine the generic expert with curated stack/domain knowledge. If `active_packs` is empty or absent, skip silently — packs add zero cost when none are active.
+**Active packs (language / stack / domain overlays):** Read `.agent/platform.json` → `active_packs`. If non-empty, note the active pack ids — when routing to an expert during this session, read `.agent/packs/<id>/pack.json` and, if `provides.agent_overlays` maps the routed expert to a file, read that overlay (a `language` pack may map several experts to one shared file), plus the pack's `routing.md` if present. Overlays refine the generic expert with curated language/stack/domain knowledge. If `active_packs` is empty or absent, skip silently — packs add zero cost when none are active.
 
 ### Step 8 — Ready
 

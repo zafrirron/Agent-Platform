@@ -794,9 +794,16 @@ describe('packs — registered in manifest catalog', () => {
 
   test('packs_catalog lists the v1 packs', () => {
     const ids = (manifest.packs_catalog || []).map((p) => p.id);
-    for (const id of ['stack-react', 'stack-django', 'domain-fintech']) {
+    for (const id of ['stack-react', 'stack-django', 'domain-fintech',
+                      'language-typescript', 'language-java', 'language-cpp']) {
       assert.ok(ids.includes(id), `packs_catalog missing ${id}`);
     }
+  });
+
+  test('language packs use kind "language"', () => {
+    const langs = (manifest.packs_catalog || []).filter((p) => p.id.startsWith('language-'));
+    assert.ok(langs.length >= 3, 'expected at least 3 language packs');
+    assert.ok(langs.every((p) => p.kind === 'language'), 'language pack with wrong kind');
   });
 
   test('every catalog pack has a pack.json registered in files[]', () => {
@@ -877,6 +884,61 @@ describe('packs — detect-and-suggest at install (proposal, not auto-install)',
   });
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('packs — language pack activates with a shared overlay', () => {
+  const dir = tmpDir();
+  runApply(dir); // full install first
+  const result = runApply(dir, ['--mode=add', '--add=pack:language-typescript', '--framework=cursor']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, result.stderr);
+  });
+
+  test('installs the language pack files (shared code overlay + reference)', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/language-typescript/pack.json')));
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/language-typescript/code.overlay.md')));
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/language-typescript/references/typescript-pitfalls.md')));
+  });
+
+  test('agent_overlays maps several experts to one shared file', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/packs/language-typescript/pack.json'), 'utf8'));
+    const overlays = pj.provides.agent_overlays;
+    const experts = Object.keys(overlays);
+    assert.ok(experts.length >= 2, 'language pack should overlay multiple code experts');
+    const files = new Set(Object.values(overlays));
+    assert.equal(files.size, 1, 'language pack should reuse a single shared overlay file');
+    assert.ok(files.has('code.overlay.md'), 'shared overlay filename mismatch');
+  });
+
+  test('records the language pack in active_packs', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.ok(pj.active_packs.includes('language-typescript'), 'active_packs missing language-typescript');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('packs — language detection (marker file + source extension)', () => {
+  test('tsconfig.json marker suggests language-typescript', () => {
+    const dir = tmpDir();
+    fs.writeFileSync(path.join(dir, 'tsconfig.json'), JSON.stringify({ compilerOptions: { strict: true } }));
+    const result = runApply(dir);
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('--add=pack:language-typescript'), `TS not suggested:\n${result.stdout}`);
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/packs/language-typescript')), 'must not auto-install');
+    fs.rmSync(dir, { recursive: true });
+  });
+
+  test('source extension alone (.cpp, no manifest) suggests language-cpp', () => {
+    const dir = tmpDir();
+    fs.mkdirSync(path.join(dir, 'src'));
+    fs.writeFileSync(path.join(dir, 'src/main.cpp'), 'int main() { return 0; }\n');
+    const result = runApply(dir);
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('--add=pack:language-cpp'), `C++ not suggested via extension:\n${result.stdout}`);
+    fs.rmSync(dir, { recursive: true });
+  });
 });
 
 // ── Phase 1B: Reputation vectors ───────────────────────────────────────────

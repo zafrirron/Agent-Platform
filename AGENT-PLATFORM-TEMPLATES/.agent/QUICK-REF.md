@@ -100,18 +100,20 @@ Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load 
 
 ---
 
-## Packs — stack & domain overlays (opt-in)
+## Packs — language, stack & domain overlays (opt-in)
 
-Curated stack/domain knowledge layered on the agnostic core. Not installed by default; only via `--mode=add`.
+Curated language/stack/domain knowledge layered on the agnostic core. Not installed by default; only via `--mode=add`.
 
 | Action | Command |
 |--------|---------|
 | List available packs | `npx {{PLATFORM_NPX}} --mode=list --list=packs` |
-| Add a pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
+| Add a language pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:language-typescript` |
+| Add a stack pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
 | See what's active | Read `.agent/platform.json` → `active_packs` |
 
-- **Kinds:** `stack:*` (React, Django — idioms/pitfalls) · `domain:*` (fintech — compliance + reference architectures). They compose.
-- **How it loads:** when a pack is active, the routed expert also reads `.agent/packs/<id>/<expert>.overlay.md`. Zero cost when none active.
+- **Three kinds:** `language:*` (TypeScript, Java, C++ — the language's own footguns) · `stack:*` (React, Django — framework idioms/pitfalls) · `domain:*` (fintech — compliance + reference architectures). They compose (`language:typescript` + `stack:react` + `domain:fintech`).
+- **Language vs stack:** a language pack = the language itself (reusable across every framework in it); a stack pack = a framework/library built in a language.
+- **How it loads:** when a pack is active, the routed expert also reads the overlay it maps in `pack.json` → `provides.agent_overlays`. A language pack overlays *every* code expert; a stack/domain pack overlays one. Zero cost when none active.
 - **Reference architecture:** with a domain pack active, ask *"reference architecture for a [domain] app"* → agent reads the pack's `reference-architecture.md` + linked source repos.
 - Full spec: `.agent/packs/README.md`.
 

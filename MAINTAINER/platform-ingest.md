@@ -1,9 +1,14 @@
 # Platform Ingest — Agent Instructions
 
 > **Activate:** `Read MAINTAINER/platform-ingest.md and execute it.`
+> **Activate (pack-scoped):** `Read MAINTAINER/platform-ingest.md and execute it. pack=<pack-id>`
 
 Analyzes user-submitted agentic files and surfaces improvements for the platform.
-The maintainer reviews findings and selects what to add. The agent implements approved findings via the standard Mode 1 workflow.
+The maintainer reviews findings and selects what to add. The agent implements approved findings via the standard Mode 1 workflow — **except pack-targeted findings, which land in a pack under the non-universal bar and use the pack PSG lane** (see the pack lane below).
+
+**Two lanes:**
+- **Core lane (default):** universal, stack-agnostic rules → core experts/playbooks/`CONVENTIONS.md` (the historical bar).
+- **Pack lane:** rules specific to a **language / stack / platform / domain** that map to a pack → `.agent/packs/<id>/…`. Instead of being discarded as "too specific", these are routed into the matching pack (or one is scaffolded). Set `pack=<id>` to scope the whole run to one pack, or let the default run surface **PACK-CANDIDATE** findings automatically.
 
 ---
 
@@ -11,7 +16,9 @@ The maintainer reviews findings and selects what to add. The agent implements ap
 
 Users drop their own agent definitions, playbooks, skills, `CLAUDE.md`, `AGENTS.md`, or conventions files into `MAINTAINER/ingest/`. This playbook reads them all, extracts what is platform-worthy, determines the best integration path for each finding, and presents a structured action plan.
 
-**Sources of truth:** Mode 1 improves the platform from real failures. Mode 2 improves it from the web ecosystem. Mode 3 improves it from real users' deployed agentic intelligence — rules and patterns that have already proven useful in production codebases.
+**Sources of truth:** Mode 1 improves the platform from real failures. Mode 2 improves it from the web ecosystem. Mode 3 improves it from real users' deployed agentic intelligence — rules and patterns that have already proven useful in production codebases. Users' rules are often **stack/domain/platform-specific**; Mode 3 is therefore also a natural feeder for **pack brains** (see the pack lane), not only core.
+
+**Pack scope (`pack=<id>`):** if the trigger carries `pack=<id>`, verify `<id>` exists in `AGENT-PLATFORM-MANIFEST.json` → `packs_catalog` (if not, offer Mode 1 `add pack <id>` to scaffold it first), read the current pack so you don't duplicate, and treat every stack/domain/platform/language-specific candidate as targeting that pack. Universal candidates still go to core.
 
 ---
 
@@ -97,16 +104,20 @@ For each candidate, search ALL existing PLATFORM sections across:
 - `AGENT-PLATFORM-TEMPLATES/.agent/agents/*.md`
 - `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/*.md`
 - `AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md`
+- `AGENT-PLATFORM-TEMPLATES/.agent/packs/**` (overlays + references — so a pack-specific candidate isn't flagged NEW when the pack already carries it)
 
 Classify each candidate:
 
 | Status | Meaning |
 |--------|---------|
-| **NEW** | Not covered anywhere in the platform |
-| **ENHANCE** | A related rule exists but is weaker, narrower, or missing a done-when gate — the candidate strengthens it |
-| **DUPLICATE** | Same concern already covered adequately → skip |
-| **PROJECT-SPECIFIC** | Useful but too narrow to ship universally → skip |
+| **NEW** | Not covered anywhere in the platform (universal → core) |
+| **ENHANCE** | A related rule exists but is weaker, narrower, or missing a done-when gate — the candidate strengthens it (core) |
+| **PACK-CANDIDATE** | Specific to a **language / stack / platform / domain** — not universal, but valuable *within a pack*. Record the target pack id (an existing `packs_catalog` id, or propose a new one). Route to the **pack lane** (Step 4), not skipped. |
+| **DUPLICATE** | Same concern already covered adequately (core or in the target pack) → skip |
+| **PROJECT-SPECIFIC** | Tied to *one repo/team* (hostnames, endpoints, a single app's quirks) — too narrow even for a pack → skip |
 | **VAGUE** | Does not meet the specificity bar → skip |
+
+> **PACK-CANDIDATE vs PROJECT-SPECIFIC:** if a rule generalizes to *anyone using that language/stack/platform/domain* (e.g. "on STM32, ISRs must not allocate", "React: no derived state in `useEffect`") it's a **PACK-CANDIDATE**. If it only makes sense inside the submitter's own codebase (e.g. "call our `billing-svc` before checkout") it's **PROJECT-SPECIFIC** → skip. When `pack=<id>` is set, judge PACK-CANDIDATE against that one pack's scope; also dedup against the pack's existing overlay/references (Step 3 search must include `.agent/packs/<id>/**`).
 
 ---
 
@@ -131,6 +142,19 @@ For each **NEW** or **ENHANCE** candidate, determine its best home:
 
 For ENHANCE candidates, also identify: which specific sentence/gate in the existing rule should be extended.
 
+**For each PACK-CANDIDATE, map to a pack path (non-universal bar):**
+
+First resolve the target pack: match the candidate's language/stack/platform/domain to an id in `packs_catalog`. If none matches, propose a new pack id (`language-…` / `stack-…` / `platform-…` / `domain-…`) and flag it under **New pack candidates** — implementing it requires Mode 1 `add pack <id>` to scaffold first.
+
+| PACK-CANDIDATE type | Best pack path |
+|---------------------|----------------|
+| Hard rule / review-lens for an expert | `.agent/packs/<id>/<expert>-agent.overlay.md` (stack/platform/domain) or the shared `code.overlay.md` (language) |
+| Curated pitfall / pattern | `.agent/packs/<id>/references/<topic>.md` (thin, failure-derived) |
+| Real source app / repo the rule came from | `.agent/packs/<id>/pack.json → reference_sources[]` (record repo + license + what it teaches) |
+| Domain/platform architecture pattern | `.agent/packs/<id>/references/reference-architecture.md` (enrich + cite source) |
+
+Attachment by kind (same as `add pack`): `language` → all code experts (one shared overlay); `stack`/`domain` → the one or two experts it concerns; `platform` → `devops-agent` + `architect-agent` (+ `backend-agent` for embedded/real-time). Keep packs **thin** — highest-frequency, failure-derived items, not a tutorial.
+
 ---
 
 ### Step 5 — Generate ingest report
@@ -150,7 +174,8 @@ Output the full structured report. Do not truncate.
 |------|-------------|-------------------|------|--------|
 | I001 | ...         | "..."             | backend-agent.md PLATFORM | NEW |
 | I002 | ...         | "..."             | security-agent.md PLATFORM | ENHANCE |
-| I003 | ...         | "..."             | — | DUPLICATE |
+| I003 | ...         | "..."             | packs/stack-react/frontend-agent.overlay.md | PACK-CANDIDATE (pack: stack-react) |
+| I004 | ...         | "..."             | — | DUPLICATE |
 ...
 
 ## Recommended additions (NEW + ENHANCE only)
@@ -165,6 +190,20 @@ Format : [how the rule would be written to platform standard]
 
 ...
 
+## Recommended pack additions (PACK-CANDIDATE only)
+
+For each — show full rule text, target pack + file, and rationale:
+
+### I003 — [source file] → pack: stack-react
+Rule   : [full text]
+Target : `.agent/packs/stack-react/frontend-agent.overlay.md` (or references/…)
+Why    : [what failure it prevents, scoped to this stack/domain/platform]
+Bar    : non-universal (pack lane) — specific to the pack's language/stack/platform/domain
+
+## New pack candidates
+[PACK-CANDIDATE rules whose target pack does NOT yet exist in packs_catalog]
+[For each: proposed id (language-/stack-/platform-/domain-<name>), kind, rule count, sample rules — requires `add pack <id>` to scaffold before adding]
+
 ## New expert candidates
 [List domains found with ≥5 strong NEW rules that have no existing expert]
 [For each: domain name, rule count, sample rules]
@@ -174,12 +213,14 @@ Format : [how the rule would be written to platform standard]
 [For each: workflow name, trigger scenario, rough steps]
 
 ## Summary
-  NEW findings recommended  : N
-  ENHANCE findings          : N
+  NEW findings recommended  : N   (core)
+  ENHANCE findings          : N   (core)
+  PACK-CANDIDATE findings   : N   (pack lane)
   Skipped — duplicate       : N
   Skipped — project-specific: N
   Skipped — vague           : N
   New expert candidates     : N
+  New pack candidates       : N
   New playbook candidates   : N
 ════════════════════════════════════════════════════════════════════
 ```
@@ -194,13 +235,16 @@ Format : [how the rule would be written to platform standard]
 
 | Maintainer says | Agent does |
 |----------------|-----------|
-| `"Add I001, I003, I007"` | Implements those findings via Mode 1 workflow |
-| `"Add all"` | Implements all NEW + ENHANCE findings |
-| `"Add all NEW"` | Implements only NEW findings (skips ENHANCE) |
+| `"Add I001, I003, I007"` | Implements those findings — core findings via Mode 1 workflow, PACK-CANDIDATE findings via the **pack lane** (Step 7) into their recorded pack |
+| `"Add all"` | Implements all NEW + ENHANCE + PACK-CANDIDATE findings |
+| `"Add all NEW"` | Implements only core NEW findings (skips ENHANCE + PACK-CANDIDATE) |
+| `"Add all packs"` | Implements only PACK-CANDIDATE findings (into existing packs) |
+| `"Add I003 to pack <id>"` | Overrides the recorded pack target for I003 |
 | `"Skip I002"` | Logs I002 as reviewed+skipped in platform-improvements.md |
-| `"Modify I004 to: [new text]"` | Uses the modified text, implements via Mode 1 |
+| `"Modify I004 to: [new text]"` | Uses the modified text, implements via the matching lane |
 | `"Defer I005 to backlog"` | Adds I005 to the backlog section of platform-improvements.md |
 | `"Explain I003"` | Shows full source context from the submission file |
+| `"New pack from I003,I008 as <id>"` | Scaffolds a new pack via Mode 1 `add pack <id>`, then adds those PACK-CANDIDATE rules into it |
 | `"New expert from I006-I009"` | Scaffolds a new expert using those findings as seed rules |
 | `"New playbook from I010-I012"` | Scaffolds a new playbook using those findings as steps |
 | `"Archive"` | Moves all processed files to archive (Step 8) without implementing anything |
@@ -210,7 +254,9 @@ Format : [how the rule would be written to platform standard]
 
 ### Step 7 — Implement selected findings
 
-For each selected finding, execute the full Mode 1 workflow:
+Route each selected finding by lane.
+
+**7a — Core findings (NEW / ENHANCE)** — full Mode 1 workflow:
 
 1. Read the target file
 2. Confirm the rule is not already present (final duplicate check)
@@ -229,14 +275,26 @@ For each selected finding, execute the full Mode 1 workflow:
    ```
 6. Execute **Platform Sync Gate (PSG)** — `platform-maintainer-agent.md` § Platform Sync Gate (manifests, user docs, presentation, E2E, CHANGELOG `[Unreleased]`, `npm test`). Do not wait for the maintainer to ask.
 
-After all selected findings are implemented, report with **PSG Report**:
+**7b — PACK-CANDIDATE findings** — pack lane (does **not** touch core; never blocks a core release):
+
+1. Ensure the target pack exists in `packs_catalog`. If it was a **new pack candidate**, first run Mode 1 `add pack <id>` (`platform-maintainer-agent.md`) to scaffold it.
+2. Confirm the rule isn't already in the pack's overlay/references (final dedup).
+3. Write the rule to the mapped pack path (Step 4): overlay (`<expert>-agent.overlay.md` or shared `code.overlay.md`), `references/<topic>.md`, `reference_sources[]`, or `reference-architecture.md`. Keep it thin and failure-derived.
+4. Keep `.agent/packs/<id>/routing.md` in sync if a new overlay/topic was added.
+5. Bump the pack's `pack.json` `version` + `last_verified` (today).
+6. Log provenance **pack-tagged** to `platform-improvements.md` (`Source: User submission — <file> (ingest YYYY-MM-DD) · Pack: <id>`); for domain/platform packs refresh `docs/INTELLIGENCE-SOURCES.md`.
+7. Run the **PSG — pack lane** (`platform-maintainer-agent.md` § PSG — pack lane), **not** full PSG: core count invariants, core experts/playbooks, manifests-beyond-pack-registration, and presentation are **N/A**.
+
+After all selected findings are implemented, report with **PSG Report** (note which lane each used):
 ```
 Implemented N findings:
-  I001 → backend-agent.md PLATFORM
-  I003 → security-agent.md PLATFORM
-  ...
+  Core:
+    I001 → backend-agent.md PLATFORM         (full PSG)
+    I002 → security-agent.md PLATFORM        (full PSG)
+  Pack:
+    I003 → packs/stack-react/…               (pack lane; stack-react v→x, last_verified→today)
 Skipped K. Deferred J.
-PSG: [table]
+PSG (core): [table]   ·   PSG (pack lane): [table]
 ```
 
 ---
@@ -252,9 +310,9 @@ Report: "Archived N files → MAINTAINER/ingest/archive/YYYY-MM-DD/"
 
 ### Step 9 — Archive and registry
 
-1. Write `MAINTAINER/scan-results/ingest/YYYY-MM-DD-report.md` per `REPORT-SCHEMA.md`
-2. Prepend summary to `MAINTAINER/scan-results/registry.md` (findings + dispositions + actions taken)
-3. If implemented: run **PSG** before marking complete
+1. Write `MAINTAINER/scan-results/ingest/YYYY-MM-DD-report.md` per `REPORT-SCHEMA.md`. If the run was `pack=<id>`-scoped or produced pack findings, use `…/ingest/YYYY-MM-DD-pack-<id>-report.md` and set Meta `Scope: pack` · `Pack: <id>`.
+2. Prepend summary to `MAINTAINER/scan-results/registry.md` (findings + dispositions + actions taken); pack findings carry `Scope: pack · Pack: <id>`.
+3. If implemented: run **PSG** (core lane) and/or **PSG — pack lane** as appropriate before marking complete.
 
 The archive folder is not deleted — it serves as a record of what was reviewed and when.
 
@@ -262,7 +320,7 @@ The archive folder is not deleted — it serves as a record of what was reviewed
 
 ## Quality bar for platform rules
 
-Every rule added through this process must pass the same bar as Mode 1:
+**Core lane (NEW / ENHANCE)** — same bar as Mode 1:
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
@@ -272,4 +330,6 @@ Every rule added through this process must pass the same bar as Mode 1:
 | Done-when gate | "before merging", "before marking done", "before writing handler code" | No completion condition |
 | Universal | Applies to most projects, not one stack | "In our FastAPI setup, always..." |
 
-If a submitted rule doesn't meet the bar, rewrite it to meet the bar — or mark it VAGUE and skip it.
+If a core-lane rule doesn't meet the bar, rewrite it — or mark it VAGUE and skip it.
+
+**Pack lane (PACK-CANDIDATE)** — the **non-universal** bar: Specific, Verifiable, Action-verb, and Done-when still apply, but **Universal is replaced by "scoped to the pack's language / stack / platform / domain"**. A rule that is *too specific for core* is exactly right for a pack (`"React: never key a reorderable list by array index"`, `"STM32: no heap allocation inside an ISR"`). Still reject rules tied to **one repo/team** (that's PROJECT-SPECIFIC, not a pack rule).

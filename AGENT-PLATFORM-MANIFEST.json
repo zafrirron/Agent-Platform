@@ -45,6 +45,9 @@
     { "id": "caveman", "description": "Token compression mode" }
   ],
   "packs_catalog": [
+    { "id": "language-typescript", "kind": "language", "display_name": "TypeScript", "description": "TS type safety, boundary validation, strict-mode pitfalls", "detect": { "files": ["tsconfig.json"], "deps": ["typescript"], "extensions": [".ts", ".tsx"] } },
+    { "id": "language-java", "kind": "language", "display_name": "Java", "description": "Java concurrency, RAII/resources, equals/immutability pitfalls", "detect": { "files": ["pom.xml", "build.gradle", "build.gradle.kts"], "deps": [], "extensions": [".java"] } },
+    { "id": "language-cpp", "kind": "language", "display_name": "C++", "description": "C++ ownership/RAII, memory safety, UB and rule-of-5 pitfalls", "detect": { "files": ["CMakeLists.txt", "conanfile.txt", "vcpkg.json"], "deps": [], "extensions": [".cpp", ".cc", ".cxx", ".hpp"] } },
     { "id": "stack-react", "kind": "stack", "display_name": "React", "description": "React idioms, hook/render pitfalls, perf traps", "detect": { "files": ["package.json"], "deps": ["react", "react-dom"], "globs": ["**/*.tsx", "**/*.jsx"] } },
     { "id": "stack-django", "kind": "stack", "display_name": "Django", "description": "Django ORM/N+1, migrations, settings/security pitfalls", "detect": { "files": ["manage.py"], "deps": ["django", "Django"], "globs": ["**/settings.py"] } },
     { "id": "domain-fintech", "kind": "domain", "display_name": "Fintech / Payments", "description": "Double-entry ledger, PCI, idempotent money ops + reference architecture", "detect": { "deps": ["stripe", "plaid", "braintree", "adyen"], "keywords": ["payment", "ledger", "PCI", "banking"] } }
@@ -1165,6 +1168,18 @@
       "scope": "global"
     },
     { "path": ".agent/packs/README.md", "template": ".agent/packs/README.md", "kind": "pack" },
+    { "path": ".agent/packs/language-typescript/pack.json", "template": ".agent/packs/language-typescript/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/language-typescript/code.overlay.md", "template": ".agent/packs/language-typescript/code.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/language-typescript/references/typescript-pitfalls.md", "template": ".agent/packs/language-typescript/references/typescript-pitfalls.md", "kind": "pack" },
+    { "path": ".agent/packs/language-typescript/routing.md", "template": ".agent/packs/language-typescript/routing.md", "kind": "pack" },
+    { "path": ".agent/packs/language-java/pack.json", "template": ".agent/packs/language-java/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/language-java/code.overlay.md", "template": ".agent/packs/language-java/code.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/language-java/references/java-pitfalls.md", "template": ".agent/packs/language-java/references/java-pitfalls.md", "kind": "pack" },
+    { "path": ".agent/packs/language-java/routing.md", "template": ".agent/packs/language-java/routing.md", "kind": "pack" },
+    { "path": ".agent/packs/language-cpp/pack.json", "template": ".agent/packs/language-cpp/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/language-cpp/code.overlay.md", "template": ".agent/packs/language-cpp/code.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/language-cpp/references/cpp-pitfalls.md", "template": ".agent/packs/language-cpp/references/cpp-pitfalls.md", "kind": "pack" },
+    { "path": ".agent/packs/language-cpp/routing.md", "template": ".agent/packs/language-cpp/routing.md", "kind": "pack" },
     { "path": ".agent/packs/stack-react/pack.json", "template": ".agent/packs/stack-react/pack.json", "kind": "pack" },
     { "path": ".agent/packs/stack-react/frontend-agent.overlay.md", "template": ".agent/packs/stack-react/frontend-agent.overlay.md", "kind": "pack" },
     { "path": ".agent/packs/stack-react/references/react-pitfalls.md", "template": ".agent/packs/stack-react/references/react-pitfalls.md", "kind": "pack" },

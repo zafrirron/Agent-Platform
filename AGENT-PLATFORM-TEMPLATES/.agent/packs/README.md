@@ -1,40 +1,51 @@
-# Packs — technology-stack & domain overlays
+# Packs — language, stack, platform & domain overlays
 
-> Packs add **curated, opinionated, failure-derived** knowledge for a specific technology stack or business domain, **on top of** the agnostic core. Nothing here loads unless a pack is listed in `.agent/platform.json` → `active_packs`.
+> Packs add **curated, opinionated, failure-derived** knowledge for a specific programming language, technology stack, execution/deployment target (hardware/OS/runtime), or business domain, **on top of** the agnostic core. Nothing here loads unless a pack is listed in `.agent/platform.json` → `active_packs`.
 
 Design rationale: [`MAINTAINER/adr/ADR-001-stack-domain-packs.md`](../../../MAINTAINER/adr/ADR-001-stack-domain-packs.md) (in the platform source repo).
 
-## Two kinds (orthogonal, composable)
+## Four kinds (orthogonal, composable)
 
 | `kind` | Examples | Knowledge |
 |--------|----------|-----------|
-| `stack` | react, django, node | framework idioms, pitfalls, perf traps, version gotchas |
-| `domain` | fintech, healthcare, ecommerce | compliance, domain invariants, threat models, **reference architectures** |
+| `language` | typescript, java, cpp | language semantics, type/memory/concurrency footguns, idioms — **loads for any code-writing expert** |
+| `stack` | react, django, ros2 | framework/library idioms, pitfalls, perf traps, version gotchas |
+| `platform` | docker, jetson-orin, stm32h7 | *where the code runs* — hardware (SoC/board/MCU), OS/RTOS + drivers, cross-compile toolchains, container/orchestration runtime, real-time/power/memory budgets |
+| `domain` | fintech, healthcare, drone-autonomy | compliance, domain invariants, threat models, **reference architectures** |
 
-Packs compose additively. Activate several at once (`stack:react` + `stack:node` + `domain:fintech`). There are **no combo packs**.
+- **Language vs stack:** a `language` pack is the language itself (reusable across every framework in it — `language:typescript` applies to React, Angular, Node…); a `stack` pack is a framework/library *built in* a language. Separate kinds so language rules aren't duplicated into every framework pack.
+- **Stack vs platform:** `stack` = an application framework built in a language; `platform` = the execution/deployment target (hardware, OS/RTOS, container runtime). A container/OS runtime (Docker, Linux) is `platform`; a *language* runtime (Node, JVM) stays with `language`/`stack`.
+- **Kinds don't limit composition.** A `kind` is just a category label — you can activate several packs of the *same* kind. A drone (Linux SoC + MCU) activates multiple `platform` packs at once. So hardware and OS don't need separate kinds; keep OS knowledge inside a hardware pack when coupled, extract a standalone `platform-freertos` only when reused across boards.
+
+Packs compose additively. Activate several at once (e.g. `language:cpp` + `stack:ros2` + `platform:jetson-orin` + `platform:stm32h7` + `domain:drone-autonomy`). There are **no combo packs**.
+
+> **Availability:** `language`, `stack`, and `domain` packs ship curated today. The `platform` kind is **defined but has no curated packs yet** — author one with the maintainer `add pack platform-<name>` command (see the platform source repo).
 
 ## Anatomy
 
 ```
 .agent/packs/<id>/
   pack.json                   # manifest (see schema below)
-  <expert>-agent.overlay.md   # optional: appended to a core expert when active
+  <expert>-agent.overlay.md   # stack/domain: appended to ONE core expert when active
+  code.overlay.md             # language: one shared overlay mapped to several code experts
   routing.md                  # optional: extra keyword→overlay routing rows
   references/*.md             # curated knowledge / reference architectures
 ```
+
+The loader resolves which overlay to read from `pack.json` → `provides.agent_overlays[<routed expert>]` — so a `language` pack can map `backend-agent`, `frontend-agent`, `data-agent`, `test-agent` all to the same `code.overlay.md` (no duplication), while a `stack` pack maps one expert to `<expert>-agent.overlay.md`.
 
 ## `pack.json` schema
 
 | Field | Required | Notes |
 |-------|----------|-------|
-| `id` | yes | `stack-<name>` or `domain-<name>` |
-| `kind` | yes | `stack` \| `domain` |
+| `id` | yes | `language-<name>`, `stack-<name>`, `platform-<name>`, or `domain-<name>` |
+| `kind` | yes | `language` \| `stack` \| `platform` \| `domain` |
 | `display_name` | yes | Human label |
 | `version` | yes | SemVer, independent of core |
 | `requires_core` | yes | core version range, e.g. `">=2.44.0"` |
 | `confidence` | yes | `curated` (maintained) \| `community` |
 | `last_verified` | yes | ISO date — staleness signal |
-| `detect` | stack: yes | `{ files:[], deps:[], globs:[] }` — signals used to *suggest* (never auto-install) |
+| `detect` | language/stack: yes | `{ files:[], deps:[], globs:[], extensions:[] }` — signals used to *suggest* (never auto-install). `extensions` (e.g. `[".cpp", ".hpp"]`) is scanned shallowly so language-only repos with no dependency manifest are still detected. **Platform packs** detect by target markers (`Dockerfile`, `*.cu`/CMake CUDA toolchain, `*.ioc`/linker script/device-tree); weak signals stay user-selected, like domain packs. |
 | `provides.agent_overlays` | no | `{ "<agent-id>": "<file>" }` — read after the core expert when active |
 | `provides.references` | no | reference files (pitfalls, reference architectures) |
 | `provides.routing_rows` | no | file with extra routing rows |
@@ -56,10 +67,36 @@ Domain packs are often distilled from **real applications** (not just agent-brai
 { "repo": "owner/name", "url": "https://github.com/owner/name", "kind": "app|library|spec", "license": "MIT", "note": "what we distilled from it" }
 ```
 
+## Language packs — one overlay, every code expert
+
+A `language` pack (e.g. `language-typescript`, `language-java`, `language-cpp`) ships a single `code.overlay.md` and maps it in `provides.agent_overlays` to each code-writing expert:
+
+```json
+"agent_overlays": {
+  "backend-agent": "code.overlay.md",
+  "frontend-agent": "code.overlay.md",
+  "data-agent": "code.overlay.md",
+  "test-agent": "code.overlay.md"
+}
+```
+
+Because the pack is in `active_packs`, the loader reads that overlay for whichever code expert a task routes to — so the language's rules apply to *all* code written in the session, not just when the user names the language. Detection uses a marker file (`tsconfig.json`, `pom.xml`, `CMakeLists.txt`) and/or a source-extension scan (`.ts`, `.java`, `.cpp`).
+
+## Platform packs — where the code runs (defined; not yet curated)
+
+A `platform` pack captures the execution/deployment target. Overlays attach to the experts that own *where code runs*: typically `devops-agent` + `architect-agent` (deploy topology, hardware integration) and `backend-agent` (embedded / real-time code). Compose freely — a heterogeneous system activates several at once:
+
+```
+language:cpp + stack:ros2 + platform:jetson-orin + platform:stm32h7 + platform:docker + domain:drone-autonomy
+```
+
+The cross-component split (e.g. hard real-time on an MCU, perception/planning on a Linux SoC) belongs in the **domain** pack's `reference-architecture.md`, which cites the real source apps it was distilled from. No curated `platform-*` packs ship yet — see the maintainer `add pack platform-<name>` command.
+
 ## Activate / list
 
 ```bash
 npx github:zafrirron/Agent-Platform --mode=list --list=packs
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
 npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
 npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
 ```

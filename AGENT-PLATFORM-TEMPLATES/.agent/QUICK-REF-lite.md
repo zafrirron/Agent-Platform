@@ -67,14 +67,15 @@ npx {{PLATFORM_NPX}} --mode=list --list=skills
 
 ---
 
-## Packs — stack & domain overlays (opt-in)
+## Packs — language, stack & domain overlays (opt-in)
 
 ```bash
 npx {{PLATFORM_NPX}} --mode=list --list=packs
+npx {{PLATFORM_NPX}} --mode=add --add=pack:language-typescript
 npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react
 ```
 
-Curated stack/domain knowledge on top of the agnostic core. Active packs live in `.agent/platform.json` → `active_packs`; the agent reads matching overlays under `.agent/packs/<id>/` for stack/domain tasks. v1: `stack-react`, `stack-django`, `domain-fintech`.
+Curated **language / stack / domain** knowledge on top of the agnostic core (three composable kinds: `language:*`, `stack:*`, `domain:*`). A language pack = the language itself and overlays every code expert; a stack pack = a framework built in a language. Active packs live in `.agent/platform.json` → `active_packs`; the agent reads the overlay each pack maps in `pack.json` → `provides.agent_overlays`. Available: `language-typescript`, `language-java`, `language-cpp`, `stack-react`, `stack-django`, `domain-fintech`.
 
 ---
 

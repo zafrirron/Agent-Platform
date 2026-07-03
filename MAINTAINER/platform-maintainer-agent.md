@@ -234,16 +234,22 @@ Execution:
 
 ### Command: "add pack <id>" / "add rule to pack <id>: <rule>"
 
-Packs are opt-in technology-stack / domain overlays (`.agent/packs/<id>/`). They carry a **non-universal** bar — stack/domain specificity is expected. See `MAINTAINER/adr/ADR-001-stack-domain-packs.md` and the consumer spec `.agent/packs/README.md`.
+Packs are opt-in **language / technology-stack / platform / domain** overlays (`.agent/packs/<id>/`). They carry a **non-universal** bar — language/stack/platform/domain specificity is expected. Four kinds: `language` (the language itself — reusable across every framework in it; overlays *all* code experts), `stack` (a framework/library built in a language; overlays one expert), `platform` (execution/deployment target — hardware/OS/RTOS/container runtime; overlays devops/architect/backend), `domain` (compliance + reference architectures). Kinds don't restrict composition — several packs of the same kind can be active (e.g. multiple `platform` packs for a heterogeneous board). See `MAINTAINER/adr/ADR-001-stack-domain-packs.md` and the consumer spec `.agent/packs/README.md`.
 
 **"add pack <id>"** — scaffold a new pack:
 ```
 Execution:
-1. Validate id: `stack-<name>` or `domain-<name>`. Confirm kind.
+1. Validate id: `language-<name>`, `stack-<name>`, `platform-<name>`, or `domain-<name>`. Confirm kind.
 2. Create .agent/packs/<id>/pack.json (schema: id, kind, display_name, version 1.0.0,
    requires_core, confidence: curated, last_verified: today, detect{}, provides{}).
-   For domain packs also add reference_sources: [].
-3. Create starter files: <expert>-agent.overlay.md (as needed), references/, routing.md.
+   For language packs, detect{} SHOULD include a marker file + extensions[] (source
+   extensions), and agent_overlays maps EVERY code expert to one shared code.overlay.md.
+   For platform packs, detect{} uses target markers (Dockerfile, *.cu / CMake CUDA
+   toolchain, *.ioc / linker script / device-tree; weak signals → user-selected), and
+   agent_overlays attaches to devops-agent + architect-agent (+ backend-agent for
+   embedded/real-time). For domain packs also add reference_sources: [].
+3. Create starter files: overlay(s) (language: one shared code.overlay.md;
+   stack/platform/domain: <expert>-agent.overlay.md as needed), references/, routing.md.
 4. Register in AGENT-PLATFORM-MANIFEST.json:
    - packs_catalog[] entry (id, kind, display_name, description, detect)
    - files[] entries with "kind": "pack" for every pack file
@@ -258,7 +264,7 @@ Execution:
 Execution:
 1. Read the pack (pack.json, overlays, references, routing.md).
 2. Place the rule correctly:
-   - hard rule / review-lens for an expert → <expert>-agent.overlay.md
+   - hard rule / review-lens for an expert → <expert>-agent.overlay.md (stack/domain) or the shared code.overlay.md (language)
    - curated pitfall / pattern → references/<topic>.md (thin, failure-derived)
    - domain architecture / source → references/reference-architecture.md + reference_sources[]
 3. If a new expert overlay or topic was added, update routing.md.
@@ -268,7 +274,7 @@ Execution:
 7. Report: "Rule added to pack <id> → <file>. version→X, last_verified→today."
 ```
 
-> To grow packs from external sources, use the scan modes: Mode 4 `repo=owner/name pack=<id>` (deep-read a repo/app) or Mode 2 `pack=<id>` (freshness pass). Both write via the mechanics above.
+> To grow packs from external sources, use the scan modes: Mode 4 `repo=owner/name pack=<id>` (deep-read a repo/app), Mode 2 `pack=<id>` (docs/release freshness pass), or Mode 3 `platform-ingest.md … pack=<id>` / PACK-CANDIDATE findings (a user's production-proven rules). All write via the mechanics above and use the PSG pack lane.
 
 ---
 

@@ -11,7 +11,7 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 
 ## Meta
 - **Mode:** internal | web-audit | ingest | mode4
-- **Scan scope:** discovery | targeted | **pack** *(targeted = single `repo=owner/name`; pack = `pack=<id>` grows a stack/domain pack brain — mode4 or web-audit)*
+- **Scan scope:** discovery | targeted | **pack** *(targeted = single `repo=owner/name`; pack = `pack=<id>` grows a language/stack/platform/domain pack brain — mode4, web-audit, or ingest)*
 - **Pack:** <id> *(pack scope only)*
 - **Trigger:** [command user ran]
 - **Target repo:** owner/name *(targeted / pack mode4 only)*
@@ -55,7 +55,7 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 | Mode 4 | R001 | Source repo URL, effort, impact, classification FEATURE/STRENGTHEN/ARCHITECTURE; targeted scans add **Recommended adoption** table |
 
 **Mode 4 targeted archive path:** `mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
-**Pack-scoped archive path:** `mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md` or `web-audit/YYYY-MM-DD-pack-<id>-report.md`. Pack findings' **Suggested path** points at `.agent/packs/<id>/…` (overlay / references / `reference_sources`), never core.
+**Pack-scoped archive path:** `mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md`, `web-audit/YYYY-MM-DD-pack-<id>-report.md`, or `ingest/YYYY-MM-DD-pack-<id>-report.md`. Pack findings' **Suggested path** points at `.agent/packs/<id>/…` (overlay / references / `reference_sources`), never core. Ingest pack findings carry status **PACK-CANDIDATE**.
 
 Each finding **must** include disposition after maintainer selects:
 

@@ -1,0 +1,25 @@
+{
+  "id": "language-typescript",
+  "kind": "language",
+  "display_name": "TypeScript",
+  "version": "1.0.0",
+  "requires_core": ">=2.44.0",
+  "confidence": "curated",
+  "last_verified": "2026-07-03",
+  "detect": {
+    "files": ["tsconfig.json"],
+    "deps": ["typescript"],
+    "extensions": [".ts", ".tsx"]
+  },
+  "provides": {
+    "agent_overlays": {
+      "backend-agent": "code.overlay.md",
+      "frontend-agent": "code.overlay.md",
+      "data-agent": "code.overlay.md",
+      "test-agent": "code.overlay.md"
+    },
+    "references": ["references/typescript-pitfalls.md"],
+    "routing_rows": "routing.md"
+  },
+  "attribution": "Curated from the TypeScript handbook + failure-derived platform pitfalls (Mode 2/4 pack-scoped)."
+}

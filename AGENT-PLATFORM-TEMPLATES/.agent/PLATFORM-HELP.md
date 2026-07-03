@@ -607,24 +607,26 @@ For full session features (registry, handoff), run session-start before or right
 
 ---
 
-## Technology-stack & domain packs (opt-in overlays)
+## Language, technology-stack & domain packs (opt-in overlays)
 
-The platform is deliberately **stack- and domain-agnostic** — it applies general engineering discipline to any project. **Packs** add curated, opinionated knowledge for a specific technology stack or business domain **on top of** the core, without changing it.
+The platform is deliberately **language-, stack- and domain-agnostic** — it applies general engineering discipline to any project. **Packs** add curated, opinionated knowledge for a specific programming language, technology stack, or business domain **on top of** the core, without changing it.
 
 | Action | Command |
 |--------|---------|
 | List available packs | `npx {{PLATFORM_NPX}} --mode=list --list=packs` |
-| Add a pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
+| Add a language pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:language-typescript` |
+| Add a stack pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
 | See active packs | Read `.agent/platform.json` → `active_packs` |
 
 **How they work:**
-- **Two kinds** — `stack:*` (React, Django: idioms, pitfalls, perf traps) and `domain:*` (fintech: compliance, invariants, **reference architectures**). Packs compose — activate several at once.
+- **Three kinds** — `language:*` (TypeScript, Java, C++: the language's own type/memory/concurrency footguns), `stack:*` (React, Django: framework idioms, pitfalls, perf traps), `domain:*` (fintech: compliance, invariants, **reference architectures**). Packs compose — e.g. `language:typescript` + `stack:react` + `domain:fintech`.
+- **Language vs stack** — a **language** pack is the language itself and is reusable across every framework in it (a TS pack applies to React, Angular, Node…); a **stack** pack is a framework/library/runtime *built in* a language. They're separate kinds so language rules aren't duplicated into each framework pack, and there are no combo packs.
 - **Opt-in, no bloat** — packs never install by profile; only via `--mode=add`. Recorded in `active_packs`. Zero cost when none are active.
-- **Detect-and-suggest** — on install/upgrade the installer detects your stack and *suggests* matching packs; it never auto-installs.
-- **Overlays, not new experts** — when a pack is active, the routed expert also reads `.agent/packs/<id>/<expert>.overlay.md`. Core files are never modified.
+- **Detect-and-suggest** — on install/upgrade the installer detects your language/stack (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, or a source-extension scan) and *suggests* matching packs; it never auto-installs.
+- **Overlays, not new experts** — when a pack is active, the routed expert also reads the overlay the pack maps in `pack.json` → `provides.agent_overlays`. A stack/domain pack overlays one expert; a **language pack overlays every code-writing expert** (one shared overlay), so its rules apply to all code. Core files are never modified.
 - **Domain reference architectures** — with a domain pack active, ask *"give me a reference architecture for a fintech app"* → the agent reads the pack's `reference-architecture.md` and points you at the linked real-world source repos (license-aware).
 
-Available (v1): `stack-react`, `stack-django`, `domain-fintech`. Full spec: `.agent/packs/README.md`.
+Available: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. Full spec: `.agent/packs/README.md`.
 
 ---
 

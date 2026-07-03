@@ -29,6 +29,8 @@ Loop continues                                                                  
 
 **The platform gets smarter from three sources: real failures, the global knowledge ecosystem, AND production-proven rules from users.**
 
+> Each source feeds **two lanes**: universal rules improve the **core**; language/stack/platform/domain-specific rules improve **packs** (Mode 4 `repo=… pack=`, Mode 2 `pack=`, Mode 3 `pack=` / PACK-CANDIDATE, Mode 1 `add rule to pack`). Pack changes use the independent PSG pack lane and never block a core release.
+
 ---
 
 ## Starting a maintainer session
@@ -53,7 +55,7 @@ There are five maintainer tools. Each has a distinct trigger and a distinct outp
 | **Add rule** (Mode 1) | `platform-maintainer-agent.md` | Observed a failure, have a specific rule to add | One rule added to the right PLATFORM section, logged, version bumped |
 | **Internal platform audit** | `platform-audit.md` | Platform feels stale, before a release, or after many changes — check the platform's own health | Quality report: undertrained experts, weak playbooks, coverage gaps, vague rules, duplicates |
 | **Web ecosystem audit** (Mode 2) | `web-audit.md` | Monthly schedule, or after an OWASP/CWE update | Structured findings F001-Fxxx from OWASP, CWE, best practices, **+ skill packs/playbooks (Phase 2F)** |
-| **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/` | Structured findings report I001-Ixxx from user's production-proven rules |
+| **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/`; add `pack=<id>` to feed a pack | Structured findings I001-Ixxx (core lane) **+ PACK-CANDIDATE findings routed into language/stack/platform/domain packs** |
 | **GitHub ecosystem scan** (Mode 4) | `github-governance-scan.md` | Quarterly discovery **or** `repo=owner/name` targeted **or** `repo=… pack=<id>` to grow a stack/domain pack brain | Structured findings R001-Rxxx + Recommended adoption table (targeted/pack) |
 
 **The improvement cycle always ends the same way regardless of which tool triggered it:**
@@ -103,7 +105,7 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Monthly | Web ecosystem check (OWASP, CWE, best practices, **skill packs Phase 2F**) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Quarterly | GitHub ecosystem scan — discovery **or** targeted `repo=` | `Read MAINTAINER/github-governance-scan.md and execute it.` · targeted: `… repo=owner/name` |
-| Grow a pack brain | Stack/domain pack from a repo/app, or freshness pass | `… github-governance-scan.md … repo=owner/name pack=<id>` · or `… web-audit.md … pack=<id>` · or `"add rule to pack <id>: …"` |
+| Grow a pack brain | Language/stack/platform/domain pack from a repo/app, docs freshness pass, user submissions, or a hand-written rule | `… github-governance-scan.md … repo=owner/name pack=<id>` (Mode 4) · `… web-audit.md … pack=<id>` (Mode 2) · `… platform-ingest.md … pack=<id>` (Mode 3) · or `"add rule to pack <id>: …"` (Mode 1) |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 | After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation + E2E plan | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D/F/G in `platform-maintainer-agent.md` |
 
@@ -302,15 +304,19 @@ Files can be:
 
 ```
 Read MAINTAINER/platform-ingest.md and execute it.
+# or, to feed a specific pack:
+Read MAINTAINER/platform-ingest.md and execute it. pack=<pack-id>
 ```
 
 The ingest agent:
 1. Scans and classifies all files in `MAINTAINER/ingest/`
 2. Extracts every specific, verifiable rule it finds
-3. Deduplicates against existing platform rules
-4. Classifies each finding: NEW / ENHANCE / DUPLICATE / PROJECT-SPECIFIC / VAGUE
-5. Maps each finding to the best target (which expert, which playbook, or new expert/playbook candidate)
+3. Deduplicates against existing platform rules **and active packs**
+4. Classifies each finding: NEW / ENHANCE / **PACK-CANDIDATE** / DUPLICATE / PROJECT-SPECIFIC / VAGUE
+5. Maps each finding to the best target — a core expert/playbook (core lane) **or a language/stack/platform/domain pack** (pack lane), or a new expert/pack/playbook candidate
 6. Presents a structured ingest report with finding IDs (I001, I002, ...)
+
+> **Two lanes:** universal rules go to core (full PSG); language/stack/platform/domain-specific rules become **PACK-CANDIDATE** and land in a pack under the non-universal bar (**PSG — pack lane**, never blocks a core release). This makes user submissions a feeder for pack brains, not just core.
 
 **Step 3 — Review and select**
 

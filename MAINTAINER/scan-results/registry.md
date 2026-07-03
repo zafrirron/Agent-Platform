@@ -15,7 +15,7 @@
 
 **Mode 4 variants:** discovery (quarterly search) · **targeted** (`repo=owner/name` — skip search, deep-read one repo for adoption ideas) · **pack-scoped** (`repo=owner/name pack=<id>` — grow a stack/domain pack brain; findings target `.agent/packs/<id>/`, not core)
 
-**Pack-scoped scans** (Mode 4 or Mode 2 `pack=<id>`) use `Scope: pack` · `Pack: <id>` in Meta and follow the **PSG pack lane** — see `platform-maintainer-agent.md`.
+**Pack-scoped scans** (Mode 4 or Mode 2 `pack=<id>`, or Mode 3 ingest `pack=<id>` / PACK-CANDIDATE findings) use `Scope: pack` · `Pack: <id>` in Meta and follow the **PSG pack lane** — see `platform-maintainer-agent.md`.
 
 Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — new runs write to **both** until consolidated.
 

@@ -1,6 +1,6 @@
 # ADR-001 — Technology-stack & domain "Packs" layer
 
-**Status:** Accepted — Phase 1 shipped; **Phase 3 (maintainer growth loop) shipped** ([Unreleased])
+**Status:** Accepted — Phase 1 shipped; **Phase 3 (maintainer growth loop) shipped**; **Phase 2 language packs shipped** (`stack` split into `language` + `stack`); **4th axis `platform` (execution/deployment target: hardware + OS/RTOS + container runtime) formalized — design only, no curated packs yet** ([Unreleased])
 **Date:** 2026-07-03
 **Deciders:** Platform maintainer
 **Supersedes:** —
@@ -33,14 +33,24 @@ Loading *all* stacks and domains into every workspace would bloat unused content
 
 Introduce a **Packs** layer: optional, selectable capability modules that overlay curated stack/domain knowledge onto the agnostic core **without modifying it**.
 
-### Principle 1 — Two orthogonal axes, never merged
+### Principle 1 — Four orthogonal axes, never merged
 
 | Axis | `kind` | Examples | Knowledge type |
 |------|--------|----------|----------------|
-| Technology stack | `stack` | react, django, spring, nextjs, postgres | idioms, pitfalls, perf traps, version gotchas |
-| Domain / vertical | `domain` | fintech, healthcare, ecommerce, gov-defense | compliance (HIPAA/PCI/SOC2), domain invariants, threat models |
+| Programming language | `language` | typescript, java, cpp, python, go, rust | language semantics, memory/type/concurrency footguns, idioms — applies to **any** code-writing expert |
+| Framework / library | `stack` | react, django, spring, nextjs, ros2, px4 | framework/library idioms, pitfalls, perf traps, version gotchas |
+| Execution / deployment target | `platform` | docker, kubernetes, jetson-orin, stm32h7, freertos, aws-lambda | hardware (SoC/board/MCU) constraints, OS/RTOS + driver model, cross-compile toolchains, container/orchestration runtime, real-time/power/memory budgets |
+| Domain / vertical | `domain` | fintech, healthcare, drone-autonomy, gov-defense | compliance (HIPAA/PCI/SOC2), domain invariants, threat models, reference architectures |
 
-Packs compose **additively and independently** — a repo may activate `stack:react` + `stack:node` + `domain:fintech`. **No combo packs** (`react-fintech`) — that path is an N×M maintenance explosion and is prohibited.
+**Language vs stack — why they are separate kinds.** A language pack is the *language itself* (TypeScript's type system, Java concurrency, C++ ownership/UB); a stack pack is a *framework/library built in* a language (React, Django, Spring, ROS 2). They are separate because a language pack is **reusable across every framework in that language** — `language:typescript` applies whether the stack is React, Angular, Node, or plain scripts. Folding language rules into each framework pack would duplicate them N times.
+
+**`platform` — why hardware, OS, and deployment target are their own axis (not `stack`).** `stack` = an *application framework built in a language*; `platform` = *where the code runs*: the hardware target (Jetson Orin, STM32H7, an Airvolute carrier board), the OS/RTOS (Linux/L4T, FreeRTOS, bare-metal), and the container/orchestration runtime (Docker, k8s). This knowledge — CUDA/GPU memory, DMA, hard real-time deadlines, peripheral buses (I2C/SPI/CAN), cross-compilation toolchains, power budgets, container packaging — is **reusable across languages, frameworks, and domains** (a Jetson pack is true for C++ *or* Rust, drones *or* robotics). Folding it into `stack` would duplicate it in every framework pack — the same failure that split `language` out of `stack`. Note: a **language runtime** (Node, JVM) stays with `language`/`stack`; a **container/OS runtime** (Docker, Linux) is `platform`.
+
+> **Kinds do not constrain composition.** A `kind` is a category label (for detection heuristics, overlay attachment, and how we talk about packs) — it is **not** a mutual-exclusion group. You can activate several packs of the *same* kind at once. A heterogeneous system like a drone (a Linux SoC + an MCU) simply activates multiple `platform` packs (`platform-jetson-orin` + `platform-stm32h7` + `platform-docker`). Because of this, hardware and OS do **not** need to be separate kinds — OS knowledge rides inside a hardware pack when coupled, and is extracted into its own `platform` pack (`platform-freertos`) only when reused across many boards (same "extract on duplication" rule as language↔stack).
+
+Packs compose **additively and independently** — a repo may activate `language:cpp` + `stack:ros2` + `platform:jetson-orin` + `platform:stm32h7` + `domain:drone-autonomy`. **No combo packs** (`react-fintech`, `ts-react`, `jetson-cpp`) — that path is an N×M maintenance explosion and is prohibited.
+
+> **Overlay attachment differs by kind.** A `stack`/`domain` pack overlays the one or two experts it concerns (React → `frontend-agent`). A `language` pack overlays **every code-writing expert** (backend/frontend/data/test) via one shared overlay. A `platform` pack overlays the experts that own *where code runs* — typically `devops-agent` + `architect-agent` (deployment/hardware topology) and `backend-agent` (embedded/real-time code) — via `provides.agent_overlays`. Once active, the overlay loads automatically for the routed expert (no keyword needed).
 
 ### Principle 2 — Overlays, not duplicated experts
 
@@ -65,13 +75,15 @@ Overlays compose: two active stack packs both contribute overlays to the same ex
 ```json
 {
   "id": "stack-react",
-  "kind": "stack",
+  "kind": "stack",              // one of: language | stack | platform | domain
   "display_name": "React",
   "version": "1.0.0",
   "requires_core": ">=2.44.0",
   "confidence": "curated",
   "last_verified": "2026-07-03",
   "detect": { "files": ["package.json"], "deps": ["react"], "globs": ["**/*.tsx"] },
+  "// language packs detect by marker file + source extension": "e.g. { \"files\": [\"tsconfig.json\"], \"deps\": [\"typescript\"], \"extensions\": [\".ts\", \".tsx\"] }",
+  "// platform packs detect by target markers": "e.g. Dockerfile → platform-docker; *.cu / CMake CUDA toolchain → platform-jetson; *.ioc / linker script / device-tree → MCU targets; weak signals → user-selected like domain packs",
   "provides": {
     "agent_overlays": { "frontend-agent": "frontend-agent.overlay.md" },
     "references": ["references/react-pitfalls.md"],
@@ -130,14 +142,20 @@ Packs are versioned and tested **independently of core**:
 - Detect-and-suggest at install + session-start (stack detection via dependency files).
 - Tests: pack install/activate, zero-pack core unchanged, overlay compose.
 
-**Phase 2 — Domain packs**
-- 1–2 domain packs (e.g. fintech/PCI, healthcare/HIPAA): compliance references + security-agent/critic overlays.
+**Phase 2 — Domain packs + language packs** (language layer ✅ shipped, [Unreleased])
+- 1–2 domain packs (e.g. fintech/PCI, healthcare/HIPAA): compliance references + security-agent/critic overlays. *(fintech shipped Phase 1)*
+- **Language packs** (new `language` kind): `language-typescript`, `language-java`, `language-cpp` — shared code overlay across code-writing experts + curated pitfalls + routing. Detection extended with a bounded **source-extension scan** (`detect.extensions`) so language-only repos (e.g. C++ with no dependency manifest) are still suggested.
 - Domain suggestion heuristics (README/keywords; user-driven, not auto).
 
 **Phase 3 — Maintainer growth loop** ✅ shipped ([Unreleased])
 - `pack=<id>` scope for Mode 4 (`github-governance-scan.md`) + Mode 2 (`web-audit.md`); "add pack" / "add rule to pack" authoring commands in `platform-maintainer-agent.md`.
 - Pack-health check in the internal audit (`platform-audit.md` Step 6b); PSG **pack lane** (independent versioning/tests); registry/report-schema `Scope: pack`.
 - Per-pack provenance + `last_verified` refresh cadence.
+
+**Phase 2p — Platform (execution/deployment target) axis** — *design formalized ([Unreleased]); packs not yet built*
+- New `kind: "platform"` covering hardware (SoC/board/MCU), OS/RTOS, and container/orchestration runtime. Formalized in this ADR, the roadmap, the pack spec (`.agent/packs/README.md`), and the `add pack` command (accepts `platform-<name>`).
+- **When built:** starter packs `platform-docker`, `platform-jetson-orin`, `platform-stm32h7`; overlays attach to `devops-agent`/`architect-agent` (topology/deploy) + `backend-agent` (embedded/real-time). Detection via target markers (`Dockerfile`, `*.cu`/CMake CUDA toolchain, `*.ioc`/linker scripts/device-tree); weak signals stay user-selected.
+- Motivating case: a drone mission brain decomposes as `language:cpp` + `stack:ros2` + `platform:jetson-orin` + `platform:stm32h7` + `platform:docker` + `domain:drone-autonomy`; the heterogeneous compute split (Linux SoC ↔ MCU) is captured in the domain pack's `reference-architecture.md`.
 
 **Phase 4 — Distribution & quality**
 - Pack registry/catalog surface in DISTRIBUTION docs; community vs curated `confidence` tiers; optional pack-eval certification (ties to deferred R012).

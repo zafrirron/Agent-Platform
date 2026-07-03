@@ -184,12 +184,40 @@ function detectPacks(root) {
   let rootFiles = [];
   try { rootFiles = fs.readdirSync(root); } catch { /* ignore */ }
 
+  // Shallow, bounded scan for source-file extensions (catches language packs
+  // that have no dependency manifest, e.g. a C++ repo with only *.cpp/*.h).
+  const catalogExts = new Set();
+  for (const p of catalog) for (const e of ((p.detect || {}).extensions || [])) catalogExts.add(e.toLowerCase());
+  const presentExts = new Set();
+  if (catalogExts.size > 0) {
+    const SKIP = new Set(['node_modules', '.git', 'dist', 'build', 'out', 'vendor', 'target', '.venv', 'venv', '__pycache__', '.next', 'coverage']);
+    const MAX_DEPTH = 2, MAX_FILES = 4000;
+    let seen = 0;
+    const walk = (dir, depth) => {
+      if (depth > MAX_DEPTH || seen >= MAX_FILES) return;
+      let entries = [];
+      try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+      for (const ent of entries) {
+        if (seen >= MAX_FILES) return;
+        if (ent.isDirectory()) {
+          if (!SKIP.has(ent.name) && !ent.name.startsWith('.')) walk(path.join(dir, ent.name), depth + 1);
+        } else {
+          seen++;
+          const ext = path.extname(ent.name).toLowerCase();
+          if (ext && catalogExts.has(ext)) presentExts.add(ext);
+        }
+      }
+    };
+    walk(root, 0);
+  }
+
   const suggested = [];
   for (const p of catalog) {
     const d = p.detect || {};
     let hit = false;
     for (const dep of (d.deps || [])) if (deps.has(dep.toLowerCase())) hit = true;
     for (const f of (d.files || [])) if (rootFiles.includes(f) || fs.existsSync(path.join(root, f))) hit = true;
+    for (const e of (d.extensions || [])) if (presentExts.has(e.toLowerCase())) hit = true;
     if (hit) suggested.push(p);
   }
   return suggested;

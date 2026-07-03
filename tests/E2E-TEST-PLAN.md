@@ -5,10 +5,10 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (235 tests, ~3s)
+npm test   ← runs all automated checks (243 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
                    v2.42 playbooks (20) + 11 lifecycle skills + optional ux-research skill + install profiles (lite/core/full),
-                   stack/domain packs (opt-in): not installed by profile, detect-and-suggest proposal (no auto-install), --add=pack activation, active_packs, --list=packs, reference_sources,
+                   language/stack/domain packs (opt-in): not installed by profile, detect-and-suggest proposal (no auto-install; deps + marker files + source extensions), --add=pack activation (incl. language pack shared overlay across code experts), active_packs, --list=packs, reference_sources,
                    --mode=add cherry-pick + --mode=list catalog, profile-filter unit tests,
                    references + spec-outline + plan handoff,
                    lifecycle slash commands (/plan /build /test /code-simplify /webperf /context /verify),
@@ -45,7 +45,7 @@ npm test   ← runs all automated checks (235 tests, ~3s)
 | 2b | Full project audit — requires AI to run 11 phases (incl. governance/compliance) |
 | 2c | Slash commands — requires AI to honour full lifecycle `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` (Claude + optional Cursor) |
 | 1lite | Lite profile install — optional automated rehearsal with `--profile=lite --framework=cursor` |
-| 1p | Stack/domain packs — detector proposal is automated; **activation + live overlay/reference-architecture use requires an AI agent** |
+| 1p | Language/stack/domain packs — detector proposal (deps + marker files + source extensions) + activation are automated; **live overlay load (incl. language overlay auto-loading for any code task) + reference-architecture use requires an AI agent** |
 | 2d | Cursor Plan handoff — requires `/implement` or "implement the plan" after Plan approval |
 | 3 | Auto-routing — requires AI to route core + enterprise + v2.42 prompt types silently |
 | 4 | Security gate — requires AI to implement auth and trigger Step 5a |
@@ -215,9 +215,9 @@ grep "Agent Platform Bootstrap" <TEST_DIR>/.gitignore
 
 ---
 
-## Phase 1p — Technology-stack & domain packs (detect · propose · activate · overlay)
+## Phase 1p — Language, technology-stack & domain packs (detect · propose · activate · overlay)
 
-Verifies the opt-in packs layer end-to-end: the installer **detects** the project stack/domain and **proposes** matching packs (never auto-installs), the user **activates** one, and a live agent **loads the overlay + reference architecture**.
+Verifies the opt-in packs layer end-to-end: the installer **detects** the project language/stack/domain and **proposes** matching packs (never auto-installs), the user **activates** one, and a live agent **loads the overlay + reference architecture**.
 
 > The todo-app fixture is an Express REST API — a natural extension is "add payments", which makes the fintech domain pack relevant. This phase simulates that.
 
@@ -226,6 +226,7 @@ Verifies the opt-in packs layer end-to-end: the installer **detects** the projec
 cd <TEST_DIR>
 npx github:zafrirron/Agent-Platform --mode=list --list=packs
 ```
+- [ ] Output lists language packs `pack:language-typescript [language]`, `pack:language-java [language]`, `pack:language-cpp [language]`
 - [ ] Output lists `pack:stack-react [stack]`, `pack:stack-django [stack]`, `pack:domain-fintech [domain]`
 - [ ] No `.agent/packs/` directory created by listing
 
@@ -279,6 +280,38 @@ Give me a reference architecture for a fintech payments app.
 node -e "const p=require('<TEST_DIR_LITE>/.agent/platform.json'); console.assert((p.active_packs||[]).length===0)"
 ```
 - [ ] With `active_packs` empty, routing behaves exactly as core (no overlay reads)
+
+### 1p.7 — Language pack detect + activate (marker file, extension, shared overlay)
+The todo-app fixture is a Node/JS project; a `tsconfig.json` marks it TypeScript. Detection also works from source extensions alone (no manifest).
+```bash
+# marker-file detection
+cd <TEST_DIR> && echo '{ "compilerOptions": { "strict": true } }' > tsconfig.json
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+- [ ] `Suggested packs` proposes `• TypeScript — npx ... --add=pack:language-typescript`
+- [ ] Not auto-installed (`.agent/packs/language-typescript` absent; `active_packs` unchanged)
+
+```bash
+# extension-only detection (no dependency manifest) — sanity check in a scratch dir
+mkdir <SCRATCH>/src && echo 'int main(){return 0;}' > <SCRATCH>/src/main.cpp
+npx github:zafrirron/Agent-Platform --target=<SCRATCH>
+```
+- [ ] `Suggested packs` proposes `• C++ — ... --add=pack:language-cpp` (detected via `.cpp` extension, no manifest)
+
+```bash
+# activate the language pack
+cd <TEST_DIR> && npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
+```
+- [ ] `.agent/packs/language-typescript/code.overlay.md` exists (single shared overlay)
+- [ ] `pack.json` → `provides.agent_overlays` maps **several** code experts (backend/frontend/data/test) to that one `code.overlay.md`
+- [ ] `platform.json` → `active_packs` contains `language-typescript`
+
+### 1p.8 — Language overlay auto-loads for any code task (requires AI agent)
+With `language-typescript` active, send a plain code task (no language keyword):
+```
+Add an input-validation helper for the todo API.
+```
+- [ ] Whichever code expert is routed (e.g. `backend-agent`) also reads `.agent/packs/language-typescript/code.overlay.md` — it should apply TS rules (no `any`, validate external data at the boundary, `strict`) **without** the user naming TypeScript
 
 ### Cleanup (optional)
 ```bash
