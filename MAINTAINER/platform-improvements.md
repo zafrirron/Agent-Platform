@@ -18,6 +18,42 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Mode 4 R025/R028/R029 adopted (thedesignproject/agent-skills)
+
+**Source:** Mode 4 targeted scan on `thedesignproject/agent-skills` (2026-07-03), report R025–R030. Design/frontend skill pack — adopted low-effort, in-scope items.
+
+**Gap observed:** (R025) no note that our SKILL.md modules work with the community `npx skills` installer; (R028) frontend-agent lacked a guardrail against homogeneous AI-generated UI; (R029) skill quality checklist had no "test before shipping" step.
+
+**Files changed:** `docs/DISTRIBUTION.md` (community-installer note), `.agent/agents/frontend-agent.md` (anti "AI aesthetic" principle), `.agent/PLATFORM-HELP.md` (verify-before-ship checklist item).
+
+**Capability added:**
+- R025 (P1): `npx skills add` installer interop documented.
+- R028 (P1): distinctive-design principle in frontend-agent (never over accessibility).
+- R029 (P1): verify-before-ship in skill quality checklist (dry-run/subagent).
+- R026 deferred (roadmap — AI-consumable design systems); R027 deferred (opt-in `prompt-engineering` skill); R030 deferred (PR/branch naming).
+
+**Validated:** Done — `npm test` green (220 tests; docs/template content only, no manifest/count impact).
+
+---
+
+### [Unreleased] — 2026-07-03 — Mode 4 R019/R020/R021 adopted (VoltAgent/awesome-agent-skills)
+
+**Source:** Mode 4 targeted scan on `VoltAgent/awesome-agent-skills` (2026-07-03), report R019–R024. Repo is a curated index of 1000+ skills — adopted its *meta-layer*, not the skills.
+
+**Gap observed:** (R019) no single canonical multi-IDE skills-path reference; (R020) no checkable skill-quality bar for authors/maintainers; (R021) no security-vetting gate when ingesting/cherry-picking third-party skills.
+
+**Files changed:** `docs/DISTRIBUTION.md` (8-tool portable-skills matrix + "vetting third-party skills" checklist), `.agent/PLATFORM-HELP.md` (skill quality checklist), `MAINTAINER/platform-ingest.md` (Step 1b security-vet gate).
+
+**Capability added:**
+- R019 (P0): cross-IDE skills-path matrix (project + global paths, docs links).
+- R020 (P1): skill quality checklist — progressive disclosure (<100-tok meta / <500-line body), no absolute paths, scoped tools, 3rd-person keyworded description.
+- R021 (P1): skill-ingest security vetting — quarantine on data exfiltration / obfuscation / prompt injection / absolute paths / blanket tools / untrusted source.
+- R022/R023/R024: deferred (context taxonomy, skill-optimizer meta-skill, awesome-list as seed).
+
+**Validated:** Done — `npm test` green (220 tests; docs-only change, no manifest/count impact).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Mode 4 R013/R016 adopted + R014 roadmapped (gemini-agent-skills)
 
 **Source:** Mode 4 targeted scan on `saeed-vayghan/gemini-agent-skills` (2026-07-03), report R013–R018.

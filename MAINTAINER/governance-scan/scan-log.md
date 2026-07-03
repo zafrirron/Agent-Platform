@@ -6,6 +6,36 @@ Full reports: `MAINTAINER/scan-results/mode4/` + legacy `MAINTAINER/governance-s
 
 ---
 
+## [2026-07-03] — Mode 4 targeted — thedesignproject/agent-skills
+
+**Scan mode:** targeted  
+**Queries used:** N/A (targeted)  
+**Findings:** 6 (R025–R030) — 3 Implemented, 3 Deferred  
+**Archive:** [../scan-results/mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md](../scan-results/mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md)
+
+| Repo | Stars | Key finding | Status |
+|------|------:|-------------|--------|
+| thedesignproject/agent-skills | 36 | `npx skills` interop (R025); anti "AI aesthetic" frontend (R028); subagent skill-testing (R029) | R025/R028/R029 Implemented; R026/R027/R030 Deferred |
+
+**Next scan:** design-focused pack; re-check only if it adds coordination/lifecycle. Mine prompt-engineer / agentic-design-systems on demand.
+
+---
+
+## [2026-07-03] — Mode 4 targeted — VoltAgent/awesome-agent-skills
+
+**Scan mode:** targeted  
+**Queries used:** N/A (targeted)  
+**Findings:** 6 (R019–R024) — 3 Implemented, 3 Deferred  
+**Archive:** [../scan-results/mode4/2026-07-03-targeted-awesome-agent-skills-report.md](../scan-results/mode4/2026-07-03-targeted-awesome-agent-skills-report.md)
+
+| Repo | Stars | Key finding | Status |
+|------|------:|-------------|--------|
+| VoltAgent/awesome-agent-skills | high | Cross-IDE path matrix (R019); skill quality checklist (R020); skill-ingest security vetting (R021) | R019/R020/R021 Implemented; R022/R023/R024 Deferred |
+
+**Next scan:** quarterly re-check for new *meta* sections (quality/security tooling); mine specific packs on demand only — do not ingest 1000-skill breadth.
+
+---
+
 ## [2026-07-03] — Mode 4 targeted — saeed-vayghan/gemini-agent-skills
 
 **Scan mode:** targeted  

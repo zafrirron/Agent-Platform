@@ -41,22 +41,43 @@ Cursor does **not** have a `/plugin install` marketplace. Use `npx` (recommended
 
 ---
 
-## Gemini CLI (`.gemini/skills/`) — interoperability
+## Portable skills — where each IDE loads them
 
-The platform ships `SKILL.md` modules that are portable to the Gemini CLI skill model. Gemini activates skills placed under `.gemini/skills/<name>/` and lists them with `/skills list`.
+The platform ships framework-neutral `SKILL.md` modules under `.agent/skills/<name>/`. Every major AI coding assistant reads skills from its own folder, so a platform skill can be copied into any of them. Canonical paths (source: [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills)):
 
-To use a platform skill in Gemini:
+| Tool | Project path | Global path | Docs |
+|------|--------------|-------------|------|
+| Antigravity | `.agent/skills/` | `~/.gemini/antigravity/skills/` | [docs](https://antigravity.google/docs/skills) |
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` | [docs](https://docs.anthropic.com/en/docs/claude-code/skills) |
+| Codex | `.agents/skills/` | `~/.agents/skills/` | [docs](https://developers.openai.com/codex/skills) |
+| Cursor | `.cursor/skills/` | `~/.cursor/skills/` | [docs](https://cursor.com/docs/context/skills) |
+| Gemini CLI | `.gemini/skills/` | `~/.gemini/skills/` | [docs](https://geminicli.com/docs/cli/skills/) |
+| GitHub Copilot | `.github/skills/` | `~/.copilot/skills/` | [docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) |
+| OpenCode | `.opencode/skills/` | `~/.config/opencode/skills/` | [docs](https://opencode.ai/docs/skills) |
+| Windsurf | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` | [docs](https://docs.windsurf.com/windsurf/cascade/skills) |
+
+Example — use a platform skill in Gemini CLI:
 
 ```bash
-# Copy an installed platform skill into your Gemini skills folder
 cp -r .agent/skills/ux-research ~/.gemini/skills/ux-research
 gemini            # then: /skills list
 ```
 
 **Notes:**
-- Platform skills are framework-neutral markdown — no Gemini-specific frontmatter required, though Gemini reads `name` + `description` from the header.
-- The reverse direction (Gemini/Claude persona packs → platform) goes through **Mode 4 targeted scan** or **Mode 3 ingest**, not a direct copy — the platform adapts and de-duplicates before adopting.
+- Platform skills are plain markdown — no host-specific frontmatter required, though most hosts read `name` + `description` from the header.
+- The reverse direction (external skill packs → platform) goes through **Mode 4 targeted scan** or **Mode 3 ingest**, not a direct copy — the platform adapts, de-duplicates, and **security-vets** before adopting (see below).
 - Full multi-agent Gemini support (a 5th framework stub) is not installed by default; open an issue if you want `--framework=gemini` scaffolding.
+- **Community installer** — because the modules are standard `SKILL.md`, they are also consumable by the generic [`npx skills`](https://github.com/thedesignproject/agent-skills) installer (`npx skills add <owner>/<repo> -s <skill> -g`). Complementary to `npx github:{{PLATFORM_REPO}} --mode=add`; vet any skill first (below).
+
+### Vetting third-party skills before you install one
+
+Curated ≠ audited. A `SKILL.md` from any catalog can carry prompt injection, tool poisoning, hidden network calls, or unsafe data handling. Before copying an external skill in — or ingesting one via Mode 3 — check:
+
+- [ ] **Read the whole file** — no instructions to exfiltrate data or call unexpected endpoints (platform principle: nothing leaves your machine).
+- [ ] **No absolute/machine paths** — uses relative paths or `$HOME` / `$PROJECT_ROOT`, not `/Users/alice/…`.
+- [ ] **Scoped tools** — requests only the tools it needs; no blanket `tools: ["*"]`.
+- [ ] **No hidden payloads** — no encoded blobs, obfuscated commands, or "ignore previous instructions" prompt-injection strings.
+- [ ] **Trusted source** — team-published or community-adopted; pin the version you reviewed.
 
 ---
 

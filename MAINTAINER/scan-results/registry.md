@@ -23,11 +23,61 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 
 | Date | Mode | Findings | Implemented | Skipped | Deferred | Archive |
 |------|------|----------|-------------|---------|----------|---------|
+| 2026-07-03 | Mode 4 targeted | 6 (R025–R030) | 3 (R025, R028, R029) | 0 | 3 (R026 roadmap; R027 opt-in; R030) | [mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md](mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md) |
+| 2026-07-03 | Mode 4 targeted | 6 (R019–R024) | 3 (R019, R020, R021) | 0 | 3 (R022/R023/R024) | [mode4/2026-07-03-targeted-awesome-agent-skills-report.md](mode4/2026-07-03-targeted-awesome-agent-skills-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R013–R018) | 2 (R013, R016) | 0 | 4 (R014 roadmapped; R015/R017/R018) | [mode4/2026-07-03-targeted-gemini-agent-skills-report.md](mode4/2026-07-03-targeted-gemini-agent-skills-report.md) |
 | 2026-06-09 | Mode 4 | 12 | 2 (R001, R005) | 0 | 10 | [mode4/2026-06-09-report.md](mode4/2026-06-09-report.md) |
 | 2026-06-09 | Mode 2 | 15 | 5 (F001–F004, F013) | 0 | 10 | *(see platform-improvements.md)* |
 | 2026-06-11 | Mode 4 | — | scan keyword fix | — | — | governance-scan/scan-log |
 | 2026-06-02 | Mode 4 | 8 repos | 14 phases | — | — | founding scan |
+
+---
+
+## [2026-07-03] — Mode 4 targeted — thedesignproject/agent-skills (6 findings: 3 implemented, 3 deferred)
+
+**Selection:** R025 + R028 + R029 implemented; R027 deferred (opt-in skill); R026 deferred (roadmap); R030 deferred  
+**Archive:** [mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md](mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md)
+
+**Scan mode:** targeted  
+**Target repo:** thedesignproject/agent-skills  
+**Repo type:** skill pack (17 design/frontend skills, `npx skills add`, MIT, ~36★)
+
+### Findings summary
+
+| ID | Title | Disposition |
+|----|-------|-------------|
+| R025 | `npx skills add` installer interop | **Implemented** — `docs/DISTRIBUTION.md` community-installer note |
+| R026 | AI-consumable design systems | Deferred (roadmap) |
+| R027 | prompt-engineer skill | Deferred (opt-in skill) |
+| R028 | Distinctive frontend-design (anti "AI aesthetic") | **Implemented** — `frontend-agent.md` UX principle |
+| R029 | Subagent skill-testing before deployment | **Implemented** — `PLATFORM-HELP.md` quality checklist |
+| R030 | PR/branch naming convention | Deferred |
+
+**Recommended adoption P1:** R025 ✅, R028 ✅, R029 ✅ · **Opt-in:** R027 (prompt-engineer) · **Roadmap:** R026
+
+---
+
+## [2026-07-03] — Mode 4 targeted — VoltAgent/awesome-agent-skills (6 findings: 3 implemented, 3 deferred)
+
+**Selection:** R019 + R020 + R021 implemented; R022/R023/R024 deferred  
+**Archive:** [mode4/2026-07-03-targeted-awesome-agent-skills-report.md](mode4/2026-07-03-targeted-awesome-agent-skills-report.md)
+
+**Scan mode:** targeted  
+**Target repo:** VoltAgent/awesome-agent-skills  
+**Repo type:** curated skill index (1000+ skills, 8-IDE compatible, MIT) — discovery source, not a framework
+
+### Findings summary
+
+| ID | Title | Disposition |
+|----|-------|-------------|
+| R019 | Cross-IDE skills-path matrix (8 tools) | **Implemented** — `docs/DISTRIBUTION.md` matrix |
+| R020 | Skill Quality Standards checklist | **Implemented** — `PLATFORM-HELP.md` skill quality checklist |
+| R021 | Skill-ingest security-vetting checklist | **Implemented** — DISTRIBUTION vetting checklist + `platform-ingest.md` Step 1b gate |
+| R022 | Context-degradation failure taxonomy | Deferred |
+| R023 | `skill-optimizer` meta-skill | Deferred (roadmap) |
+| R024 | Curated catalog as Mode 4 discovery source | Deferred |
+
+**Recommended adoption P0:** R019 (cross-IDE path matrix) ✅ · **P1:** R020 (quality checklist) ✅, R021 (ingest security vetting) ✅
 
 ---
 

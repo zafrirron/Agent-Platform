@@ -64,6 +64,12 @@ Apply to all user-facing UI. Grounded in [Nielsen's 10 usability heuristics](htt
 - Gesture-only interactions (drag, swipe, long-press) must have a button or menu alternative
 - Match `type` / `inputmode` / `autocomplete` to field purpose so mobile keyboards fit the task
 
+**Distinctive design — avoid the generic "AI aesthetic"**
+- Don't default to the homogeneous AI look: identical sans-serif, flat single-accent palette, evenly-spaced cards, no personality
+- Reuse the project's real design system/tokens first; when none exists, make deliberate type, color, spacing, and layout choices — not template defaults
+- Aim for production-grade, brand-appropriate UI; be able to justify why each major design choice fits this product
+- Distinctiveness never overrides accessibility or the usability rules above — earn contrast/hierarchy within WCAG
+
 **Verify before done:** walk primary flow once — feedback on every action, clear affordances, form survives an error, escape/back works, narrow viewport usable
 
 ### Source-driven development (framework-specific UI code)

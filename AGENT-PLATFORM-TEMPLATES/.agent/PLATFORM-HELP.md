@@ -625,6 +625,18 @@ You can permanently add new capabilities. Everything is prompt-driven — tell t
 Every extension follows the 7-step anatomy documented at:  
 https://github.com/{{PLATFORM_REPO}}/blob/main/AGENT-PLATFORM-FRAMEWORK-README.md#extending-guide
 
+### Skill quality checklist
+
+When authoring a new `SKILL.md` (or reviewing one before adoption), keep it discoverable and cheap to load:
+
+- [ ] **Description in third person** — states *what* it does and *when* to use it, with specific keywords an agent can match (e.g. "PostgreSQL migration", not "database stuff").
+- [ ] **Progressive disclosure** — top-level metadata under ~100 tokens; skill body under ~500 lines; load large docs/schemas on demand, not inline.
+- [ ] **No absolute paths** — use relative paths or `$HOME` / `$PROJECT_ROOT`, never machine-specific paths.
+- [ ] **Scoped tools** — request only the tools the skill needs; avoid blanket `tools: ["*"]`.
+- [ ] **Verify before ship** — dry-run the skill on one representative task (a subagent works well) and confirm it triggers, loads the right context, and produces the intended output before adding it to the catalog.
+
+> Ingesting a skill from an external catalog? Also run the **security-vetting checklist** in [docs/DISTRIBUTION.md](https://github.com/{{PLATFORM_REPO}}/blob/main/docs/DISTRIBUTION.md#vetting-third-party-skills-before-you-install-one) before adopting it.
+
 ### Complementary tool — production-grade agent governance
 
 If your project builds or deploys AI agents (not just uses AI for coding), consider pairing this platform with **Microsoft's Agent Governance Toolkit** (`agent-governance-claude-code` plugin):

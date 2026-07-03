@@ -11,8 +11,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 - **Mode 4 targeted repo scan** — `repo=owner/name` skips discovery/triage; deep-reads one GitHub repo for skills/workflow/platform adoption ideas + Recommended adoption table
 - **`ux-research` optional skill** — user research / usability / journey mapping / a11y research (cherry-pick `--mode=add --add=skill:ux-research`); adapted from `gemini-agent-skills` ux-researcher (Mode 4 R013). Wired into `AGENTS.md` routing (user-research keywords → `ux-research`) and a formal Step 0 "behavior-gap gate" in `requirements-clarification` playbook
 - **Gemini CLI interoperability docs** — `docs/DISTRIBUTION.md` section on copying platform skills to `.gemini/skills/` (Mode 4 R016)
+- **Cross-IDE skills-path matrix** — `docs/DISTRIBUTION.md` "Portable skills" table for 8 hosts (Antigravity/Claude/Codex/Cursor/Gemini/Copilot/OpenCode/Windsurf) with project + global paths (Mode 4 R019)
+- **Skill quality checklist** — authoring bar in `PLATFORM-HELP.md` (progressive disclosure, scoped tools, no absolute paths, keyworded description) (Mode 4 R020)
+- **Skill-ingest security vetting** — user-facing checklist in `docs/DISTRIBUTION.md` + maintainer Step 1b quarantine gate in `MAINTAINER/platform-ingest.md` (prompt injection / tool poisoning / exfiltration screening) (Mode 4 R021)
+- **`npx skills` installer interop** — DISTRIBUTION note that platform `SKILL.md` modules are consumable by the community `npx skills add` installer (Mode 4 R025)
 
 ### Changed
+- **frontend-agent** — added "avoid the generic AI aesthetic" design principle (distinctive, production-grade UI without overriding accessibility) (Mode 4 R028)
+- **Skill quality checklist** — added "verify before ship" (dry-run/subagent test a new skill before cataloguing) (Mode 4 R029)
 - **Roadmap** — multi-agent coordination patterns backlog entry added to `platform-governance-roadmap.md` (Mode 4 R014; tied to external team-coordination server concept)
 
 ---
