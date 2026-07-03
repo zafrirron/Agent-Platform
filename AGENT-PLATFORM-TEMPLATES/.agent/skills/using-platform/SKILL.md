@@ -31,6 +31,7 @@ Read the user goal, pick **one** skill or playbook, execute it fully. Do not ble
 | Tests / TDD | `test-driven-development` |
 | Simplify without behavior change | `code-simplification` |
 | Browser UI runtime debug | `browser-testing-devtools` |
+| User research / usability / journey map | `ux-research` (optional add-on) |
 | CWV / perf audit / `/webperf` | `web-performance-audit` |
 | Context stale / task switch / quality drop / `/context` | `context-engineering` |
 | Claim done without proof / `/verify` | `verification-before-completion` |

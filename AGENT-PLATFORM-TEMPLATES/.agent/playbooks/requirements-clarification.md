@@ -14,6 +14,11 @@ Say before add-feature when scope is unclear.
 
 ## Steps
 
+0. **Behavior-gap check (gate)** — decide whether the ambiguity is about *requirements* or *user behavior* before questioning.
+   - If the unknown is *which flow works, why users drop off, or whether it's usable* → **stop and run the optional `ux-research` skill first**; feed its findings back in at Step 4.
+   - If `ux-research` is not installed: `npx {{PLATFORM_NPX}} --mode=add --add=skill:ux-research`, or capture the open user-behavior questions explicitly and defer them with user approval.
+   - Otherwise (requirements ambiguity) → continue to Step 1.
+
 1. **Acknowledge** — restate what you understood in one sentence; ask if the framing is right.
 
 2. **One question at a time** — ask a single focused question per turn. Do not batch five questions.

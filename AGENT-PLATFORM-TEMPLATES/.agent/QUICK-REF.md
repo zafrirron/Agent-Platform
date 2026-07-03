@@ -78,7 +78,7 @@ Upgrade: `npx {{PLATFORM_NPX}} --profile=full` · List skills: `--mode=list --li
 
 ---
 
-## Skills catalog (11) — when & how
+## Skills catalog (11 lifecycle + optional add-ons) — when & how
 
 Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load `using-platform` skill or say *"which skill should I use?"*
 
@@ -94,6 +94,7 @@ Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load 
 | `context-engineering` | Hallucinations, stale chat, task switch | `/context` · reload hierarchy; ask if spec ≠ code |
 | `verification-before-completion` | Before ship; "is it really fixed?" | `/verify` · show test/repro output |
 | `browser-testing-devtools` | Browser MCP UI debugging (optional) | `--mode=add` · when you use browser automation |
+| `ux-research` | User research, usability, journey maps (optional domain) | `--mode=add --add=skill:ux-research` · before build when user need unclear |
 | `using-platform` | "Which workflow?" at session start (lite) | Read skill · pick one workflow only |
 | `caveman` | Token compression for long sessions | `/caveman` or "caveman mode" |
 

@@ -41,6 +41,7 @@
     { "id": "web-performance-audit", "description": "CWV / API perf audit — Quick/Deep, /webperf" },
     { "id": "context-engineering", "description": "Context hierarchy, selective loading, confusion gates — /context" },
     { "id": "verification-before-completion", "description": "Evidence before done — /verify" },
+    { "id": "ux-research", "description": "User research / usability / journey mapping (optional domain skill, cherry-pick)" },
     { "id": "caveman", "description": "Token compression mode" }
   ],
   "files": [
@@ -472,6 +473,11 @@
     {
       "path": ".agent/skills/browser-testing-devtools/SKILL.md",
       "template": ".agent/skills/browser-testing-devtools/SKILL.md",
+      "kind": "skill"
+    },
+    {
+      "path": ".agent/skills/ux-research/SKILL.md",
+      "template": ".agent/skills/ux-research/SKILL.md",
       "kind": "skill"
     },
     {

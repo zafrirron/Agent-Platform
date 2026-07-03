@@ -18,6 +18,38 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Mode 4 R013/R016 adopted + R014 roadmapped (gemini-agent-skills)
+
+**Source:** Mode 4 targeted scan on `saeed-vayghan/gemini-agent-skills` (2026-07-03), report R013–R018.
+
+**Gap observed:** No UX-research/discovery skill for pre-build user-behavior work (had requirements clarification + WCAG audit only); no documented path to run platform skills under the Gemini CLI.
+
+**Files changed:** `.agent/skills/ux-research/SKILL.md` (new), `AGENT-PLATFORM-MANIFEST.json` (skills_catalog + files), `.agent/bootstrap/profile-filter.mjs` (SKILL_ADD_DEPS), `.agent/QUICK-REF.md`, `.agent/QUICK-REF-lite.md`, `.agent/skills/using-platform/SKILL.md`, `AGENTS.md` (routing keywords), `.agent/playbooks/requirements-clarification.md` (Step 0 behavior-gap gate), `docs/DISTRIBUTION.md` (Gemini interop), `MAINTAINER/platform-governance-roadmap.md` (R014 backlog), `tests/apply-integration.test.mjs`.
+
+**Trigger wiring (2026-07-03 follow-up):** skill was discoverable but not reachably triggered — added (B) `AGENTS.md` routing row (user research / usability / journey map / user drop-off → `ux-research`, expert frontend-agent) and (C) a formal **Step 0 behavior-gap gate** in `requirements-clarification` that routes to `ux-research` when the ambiguity is user behavior vs requirements. Slash command intentionally NOT added (kept optional).
+
+**Capability added:**
+- R013 (P0): optional `ux-research` skill — cherry-pick `--mode=add --add=skill:ux-research`; adapted from MIT source (Gemini "Query context manager" removed); not part of the 11-lifecycle count (domain add-on).
+- R016 (P1): Gemini CLI `.gemini/skills/` interoperability documented.
+- R014 (P1): multi-agent coordination roadmapped (not scheduled; tied to external coord server).
+- R015/R017/R018: deferred (low impact / architectural — revisit next scan).
+
+**Validated:** Done — `npm test` green (220 tests; new "optional ux-research skill deployed and in manifest catalog" assertion passes).
+
+---
+
+### [Unreleased] — 2026-07-03 — Mode 4 targeted repo scan (`repo=owner/name`)
+
+**Gap observed:** Maintainers had no formal path to deep-read a **specific** GitHub repo for adoption ideas — only quarterly discovery search or manual Mode 3 file drops.
+
+**Files changed:** `MAINTAINER/github-governance-scan.md`, `MAINTAINER/platform-maintainer-agent.md`, `MAINTAINER/GUIDE.md`, `MAINTAINER/scan-results/REPORT-SCHEMA.md`, `MAINTAINER/scan-results/registry.md`
+
+**Capability added:** Targeted Mode 4 trigger skips Phase 1–2; runs Phase 3 deep analysis + Recommended adoption table; archives as `mode4/YYYY-MM-DD-targeted-<repo>-report.md`.
+
+**Validated:** Done — targeted scan on `saeed-vayghan/gemini-agent-skills` (2026-07-03); report R013–R018 archived.
+
+---
+
 ### [Unreleased] — 2026-06-09 — Mode 4 R001 + R005 + unified scan registry
 
 **Source:** Mode 4 GitHub scan 2026-06-09 — addyosmani/agent-skills R001; obra/superpowers R005

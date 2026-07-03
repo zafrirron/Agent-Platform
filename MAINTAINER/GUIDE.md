@@ -54,7 +54,7 @@ There are five maintainer tools. Each has a distinct trigger and a distinct outp
 | **Internal platform audit** | `platform-audit.md` | Platform feels stale, before a release, or after many changes — check the platform's own health | Quality report: undertrained experts, weak playbooks, coverage gaps, vague rules, duplicates |
 | **Web ecosystem audit** (Mode 2) | `web-audit.md` | Monthly schedule, or after an OWASP/CWE update | Structured findings F001-Fxxx from OWASP, CWE, best practices, **+ skill packs/playbooks (Phase 2F)** |
 | **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/` | Structured findings report I001-Ixxx from user's production-proven rules |
-| **GitHub ecosystem scan** (Mode 4) | `github-governance-scan.md` | Quarterly — discover governance/coordination **and skill-pack** repos on GitHub | Structured findings report R001-Rxxx; findings may become new phases, skills, or capabilities |
+| **GitHub ecosystem scan** (Mode 4) | `github-governance-scan.md` | Quarterly discovery **or** `repo=owner/name` for targeted adoption scan | Structured findings R001-Rxxx + Recommended adoption table (targeted) |
 
 **The improvement cycle always ends the same way regardless of which tool triggered it:**
 Template change → log in `platform-improvements.md` → **Platform Sync Gate (PSG)** → CHANGELOG `[Unreleased]` → `npm test` → (when ready) release via `tools/release.ps1`.
@@ -102,7 +102,7 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Before release | Quality gate — check platform's own health | `Read MAINTAINER/platform-audit.md and execute it.` |
 | Monthly | Web ecosystem check (OWASP, CWE, best practices, **skill packs Phase 2F**) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
-| Quarterly | GitHub ecosystem scan — governance **+ skill packs** | `Read MAINTAINER/github-governance-scan.md and execute it.` |
+| Quarterly | GitHub ecosystem scan — discovery **or** targeted `repo=` | `Read MAINTAINER/github-governance-scan.md and execute it.` · targeted: `… repo=owner/name` |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 | After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation + E2E plan | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D/F/G in `platform-maintainer-agent.md` |
 

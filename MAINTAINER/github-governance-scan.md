@@ -1,10 +1,88 @@
 # Mode 4 — GitHub Agent Ecosystem Scan
 
-> **Trigger:** `Read MAINTAINER/github-governance-scan.md and execute it.`
+> **Trigger (discovery — quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
+> **Trigger (targeted — one repo):** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`
 > **Requires:** Maintainer agent loaded — `Read MAINTAINER/platform-maintainer-agent.md`
 > **Scope:** GitHub repos with agent **governance/coordination** patterns **and** production **skill packs, playbooks, slash-command workflows**
 > **Output:** Structured findings report R001-Rxxx → maintainer selects what to investigate or implement
-> **Cadence:** Quarterly. Run any time you want fresh inspiration.
+> **Cadence:** Discovery — quarterly. Targeted — any time you have a specific repo URL.
+
+---
+
+## Scan modes
+
+| Mode | Trigger | Phases run | Use when |
+|------|---------|------------|----------|
+| **Discovery** (default) | `execute it.` | 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 | Quarterly inspiration; find repos you didn't know about |
+| **Targeted** | `execute it. repo=owner/name` | 0 → **3 → 4 → 5 → 6 → 7** (skip 1–2) | You already have a repo — want adoption ideas for skills, workflows, platform capabilities |
+
+**Accepted `repo=` forms:**
+- `repo=obra/superpowers`
+- `repo=https://github.com/obra/superpowers` (strip to `owner/name`)
+
+**Targeted scans still use R001… IDs** and the same selection commands (`Add R001`, `Investigate R004`, etc.).
+
+---
+
+## Targeted repo scan (`repo=owner/name`)
+
+Use when a maintainer or user points at **one GitHub repo** and asks: *what skills, workflows, or platform improvements should we adopt?*
+
+### T0 — Parse and validate
+
+1. Extract `owner/name` from the trigger.
+2. Fetch README (`main`, then `master`):
+   ```
+   https://raw.githubusercontent.com/<owner>/<repo>/main/README.md
+   ```
+3. If README missing or repo not found → stop with clear error; suggest checking URL/spelling.
+4. Record **scan mode:** `targeted` · **target repo:** `owner/name`
+
+### T1 — Skip discovery (mandatory for targeted)
+
+- **Do NOT run Phase 1** (GitHub search queries).
+- **Do NOT run Phase 2** (multi-repo triage).
+- **Do NOT apply the 6-month skip** for this repo — targeted scans are intentional re-reads when upstream may have changed.
+
+Still run **Before you start** steps 0–1 (registry + platform state map). Step 2 (scan log) is optional read-only for context.
+
+### T2 — Skill-pack fast path (single repo)
+
+If README shows `SKILL.md`, lifecycle diagram, or `skills/` directory → treat as skill pack: answer **Q1–Q10** in Phase 3.
+
+If README is a general LLM wrapper with no agent layer (<200 words, no skills/playbooks) → report **"No platform-worthy patterns"** and archive with zero findings (still update registry).
+
+### T3 — Deep analysis
+
+Run **Phase 3** on this repo only. Read more files than discovery minimum when targeted:
+- All `skills/*/SKILL.md` (or top 5 by README index if >10)
+- `AGENTS.md`, `.claude/commands/`, `.cursor/commands/`, `.claude-plugin/`, `plugin.json`
+- Any `playbook`, `workflow`, `coordination`, `handoff`, `session` paths surfaced by GitHub API tree or README links
+
+Use `gh api repos/{owner}/{repo}/git/trees/HEAD?recursive=1` or equivalent when available to list candidate paths before fetching.
+
+### T4 — Adoption summary (targeted report extra section)
+
+After Phase 4 findings, add a **Recommended adoption** block:
+
+```markdown
+## Recommended adoption — owner/name
+
+| Priority | What | Our target | Effort |
+|----------|------|------------|--------|
+| P0 | [skill/workflow/capability] | `.agent/skills/…` or playbook | Low/Med/High |
+| P1 | … | … | … |
+
+**Install pattern to copy:** [plugin / cherry-pick / profile / doc-only]
+**Already COVERED (no action):** [list]
+**Do not adopt (why):** [license conflict / too repo-specific / conflicts with privacy]
+```
+
+### T5 — Archive naming
+
+- Report file: `MAINTAINER/scan-results/mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
+- Legacy mirror: `MAINTAINER/governance-scan/archive/YYYY-MM-DD-targeted-<repo-slug>-scan-report.md`
+- Registry Meta must include: `Scope: targeted` · `Target repo: owner/name`
 
 ---
 
@@ -88,6 +166,8 @@ Add any repo from the scan log marked **re-check in 6 months**.
 
 ## Phase 1 — Discover candidate repos
 
+> **Skip entirely** when `repo=owner/name` is set — go to **Targeted repo scan** above, then Phase 3.
+
 Run these searches. For each query, collect GitHub repo links from the first 2 pages of results.
 Vary query terms from the previous scan (check scan-log.md for last queries used).
 
@@ -136,6 +216,8 @@ Collect all unique repos. Remove duplicates and any repo already in the scan log
 ---
 
 ## Phase 2 — Triage candidates
+
+> **Skip entirely** when `repo=owner/name` is set.
 
 For each discovered repo, fetch the GitHub page or README:
 ```
@@ -229,10 +311,14 @@ Do NOT create findings for:
 
 ## Phase 5 — Present report
 
-Output the full findings report in this structure:
+Output the full findings report in this structure.
+
+**Discovery scan:**
 
 ```
 ## Mode 4 Scan Report — [YYYY-MM-DD]
+
+### Scan mode: discovery
 
 ### Repos analysed: N
 [list repo names + star counts]
@@ -258,6 +344,35 @@ Output the full findings report in this structure:
 |---------|-------|--------|--------|
 | R001 | ... | Low | High |
 ...
+```
+
+**Targeted scan (`repo=`):**
+
+```
+## Mode 4 Targeted Scan — [YYYY-MM-DD] — owner/name
+
+### Scan mode: targeted
+### Target repo: https://github.com/owner/name
+### Repo type: [skill pack | coordination framework | mixed | no agent layer]
+
+### Findings: N total
+  FEATURE       : N
+  STRENGTHEN    : N
+  ARCHITECTURE  : N
+
+## Recommended adoption — owner/name
+[Priority table from Targeted scan T4]
+
+---
+[all R001-Rxxx entries in full]
+
+---
+
+## COVERED — already in platform
+[list capabilities with no finding needed]
+
+## Quick-pick by effort + impact
+[same table as discovery]
 ```
 
 ---
@@ -293,9 +408,11 @@ Regardless of what was selected:
 
    Prepend a new entry:
    ```
-   ## [YYYY-MM-DD] — [N repos analysed, N findings]
+   ## [YYYY-MM-DD] — [discovery: N repos | targeted: owner/name] — N findings
 
-   **Queries used:** [list the 6+ queries from Phase 1]
+   **Scan mode:** discovery | targeted
+   **Target repo:** owner/name *(targeted only)*
+   **Queries used:** [list the 6+ queries from Phase 1 — or "N/A (targeted)"]
 
    **Repos analysed:**
    | Repo | Stars | Key finding | Status |

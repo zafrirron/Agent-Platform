@@ -279,6 +279,23 @@ When returning to this plan in a new session:
 4. Check `AGENT-PLATFORM-MANIFEST.json` — verify new files are registered
 5. Run E2E on changed phases only
 
+## Backlog — from Mode 4 targeted scans
+
+### R014 — Multi-agent coordination patterns (from gemini-agent-skills, 2026-07-03)
+
+**Source:** `saeed-vayghan/gemini-agent-skills` — `multi-agent-coordinator`, `workflow-orchestrator` skills; also aligns with the maintainer's external **team coordination server** concept (multi-user multi-agent).
+
+**What to evaluate:**
+- Coordination checklist: deadlock prevention, guaranteed message delivery, DAG/saga workflows, scatter-gather, circuit breakers.
+- Agent-to-agent context handoff protocol beyond single-team IDE registry (`registry.yaml`).
+- Fit with proposed coord server (event-driven claims/heartbeats, not per-prompt git).
+
+**Suggested path:** ADR for team coordination layer → extract a checklist subset into `.agent/references/orchestration-patterns.md` when a coord MVP ships. Full-profile / enterprise only. Do **not** put on hot path (per-prompt) — event-driven.
+
+**Effort:** High | **Impact:** High | **Status:** Roadmapped (not scheduled)
+
+---
+
 ## Current status
 
 - [x] Pre-analysis complete (2026-06-02)

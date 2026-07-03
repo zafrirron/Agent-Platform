@@ -5,9 +5,9 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (219 tests, ~3s)
+npm test   ← runs all automated checks (220 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
-                   v2.42 playbooks (20) + 11 lifecycle skills + install profiles (lite/core/full),
+                   v2.42 playbooks (20) + 11 lifecycle skills + optional ux-research skill + install profiles (lite/core/full),
                    --mode=add cherry-pick + --mode=list catalog, profile-filter unit tests,
                    references + spec-outline + plan handoff,
                    lifecycle slash commands (/plan /build /test /code-simplify /webperf /context /verify),

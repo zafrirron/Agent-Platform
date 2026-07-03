@@ -62,6 +62,7 @@ npx {{PLATFORM_NPX}} --mode=list --list=skills
 | `context-engineering` | Stale chat, hallucinations, task switch — `/context` |
 | `verification-before-completion` | Evidence before "done" — `/verify` |
 | `browser-testing-devtools` | Browser MCP UI debug (optional add-on) |
+| `ux-research` | User research / usability / journey maps (optional add-on) |
 | `using-platform` | "Which skill should I run?" |
 
 ---

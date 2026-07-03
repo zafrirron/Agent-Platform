@@ -18,6 +18,7 @@ Task: [describe your platform improvement goal]
 - **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
 - **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
 - **Mode 4 — GitHub agent ecosystem scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
+- **Mode 4 — Targeted repo adoption scan:** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`
 
 > **You never need to remind the agent to sync manifests, docs, changelog, tests, or presentation.**
 > Every maintainer task ends with the **Platform Sync Gate (PSG)** below — automatically, before "done".
@@ -447,15 +448,22 @@ After processing:
 
 ## Mode 4 — GitHub agent ecosystem scan
 
-**Triggered by:** `Read MAINTAINER/github-governance-scan.md and execute it.`
+**Triggered by:**
+- **Discovery (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
+- **Targeted (one repo):** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`
 
 See `MAINTAINER/github-governance-scan.md` for the full scan playbook.
 
-Searches GitHub for repos with agent governance, coordination, session management, routing
-patterns, **and production skill packs / playbook libraries**. Compares against the current
-platform (experts, playbooks, `.agent/skills/`, manifest catalog) and surfaces findings at the
-**platform capability level** — not individual rules, but whole features or architectural patterns
-the platform could adopt.
+**Discovery** searches GitHub for repos with agent governance, coordination, session management, routing
+patterns, **and production skill packs / playbook libraries**.
+
+**Targeted** skips search/triage — deep-reads the given repo and outputs an **Recommended adoption**
+table (skills, workflows, platform capabilities) plus R001… findings. Use when you already know which
+repo to evaluate (e.g. a skill pack someone linked, a competitor framework, a user's GitHub project).
+
+Both variants compare against the current platform (experts, playbooks, `.agent/skills/`, manifest
+catalog) and surface findings at the **platform capability level** — not individual rules, but whole
+features or architectural patterns the platform could adopt.
 
 ### Selection commands (after the report is presented)
 
@@ -545,6 +553,8 @@ the platform could adopt.
 | New install behaviour | A + C + F + D (README, DISTRIBUTION) + H |
 | New playbook | A + C + B + D + E + F + G + H |
 | Mode 2/3/4 finding batch | A + B (if agents) + D + F + G + H — **full PSG even if user didn't ask** |
+| **Mode 4 scan only** (report archived, **no** template/shipped changes) | A (improvements log) + H (CHANGELOG `[Unreleased]` if playbook changed) + **verify** §D + §F = **N/A** with reason in PSG Report |
+| **Maintainer-only** (MAINTAINER/*, no consumer template change) | A + H + **explicit N/A** for manifests, user docs, presentation, tests — must still **grep** counts unchanged |
 | NFR / compliance / multi-playbook release | Full PSG — or `"Sync user-facing docs for vX.Y.Z"` |
 
 ### Command: "sync user-facing docs for vX.Y.Z"

@@ -11,8 +11,10 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 
 ## Meta
 - **Mode:** internal | web-audit | ingest | mode4
+- **Scan scope:** discovery | targeted *(mode4 only — targeted = single `repo=owner/name`)*
 - **Trigger:** [command user ran]
-- **Queries / sources:** [list — vary from previous run]
+- **Target repo:** owner/name *(targeted mode4 only)*
+- **Queries / sources:** [list — vary from previous run; use `N/A (targeted)` when repo= set]
 - **Platform version:** [bootstrap_version at scan time]
 - **Prior registry read:** YYYY-MM-DD entries skipped because already dispositioned
 
@@ -49,7 +51,9 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 | Internal audit | P001 | Expert/playbook, weakness type |
 | Web audit | F001 / E001 | Source URL, impact, proposed rule |
 | Ingest | I001 | Submission file, classification NEW/ENHANCE/DUP |
-| Mode 4 | R001 | Source repo URL, effort, impact, classification FEATURE/STRENGTHEN/ARCHITECTURE |
+| Mode 4 | R001 | Source repo URL, effort, impact, classification FEATURE/STRENGTHEN/ARCHITECTURE; targeted scans add **Recommended adoption** table |
+
+**Mode 4 targeted archive path:** `mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
 
 Each finding **must** include disposition after maintainer selects:
 

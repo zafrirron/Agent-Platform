@@ -672,6 +672,12 @@ describe('install — v2.42.1 lifecycle skills + profiles', () => {
     }
   });
 
+  test('optional ux-research skill deployed and in manifest catalog', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.agent/skills/ux-research/SKILL.md')), 'ux-research skill missing');
+    const manifest = JSON.parse(fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-MANIFEST.json'), 'utf8'));
+    assert.ok(manifest.skills_catalog.some((s) => s.id === 'ux-research'), 'ux-research missing from skills_catalog');
+  });
+
   test('install stdout shows dynamic playbook count (20 playbooks)', () => {
     assert.equal(result.status, 0, result.stderr);
     assert.ok(result.stdout.includes('20 playbooks'), 'install banner missing dynamic playbook count');

@@ -41,6 +41,25 @@ Cursor does **not** have a `/plugin install` marketplace. Use `npx` (recommended
 
 ---
 
+## Gemini CLI (`.gemini/skills/`) — interoperability
+
+The platform ships `SKILL.md` modules that are portable to the Gemini CLI skill model. Gemini activates skills placed under `.gemini/skills/<name>/` and lists them with `/skills list`.
+
+To use a platform skill in Gemini:
+
+```bash
+# Copy an installed platform skill into your Gemini skills folder
+cp -r .agent/skills/ux-research ~/.gemini/skills/ux-research
+gemini            # then: /skills list
+```
+
+**Notes:**
+- Platform skills are framework-neutral markdown — no Gemini-specific frontmatter required, though Gemini reads `name` + `description` from the header.
+- The reverse direction (Gemini/Claude persona packs → platform) goes through **Mode 4 targeted scan** or **Mode 3 ingest**, not a direct copy — the platform adapts and de-duplicates before adopting.
+- Full multi-agent Gemini support (a 5th framework stub) is not installed by default; open an issue if you want `--framework=gemini` scaffolding.
+
+---
+
 ## Cherry-pick skills (à la carte)
 
 ```bash

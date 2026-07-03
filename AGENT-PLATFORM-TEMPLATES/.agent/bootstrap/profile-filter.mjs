@@ -222,6 +222,7 @@ export const SKILL_ADD_DEPS = {
   'code-simplification':       ['code-simplify'],
   'using-platform':            [],
   'browser-testing-devtools':  [],
+  'ux-research':               [],
   'web-performance-audit':     ['webperf'],
   'context-engineering':       ['context'],
   'verification-before-completion': ['verify'],

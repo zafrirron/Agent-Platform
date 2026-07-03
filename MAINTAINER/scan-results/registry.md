@@ -13,6 +13,8 @@
 | User submission ingest | `platform-ingest.md` | I001… | `ingest/` |
 | GitHub ecosystem scan | `github-governance-scan.md` | R001… | `mode4/` |
 
+**Mode 4 variants:** discovery (quarterly search) · **targeted** (`repo=owner/name` — skip search, deep-read one repo for adoption ideas)
+
 Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — new runs write to **both** until consolidated.
 
 ---
@@ -21,10 +23,37 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 
 | Date | Mode | Findings | Implemented | Skipped | Deferred | Archive |
 |------|------|----------|-------------|---------|----------|---------|
+| 2026-07-03 | Mode 4 targeted | 6 (R013–R018) | 2 (R013, R016) | 0 | 4 (R014 roadmapped; R015/R017/R018) | [mode4/2026-07-03-targeted-gemini-agent-skills-report.md](mode4/2026-07-03-targeted-gemini-agent-skills-report.md) |
 | 2026-06-09 | Mode 4 | 12 | 2 (R001, R005) | 0 | 10 | [mode4/2026-06-09-report.md](mode4/2026-06-09-report.md) |
 | 2026-06-09 | Mode 2 | 15 | 5 (F001–F004, F013) | 0 | 10 | *(see platform-improvements.md)* |
 | 2026-06-11 | Mode 4 | — | scan keyword fix | — | — | governance-scan/scan-log |
 | 2026-06-02 | Mode 4 | 8 repos | 14 phases | — | — | founding scan |
+
+---
+
+## [2026-07-03] — Mode 4 targeted — gemini-agent-skills (6 findings: 2 implemented, 1 roadmapped, 3 deferred)
+
+**Selection:** R013 + R016 implemented; R014 roadmapped; R015/R017/R018 deferred  
+**Archive:** [mode4/2026-07-03-targeted-gemini-agent-skills-report.md](mode4/2026-07-03-targeted-gemini-agent-skills-report.md)
+
+**Scan mode:** targeted  
+**Target repo:** saeed-vayghan/gemini-agent-skills  
+**Entry skill:** ux-researcher
+
+### Findings summary
+
+| ID | Title | Disposition |
+|----|-------|-------------|
+| R013 | UX researcher persona skill | **Implemented** — `.agent/skills/ux-research/` (optional, cherry-pick) |
+| R014 | Multi-agent coordinator patterns | **Roadmapped** — `platform-governance-roadmap.md` backlog |
+| R015 | Context management RAG vs file model | Deferred |
+| R016 | Gemini `.gemini/skills/` install path | **Implemented** — `docs/DISTRIBUTION.md` interop section |
+| R017 | JSON context query assets | Deferred |
+| R018 | 120-persona library model | Deferred |
+
+**Recommended adoption P0:** R013 (ux-research skill) ✅ · **P1:** R014 (coord server roadmap) 📋, R016 (Gemini docs) ✅
+
+**Do not re-propose:** R001, R005
 
 ---
 
