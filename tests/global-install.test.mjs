@@ -15,6 +15,9 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACK_ROOT  = path.resolve(__dirname, '..');
 const APPLY      = path.join(PACK_ROOT, 'AGENT-PLATFORM-APPLY.js');
+const MANIFEST_VERSION = JSON.parse(
+  fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-MANIFEST.json'), 'utf8')
+).bootstrap_version;
 
 function tmpDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'ap-global-'));
@@ -92,7 +95,7 @@ describe('global install — fresh home directory', () => {
     const vf = JSON.parse(fs.readFileSync(path.join(home, '.agent-platform/global-version'), 'utf8'));
     assert.ok(vf.version, 'version field missing');
     assert.match(vf.version, /^\d+\.\d+\.\d+$/, 'version is not semver');
-    assert.equal(vf.version, '2.43.0', 'expected global-version 2.43.0');
+    assert.equal(vf.version, MANIFEST_VERSION, `expected global-version ${MANIFEST_VERSION}`);
   });
 
   test('~/.claude/CLAUDE.md has PLATFORM:START/END markers', () => {

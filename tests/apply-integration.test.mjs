@@ -16,6 +16,9 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACK_ROOT  = path.resolve(__dirname, '..');
 const APPLY      = path.join(PACK_ROOT, 'AGENT-PLATFORM-APPLY.js');
+const MANIFEST_VERSION = JSON.parse(
+  fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-MANIFEST.json'), 'utf8')
+).bootstrap_version;
 
 function tmpDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'ap-int-'));
@@ -527,9 +530,9 @@ describe('install — v2.43.0 lifecycle skills + profiles', () => {
     'nfr-log.md', 'compliance-evidence-log.md', 'incident-log.md',
   ];
 
-  test('bootstrap_version is 2.43.0 in platform.json', () => {
+  test('bootstrap_version matches manifest in platform.json', () => {
     const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
-    assert.equal(pj.bootstrap_version, '2.43.0', 'expected bootstrap_version 2.43.0');
+    assert.equal(pj.bootstrap_version, MANIFEST_VERSION, `expected bootstrap_version ${MANIFEST_VERSION}`);
   });
 
   test('all 20 playbooks deployed', () => {
