@@ -11,9 +11,10 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 
 ## Meta
 - **Mode:** internal | web-audit | ingest | mode4
-- **Scan scope:** discovery | targeted *(mode4 only — targeted = single `repo=owner/name`)*
+- **Scan scope:** discovery | targeted | **pack** *(targeted = single `repo=owner/name`; pack = `pack=<id>` grows a stack/domain pack brain — mode4 or web-audit)*
+- **Pack:** <id> *(pack scope only)*
 - **Trigger:** [command user ran]
-- **Target repo:** owner/name *(targeted mode4 only)*
+- **Target repo:** owner/name *(targeted / pack mode4 only)*
 - **Queries / sources:** [list — vary from previous run; use `N/A (targeted)` when repo= set]
 - **Platform version:** [bootstrap_version at scan time]
 - **Prior registry read:** YYYY-MM-DD entries skipped because already dispositioned
@@ -54,6 +55,7 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 | Mode 4 | R001 | Source repo URL, effort, impact, classification FEATURE/STRENGTHEN/ARCHITECTURE; targeted scans add **Recommended adoption** table |
 
 **Mode 4 targeted archive path:** `mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
+**Pack-scoped archive path:** `mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md` or `web-audit/YYYY-MM-DD-pack-<id>-report.md`. Pack findings' **Suggested path** points at `.agent/packs/<id>/…` (overlay / references / `reference_sources`), never core.
 
 Each finding **must** include disposition after maintainer selects:
 

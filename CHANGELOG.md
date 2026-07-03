@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 ## [Unreleased]
 
 ### Added
+- **Packs maintainer growth loop (Phase 3, maintainer-only)** — how the platform *grows* stack/domain pack brains over time. `github-governance-scan.md` (Mode 4) gains `repo=owner/name pack=<id>` (deep-read a repo/app → land findings in the pack's overlay/references + `reference_sources`, non-universal bar); `web-audit.md` (Mode 2) gains a `pack=<id>` freshness pass; `platform-maintainer-agent.md` gains `add pack <id>` / `add rule to pack <id>` commands + a **PSG pack lane** (packs versioned/tested independently — never block a core release); `platform-audit.md` gains a Step 6b pack-health check (stale `last_verified`, overlay/routing drift, dead `reference_sources`); registry + REPORT-SCHEMA gain `Scope: pack`. No consumer-facing template change.
 - **Technology-stack & domain Packs layer (Phase 1)** — opt-in overlays that add curated stack/domain knowledge on top of the agnostic core, without modifying it. Design: `MAINTAINER/adr/ADR-001-stack-domain-packs.md`.
   - **Two orthogonal kinds** — `stack:*` (React, Django) and `domain:*` (fintech); composable, no combo packs.
   - **Overlay model** — packs refine generic experts via `<expert>.overlay.md` read only when the pack is active (`.agent/platform.json` → `active_packs`); core files untouched; zero cost when none active.

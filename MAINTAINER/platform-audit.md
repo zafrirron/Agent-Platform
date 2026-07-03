@@ -107,10 +107,25 @@ Verify that user-facing documentation and the product presentation reflect the p
 - The presentation version badge doesn't match the latest release
 - A manifest lists capabilities not found in the agent's PLATFORM section
 
+### Step 6b — Pack-health check (technology-stack / domain packs)
+
+If `AGENT-PLATFORM-MANIFEST.json` has a `packs_catalog`, audit each pack under `.agent/packs/*` (independent of core — packs never block a core release, but staleness/drift should be surfaced):
+
+| Check | Flag if… |
+|-------|----------|
+| **Staleness** | `pack.json.last_verified` older than ~6 months → recommend a `Mode 2 pack=<id>` freshness pass or `Mode 4 repo=… pack=<id>` refresh |
+| **Overlay ↔ routing drift** | an overlay in `provides.agent_overlays` has no matching `routing.md` row (or vice-versa); overlay references an expert id that doesn't exist |
+| **Missing files** | any path in `provides.references` / `agent_overlays` / `routing_rows` not present on disk |
+| **Reference sources (domain)** | `reference_sources[]` missing `license`, or a URL that 404s / repo archived → flag for re-source |
+| **Manifest registration** | a pack file on disk not registered in `files[]` as `kind:"pack"`, or a `packs_catalog` id with no `pack.json` |
+| **Provenance** | a domain pack whose sources aren't reflected in `docs/INTELLIGENCE-SOURCES.md` |
+
+Report pack findings with a `PK` sub-list (e.g. `PK-stack-react-01: last_verified 8 months old`). These are advisory — do not gate core work on them.
+
 ### Step 7 — Report
 
 Produce:
-1. Summary: X experts audited, Y playbooks audited, Z doc/presentation checks
+1. Summary: X experts audited, Y playbooks audited, Z doc/presentation checks, P packs health-checked
 2. Undertrained experts list (if any)
 3. Weak playbooks list (if any)
 4. Duplicate rules that need consolidation (if any)
@@ -118,7 +133,8 @@ Produce:
 6. Rule quality issues — vague or unverifiable rules
 7. **Documentation sync issues** — features in docs not in platform, or features in platform not in docs
 8. **Presentation sync issues** — slides that need updating
-9. Recommended next improvements (priority-ordered)
+9. **Pack-health issues** — stale packs (`last_verified`), overlay/routing drift, dead `reference_sources`, unregistered pack files (advisory)
+10. Recommended next improvements (priority-ordered)
 
 ### Step 8 — Archive and registry
 

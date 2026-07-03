@@ -232,6 +232,46 @@ Execution:
 
 ---
 
+### Command: "add pack <id>" / "add rule to pack <id>: <rule>"
+
+Packs are opt-in technology-stack / domain overlays (`.agent/packs/<id>/`). They carry a **non-universal** bar — stack/domain specificity is expected. See `MAINTAINER/adr/ADR-001-stack-domain-packs.md` and the consumer spec `.agent/packs/README.md`.
+
+**"add pack <id>"** — scaffold a new pack:
+```
+Execution:
+1. Validate id: `stack-<name>` or `domain-<name>`. Confirm kind.
+2. Create .agent/packs/<id>/pack.json (schema: id, kind, display_name, version 1.0.0,
+   requires_core, confidence: curated, last_verified: today, detect{}, provides{}).
+   For domain packs also add reference_sources: [].
+3. Create starter files: <expert>-agent.overlay.md (as needed), references/, routing.md.
+4. Register in AGENT-PLATFORM-MANIFEST.json:
+   - packs_catalog[] entry (id, kind, display_name, description, detect)
+   - files[] entries with "kind": "pack" for every pack file
+5. Add a test to apply-integration.test.mjs (catalog registration + a pack asset).
+6. Log to platform-improvements.md (pack-tagged); update docs/INTELLIGENCE-SOURCES.md if domain.
+7. Run **PSG — pack lane** (below).
+8. Report: "Pack <id> scaffolded and registered. Activate: --mode=add --add=pack:<id>."
+```
+
+**"add rule to pack <id>: <rule>"** — grow an existing pack brain:
+```
+Execution:
+1. Read the pack (pack.json, overlays, references, routing.md).
+2. Place the rule correctly:
+   - hard rule / review-lens for an expert → <expert>-agent.overlay.md
+   - curated pitfall / pattern → references/<topic>.md (thin, failure-derived)
+   - domain architecture / source → references/reference-architecture.md + reference_sources[]
+3. If a new expert overlay or topic was added, update routing.md.
+4. Bump pack.json version + last_verified (today).
+5. Log to platform-improvements.md (pack-tagged); refresh provenance in docs/INTELLIGENCE-SOURCES.md for domain packs.
+6. Run **PSG — pack lane** (below).
+7. Report: "Rule added to pack <id> → <file>. version→X, last_verified→today."
+```
+
+> To grow packs from external sources, use the scan modes: Mode 4 `repo=owner/name pack=<id>` (deep-read a repo/app) or Mode 2 `pack=<id>` (freshness pass). Both write via the mechanics above.
+
+---
+
 ### Command: "release" / "release as minor" / "release as patch"
 
 ```
@@ -561,7 +601,21 @@ features or architectural patterns the platform could adopt.
 | Mode 2/3/4 finding batch | A + B (if agents) + D + F + G + H — **full PSG even if user didn't ask** |
 | **Mode 4 scan only** (report archived, **no** template/shipped changes) | A (improvements log) + H (CHANGELOG `[Unreleased]` if playbook changed) + **verify** §D + §F = **N/A** with reason in PSG Report |
 | **Maintainer-only** (MAINTAINER/*, no consumer template change) | A + H + **explicit N/A** for manifests, user docs, presentation, tests — must still **grep** counts unchanged |
+| **Pack change** (new pack or `add rule to pack`) | **Pack lane** (below) — pack files + manifest `packs_catalog`/`kind:"pack"` + pack test + A + H; **N/A** for core count invariants, core experts/playbooks/skills, presentation |
 | NFR / compliance / multi-playbook release | Full PSG — or `"Sync user-facing docs for vX.Y.Z"` |
+
+### PSG — pack lane (technology-stack / domain packs)
+
+Packs are versioned and validated **independently of core** so a stale or immature pack **never blocks a core release**. When a change touches only `.agent/packs/*` (+ its manifest registration), run this instead of full PSG:
+
+- [ ] **Pack files** — `pack.json` valid JSON with required fields (`id`, `kind`, `version`, `requires_core`, `confidence`, `last_verified`); `version` + `last_verified` bumped on any content change.
+- [ ] **Overlay ↔ routing consistency** — every `<expert>.overlay.md` referenced in `provides.agent_overlays` exists; `routing.md` rows point at files that exist.
+- [ ] **References exist** — every path in `provides.references` (and any `reference-architecture.md`) is present; domain packs: `reference_sources[]` entries have `repo`, `url`, `license`, and are reachable.
+- [ ] **Manifest registration** — `packs_catalog[]` entry + `kind:"pack"` `files[]` entries for every pack file (so `--mode=add --add=pack:<id>` installs it).
+- [ ] **Pack test** — an `apply-integration.test.mjs` assertion covers the pack (catalog registration + at least one asset); `npm test` green.
+- [ ] **Provenance** — `platform-improvements.md` entry (pack-tagged); domain packs also refresh `docs/INTELLIGENCE-SOURCES.md` (domain-pack provenance) and the scan registry (`Scope: pack` · `Pack: <id>`).
+- [ ] **Explicit N/A** — core **count invariants** (11 lifecycle skills / 20 playbooks / slash commands), core experts/playbooks/skills, and presentation badges are **N/A** (packs are a separate lane; note it in the PSG Report).
+- [ ] **bootstrap_version** — do **not** bump for a pack change; packs carry their own `pack.json` `version`.
 
 ### Command: "sync user-facing docs for vX.Y.Z"
 

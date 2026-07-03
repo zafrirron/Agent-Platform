@@ -1,6 +1,6 @@
 # ADR-001 — Technology-stack & domain "Packs" layer
 
-**Status:** Accepted — Phase 1 shipped ([Unreleased])
+**Status:** Accepted — Phase 1 shipped; **Phase 3 (maintainer growth loop) shipped** ([Unreleased])
 **Date:** 2026-07-03
 **Deciders:** Platform maintainer
 **Supersedes:** —
@@ -134,9 +134,10 @@ Packs are versioned and tested **independently of core**:
 - 1–2 domain packs (e.g. fintech/PCI, healthcare/HIPAA): compliance references + security-agent/critic overlays.
 - Domain suggestion heuristics (README/keywords; user-driven, not auto).
 
-**Phase 3 — Maintainer growth loop**
-- `pack=<id>` scope for Mode 2 + Mode 4; "add pack" authoring command.
-- Per-pack provenance + `last_verified` refresh cadence; PSG pack lane.
+**Phase 3 — Maintainer growth loop** ✅ shipped ([Unreleased])
+- `pack=<id>` scope for Mode 4 (`github-governance-scan.md`) + Mode 2 (`web-audit.md`); "add pack" / "add rule to pack" authoring commands in `platform-maintainer-agent.md`.
+- Pack-health check in the internal audit (`platform-audit.md` Step 6b); PSG **pack lane** (independent versioning/tests); registry/report-schema `Scope: pack`.
+- Per-pack provenance + `last_verified` refresh cadence.
 
 **Phase 4 — Distribution & quality**
 - Pack registry/catalog surface in DISTRIBUTION docs; community vs curated `confidence` tiers; optional pack-eval certification (ties to deferred R012).

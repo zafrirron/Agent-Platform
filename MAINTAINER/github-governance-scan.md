@@ -2,10 +2,11 @@
 
 > **Trigger (discovery — quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
 > **Trigger (targeted — one repo):** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`
+> **Trigger (pack-scoped — grow a pack brain):** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name pack=<pack-id>`
 > **Requires:** Maintainer agent loaded — `Read MAINTAINER/platform-maintainer-agent.md`
-> **Scope:** GitHub repos with agent **governance/coordination** patterns **and** production **skill packs, playbooks, slash-command workflows**
+> **Scope:** GitHub repos with agent **governance/coordination** patterns **and** production **skill packs, playbooks, slash-command workflows**; with `pack=`, also **technology-stack / domain source apps** (real implementations to distil).
 > **Output:** Structured findings report R001-Rxxx → maintainer selects what to investigate or implement
-> **Cadence:** Discovery — quarterly. Targeted — any time you have a specific repo URL.
+> **Cadence:** Discovery — quarterly. Targeted / pack-scoped — any time you have a specific repo URL.
 
 ---
 
@@ -14,13 +15,16 @@
 | Mode | Trigger | Phases run | Use when |
 |------|---------|------------|----------|
 | **Discovery** (default) | `execute it.` | 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 | Quarterly inspiration; find repos you didn't know about |
-| **Targeted** | `execute it. repo=owner/name` | 0 → **3 → 4 → 5 → 6 → 7** (skip 1–2) | You already have a repo — want adoption ideas for skills, workflows, platform capabilities |
+| **Targeted** | `execute it. repo=owner/name` | 0 → **3 → 4 → 5 → 6 → 7** (skip 1–2) | You already have a repo — want adoption ideas for skills, workflows, platform capabilities (findings target **core**, universal bar) |
+| **Pack-scoped** | `execute it. repo=owner/name pack=<id>` | 0 → **3 → 4 → 5 → 6 → 7** (skip 1–2) | Grow a **stack/domain pack brain** — findings target a **pack** (overlay/references/`reference_sources`), **non-universal bar** |
 
 **Accepted `repo=` forms:**
 - `repo=obra/superpowers`
 - `repo=https://github.com/obra/superpowers` (strip to `owner/name`)
 
-**Targeted scans still use R001… IDs** and the same selection commands (`Add R001`, `Investigate R004`, etc.).
+**Accepted `pack=` forms:** `pack=stack-react`, `pack=domain-fintech` (must be an id in `AGENT-PLATFORM-MANIFEST.json` → `packs_catalog`; if the pack does not exist, offer to scaffold it via Mode 1 `add pack <id>` first).
+
+**Targeted & pack-scoped scans still use R001… IDs** and the same selection commands (`Add R001`, `Investigate R004`, etc.).
 
 ---
 
@@ -83,6 +87,57 @@ After Phase 4 findings, add a **Recommended adoption** block:
 - Report file: `MAINTAINER/scan-results/mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
 - Legacy mirror: `MAINTAINER/governance-scan/archive/YYYY-MM-DD-targeted-<repo-slug>-scan-report.md`
 - Registry Meta must include: `Scope: targeted` · `Target repo: owner/name`
+
+---
+
+## Pack-scoped scan (`repo=owner/name pack=<id>`)
+
+Use when the goal is **not** a universal platform capability but **growing a specific stack/domain pack's brain** — e.g. distilling React pitfalls, or a domain reference architecture from a real app. This is the primary engine that makes packs *get smarter over time*.
+
+**Key difference:** in targeted/discovery mode, stack/domain-specific findings are **rejected** (vendor/domain sprawl). In pack-scoped mode they are **the point** — they land in the named pack under a **non-universal bar**.
+
+### P0 — Preconditions
+1. Parse `repo=owner/name` **and** `pack=<id>`.
+2. Verify `<id>` exists in `AGENT-PLATFORM-MANIFEST.json` → `packs_catalog`. If not → stop and offer Mode 1 `add pack <id>` to scaffold it first.
+3. Read the current pack so you don't duplicate: `.agent/packs/<id>/pack.json`, its `*.overlay.md`, `references/*`, `routing.md`.
+
+### P1 — Deep-read the source repo (run T0–T3 first)
+Run the targeted phases T0–T3 on the repo. For **domain source apps** (real applications, not agent-brain repos), read for *architecture and invariants*, not skills:
+- data model / ledger / core entities, transaction boundaries, service layout
+- security & compliance handling (authz, PII, audit, idempotency)
+- **license** (record it — copyleft = study-only, permissive = code-reusable)
+
+### P2 — Findings target the PACK (not core)
+Each finding's **Suggested path** must point at the pack, e.g.:
+- `Suggested path: .agent/packs/<id>/references/<topic>.md` (curated pitfall/pattern)
+- `Suggested path: .agent/packs/<id>/<expert>-agent.overlay.md` (hard rule/review-lens for that expert)
+- `Suggested path: .agent/packs/<id>/pack.json → reference_sources[]` (add the source repo + license + what it teaches)
+- `Suggested path: .agent/packs/<id>/references/reference-architecture.md` (domain packs — enrich the distilled architecture, cite the source)
+
+**Non-universal bar:** stack/domain specificity is *expected*. Keep the pack **thin** (highest-frequency, failure-derived items — not a framework tutorial). Do NOT push these into core experts/skills.
+
+### P3 — Adoption summary (pack variant of T4)
+```markdown
+## Recommended adoption — owner/name → pack:<id>
+
+| Priority | What | Pack target | Effort |
+|----------|------|-------------|--------|
+| P0 | [pitfall / rule / arch pattern] | `.agent/packs/<id>/references/…` or `<expert>.overlay.md` | Low/Med/High |
+
+**Add to reference_sources:** owner/name (license: …) — [what it teaches]
+**Already COVERED in pack:** [list]
+**Do not adopt (why):** [license copyleft-copy risk / too repo-specific / conflicts with core]
+```
+
+### P4 — On selection (`Add R00N`) — pack write + pack PSG lane
+- Write to the pack files above; add/refresh `reference_sources`; bump `pack.json` `version` + `last_verified`.
+- Keep `routing.md` in sync if a new overlay/topic added.
+- Run the **pack PSG lane** (see `platform-maintainer-agent.md` § PSG — pack lane): pack-only sync — **N/A** for core count invariants, manifests, presentation, and core tests; verify `pack.json` valid, overlay↔routing consistent, referenced files exist, `reference_sources` reachable.
+- Log provenance: `platform-improvements.md` (pack-tagged) + registry entry `Scope: pack` · `Pack: <id>`; add/refresh the pack's sources in `docs/INTELLIGENCE-SOURCES.md` (domain-pack provenance section).
+
+### P5 — Archive naming
+- Report file: `MAINTAINER/scan-results/mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md`
+- Registry Meta must include: `Scope: pack` · `Pack: <id>` · `Target repo: owner/name`
 
 ---
 
@@ -408,11 +463,12 @@ Regardless of what was selected:
 
    Prepend a new entry:
    ```
-   ## [YYYY-MM-DD] — [discovery: N repos | targeted: owner/name] — N findings
+   ## [YYYY-MM-DD] — [discovery: N repos | targeted: owner/name | pack:<id> ← owner/name] — N findings
 
-   **Scan mode:** discovery | targeted
-   **Target repo:** owner/name *(targeted only)*
-   **Queries used:** [list the 6+ queries from Phase 1 — or "N/A (targeted)"]
+   **Scan mode:** discovery | targeted | pack
+   **Target repo:** owner/name *(targeted / pack only)*
+   **Pack:** <id> *(pack only)*
+   **Queries used:** [list the 6+ queries from Phase 1 — or "N/A (targeted/pack)"]
 
    **Repos analysed:**
    | Repo | Stars | Key finding | Status |

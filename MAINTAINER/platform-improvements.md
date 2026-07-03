@@ -18,6 +18,26 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Packs maintainer growth loop (Phase 3, maintainer-only)
+
+**Source:** Platform architecture — closing the ADR-001 loop so maintainers can *grow* stack/domain pack brains (Phase 1 shipped consumer-side only).
+
+**Gap observed:** the 4 maintainer modes deliberately reject stack/domain-specific content (universal bar). With packs shipped, there was no sanctioned path to route specific findings *into* a pack, nor to author/refresh packs or keep them from rotting.
+
+**Files changed (MAINTAINER/* only — no consumer template change):**
+- `github-governance-scan.md` — Mode 4 `pack=<id>` scope (P0–P5): deep-read repo/app, findings target `.agent/packs/<id>/` (overlay/references/`reference_sources`/reference-architecture), pack PSG lane, pack archive naming.
+- `web-audit.md` — Mode 2 `pack=<id>` freshness pass (framework/version/compliance updates → pack; bump `last_verified`).
+- `platform-maintainer-agent.md` — `add pack <id>` + `add rule to pack <id>` commands; **PSG pack lane** (independent versioning/tests; N/A for core count invariants); change-type matrix row.
+- `platform-audit.md` — Step 6b pack-health check (staleness, overlay/routing drift, missing files, dead `reference_sources`, manifest registration, provenance).
+- `scan-results/REPORT-SCHEMA.md` + `registry.md` — `Scope: pack` · `Pack: <id>` variant + pack archive paths.
+- `GUIDE.md` — Mode 4/growth rows; `ADR-001` + roadmap status → Phase 3 shipped.
+
+**Capability added:** external sources (Mode 2/4) and manual authoring (Mode 1) now feed **pack** brains under a non-universal bar, with provenance, independent versioning, and staleness detection — packs get smarter over time without polluting core.
+
+**Validated:** Done — `npm test` green (235 tests; maintainer-only change, no manifest/count impact). PSG classification: **Maintainer-only** (A + H + explicit N/A for manifests, user docs, presentation, tests; counts unchanged).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Technology-stack & domain Packs layer (Phase 1)
 
 **Source:** Platform architecture enhancement (maintainer-directed). Design: `MAINTAINER/adr/ADR-001-stack-domain-packs.md`; roadmap backlog entry.

@@ -1,9 +1,13 @@
 # Mode 2 — Web Ecosystem Audit
 
 > **Trigger:** `Read MAINTAINER/web-audit.md and execute it.`
+> **Trigger (pack-scoped refresh):** `Read MAINTAINER/web-audit.md and execute it. pack=<pack-id>`
 > **Requires:** Maintainer agent loaded — `Read MAINTAINER/platform-maintainer-agent.md`
 > **Scope:** Security (OWASP, CVEs, CWEs) + Engineering best practices (stack-specific) + **Agent skill packs & playbook ecosystems**
 > **Output:** Structured findings report → maintainer selects what to add
+
+> **Default (no `pack=`):** stack-specific research is **generalized to universal** platform rules (the historical bar). Findings that are too stack/domain-narrow are skipped.
+> **Pack-scoped (`pack=<id>`):** research targets one pack's technology/domain — keep the specificity and land it in the pack (see **Pack-scoped refresh** below).
 
 ---
 
@@ -247,6 +251,20 @@ For each finding, identify which expert file or playbook should receive the rule
 - Data/migration → data-agent.md
 - Agentic patterns → applicable expert(s) + CONVENTIONS.md
 - Skill-pack workflow / rationalization / lifecycle command → relevant `.agent/skills/`, playbook, or `docs/DISTRIBUTION.md`
+
+---
+
+## Pack-scoped refresh (`pack=<id>`)
+
+When `pack=<id>` is set, this becomes a **freshness pass for one stack/domain pack** rather than a universal audit.
+
+1. **Preconditions:** verify `<id>` exists in `packs_catalog`; read the pack (`.agent/packs/<id>/pack.json`, overlays, `references/*`, `routing.md`) and its `last_verified` date.
+2. **Research targeted at the pack's technology/domain:** e.g. framework major/minor changes and new pitfalls (React 19 idioms, Django release notes), or domain/compliance updates (PCI-DSS, HIPAA revisions) — sourced from official docs, OWASP, CWE, and release notes.
+3. **Findings land in the pack** (non-universal bar): `Suggested path` points at `.agent/packs/<id>/references/…`, `<expert>.overlay.md`, or (domain) `reference-architecture.md`. Do **not** generalize into core.
+4. **On selection:** write to the pack, bump `pack.json` `version` + **`last_verified`**, keep `routing.md` consistent, run the **pack PSG lane** (see `platform-maintainer-agent.md` § PSG — pack lane), and log provenance pack-tagged (`platform-improvements.md` + registry `Scope: pack` · `Pack: <id>`).
+5. **Archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-pack-<id>-report.md`.
+
+Use this on a cadence to fight pack staleness (the `last_verified` signal surfaced by the internal audit).
 
 ---
 

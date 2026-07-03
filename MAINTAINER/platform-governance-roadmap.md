@@ -304,9 +304,9 @@ When returning to this plan in a new session:
 
 **Decision (2026-07-03):** selectable **Packs** layer — two orthogonal `kind`s (`stack`, `domain`), composed additively, **no combo packs**. Overlay model (packs augment generic experts via `*.overlay.md`, never edit core). Detect-and-suggest activation (user confirms; `active_packs` in `platform.json`; reuse `--mode=add --add=pack:<id>`). Maintainer growth via `pack=<id>` scope on Modes 2/4 + "add pack" command. Packs versioned/tested independently — never block a core release; excluded from core count invariants.
 
-**Phased path:** (1) foundation + 2–3 curated stack packs, overlay-only; (2) domain/compliance packs; (3) maintainer growth loop + PSG pack lane; (4) distribution/catalog + confidence tiers.
+**Phased path:** (1) foundation + 2–3 curated stack packs, overlay-only ✅; (2) domain/compliance packs; (3) maintainer growth loop + PSG pack lane ✅; (4) distribution/catalog + confidence tiers.
 
-**Effort:** High | **Impact:** High | **Status:** Roadmapped (ADR Proposed — not scheduled)
+**Effort:** High | **Impact:** High | **Status:** Phases 1 & 3 shipped ([Unreleased]); Phase 2 + 4 remaining
 
 ---
 
