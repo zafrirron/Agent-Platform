@@ -116,7 +116,18 @@ Packs follow the same preservation contract as the rest of the platform: **anyth
 
 > To pull a newer shipped pack, delete the pack folder and re-add it. `user.overlay.md` is the only file you must keep — back it up (or keep it out of the deleted set) and it carries all your customizations onto the new version.
 
-## Activate / list
+## Activate / list — just ask your agent
+
+This is an agentic platform: **you never type a terminal command.** Prompt your agent in plain language and it runs the right action (it follows `.agent/tools/packs.md`):
+
+- *"What packs are available?"* → lists the catalog
+- *"What packs are active?"* → reads `active_packs`
+- *"Which packs should I use?"* / *"Scan my repo for packs"* → inspects the project and recommends
+- *"Activate the React pack"* → activates and confirms
+- *"Deactivate the React pack"* → removes and confirms
+- *"Add this rule to my `<pack>` pack"* → saves to `user.overlay.md`
+
+<details><summary>Under the hood (the agent runs these for you)</summary>
 
 ```bash
 npx github:zafrirron/Agent-Platform --mode=list --list=packs
@@ -124,5 +135,7 @@ npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
 npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
 npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
 ```
+
+</details>
 
 Activation copies the pack into `.agent/packs/<id>/` and appends `<id>` to `active_packs` in `.agent/platform.json`. Deactivate by removing the folder and the `active_packs` entry.

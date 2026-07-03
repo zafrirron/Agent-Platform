@@ -18,6 +18,41 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Enforce "one terminal command" principle across all surfaces
+
+**Source:** User verification request — "the core is one terminal command (install); everything else is agentic (user prompts, router + manifest do the rest)."
+
+**Failure observed:** the principle held for upgrade/version/packs but NOT for **skills add/list, enforcement guards, global stubs, repair, force, uninstall** — `QUICK-REF.md` and `PLATFORM-HELP.md` still presented these as raw `npx` tables aimed at the user, and `AGENTS.md` had no router rows for them.
+
+**Files changed:**
+- `AGENT-PLATFORM-TEMPLATES/AGENTS.md` — new **"Platform management (natural language)"** trigger table (skills, guards, global, repair, force, uninstall) alongside the pack-management table.
+- `AGENT-PLATFORM-TEMPLATES/.agent/QUICK-REF.md` — Platform Operations / packs / skills sections lead with prompts; `npx` moved to a collapsed "under the hood" block.
+- `AGENT-PLATFORM-TEMPLATES/.agent/PLATFORM-HELP.md` — lifecycle table + guards paragraph reframed to prompts-first.
+
+**Rule added:** the only terminal command a user runs is the one-time install; every other lifecycle action is triggered by a natural-language prompt and executed by the agent.
+
+**Validated:** Yes — `npm test` 264/264 green (docs/router only).
+
+---
+
+### [Unreleased] — 2026-07-03 — Pack management via natural language (no npx for users)
+
+**Source:** User feedback — "we are an agentic framework; users prompt their agent, they should never memorize npx commands." Pack list/activate/detect were only documented as raw `npx …`.
+
+**Failure observed:** the `AGENTS.md` router had **no** natural-language rows for pack management (only the loader 3b + reference-architecture row). Users were pushed to terminal commands to discover/activate packs — inconsistent with how the rest of the platform works (e.g. "upgrade platform" → agent runs `npx … --mode=upgrade`).
+
+**Files changed:**
+- `AGENT-PLATFORM-TEMPLATES/.agent/tools/packs.md` (new) — agent-instructions doc: intent→action for list/active/detect/activate/deactivate/add-rule; agent runs any `npx` step.
+- `AGENT-PLATFORM-TEMPLATES/AGENTS.md` — new **"Pack management"** trigger table in Section 2.
+- `AGENT-PLATFORM-MANIFEST.json` — register `.agent/tools/packs.md`.
+- `.agent/PLATFORM-HELP.md`, `.agent/packs/README.md` — lead with natural-language prompts; `npx` demoted to a collapsed "under the hood" note.
+
+**Rule added:** pack actions are triggered by natural-language prompts; the agent runs the underlying command; never instruct the user to run a terminal command.
+
+**Validated:** Yes — `npm test` 264/264 green (manifest coverage + pack tests unchanged).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Pack customization lane (`user.overlay.md`) + fix `active_packs` dropped on upgrade
 
 **Source:** User question — "in the base platform, user-added skills/playbooks survive updates; how does the packs model support the same?" Investigation confirmed strong preservation (packs are skipped by `upgrade`/`force`), but found no *merge lane* for user additions to a shipped pack and a real bug where opt-in packs were deactivated on upgrade.

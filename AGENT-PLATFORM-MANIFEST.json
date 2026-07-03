@@ -555,6 +555,11 @@
       "kind": "tool"
     },
     {
+      "path": ".agent/tools/packs.md",
+      "template": ".agent/tools/packs.md",
+      "kind": "tool"
+    },
+    {
       "path": ".agent/tools/check_locks.js",
       "template": ".agent/tools/check_locks.js",
       "kind": "tool"

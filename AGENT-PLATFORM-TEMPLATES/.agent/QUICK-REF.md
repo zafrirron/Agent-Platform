@@ -39,7 +39,7 @@
 | **core** | Full playbooks, no compliance layer | All playbooks + experts + session model | NFR/compliance/maturity playbooks only |
 | **full** (default) | Teams, multi-IDE, enterprise gates | Everything | — |
 
-Upgrade: `npx {{PLATFORM_NPX}} --profile=full` · List skills: `--mode=list --list=skills`
+Change profile / upgrade: say *"upgrade platform"* · See skills: say *"what skills are available"* (the agent runs it)
 
 ---
 
@@ -80,7 +80,7 @@ Upgrade: `npx {{PLATFORM_NPX}} --profile=full` · List skills: `--mode=list --li
 
 ## Skills catalog (11 lifecycle + optional add-ons) — when & how
 
-Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load `using-platform` skill or say *"which skill should I use?"*
+Add a skill: just say *"add the `<id>` skill"* (the agent runs it) · Unsure? say *"which skill should I use?"* (loads `using-platform`)
 
 | Skill | When | How / command |
 |-------|------|---------------|
@@ -102,14 +102,15 @@ Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load 
 
 ## Packs — language, stack & domain overlays (opt-in)
 
-Curated language/stack/domain knowledge layered on the agnostic core. Not installed by default; only via `--mode=add`.
+Curated language/stack/domain knowledge layered on the agnostic core. Opt-in; never auto-installed. **Just prompt your agent — it runs everything:**
 
-| Action | Command |
-|--------|---------|
-| List available packs | `npx {{PLATFORM_NPX}} --mode=list --list=packs` |
-| Add a language pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:language-typescript` |
-| Add a stack pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
-| See what's active | Read `.agent/platform.json` → `active_packs` |
+| Just say… | The agent does |
+|-----------|----------------|
+| *"what packs are available"* | Lists the catalog |
+| *"which packs should I use"* / *"scan my repo for packs"* | Inspects your project and recommends |
+| *"activate the React pack"* / *"use the TypeScript pack"* | Activates and confirms |
+| *"what packs are active"* | Reports `active_packs` |
+| *"add this rule to my X pack"* | Saves to `user.overlay.md` (survives updates) |
 
 - **Three kinds:** `language:*` (TypeScript, Java, C++ — the language's own footguns) · `stack:*` (React, Django — framework idioms/pitfalls) · `domain:*` (fintech — compliance + reference architectures). They compose (`language:typescript` + `stack:react` + `domain:fintech`).
 - **Language vs stack:** a language pack = the language itself (reusable across every framework in it); a stack pack = a framework/library built in a language.
@@ -259,16 +260,30 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 ---
 
 ## Platform Operations
-**Terminal commands — run in your project root.**
+**Only one terminal command exists: the one-time install. Everything below is just a prompt — your agent runs it for you.**
 
-| Action | Command |
-|--------|---------|
-| What version am I on? | Say to agent: `"what version"` or `"platform version"` |
-| Check for updates | Say to agent: `"check for updates"` or `"is there a new version"` |
-| Upgrade | Say to agent: `"upgrade platform"` — or terminal: `npx {{PLATFORM_NPX}} --mode=upgrade` |
-| Install global stubs (user-level, run once) | `npx {{PLATFORM_NPX}} --mode=global` |
-| Remove global stubs | `npx {{PLATFORM_NPX}} --mode=uninstall-global` |
-| Install enforcement guards | `npx {{PLATFORM_NPX}} --mode=install-guards` |
-| Remove guards | `npx {{PLATFORM_NPX}} --mode=remove-guards` |
-| Repair | `npx {{PLATFORM_NPX}} --mode=repair` |
-| Remove platform | `npx {{PLATFORM_NPX}} --mode=uninstall` |
+| Action | Just say to your agent |
+|--------|------------------------|
+| What version am I on? | *"what version"* / *"platform version"* |
+| Check for updates | *"check for updates"* / *"is there a new version"* |
+| Upgrade | *"upgrade platform"* |
+| List / add skills | *"what skills are available"* / *"add the X skill"* |
+| List / activate packs | *"what packs are available"* / *"activate the X pack"* |
+| Install / remove enforcement guards | *"install guards"* / *"remove guards"* |
+| Install / remove global stubs | *"install global stubs"* / *"remove global stubs"* |
+| Repair empty stubs | *"repair platform"* |
+| Reset to latest expert rules | *"get the latest expert rules"* (force — keeps your PROJECT sections + packs) |
+| Remove platform | *"uninstall the platform"* |
+
+<details><summary>Under the hood (the agent runs these — you don't type them)</summary>
+
+```
+npx {{PLATFORM_NPX}} --mode=upgrade | --mode=repair | --mode=force
+npx {{PLATFORM_NPX}} --mode=global | --mode=uninstall-global
+npx {{PLATFORM_NPX}} --mode=install-guards | --mode=remove-guards
+npx {{PLATFORM_NPX}} --mode=list --list=skills|packs
+npx {{PLATFORM_NPX}} --mode=add --add=skill:<id> | --add=pack:<id>
+npx {{PLATFORM_NPX}} --mode=uninstall
+```
+
+</details>

@@ -52,11 +52,7 @@ Platform rules live in markdown files. Your AI agent reads them and follows them
 - No markdown instruction can guarantee 100% compliance on every run
 - Some steps (especially complex multi-step sequences) may occasionally be skipped
 
-**How to get deterministic enforcement for critical gates:**
-
-```bash
-npx {{PLATFORM_NPX}} --mode=install-guards
-```
+**How to get deterministic enforcement for critical gates:** just tell your agent *"install guards"* — it runs the setup for you (under the hood: `npx {{PLATFORM_NPX}} --mode=install-guards`).
 
 This installs **real pre-commit hooks and GitHub Actions CI** that block commits and PRs regardless of agent behaviour — no agent can skip them:
 - Test suite must pass
@@ -611,12 +607,27 @@ For full session features (registry, handoff), run session-start before or right
 
 The platform is deliberately **language-, stack- and domain-agnostic** — it applies general engineering discipline to any project. **Packs** add curated, opinionated knowledge for a specific programming language, technology stack, or business domain **on top of** the core, without changing it.
 
-| Action | Command |
-|--------|---------|
+**Just ask your agent — no terminal commands to remember.** The agent runs everything for you (it reads `.agent/tools/packs.md`):
+
+| Just say… | The agent does |
+|-----------|----------------|
+| *"What packs are available?"* | Lists the catalog and offers to activate |
+| *"What packs are active?"* | Reads `active_packs` and reports |
+| *"Which packs should I use?"* / *"Scan my repo for packs"* | Inspects your project and recommends matches |
+| *"Activate the React pack"* / *"Use the TypeScript pack"* | Activates it and confirms |
+| *"Deactivate the React pack"* | Removes it and confirms |
+| *"Add this rule to my fintech pack"* | Saves it to `user.overlay.md` (survives updates) |
+
+<details><summary>Under the hood (what the agent runs — you don't need these)</summary>
+
+| Action | Command the agent runs |
+|--------|------------------------|
 | List available packs | `npx {{PLATFORM_NPX}} --mode=list --list=packs` |
 | Add a language pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:language-typescript` |
 | Add a stack pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
 | See active packs | Read `.agent/platform.json` → `active_packs` |
+
+</details>
 
 **How they work:**
 - **Three kinds** — `language:*` (TypeScript, Java, C++: the language's own type/memory/concurrency footguns), `stack:*` (React, Django: framework idioms, pitfalls, perf traps), `domain:*` (fintech: compliance, invariants, **reference architectures**). Packs compose — e.g. `language:typescript` + `stack:react` + `domain:fintech`.
@@ -689,15 +700,30 @@ GitHub: `https://github.com/microsoft/agent-governance-toolkit`
 
 Every Agent Platform release includes rules sourced from OWASP security guidelines, CWE Top 25 dangerous software weaknesses, and engineering best practices from the developer community. The maintainer runs regular web ecosystem audits and encodes findings into the expert agents. **Your agents automatically get smarter on every upgrade** — new security checks, better quality gates, updated best practices. You don't need to track these sources yourself.
 
-| Task | Command |
-|------|---------|
-| Check installed version | Read `.agent/platform.json` |
+**After the one-time install, you never touch a terminal — just prompt your agent:**
+
+| Just say… | The agent does |
+|-----------|----------------|
+| *"what version"* | Reads `.agent/platform.json` and reports |
+| *"check for updates"* | Runs the update check and reports |
+| *"upgrade platform"* | Applies the upgrade (preserves your content) |
+| *"repair platform"* | Fills any empty stubs |
+| *"install global stubs"* | Sets up user-level stubs (once) |
+| *"install guards"* / *"remove guards"* | Toggles enforcement hooks |
+| *"get the latest expert rules"* | Force-refreshes PLATFORM sections (keeps PROJECT + packs) |
+| *"uninstall the platform"* | Runs clean removal (restores your original AI configs from backup) |
+
+<details><summary>Under the hood (the agent runs these for you)</summary>
+
+| Task | Command the agent runs |
+|------|------------------------|
 | Check for updates | `node .agent/tools/check-updates.mjs` |
-| Apply updates (agent-driven) | `Read .agent/tools/upgrade.md and execute it.` |
-| Apply updates (terminal) | `npx {{PLATFORM_NPX}} --mode=upgrade` |
-| Install global stubs (once, user-level) | `npx {{PLATFORM_NPX}} --mode=global` |
+| Apply updates | `npx {{PLATFORM_NPX}} --mode=upgrade` |
+| Install global stubs | `npx {{PLATFORM_NPX}} --mode=global` |
 | Repair empty stubs | `npx {{PLATFORM_NPX}} --mode=repair` |
 | Remove all platform files | `npx {{PLATFORM_NPX}} --mode=uninstall` |
+
+</details>
 
 **What you get on upgrade:**
 - Improved expert rules (Security, Backend, Test, Critic, and others)

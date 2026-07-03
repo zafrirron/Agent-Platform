@@ -117,6 +117,36 @@ A task is dev-related if it references code, a file, a function, a component, an
 | "platform help", "how does this work" | Read `.agent/PLATFORM-HELP.md` and display in full |
 | "what version", "check for updates", "is there a new version", "upgrade platform" | Read `.agent/platform.json` → report `bootstrap_version`; run `node .agent/tools/check-updates.mjs` → report update status |
 
+### Pack management (natural language — you run the command, the user never types it)
+
+Packs are opt-in language/stack/platform/domain overlays. When the user expresses any intent below, **read `.agent/tools/packs.md` and execute the matching action** (you run any `npx`/terminal step on their behalf, then report the result). Never tell the user to run a terminal command themselves.
+
+| User says | Action |
+|-----------|--------|
+| "what packs are available", "list packs", "show packs", "what packs can I add", "what packs exist" | `.agent/tools/packs.md` → run `npx {{PLATFORM_NPX}} --mode=list --list=packs`; present the list; offer to activate |
+| "what packs are active", "which packs am I using", "my active packs", "any pack active" | Read `.agent/platform.json` → `active_packs`; report (say "none active" if empty) |
+| "which packs should I use", "scan my repo for packs", "detect packs", "recommend packs", "what packs fit this project" | `.agent/tools/packs.md` → Detect step (read-only: inspect deps/markers/extensions against the catalog); present recommendations; offer to activate |
+| "activate the X pack", "add the X pack", "use the X pack", "enable X pack", "install the X pack" | `.agent/tools/packs.md` → resolve id, run `npx {{PLATFORM_NPX}} --mode=add --add=pack:<id>`; confirm it's in `active_packs` |
+| "deactivate X pack", "remove the X pack", "turn off X pack", "disable X pack" | `.agent/tools/packs.md` → delete `.agent/packs/<id>/`, remove `<id>` from `active_packs`; confirm |
+| "add this to my X pack", "remember this for the X pack", "add a rule to X pack" | Append to `.agent/packs/<id>/user.overlay.md` (see step 3c); confirm which file was updated |
+
+### Platform management (natural language — you run any command, the user never types it)
+
+**Core principle: the only terminal command a user ever runs is the one-time install. Everything after that is a prompt.** When the user expresses any intent below, you run the underlying command on their behalf (or read the referenced tool doc), then report the result. Never instruct the user to open a terminal.
+
+| User says | Action |
+|-----------|--------|
+| "what skills are available", "list skills", "show skills" | Run `npx {{PLATFORM_NPX}} --mode=list --list=skills`; present the list |
+| "add the X skill", "install the X skill", "cherry-pick X skill", "enable X skill" | Run `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>`; confirm |
+| "which skill should I use" | Load the `using-platform` skill and recommend |
+| "install guards", "enable enforcement guards", "turn on hooks/guards" | Run `npx {{PLATFORM_NPX}} --mode=install-guards`; confirm |
+| "remove guards", "disable guards" | Run `npx {{PLATFORM_NPX}} --mode=remove-guards`; confirm |
+| "install global stubs", "set up global", "user-level install" | Run `npx {{PLATFORM_NPX}} --mode=global`; confirm |
+| "remove global stubs" | Run `npx {{PLATFORM_NPX}} --mode=uninstall-global`; confirm |
+| "repair platform", "fix stubs", "fill placeholders" | Run `npx {{PLATFORM_NPX}} --mode=repair`; confirm |
+| "reset platform files", "get the latest expert rules", "force refresh templates" | Run `npx {{PLATFORM_NPX}} --mode=force` — first warn: resets PLATFORM sections to latest but **preserves** your PROJECT sections, active packs, and `user.overlay.md`; confirm after |
+| "uninstall the platform", "remove the platform", "remove platform files" | Read `.agent/tools/uninstall.md` and execute it |
+
 ---
 
 ## 3 · Hard rules — every agent, every session
