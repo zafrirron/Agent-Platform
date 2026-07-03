@@ -726,6 +726,17 @@ const updated     = [];
 const skipped     = [];
 const noMarkers   = []; // upgrade skipped because file has no PLATFORM:START/END
 
+// Capture user-owned platform.json state BEFORE the write loop may replace the file
+// (upgrade/force rewrite platform.json from template, which would drop opt-in packs).
+let preservedActivePacks = [];
+try {
+  const existingPlatform = path.join(INSTALL_ROOT, '.agent/platform.json');
+  if (fs.existsSync(existingPlatform)) {
+    const prev = JSON.parse(fs.readFileSync(existingPlatform, 'utf8'));
+    if (Array.isArray(prev.active_packs)) preservedActivePacks = prev.active_packs;
+  }
+} catch { /* ignore */ }
+
 // Run pre-install scan on fresh install only
 const preArtifacts = (MODE === 'install') ? scanPreExistingArtifacts(INSTALL_ROOT) : { toBackup: [], toNote: [] };
 const backupDir    = (MODE === 'install') ? backupArtifacts(INSTALL_ROOT, preArtifacts.toBackup) : null;
@@ -861,8 +872,11 @@ if (fs.existsSync(platformPath)) {
     pj.test_runner        = vars.TEST_RUNNER;
     pj.coverage_cmd       = vars.COVERAGE_CMD;
     pj.coverage_threshold = vars.COVERAGE_THRESHOLD;
-    // Packs (technology-stack / domain overlays) — additive, opt-in
-    if (!Array.isArray(pj.active_packs)) pj.active_packs = [];
+    // Packs (technology-stack / domain overlays) — additive, opt-in.
+    // Restore opt-in packs captured before the write loop, so upgrade/force don't drop them.
+    if (!Array.isArray(pj.active_packs) || pj.active_packs.length === 0) {
+      pj.active_packs = Array.isArray(preservedActivePacks) ? [...preservedActivePacks] : [];
+    }
     if (MODE === 'add' && ADD_TOKENS) {
       for (const token of ADD_TOKENS) {
         if (token.startsWith('pack:')) {

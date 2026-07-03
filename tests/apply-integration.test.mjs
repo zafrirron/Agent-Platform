@@ -853,6 +853,49 @@ describe('packs — mode=add activates a pack', () => {
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
 });
 
+describe('packs — user content survives upgrade and force', () => {
+  const dir = tmpDir();
+  runApply(dir); // full install
+  runApply(dir, ['--mode=add', '--add=pack:stack-react', '--framework=cursor']);
+
+  const userOverlay = path.join(dir, '.agent/packs/stack-react/user.overlay.md');
+  const shippedOverlay = path.join(dir, '.agent/packs/stack-react/frontend-agent.overlay.md');
+  const USER_MARK = '## project rule\n- tactical panel must support split-screen layout';
+  fs.writeFileSync(userOverlay, `# my rules\n\n${USER_MARK}\n`);
+  const shippedBefore = fs.readFileSync(shippedOverlay, 'utf8');
+
+  test('mode=upgrade leaves user.overlay.md untouched', () => {
+    const r = runApply(dir, ['--mode=upgrade']);
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(fs.existsSync(userOverlay), 'user.overlay.md deleted by upgrade');
+    assert.ok(fs.readFileSync(userOverlay, 'utf8').includes(USER_MARK), 'user rule lost on upgrade');
+  });
+
+  test('mode=upgrade does not touch shipped pack overlays', () => {
+    assert.equal(fs.readFileSync(shippedOverlay, 'utf8'), shippedBefore, 'shipped overlay changed on upgrade');
+  });
+
+  test('mode=upgrade preserves active_packs', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.ok(pj.active_packs.includes('stack-react'), 'active_packs dropped on upgrade');
+  });
+
+  test('mode=force leaves user.overlay.md and pack files untouched', () => {
+    const r = runApply(dir, ['--mode=force']);
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(fs.existsSync(userOverlay), 'user.overlay.md deleted by force');
+    assert.ok(fs.readFileSync(userOverlay, 'utf8').includes(USER_MARK), 'user rule lost on force');
+    assert.equal(fs.readFileSync(shippedOverlay, 'utf8'), shippedBefore, 'shipped overlay changed on force');
+  });
+
+  test('user.overlay.md is not registered in the manifest', () => {
+    const manifest = JSON.parse(fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-MANIFEST.json'), 'utf8'));
+    assert.ok(!manifest.files.some((f) => f.path.endsWith('user.overlay.md')), 'user.overlay.md must stay user-owned (out of manifest)');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
 describe('packs — mode=list packs', () => {
   const result = spawnSync(
     process.execPath,

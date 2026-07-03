@@ -18,6 +18,26 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Pack customization lane (`user.overlay.md`) + fix `active_packs` dropped on upgrade
+
+**Source:** User question — "in the base platform, user-added skills/playbooks survive updates; how does the packs model support the same?" Investigation confirmed strong preservation (packs are skipped by `upgrade`/`force`), but found no *merge lane* for user additions to a shipped pack and a real bug where opt-in packs were deactivated on upgrade.
+
+**Failure observed:**
+1. A shipped pack overlay (`code.overlay.md`, `<expert>.overlay.md`) has no PLATFORM/PROJECT split, so a user with a pack-specific rule (e.g. `domain-c2`: "this panel must be supported on that layout") had nowhere update-safe to put it inside the pack — editing the shipped overlay inline loses the rule the moment the pack is updated.
+2. `--mode=upgrade`/`--mode=force` rewrite `.agent/platform.json` from the template; the later merge step re-read the already-overwritten file, so `active_packs` was reset to `[]` — a core upgrade silently deactivated every opt-in pack.
+
+**Files changed:**
+- `AGENT-PLATFORM-TEMPLATES/AGENTS.md` — step 3b now reads `.agent/packs/<id>/user.overlay.md` last (highest precedence); new step 3c: handle "add this to my `<pack>` pack" by appending to `user.overlay.md`, never editing shipped overlays.
+- `AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md` — Anatomy marks platform-owned vs user-owned; new **"Customizing a pack"** section + update/preservation table.
+- `AGENT-PLATFORM-TEMPLATES/.agent/bootstrap/apply.js` — capture `active_packs` before the write loop; restore it in the platform.json merge step.
+- `tests/apply-integration.test.mjs` — new **packs — user content survives upgrade and force** block (+6).
+
+**Rule added:** User pack customizations go in `user.overlay.md` (user-owned, out of manifest); shipped overlays are never edited inline; `active_packs` must survive `upgrade`/`force`.
+
+**Validated:** Yes — `npm test` 264/264 green (+6: `user.overlay.md` + shipped files survive upgrade & force, `active_packs` preserved on upgrade, `user.overlay.md` absent from manifest).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Add OpenCode as the 5th supported IDE framework (Mode 4: R036–R039)
 
 **Source:** Mode 4 targeted scan of `anomalyco/opencode` (resolved from https://opencode.ai/). OpenCode is a peer AI coding-agent runtime that natively reads `AGENTS.md`/`CLAUDE.md`/`SKILL.md` and supports `.opencode/commands`, `.opencode/agents`, and `opencode.json`.

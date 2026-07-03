@@ -25,12 +25,15 @@ Packs compose additively. Activate several at once (e.g. `language:cpp` + `stack
 
 ```
 .agent/packs/<id>/
-  pack.json                   # manifest (see schema below)
-  <expert>-agent.overlay.md   # stack/domain: appended to ONE core expert when active
-  code.overlay.md             # language: one shared overlay mapped to several code experts
-  routing.md                  # optional: extra keyword→overlay routing rows
-  references/*.md             # curated knowledge / reference architectures
+  pack.json                   # manifest (see schema below)          — platform-owned
+  <expert>-agent.overlay.md   # stack/domain: appended to ONE core expert when active — platform-owned
+  code.overlay.md             # language: one shared overlay mapped to several code experts — platform-owned
+  routing.md                  # optional: extra keyword→overlay routing rows            — platform-owned
+  references/*.md             # curated knowledge / reference architectures             — platform-owned
+  user.overlay.md             # YOUR project rules for this pack — user-owned, survives all updates
 ```
+
+> **Platform-owned vs user-owned.** Every file the platform ships for a pack is *platform-owned*: it can be replaced when you update the pack. `user.overlay.md` (and any extra file **you** add) is *user-owned*: it is not in the platform manifest, so no install/upgrade/force ever touches it.
 
 The loader resolves which overlay to read from `pack.json` → `provides.agent_overlays[<routed expert>]` — so a `language` pack can map `backend-agent`, `frontend-agent`, `data-agent`, `test-agent` all to the same `code.overlay.md` (no duplication), while a `stack` pack maps one expert to `<expert>-agent.overlay.md`.
 
@@ -91,6 +94,27 @@ language:cpp + stack:ros2 + platform:jetson-orin + platform:stm32h7 + platform:d
 ```
 
 The cross-component split (e.g. hard real-time on an MCU, perception/planning on a Linux SoC) belongs in the **domain** pack's `reference-architecture.md`, which cites the real source apps it was distilled from. No curated `platform-*` packs ship yet — see the maintainer `add pack platform-<name>` command.
+
+## Customizing a pack — your rules, kept across updates
+
+Packs follow the same preservation contract as the rest of the platform: **anything the platform ships is replaceable; anything you author is untouchable.** There are three ways to add your own knowledge, all update-safe:
+
+1. **Add a rule to an active pack (most common).** Just tell the agent in plain language while the pack is active — e.g. *"add this to my `domain-c2` pack: the tactical panel must be supported on the split-screen layout."* The agent appends it to `.agent/packs/<id>/user.overlay.md` under a `## <expert-or-topic>` heading (creating the file if needed). It is read **last** on every routed task where the pack is active, so it takes precedence over both the shipped overlay and the generic expert.
+2. **Add your own reference files.** Drop `.md` files anywhere under `.agent/packs/<id>/` (e.g. `references/our-conventions.md`). They are not in the manifest, so they persist.
+3. **Author your own pack.** Create `.agent/packs/<company>-<x>/` with a `pack.json` and overlays. A fully user-authored pack is never in the platform manifest → it survives everything.
+
+**Why this matters:** shipped overlays (`*.overlay.md`, `references/*`) have no PLATFORM/PROJECT split — so never edit them inline. If you do, your edits are lost the moment you update that pack. Put your additions in `user.overlay.md` instead; that is the pack equivalent of the core two-section (PROJECT) model.
+
+### Update / preservation behavior
+
+| Action | Shipped pack files (`*.overlay.md`, `references/*`, `pack.json`) | Your `user.overlay.md` / own files |
+|--------|------------------------------------------------------------------|-------------------------------------|
+| `--mode=upgrade` (core update) | **Skipped** — packs are not touched by a core upgrade | Untouched |
+| `--mode=force` | **Skipped** — force resets core templates, not packs | Untouched |
+| Re-run `--mode=add --add=pack:<id>` | Existing files skipped (write-once); only missing files added | Untouched |
+| **Update a pack to a new version** | Remove `.agent/packs/<id>/` then re-`add` → shipped files refreshed | **Preserved** — copy `user.overlay.md` back if you removed it, or move it aside first |
+
+> To pull a newer shipped pack, delete the pack folder and re-add it. `user.overlay.md` is the only file you must keep — back it up (or keep it out of the deleted set) and it carries all your customizations onto the new version.
 
 ## Activate / list
 

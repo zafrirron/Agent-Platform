@@ -5,7 +5,7 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (258 tests, ~3s)
+npm test   ← runs all automated checks (264 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
                    v2.42 playbooks (20) + 11 lifecycle skills + optional ux-research skill + install profiles (lite/core/full),
                    language/stack/domain packs (opt-in): not installed by profile, detect-and-suggest proposal (no auto-install; deps + marker files + source extensions), --add=pack activation (incl. language pack shared overlay across code experts), active_packs, --list=packs, reference_sources,
@@ -26,6 +26,7 @@ npm test   ← runs all automated checks (258 tests, ~3s)
 | 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers, v2.42 playbooks/context/routing/references/commands/skills/profiles | `apply-integration.test.mjs` |
 | 1 | Install: `--profile=lite`, `--mode=add`, `--mode=list` | `apply-integration.test.mjs` |
 | 1p | Packs: not installed by profile, catalog registration, `--add=pack` activation + `active_packs`, `--list=packs`, `reference_sources`, **detect-and-suggest proposal (no auto-install)** | `apply-integration.test.mjs` |
+| 1pu | Packs preservation: `user.overlay.md` + shipped pack files survive `--mode=upgrade` and `--mode=force`, `active_packs` preserved on upgrade, `user.overlay.md` stays out of the manifest | `apply-integration.test.mjs` |
 | 1oc | OpenCode framework: default + `--framework=opencode` install, `.opencode/commands/*` + `agents/critic.md` + `opencode.json` emission, non-clobber of existing `opencode.json`, gitignore, no cross-framework leakage | `apply-integration.test.mjs` |
 | 1 | Profile filter rules (lite/core/full) | `profile-filter.test.mjs` |
 | 1 | Install: global stubs suggestion in stdout | `apply-integration.test.mjs` |
