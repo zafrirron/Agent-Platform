@@ -44,6 +44,37 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 
 ---
 
+## Language, technology-stack & domain packs (opt-in overlays)
+
+> **The core is stack-agnostic. Packs make it an expert in *your* stack — without bloating everyone else's.**
+
+The platform core deliberately gives **general** software-engineering discipline for any project. **Packs** layer curated, opinionated, failure-derived knowledge for a specific programming language, technology stack, or business domain **on top of** the core, without modifying it.
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=list --list=packs
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
+```
+
+| Kind | Available | What it adds |
+|------|-----------|--------------|
+| `language:*` | `language-typescript`, `language-java`, `language-cpp` | The language's own type/memory/concurrency footguns — loads for every code-writing expert |
+| `stack:*` | `stack-react`, `stack-django` | Framework/library idioms, pitfalls, perf traps, version gotchas |
+| `domain:*` | `domain-fintech` | Compliance, domain invariants, threat models, and **reference architectures** linked to real source apps |
+| `platform:*` | *roadmap (design-formalized)* | Execution/deployment target — hardware (Jetson, STM32), OS/RTOS, container runtime (Docker/k8s) |
+
+- **Orthogonal & composable** — a repo can run `language:cpp` + `stack:react` + `domain:fintech` at once. Language ≠ stack: a language pack is reusable across every framework in it. There are **no combo packs**.
+- **Opt-in, zero bloat** — never installed by any profile; only via `--mode=add --add=pack:<id>`, recorded in `.agent/platform.json` → `active_packs`. Zero cost when none are active.
+- **Detect-and-suggest** — the installer inspects your project (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, source extensions) and *suggests* matching packs — never auto-installs.
+- **Overlays, not new experts** — a pack refines a generic expert only while active; core files are never touched.
+- **Grows over time** — all four maintainer modes (GitHub scan, web audit, user ingest, hand-authored) can grow a pack's brain on an independent lane that never blocks a core release.
+- **Domain reference architectures** — with a domain pack active, ask *"give me a reference architecture for a fintech app"* → the agent reads the pack's `reference-architecture.md` and points you at the linked real-world source repos (license-aware).
+
+Full user guide: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack--domain-packs-opt-in-overlays) · spec: `.agent/packs/README.md` · design: [MAINTAINER/adr/ADR-001-stack-domain-packs.md](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+
+---
+
 ## When to use what
 
 | You want… | Use this | Not this |
@@ -51,6 +82,7 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 | One command, whole repo, any IDE | **Agent Platform** `npx` (default `--profile=full`) | Copying individual skills by hand |
 | Solo dev, lightweight skills pack | `--profile=lite --framework=cursor` or Claude plugin | Full platform install |
 | One skill only | `--mode=add --add=skill:interview-me` | Whole platform |
+| Stack/language/domain-specific expertise | `--mode=add --add=pack:<id>` (language/stack/domain packs) | Bloating the agnostic core |
 | Clarify an idea before coding | `/spec` → `interview-me` skill | Jumping straight to add-feature |
 | Break spec into tasks | `/plan` | Ad-hoc todo lists in chat |
 | Build in slices | `/build` (`build auto` after plan) | One giant implementation pass |

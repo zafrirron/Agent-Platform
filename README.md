@@ -14,7 +14,7 @@
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, and Codex work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** **Opt-in language/stack/domain Packs** (curated expertise layered on the agnostic core — [see below](#language-technology-stack--domain-packs-opt-in)). Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
 
 **Lifecycle:** `DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP` (full profile adds session handoff + enterprise gates)
 
