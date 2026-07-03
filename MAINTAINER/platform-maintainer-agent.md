@@ -295,6 +295,10 @@ Execution:
    - CHANGELOG version section — an **"### Adopted from (brain sources this release)"** block crediting each repo (see `MAINTAINER/scan-results/registry.md`)
    - Release notes — the "Brain sources this release" section from `tools/release-notes-TEMPLATE.md`
    (If nothing external was adopted this release, note "no external sources this release" and skip.)
+5b. **Packs changed credit (mandatory if any pack changed):** if any pack was added or its `pack.json` `version` bumped since the last release (grep `.agent/packs/**/pack.json` vs the last tag), add:
+   - Release notes — the "Packs added / updated this release" table from `tools/release-notes-TEMPLATE.md` (one row per added/updated pack: `pack · kind · change · pack version`)
+   - CHANGELOG version section — a line noting the added/updated packs (packs are versioned independently, so this is informational for users, not a `bootstrap_version` driver)
+   (If no pack changed this release, note "no pack changes this release" and skip.)
 6. Confirm with user: "Next version will be vX.Y.Z — proceed?"
 7. If confirmed: run .\tools\release.ps1 -Version X.Y.Z
 8. Report: "Released vX.Y.Z — tag created, GitHub release page published."
@@ -587,6 +591,7 @@ features or architectural patterns the platform could adopt.
 ### H. Changelog and release
 - [ ] **`CHANGELOG.md`** — `[Unreleased]` entry for every shipped-to-templates change (what, why, upgrade note)
 - [ ] **Brain-source provenance** — if a Mode 2/4 finding adopted an external source, add it to `docs/INTELLIGENCE-SOURCES.md` and credit it in the CHANGELOG "Adopted from" block + release notes "Brain sources this release"
+- [ ] **Packs changed** — if any pack was added / its `pack.json` version bumped since the last release, list it in the release notes "Packs added / updated this release" table + a CHANGELOG line (informational; packs version independently)
 - [ ] **`bootstrap_version`** — bump only on release (`"Release"` command), not on every WIP change
 - [ ] **Commit** — one logical commit per change (when maintainer asks)
 - [ ] **Push / Release** — only when maintainer explicitly asks
@@ -668,6 +673,7 @@ After promotion, the next `--mode=upgrade` will put the rule in all consumer rep
 2. bootstrap_version bumped in manifest + bootstrap footer + package.json + README
 3. CHANGELOG.md entry written — include "### Adopted from (brain sources this release)" if any external repo/research was adopted
 4. Brain-source provenance updated — docs/INTELLIGENCE-SOURCES.md + release notes "Brain sources this release"
+4b. Packs changed (if any) — release notes "Packs added / updated this release" table + CHANGELOG line
 5. git commit + git push
 6. (Optional) Create GitHub Release for version-pinned installs
 ```
