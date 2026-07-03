@@ -7,6 +7,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+---
+
+## [2.43.0] — 2026-07-03
+
 ### Added
 - **Mode 4 targeted repo scan** — `repo=owner/name` skips discovery/triage; deep-reads one GitHub repo for skills/workflow/platform adoption ideas + Recommended adoption table
 - **`ux-research` optional skill** — user research / usability / journey mapping / a11y research (cherry-pick `--mode=add --add=skill:ux-research`); adapted from `gemini-agent-skills` ux-researcher (Mode 4 R013). Wired into `AGENTS.md` routing (user-research keywords → `ux-research`) and a formal Step 0 "behavior-gap gate" in `requirements-clarification` playbook

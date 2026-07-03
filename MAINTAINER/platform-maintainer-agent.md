@@ -133,7 +133,7 @@ Only ever edit the PLATFORM section. Never touch PROJECT or USER sections.
 3. **Lives in the right place** — expert rule for domain behaviour; playbook step for process; convention for universal coding standard
 4. **Has a done-when gate** — the agent cannot mark the task done without satisfying it
 
-### Playbook inventory (v2.42.1 — verify routing + docs when adding/changing)
+### Playbook inventory (v2.43.0 — verify routing + docs when adding/changing)
 
 | Group | Playbooks |
 |-------|-----------|

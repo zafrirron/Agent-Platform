@@ -115,7 +115,7 @@ npx github:zafrirron/Agent-Platform
 ```
 
 ### Verify install summary shows:
-- [ ] Version: v2.42.1
+- [ ] Version: v2.43.0
 - [ ] Capabilities line: `✔  20 playbooks` (dynamic count from manifest — not a hardcoded "8")
 - [ ] `npx jest` detected as test runner
 - [ ] Pre-existing CLAUDE.md and AGENTS.md noted as backed up
@@ -159,12 +159,12 @@ grep -c "PLATFORM:START\|PROJECT:START" <TEST_DIR>/.agent/agents/backend-agent.m
 ### Verify platform.json:
 ```bash
 node -e "const p=require('<TEST_DIR>/.agent/platform.json'); console.log(p.bootstrap_version, p.test_runner, p.platform_repo, p.platform_npx)"
-# 2.42.1  npx jest  zafrirron/Agent-Platform  github:zafrirron/Agent-Platform
+# 2.43.0  npx jest  zafrirron/Agent-Platform  github:zafrirron/Agent-Platform
 ```
 - [ ] `platform_repo` field present and correct
 - [ ] `platform_npx` field present and correct
 
-### Verify v2.42.1 artifacts (automated in `npm test`; spot-check manually):
+### Verify v2.43.0 artifacts (automated in `npm test`; spot-check manually):
 ```bash
 ls <TEST_DIR>/.agent/playbooks/*.md | wc -l          # 20
 test -f <TEST_DIR>/.agent/context/nfr-log.md
@@ -621,7 +621,7 @@ grep "PLATFORM_NPX"  ~/.claude/CLAUDE.md    && echo "FAIL — placeholder not su
 ### Verify version file content:
 ```bash
 node -e "const v=require(require('os').homedir()+'/.agent-platform/global-version'); console.log(v.version, v.platform_repo)"
-# 2.42.1  zafrirron/Agent-Platform
+# 2.43.0  zafrirron/Agent-Platform
 ```
 
 ### Step B — Re-run project install; verify summary shows global stubs installed
@@ -633,7 +633,7 @@ cd <TEST_DIR>
 npx github:zafrirron/Agent-Platform --mode=repair
 ```
 
-- [ ] Install summary shows: `✔  Global stubs  installed (v2.42.1) — platform activates in all your repos`
+- [ ] Install summary shows: `✔  Global stubs  installed (v2.43.0) — platform activates in all your repos`
 - [ ] The `○  Global stubs  not installed` suggestion line is **absent**
 
 ### Step C — Upgrade global stubs (idempotent run)
@@ -840,7 +840,7 @@ Verify:
 | Phase | Test | Pass condition |
 |-------|------|----------------|
 | 0 | Clean state | Pre-existing CLAUDE.md + AGENTS.md present, .agent/ absent |
-| 1 | Install | v2.42.1, 20 playbooks, references + spec-outline, install banner shows dynamic playbook count, jest detected, backup created, MIGRATION-NOTES.md exists, two-section markers present, platform.json has platform_repo + platform_npx |
+| 1 | Install | v2.43.0, 20 playbooks, references + spec-outline, install banner shows dynamic playbook count, jest detected, backup created, MIGRATION-NOTES.md exists, two-section markers present, platform.json has platform_repo + platform_npx |
 | 2 | Session start | Step 1d audit offer (first session); NO path; offer absent on second session; compact status block; `show quick reference` points to file |
 | 2b | Full project audit — manual | 11 phases complete, report at correct path, executive summary incl. Governance & maturity row |
 | 2b | Full project audit — YES path | Fresh repo: offer appears, YES runs all 11 phases, session continues after audit |
@@ -858,7 +858,7 @@ Verify:
 | 8 | Upgrade two-section | PROJECT section preserved, PLATFORM updated, pure platform files replaced |
 | 9 | Project uninstall dry-run | Lists all files, zero changes made |
 | 9 | Project uninstall confirm | Platform gone, original CLAUDE.md + AGENTS.md restored, src/ intact |
-| 10A | Global install | Stubs + Claude/Cursor lifecycle commands created, version file v2.42.1, no raw {{placeholders}} |
+| 10A | Global install | Stubs + Claude/Cursor lifecycle commands created, version file v2.43.0, no raw {{placeholders}} |
 | 10B | Post-install summary | Repair run shows ✔ Global stubs installed with version |
 | 10C | Global upgrade (idempotent) | Re-run --mode=global: updated without duplicate blocks, USER section preserved |
 | 11A | Global activation — installed repo | Claude routes silently, no offer |

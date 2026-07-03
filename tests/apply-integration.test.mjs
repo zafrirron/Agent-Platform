@@ -503,7 +503,7 @@ describe('Phase 1A — agent manifest files deployed after install', () => {
 
 // ── v2.40.0 enterprise capabilities ────────────────────────────────────────
 
-describe('install — v2.42.1 lifecycle skills + profiles', () => {
+describe('install — v2.43.0 lifecycle skills + profiles', () => {
   const dir = tmpDir();
   const result = runApply(dir);
 
@@ -527,9 +527,9 @@ describe('install — v2.42.1 lifecycle skills + profiles', () => {
     'nfr-log.md', 'compliance-evidence-log.md', 'incident-log.md',
   ];
 
-  test('bootstrap_version is 2.42.1 in platform.json', () => {
+  test('bootstrap_version is 2.43.0 in platform.json', () => {
     const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
-    assert.equal(pj.bootstrap_version, '2.42.1', 'expected bootstrap_version 2.42.1');
+    assert.equal(pj.bootstrap_version, '2.43.0', 'expected bootstrap_version 2.43.0');
   });
 
   test('all 20 playbooks deployed', () => {

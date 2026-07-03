@@ -209,7 +209,7 @@ autoCheck('No stderr from installer', !install.stderr.trim(),
 const globalSuggestion = install.stdout.includes('Global stubs');
 autoCheck('Global stubs status shown in install summary', globalSuggestion);
 
-autoCheck('bootstrap_version is 2.42.1', pj.bootstrap_version === '2.42.1',
+autoCheck('bootstrap_version is 2.43.0', pj.bootstrap_version === '2.43.0',
   `got ${pj.bootstrap_version}`);
 autoCheck('Install banner shows 20 playbooks (dynamic count)',
   install.stdout.includes('20 playbooks'));
@@ -535,7 +535,7 @@ autoCheck('~/.agent-platform/global-version',           fs.existsSync(path.join(
 
 const gv = JSON.parse(fs.readFileSync(path.join(fakeHome, '.agent-platform/global-version'), 'utf8'));
 autoCheck('Version JSON has version field', !!gv.version && /\d+\.\d+\.\d+/.test(gv.version));
-autoCheck('global-version is 2.42.1', gv.version === '2.42.1', `got ${gv.version}`);
+autoCheck('global-version is 2.43.0', gv.version === '2.43.0', `got ${gv.version}`);
 
 const claudeStub = fs.readFileSync(path.join(fakeHome, '.claude/CLAUDE.md'), 'utf8');
 autoCheck('PLATFORM:START/END in ~/.claude/CLAUDE.md',
