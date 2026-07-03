@@ -401,6 +401,21 @@ Every expert file has two sections:
 
 You don't track these sources yourself — the platform does it for you, and every upgrade makes your agents smarter.
 
+### Where the intelligence comes from
+
+The platform actively studies the open-source agent ecosystem and adapts proven patterns (all MIT-licensed, de-duplicated, and security-vetted before adoption). A sample of what shipped and its source:
+
+| Source repo | What your agents gained |
+|-------------|-------------------------|
+| [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | `context-engineering` (`/context`) + the DNA of most lifecycle skills |
+| [obra/superpowers](https://github.com/obra/superpowers) | `verification-before-completion` (`/verify`) + systematic debugging |
+| [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Proactive **minimalism ladder** + over-engineering delete-list review |
+| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Cross-IDE skill paths, skill quality bar, ingest security vetting |
+| [saeed-vayghan/gemini-agent-skills](https://github.com/saeed-vayghan/gemini-agent-skills) | `ux-research` optional skill + Gemini interop |
+| [thedesignproject/agent-skills](https://github.com/thedesignproject/agent-skills) | Anti "AI aesthetic" frontend principle + `npx skills` interop |
+
+**Full provenance ledger** — every adopted source, finding ID, and disposition: [`docs/INTELLIGENCE-SOURCES.md`](docs/INTELLIGENCE-SOURCES.md)
+
 > **Platform fork maintainers:** the full improvement pipeline (Mode 1–4 commands, ingest workflow, governance scan) is documented in [`MAINTAINER/GUIDE.md`](MAINTAINER/GUIDE.md).
 
 ---
@@ -559,6 +574,7 @@ The platform references industry standards by name. Click any term for more deta
 |----------|-----|
 | [AGENT-PLATFORM-FRAMEWORK-README.md](AGENT-PLATFORM-FRAMEWORK-README.md) | **Users** — complete installation, usage, and extension guide |
 | [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | **Users** — profiles (lite/core/full), slash commands, cherry-pick, vs skill packs |
+| [docs/INTELLIGENCE-SOURCES.md](docs/INTELLIGENCE-SOURCES.md) | **Users** — provenance ledger: which open-source repos the platform learned from and what each contributed |
 | [docs/cursor-setup.md](docs/cursor-setup.md) | **Cursor users** — no marketplace; `npx --profile=lite`, `--mode=add` |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | **Contributors** — submit rules, playbooks, and doc improvements |
 | [presentation/agent-platform-beta.html](presentation/agent-platform-beta.html) | **Users** — interactive product deck (profiles, lifecycle skills) |

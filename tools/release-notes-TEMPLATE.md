@@ -21,6 +21,14 @@ Read .agent/session-start.md and execute it.
 
 <!-- Describe the main changes here -->
 
+<!-- If this release adopted patterns from external repos (Mode 4 scans), credit them here
+     and keep docs/INTELLIGENCE-SOURCES.md in sync:
+
+## Brain sources this release
+Adapted from these MIT-licensed repos (full ledger: docs/INTELLIGENCE-SOURCES.md):
+- owner/repo → what your agents gained (finding IDs)
+-->
+
 ---
 
 ## Upgrade

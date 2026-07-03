@@ -27,6 +27,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 - **Critic `[DESIGN]` dimension** — now explicitly flags over-engineering / premature abstraction with a delete-list (corrected stale "all nine" → "all ten" in critic prose) (Mode 4 R032)
 - **Roadmap** — multi-agent coordination patterns backlog entry added to `platform-governance-roadmap.md` (Mode 4 R014; tied to external team-coordination server concept)
 
+### Adopted from (brain sources this release)
+This release's intelligence was sourced from targeted Mode 4 scans of these MIT-licensed repos — now catalogued in the new provenance ledger [`docs/INTELLIGENCE-SOURCES.md`](docs/INTELLIGENCE-SOURCES.md):
+- [saeed-vayghan/gemini-agent-skills](https://github.com/saeed-vayghan/gemini-agent-skills) → `ux-research` skill, Gemini interop, coordination roadmap (R013/R016/R014)
+- [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) → cross-IDE path matrix, skill quality bar, ingest security vetting (R019/R020/R021)
+- [thedesignproject/agent-skills](https://github.com/thedesignproject/agent-skills) → `npx skills` interop, anti "AI aesthetic", verify-before-ship (R025/R028/R029)
+- [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) → proactive minimalism ladder + over-engineering delete-list (R031/R032)
+- **New:** [`docs/INTELLIGENCE-SOURCES.md`](docs/INTELLIGENCE-SOURCES.md) — provenance ledger of every open-source repo the platform has learned from + a README "Where the intelligence comes from" section
+
 ---
 
 ## [2.42.1] — 2026-06-09

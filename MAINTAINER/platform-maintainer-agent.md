@@ -244,9 +244,14 @@ Execution:
    - Breaking change to file structure or markers → Major (x.0.0)
    - (If user said "release as minor/patch/major" → use that)
 4. Calculate next version (e.g. 2.20.1 → 2.21.0 for minor)
-5. Confirm with user: "Next version will be vX.Y.Z — proceed?"
-6. If confirmed: run .\tools\release.ps1 -Version X.Y.Z
-7. Report: "Released vX.Y.Z — tag created, GitHub release page published."
+5. **Brain-source credit (mandatory):** if any change since the last release adopted patterns from an external repo (Mode 4 scan) or research source (Mode 2), add/update:
+   - `docs/INTELLIGENCE-SOURCES.md` — new source rows + finding IDs
+   - CHANGELOG version section — an **"### Adopted from (brain sources this release)"** block crediting each repo (see `MAINTAINER/scan-results/registry.md`)
+   - Release notes — the "Brain sources this release" section from `tools/release-notes-TEMPLATE.md`
+   (If nothing external was adopted this release, note "no external sources this release" and skip.)
+6. Confirm with user: "Next version will be vX.Y.Z — proceed?"
+7. If confirmed: run .\tools\release.ps1 -Version X.Y.Z
+8. Report: "Released vX.Y.Z — tag created, GitHub release page published."
 ```
 
 **Example trigger:**
@@ -535,6 +540,7 @@ features or architectural patterns the platform could adopt.
 
 ### H. Changelog and release
 - [ ] **`CHANGELOG.md`** — `[Unreleased]` entry for every shipped-to-templates change (what, why, upgrade note)
+- [ ] **Brain-source provenance** — if a Mode 2/4 finding adopted an external source, add it to `docs/INTELLIGENCE-SOURCES.md` and credit it in the CHANGELOG "Adopted from" block + release notes "Brain sources this release"
 - [ ] **`bootstrap_version`** — bump only on release (`"Release"` command), not on every WIP change
 - [ ] **Commit** — one logical commit per change (when maintainer asks)
 - [ ] **Push / Release** — only when maintainer explicitly asks
@@ -600,9 +606,10 @@ After promotion, the next `--mode=upgrade` will put the rule in all consumer rep
 ```
 1. All template changes complete and logged in platform-improvements.md
 2. bootstrap_version bumped in manifest + bootstrap footer + package.json + README
-3. CHANGELOG.md entry written
-4. git commit + git push
-5. (Optional) Create GitHub Release for version-pinned installs
+3. CHANGELOG.md entry written — include "### Adopted from (brain sources this release)" if any external repo/research was adopted
+4. Brain-source provenance updated — docs/INTELLIGENCE-SOURCES.md + release notes "Brain sources this release"
+5. git commit + git push
+6. (Optional) Create GitHub Release for version-pinned installs
 ```
 
 ---
