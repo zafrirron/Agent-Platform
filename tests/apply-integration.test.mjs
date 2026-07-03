@@ -944,6 +944,33 @@ describe('packs — language detection (marker file + source extension)', () => 
   });
 });
 
+describe('packs — stack detection is precise (no package.json false positive)', () => {
+  test('a Node/Express project (no react) does NOT suggest stack-react', () => {
+    const dir = tmpDir();
+    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({
+      name: 'todo-api', version: '1.0.0',
+      dependencies: { express: '^4.18.0' },
+      devDependencies: { jest: '^29.0.0' },
+    }, null, 2));
+    const result = runApply(dir);
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(!result.stdout.includes('--add=pack:stack-react'),
+      `stack-react must NOT be suggested for a non-React Node project:\n${result.stdout}`);
+    fs.rmSync(dir, { recursive: true });
+  });
+
+  test('a .jsx file (no react dep) suggests stack-react via glob', () => {
+    const dir = tmpDir();
+    fs.mkdirSync(path.join(dir, 'src'));
+    fs.writeFileSync(path.join(dir, 'src/App.jsx'), 'export default function App(){return null;}\n');
+    const result = runApply(dir);
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('--add=pack:stack-react'),
+      `stack-react not suggested via **/*.jsx glob:\n${result.stdout}`);
+    fs.rmSync(dir, { recursive: true });
+  });
+});
+
 // ── Phase 1B: Reputation vectors ───────────────────────────────────────────
 
 describe('Phase 1B — reputation.json deployed after install', () => {

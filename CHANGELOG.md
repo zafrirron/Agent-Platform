@@ -7,6 +7,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+### Fixed
+- **Pack detection false positive — `stack-react` proposed for every Node repo** — `stack-react`'s `detect` listed the generic `package.json` as a file signal, and `detectPacks` treats signals as match-any, so any project with a `package.json` (e.g. a plain Express API) was wrongly offered the React pack. Removed the `package.json` signal; React now detects via its `react`/`react-dom` **dependency** or `**/*.tsx`/`**/*.jsx` **globs**. Also made `detectPacks` actually **honour `globs`** (previously declared in the catalog but silently ignored — bounded, path-based scan reusing the extension walk) and removed the unused fuzzy `keywords` field from `domain-fintech` (it was never evaluated; `stripe`/`plaid`/… deps remain the trigger). +2 regression tests (245 total): a non-React Node project must not suggest `stack-react`; a `.jsx` file must suggest it via glob.
+
 ---
 
 ## [2.44.0] — 2026-07-03

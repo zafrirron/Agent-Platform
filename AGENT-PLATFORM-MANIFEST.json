@@ -48,9 +48,9 @@
     { "id": "language-typescript", "kind": "language", "display_name": "TypeScript", "description": "TS type safety, boundary validation, strict-mode pitfalls", "detect": { "files": ["tsconfig.json"], "deps": ["typescript"], "extensions": [".ts", ".tsx"] } },
     { "id": "language-java", "kind": "language", "display_name": "Java", "description": "Java concurrency, RAII/resources, equals/immutability pitfalls", "detect": { "files": ["pom.xml", "build.gradle", "build.gradle.kts"], "deps": [], "extensions": [".java"] } },
     { "id": "language-cpp", "kind": "language", "display_name": "C++", "description": "C++ ownership/RAII, memory safety, UB and rule-of-5 pitfalls", "detect": { "files": ["CMakeLists.txt", "conanfile.txt", "vcpkg.json"], "deps": [], "extensions": [".cpp", ".cc", ".cxx", ".hpp"] } },
-    { "id": "stack-react", "kind": "stack", "display_name": "React", "description": "React idioms, hook/render pitfalls, perf traps", "detect": { "files": ["package.json"], "deps": ["react", "react-dom"], "globs": ["**/*.tsx", "**/*.jsx"] } },
+    { "id": "stack-react", "kind": "stack", "display_name": "React", "description": "React idioms, hook/render pitfalls, perf traps", "detect": { "deps": ["react", "react-dom"], "globs": ["**/*.tsx", "**/*.jsx"] } },
     { "id": "stack-django", "kind": "stack", "display_name": "Django", "description": "Django ORM/N+1, migrations, settings/security pitfalls", "detect": { "files": ["manage.py"], "deps": ["django", "Django"], "globs": ["**/settings.py"] } },
-    { "id": "domain-fintech", "kind": "domain", "display_name": "Fintech / Payments", "description": "Double-entry ledger, PCI, idempotent money ops + reference architecture", "detect": { "deps": ["stripe", "plaid", "braintree", "adyen"], "keywords": ["payment", "ledger", "PCI", "banking"] } }
+    { "id": "domain-fintech", "kind": "domain", "display_name": "Fintech / Payments", "description": "Double-entry ledger, PCI, idempotent money ops + reference architecture", "detect": { "deps": ["stripe", "plaid", "braintree", "adyen"] } }
   ],
   "files": [
     {

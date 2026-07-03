@@ -184,12 +184,20 @@ function detectPacks(root) {
   let rootFiles = [];
   try { rootFiles = fs.readdirSync(root); } catch { /* ignore */ }
 
-  // Shallow, bounded scan for source-file extensions (catches language packs
-  // that have no dependency manifest, e.g. a C++ repo with only *.cpp/*.h).
+  // Shallow, bounded scan for source-file extensions and path globs (catches
+  // packs with no dependency manifest, e.g. a C++ repo with only *.cpp/*.h, or a
+  // React repo detected via **/*.tsx). Globs are precise, path-based signals —
+  // unlike a bare "package.json" file signal, they do not fire on every repo.
   const catalogExts = new Set();
   for (const p of catalog) for (const e of ((p.detect || {}).extensions || [])) catalogExts.add(e.toLowerCase());
+  const catalogGlobs = [];
+  for (const p of catalog) for (const g of ((p.detect || {}).globs || [])) catalogGlobs.push(g);
+  const globToRe = (g) => new RegExp('^' +
+    g.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*\*\//g, '(?:.*/)?').replace(/\*/g, '[^/]*') + '$');
+  const globRes = catalogGlobs.map((g) => ({ g, re: globToRe(g) }));
   const presentExts = new Set();
-  if (catalogExts.size > 0) {
+  const presentGlobs = new Set();
+  if (catalogExts.size > 0 || globRes.length > 0) {
     const SKIP = new Set(['node_modules', '.git', 'dist', 'build', 'out', 'vendor', 'target', '.venv', 'venv', '__pycache__', '.next', 'coverage']);
     const MAX_DEPTH = 2, MAX_FILES = 4000;
     let seen = 0;
@@ -205,6 +213,10 @@ function detectPacks(root) {
           seen++;
           const ext = path.extname(ent.name).toLowerCase();
           if (ext && catalogExts.has(ext)) presentExts.add(ext);
+          if (globRes.length > 0) {
+            const rel = path.relative(root, path.join(dir, ent.name)).split(path.sep).join('/');
+            for (const { g, re } of globRes) if (!presentGlobs.has(g) && re.test(rel)) presentGlobs.add(g);
+          }
         }
       }
     };
@@ -218,6 +230,7 @@ function detectPacks(root) {
     for (const dep of (d.deps || [])) if (deps.has(dep.toLowerCase())) hit = true;
     for (const f of (d.files || [])) if (rootFiles.includes(f) || fs.existsSync(path.join(root, f))) hit = true;
     for (const e of (d.extensions || [])) if (presentExts.has(e.toLowerCase())) hit = true;
+    for (const g of (d.globs || [])) if (presentGlobs.has(g)) hit = true;
     if (hit) suggested.push(p);
   }
   return suggested;

@@ -18,6 +18,21 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Fix: pack detection false positive (`stack-react` on every Node repo)
+
+**Failure observed:** A dry-run of pack detect-and-suggest on the E2E `tests/todo-app/` fixture (a plain Express REST API — no React) wrongly proposed `--add=pack:stack-react`. Root cause: `stack-react`'s `detect.files` included the generic `package.json`, and `detectPacks` treats every declared signal as match-any, so any repo with a `package.json` matched. Compounding: `detectPacks` silently ignored the `globs` and `keywords` signals the catalog declared, so React's real `**/*.tsx`/`**/*.jsx` signal never ran.
+
+**Files changed:**
+- `AGENT-PLATFORM-MANIFEST.json` — `stack-react.detect`: removed `package.json` file signal (keep `react`/`react-dom` deps + `**/*.tsx`/`**/*.jsx` globs); `domain-fintech.detect`: removed unused `keywords` (never evaluated; deps remain trigger).
+- `AGENT-PLATFORM-TEMPLATES/.agent/bootstrap/apply.js` — `detectPacks` now honours `globs` via a bounded, path-based scan reusing the extension walk.
+- `tests/apply-integration.test.mjs` — +2 regression tests.
+
+**Rule added:** Pack `detect` signals must be **specific** — never a generic manifest filename like `package.json`. Precise signals only: framework deps, framework-specific files (`manage.py`), source extensions, or path globs.
+
+**Validated:** Yes — non-React Node project no longer suggests `stack-react`; `.jsx` project suggests it via glob; base todo-app suggests nothing; `npm test` 245/245 green.
+
+---
+
 ### [Unreleased] — 2026-07-03 — Mode 3 ingest → pack lane (maintainer-only)
 
 **Source:** Platform architecture — while documenting "how each of the 4 maintainer modes grows a pack brain", found Mode 3 (ingest) was the only mode with no pack path: a user's stack/domain/platform-specific rule would be classified PROJECT-SPECIFIC and discarded rather than routed into a pack.
