@@ -6,6 +6,21 @@ Full reports: `MAINTAINER/scan-results/mode4/` + legacy `MAINTAINER/governance-s
 
 ---
 
+## [2026-07-03] — Mode 4 targeted — DietrichGebert/ponytail
+
+**Scan mode:** targeted  
+**Queries used:** N/A (targeted)  
+**Findings:** 5 (R031–R035) — 2 Implemented, 3 Deferred  
+**Archive:** [../scan-results/mode4/2026-07-03-targeted-ponytail-report.md](../scan-results/mode4/2026-07-03-targeted-ponytail-report.md)
+
+| Repo | Stars | Key finding | Status |
+|------|------:|-------------|--------|
+| DietrichGebert/ponytail | 72,000 | Proactive minimalism ladder + safety floor (R031); over-engineering review (R032) | R031/R032 Implemented; R033/R034/R035 Deferred |
+
+**Next scan:** very active (v4.8.4); re-check for new commands / measurement harness. Adopt the ladder principle into `code-simplification`, not the persona.
+
+---
+
 ## [2026-07-03] — Mode 4 targeted — thedesignproject/agent-skills
 
 **Scan mode:** targeted  

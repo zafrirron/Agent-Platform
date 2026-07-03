@@ -18,6 +18,23 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Mode 4 R031/R032 adopted (DietrichGebert/ponytail)
+
+**Source:** Mode 4 targeted scan on `DietrichGebert/ponytail` (2026-07-03, ~72k★), report R031–R035. Adopted the principle (minimal-code discipline), not the persona.
+
+**Gap observed:** `code-simplification` was reactive only — no pre-code gate to stop over-building; Critic had no explicit over-engineering lens.
+
+**Files changed:** `.agent/skills/code-simplification/SKILL.md` (minimalism ladder + safety floor + delete-list review mode), `.agent/skills/incremental-implementation/SKILL.md` (pre-build minimalism gate; renumbered steps), `.agent/agents/critic-agent.md` (`[DESIGN]` over-engineering/delete-list + "nine"→"ten" fix).
+
+**Capability added:**
+- R031 (P0): proactive minimalism ladder (need→reuse→stdlib→native→dep→one-line→minimum) with a hard safety floor (never cut validation/security/a11y).
+- R032 (P1): over-engineering review lens — folded into Critic `[DESIGN]` (delete-list) + `code-simplify` diff mode.
+- R033 deferred (opt-in debt ledger); R034 deferred (roadmap — skill-impact benchmark); R035 deferred (16-host portability).
+
+**Validated:** Done — `npm test` green (220 tests; incl. "critic-agent.md has 10 review dimensions").
+
+---
+
 ### [Unreleased] — 2026-07-03 — Mode 4 R025/R028/R029 adopted (thedesignproject/agent-skills)
 
 **Source:** Mode 4 targeted scan on `thedesignproject/agent-skills` (2026-07-03), report R025–R030. Design/frontend skill pack — adopted low-effort, in-scope items.

@@ -23,6 +23,7 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 
 | Date | Mode | Findings | Implemented | Skipped | Deferred | Archive |
 |------|------|----------|-------------|---------|----------|---------|
+| 2026-07-03 | Mode 4 targeted | 5 (R031–R035) | 2 (R031, R032) | 0 | 3 (R033 opt-in; R034 roadmap; R035) | [mode4/2026-07-03-targeted-ponytail-report.md](mode4/2026-07-03-targeted-ponytail-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R025–R030) | 3 (R025, R028, R029) | 0 | 3 (R026 roadmap; R027 opt-in; R030) | [mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md](mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R019–R024) | 3 (R019, R020, R021) | 0 | 3 (R022/R023/R024) | [mode4/2026-07-03-targeted-awesome-agent-skills-report.md](mode4/2026-07-03-targeted-awesome-agent-skills-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R013–R018) | 2 (R013, R016) | 0 | 4 (R014 roadmapped; R015/R017/R018) | [mode4/2026-07-03-targeted-gemini-agent-skills-report.md](mode4/2026-07-03-targeted-gemini-agent-skills-report.md) |
@@ -30,6 +31,29 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 | 2026-06-09 | Mode 2 | 15 | 5 (F001–F004, F013) | 0 | 10 | *(see platform-improvements.md)* |
 | 2026-06-11 | Mode 4 | — | scan keyword fix | — | — | governance-scan/scan-log |
 | 2026-06-02 | Mode 4 | 8 repos | 14 phases | — | — | founding scan |
+
+---
+
+## [2026-07-03] — Mode 4 targeted — DietrichGebert/ponytail (5 findings: 2 implemented, 3 deferred)
+
+**Selection:** R031 + R032 implemented; R033 (opt-in) / R034 (roadmap) / R035 deferred  
+**Archive:** [mode4/2026-07-03-targeted-ponytail-report.md](mode4/2026-07-03-targeted-ponytail-report.md)
+
+**Scan mode:** targeted  
+**Target repo:** DietrichGebert/ponytail  
+**Repo type:** single-purpose minimal-code skill + 16-host plugin (MIT, ~72k★, v4.8.4)
+
+### Findings summary
+
+| ID | Title | Disposition |
+|----|-------|-------------|
+| R031 | Proactive minimalism ladder + safety floor | **Implemented** — `code-simplification` + `incremental-implementation` |
+| R032 | Over-engineering review lens | **Implemented** — Critic `[DESIGN]` + `code-simplification` delete-list mode |
+| R033 | Deferred-shortcut debt ledger | Deferred (opt-in) |
+| R034 | Skill-impact benchmark methodology | Deferred (roadmap) |
+| R035 | 16-host plugin-marketplace portability | Deferred |
+
+**Recommended adoption P0:** R031 ✅ · **P1:** R032 ✅ · **Opt-in:** R033 · **Roadmap:** R034
 
 ---
 

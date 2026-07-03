@@ -19,6 +19,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 ### Changed
 - **frontend-agent** — added "avoid the generic AI aesthetic" design principle (distinctive, production-grade UI without overriding accessibility) (Mode 4 R028)
 - **Skill quality checklist** — added "verify before ship" (dry-run/subagent test a new skill before cataloguing) (Mode 4 R029)
+- **code-simplification** — now proactive: added the "minimalism ladder" (need→reuse→stdlib→native→dep→one-line→minimum) + safety floor, plus an over-engineering **delete-list** review mode; `incremental-implementation` gains a pre-build minimalism gate (Mode 4 R031/R032, from ponytail)
+- **Critic `[DESIGN]` dimension** — now explicitly flags over-engineering / premature abstraction with a delete-list (corrected stale "all nine" → "all ten" in critic prose) (Mode 4 R032)
 - **Roadmap** — multi-agent coordination patterns backlog entry added to `platform-governance-roadmap.md` (Mode 4 R014; tied to external team-coordination server concept)
 
 ---

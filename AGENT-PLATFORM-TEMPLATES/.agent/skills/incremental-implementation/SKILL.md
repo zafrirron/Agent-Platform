@@ -18,7 +18,7 @@ One slice at a time. Feature flags and safe defaults when appropriate.
 ## Process (slice)
 
 1. Confirm which task (from plan or user).
-2. Implement smallest complete slice.
+2. **Minimalism gate** — before writing, climb the ladder in `code-simplification` (need it? → reuse → stdlib → native → dep → one line → minimum); build the smallest complete slice that works. Never cut validation/security/a11y to save lines.
 3. Run tests; fix until green.
 4. Commit with scoped message.
 5. Report done-when evidence; ask to continue or stop.

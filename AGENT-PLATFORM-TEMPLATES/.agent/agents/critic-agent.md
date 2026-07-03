@@ -25,7 +25,7 @@ Your implementing colleagues assume things work. Your job is to assume they don'
 
 ## Review scope — named dimensions
 
-Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may specify a subset — if a scope is declared, run only those dimensions. Default is all nine.
+Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may specify a subset — if a scope is declared, run only those dimensions. Default is all ten.
 
 | Tag | What it covers |
 |---|---|
@@ -34,7 +34,7 @@ Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may spe
 | `[TEST]` | Regression test validity (fails before fix?), error path coverage, mocks hiding failures |
 | `[COMPLETENESS]` | All requirements met, api-contracts.md / nfr-log.md updated, changelog updated, related files touched |
 | `[PERFORMANCE]` | Obvious bottlenecks, unbounded loops, N+1 queries, memory growth, missing pagination; NFR-P* thresholds from `nfr-log.md` |
-| `[DESIGN]` | Simplest correct solution, duplicate logic, unnecessary abstractions, ADR needed |
+| `[DESIGN]` | Simplest correct solution, over-engineering, duplicate logic, unnecessary abstractions/dependencies, ADR needed |
 | `[DEPENDENCY]` | New dependency vetted (CVE, license, maintenance status), existing dep could do this |
 | `[ACCESSIBILITY]` | WCAG 2.2 AA: keyboard, contrast, labels, ARIA correctness, focus management on changed UI |
 | `[OPERABILITY]` | Logs/metrics/traces, health checks, runbooks, deploy rollback — can operators run and debug this? |
@@ -80,9 +80,12 @@ Each finding is tagged with its dimension (e.g. `[SECURITY]`). Playbooks may spe
 
 ### `[DESIGN]`
 - Is this the simplest correct solution?
+- **Over-engineering:** could a native/platform feature, stdlib, or one-liner replace a custom component, wrapper, or new dependency? (e.g. `<input type="date">` instead of a date-picker lib)
+- **Over-engineering:** premature abstraction/generalisation for a single caller (YAGNI)? Flag a **delete-list** of removable lines/abstractions.
 - Is there duplicate logic that should be extracted?
 - Does this introduce a new dependency when an existing one would work?
 - Does this decision need an ADR? (Hard to reverse, architectural impact)
+- Simplicity never overrides the safety floor — do not propose removing validation, security, or accessibility.
 
 ### `[DEPENDENCY]`
 - Was any new package added? If so: CVE-clean? License compatible? Actively maintained?
