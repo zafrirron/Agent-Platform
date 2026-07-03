@@ -37,7 +37,12 @@ Read the user goal, pick **one** skill or playbook, execute it fully. Do not ble
 | Claim done without proof / `/verify` | `verification-before-completion` |
 | Feature / bug / refactor (repo playbook) | matching playbook in `.agent/playbooks/` |
 
+## Active packs (stack/domain overlays)
+
+Read `.agent/platform.json` → `active_packs`. If non-empty, after loading a skill/expert for a stack/domain-specific task, also read the matching overlay/reference under `.agent/packs/<id>/` (see each pack's `routing.md`). Example: a React re-render question with `stack-react` active → also read `packs/stack-react/references/react-pitfalls.md`. Skip silently when `active_packs` is empty.
+
 ## Verification
 
 - [ ] Exactly one workflow loaded
 - [ ] User told which skill/playbook is active
+- [ ] Active-pack overlays applied when relevant (or skipped — none active)

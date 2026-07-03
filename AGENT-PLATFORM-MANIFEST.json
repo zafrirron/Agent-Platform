@@ -44,6 +44,11 @@
     { "id": "ux-research", "description": "User research / usability / journey mapping (optional domain skill, cherry-pick)" },
     { "id": "caveman", "description": "Token compression mode" }
   ],
+  "packs_catalog": [
+    { "id": "stack-react", "kind": "stack", "display_name": "React", "description": "React idioms, hook/render pitfalls, perf traps", "detect": { "files": ["package.json"], "deps": ["react", "react-dom"], "globs": ["**/*.tsx", "**/*.jsx"] } },
+    { "id": "stack-django", "kind": "stack", "display_name": "Django", "description": "Django ORM/N+1, migrations, settings/security pitfalls", "detect": { "files": ["manage.py"], "deps": ["django", "Django"], "globs": ["**/settings.py"] } },
+    { "id": "domain-fintech", "kind": "domain", "display_name": "Fintech / Payments", "description": "Double-entry ledger, PCI, idempotent money ops + reference architecture", "detect": { "deps": ["stripe", "plaid", "braintree", "adyen"], "keywords": ["payment", "ledger", "PCI", "banking"] } }
+  ],
   "files": [
     {
       "path": ".agent/.shared-hub",
@@ -1158,6 +1163,22 @@
       "template": "global/.agents/rules/agent-platform-global.md",
       "kind": "template",
       "scope": "global"
-    }
+    },
+    { "path": ".agent/packs/README.md", "template": ".agent/packs/README.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-react/pack.json", "template": ".agent/packs/stack-react/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/stack-react/frontend-agent.overlay.md", "template": ".agent/packs/stack-react/frontend-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-react/references/react-pitfalls.md", "template": ".agent/packs/stack-react/references/react-pitfalls.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-react/routing.md", "template": ".agent/packs/stack-react/routing.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-django/pack.json", "template": ".agent/packs/stack-django/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/stack-django/backend-agent.overlay.md", "template": ".agent/packs/stack-django/backend-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-django/data-agent.overlay.md", "template": ".agent/packs/stack-django/data-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-django/references/django-pitfalls.md", "template": ".agent/packs/stack-django/references/django-pitfalls.md", "kind": "pack" },
+    { "path": ".agent/packs/stack-django/routing.md", "template": ".agent/packs/stack-django/routing.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-fintech/pack.json", "template": ".agent/packs/domain-fintech/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/domain-fintech/backend-agent.overlay.md", "template": ".agent/packs/domain-fintech/backend-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-fintech/security-agent.overlay.md", "template": ".agent/packs/domain-fintech/security-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-fintech/references/reference-architecture.md", "template": ".agent/packs/domain-fintech/references/reference-architecture.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-fintech/references/fintech-compliance.md", "template": ".agent/packs/domain-fintech/references/fintech-compliance.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-fintech/routing.md", "template": ".agent/packs/domain-fintech/routing.md", "kind": "pack" }
   ]
 }

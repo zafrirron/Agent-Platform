@@ -18,6 +18,31 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Technology-stack & domain Packs layer (Phase 1)
+
+**Source:** Platform architecture enhancement (maintainer-directed). Design: `MAINTAINER/adr/ADR-001-stack-domain-packs.md`; roadmap backlog entry.
+
+**Gap observed:** the platform is (verified) stack/domain agnostic — it could not give React/Django/HIPAA/PCI-specific help, and loading all stacks/domains into every repo would bloat unused content. No sanctioned path existed to *grow* stack/domain-specific brains without polluting the universal core.
+
+**Files changed:**
+- New: `.agent/packs/README.md` (spec) + packs `stack-react`, `stack-django`, `domain-fintech` (pack.json + overlays + references + routing).
+- Installer: `profile-filter.mjs` (pack gating, `pack:` add tokens, `isPackPath`/`packIdOf`), `apply.js` (`--list=packs`, `active_packs`, `detectPacks` detect-and-suggest).
+- Manifest: `packs_catalog` + `kind:"pack"` file entries.
+- Wiring: `AGENTS.md` (Step 3b overlay load + reference-architecture row), `AGENTS-lite.md`, `session-start-shared.md`, `using-platform` skill.
+- Docs: `docs/DISTRIBUTION.md`, README, QUICK-REF (+lite), PLATFORM-HELP; presentation decks.
+- Tests: 15 new (`apply-integration.test.mjs`) — not-installed-by-default, catalog registration, activation, `--list=packs`, `reference_sources`, detect-and-suggest proposal (no auto-install); E2E **Phase 1p** added to `E2E-TEST-PLAN.md`.
+
+**Capability added:**
+- Opt-in `stack`/`domain` packs as **overlays** (never modify core); composable; no combo packs.
+- Detect-and-suggest activation; `active_packs` in `platform.json`; zero cost when none active.
+- Domain packs carry `reference_sources` (real source-app repos, license-aware) + `reference-architecture.md`; user reference-architecture query path.
+
+**Validated:** Done — `npm test` green (235 tests; incl. 15 new pack tests).
+
+**Follow-ups (later phases):** more packs; maintainer `pack=<id>` scope on Modes 2/4 + "add pack" authoring command; PSG pack lane; per-pack `last_verified` refresh cadence.
+
+---
+
 ### [Unreleased] — 2026-07-03 — Mode 4 R031/R032 adopted (DietrichGebert/ponytail)
 
 **Source:** Mode 4 targeted scan on `DietrichGebert/ponytail` (2026-07-03, ~72k★), report R031–R035. Adopted the principle (minimal-code discipline), not the persona.

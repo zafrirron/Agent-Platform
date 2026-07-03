@@ -5,9 +5,10 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (220 tests, ~3s)
+npm test   ← runs all automated checks (235 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
                    v2.42 playbooks (20) + 11 lifecycle skills + optional ux-research skill + install profiles (lite/core/full),
+                   stack/domain packs (opt-in): not installed by profile, detect-and-suggest proposal (no auto-install), --add=pack activation, active_packs, --list=packs, reference_sources,
                    --mode=add cherry-pick + --mode=list catalog, profile-filter unit tests,
                    references + spec-outline + plan handoff,
                    lifecycle slash commands (/plan /build /test /code-simplify /webperf /context /verify),
@@ -24,6 +25,7 @@ npm test   ← runs all automated checks (220 tests, ~3s)
 |-------|------|-----------|
 | 1 | Install: files, platform.json fields, placeholders, gitignore, backup, two-section markers, v2.42 playbooks/context/routing/references/commands/skills/profiles | `apply-integration.test.mjs` |
 | 1 | Install: `--profile=lite`, `--mode=add`, `--mode=list` | `apply-integration.test.mjs` |
+| 1p | Packs: not installed by profile, catalog registration, `--add=pack` activation + `active_packs`, `--list=packs`, `reference_sources`, **detect-and-suggest proposal (no auto-install)** | `apply-integration.test.mjs` |
 | 1 | Profile filter rules (lite/core/full) | `profile-filter.test.mjs` |
 | 1 | Install: global stubs suggestion in stdout | `apply-integration.test.mjs` |
 | 8 | Upgrade: PROJECT section preserved, PLATFORM section updated | `apply-integration.test.mjs` |
@@ -43,6 +45,7 @@ npm test   ← runs all automated checks (220 tests, ~3s)
 | 2b | Full project audit — requires AI to run 11 phases (incl. governance/compliance) |
 | 2c | Slash commands — requires AI to honour full lifecycle `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` (Claude + optional Cursor) |
 | 1lite | Lite profile install — optional automated rehearsal with `--profile=lite --framework=cursor` |
+| 1p | Stack/domain packs — detector proposal is automated; **activation + live overlay/reference-architecture use requires an AI agent** |
 | 2d | Cursor Plan handoff — requires `/implement` or "implement the plan" after Plan approval |
 | 3 | Auto-routing — requires AI to route core + enterprise + v2.42 prompt types silently |
 | 4 | Security gate — requires AI to implement auth and trigger Step 5a |
@@ -208,6 +211,79 @@ grep "profile.*lite" <TEST_DIR_LITE>/AGENTS.md
 ```bash
 grep "Agent Platform Bootstrap" <TEST_DIR>/.gitignore
 # must show the START/END markers
+```
+
+---
+
+## Phase 1p — Technology-stack & domain packs (detect · propose · activate · overlay)
+
+Verifies the opt-in packs layer end-to-end: the installer **detects** the project stack/domain and **proposes** matching packs (never auto-installs), the user **activates** one, and a live agent **loads the overlay + reference architecture**.
+
+> The todo-app fixture is an Express REST API — a natural extension is "add payments", which makes the fintech domain pack relevant. This phase simulates that.
+
+### 1p.1 — List available packs (no install)
+```bash
+cd <TEST_DIR>
+npx github:zafrirron/Agent-Platform --mode=list --list=packs
+```
+- [ ] Output lists `pack:stack-react [stack]`, `pack:stack-django [stack]`, `pack:domain-fintech [domain]`
+- [ ] No `.agent/packs/` directory created by listing
+
+### 1p.2 — Detect-and-suggest (proposal on upgrade)
+Add a payments dependency to simulate a fintech feature, then re-run the installer:
+```bash
+# add "stripe" to dependencies (payments) — domain-fintech trigger
+npm pkg set dependencies.stripe="^14.0.0"    # or edit package.json by hand
+npx github:zafrirron/Agent-Platform --mode=upgrade
+```
+- [ ] Install summary shows a **`Suggested packs`** block
+- [ ] It proposes `• Fintech / Payments — npx ... --add=pack:domain-fintech`
+- [ ] The pack is **NOT** auto-installed: `.agent/packs/` still absent; `platform.json` → `active_packs` still `[]`
+
+> A React/Django project would similarly surface `stack-react` / `stack-django`. Detection reads `package.json`, `manage.py`, `requirements.txt`, etc.
+
+### 1p.3 — Activate a pack (opt-in)
+```bash
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
+```
+- [ ] `.agent/packs/domain-fintech/pack.json` exists
+- [ ] `.agent/packs/domain-fintech/references/reference-architecture.md` exists
+- [ ] `.agent/packs/README.md` shipped with the pack
+- [ ] `platform.json` → `active_packs` now contains `domain-fintech`
+- [ ] Other packs (e.g. `stack-django`) were **not** installed
+
+```bash
+node -e "const p=require('<TEST_DIR>/.agent/platform.json'); console.assert(p.active_packs.includes('domain-fintech'), 'active_packs missing'); console.log('active_packs:', p.active_packs)"
+```
+
+### 1p.4 — Live overlay load (requires AI agent)
+In Claude Code / Cursor (after session start, Phase 2), send:
+```
+Add a payment charge endpoint to the todo API.
+```
+- [ ] Agent routes to `backend-agent` **and** reads `.agent/packs/domain-fintech/backend-agent.overlay.md` (it should apply fintech hard rules: integer minor units, idempotency key, double-entry, no card data in logs)
+- [ ] Security-sensitive asks also pull `security-agent.overlay.md` (no PAN/CVV storage, webhook verification)
+
+### 1p.5 — Reference-architecture query (requires AI agent)
+Send:
+```
+Give me a reference architecture for a fintech payments app.
+```
+- [ ] Agent reads `.agent/packs/domain-fintech/references/reference-architecture.md`
+- [ ] Response presents the building blocks (double-entry ledger, idempotency, PSP abstraction, reconciliation)
+- [ ] Response **links back to the source repos** from `reference_sources` (apache/fineract, firefly-iii, ERPNext) with license awareness
+
+### 1p.6 — Zero-cost when inactive (control)
+```bash
+# in a project with no active packs, confirm no overlay behavior
+node -e "const p=require('<TEST_DIR_LITE>/.agent/platform.json'); console.assert((p.active_packs||[]).length===0)"
+```
+- [ ] With `active_packs` empty, routing behaves exactly as core (no overlay reads)
+
+### Cleanup (optional)
+```bash
+# remove the simulated dependency if you want to restore the fixture
+npm pkg delete dependencies.stripe
 ```
 
 ---

@@ -7,6 +7,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+### Added
+- **Technology-stack & domain Packs layer (Phase 1)** — opt-in overlays that add curated stack/domain knowledge on top of the agnostic core, without modifying it. Design: `MAINTAINER/adr/ADR-001-stack-domain-packs.md`.
+  - **Two orthogonal kinds** — `stack:*` (React, Django) and `domain:*` (fintech); composable, no combo packs.
+  - **Overlay model** — packs refine generic experts via `<expert>.overlay.md` read only when the pack is active (`.agent/platform.json` → `active_packs`); core files untouched; zero cost when none active.
+  - **Opt-in install** — packs never install by profile; only via `--mode=add --add=pack:<id>`. New `--mode=list --list=packs`. **Detect-and-suggest** at install/upgrade (never auto-installs).
+  - **v1 packs** — `stack-react`, `stack-django`, `domain-fintech` (overlays + curated references + routing).
+  - **Domain reference architectures** — domain packs carry `reference_sources` (real source-app repos, license-aware) and a `reference-architecture.md`; user can ask *"reference architecture for a fintech app"* → agent surfaces the distilled architecture + linked repos.
+  - Wired into `AGENTS.md` (routing Step 3b + reference-architecture row), `AGENTS-lite.md`, `session-start-shared.md`, and `using-platform` skill.
+  - Docs: `docs/DISTRIBUTION.md`, README, QUICK-REF (+lite), PLATFORM-HELP, presentation decks. Manifest `packs_catalog` + `kind:"pack"` files. 15 new tests incl. detect-and-suggest proposal (235 total); E2E Phase 1p added.
+
 ---
 
 ## [2.43.0] — 2026-07-03

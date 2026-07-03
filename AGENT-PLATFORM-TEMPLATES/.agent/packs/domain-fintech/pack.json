@@ -1,0 +1,31 @@
+{
+  "id": "domain-fintech",
+  "kind": "domain",
+  "display_name": "Fintech / Payments",
+  "version": "1.0.0",
+  "requires_core": ">=2.44.0",
+  "confidence": "curated",
+  "last_verified": "2026-07-03",
+  "detect": {
+    "files": [],
+    "deps": ["stripe", "plaid", "braintree", "adyen"],
+    "keywords": ["payment", "ledger", "transaction", "PCI", "banking", "wallet"]
+  },
+  "provides": {
+    "agent_overlays": {
+      "backend-agent": "backend-agent.overlay.md",
+      "security-agent": "security-agent.overlay.md"
+    },
+    "references": [
+      "references/reference-architecture.md",
+      "references/fintech-compliance.md"
+    ],
+    "routing_rows": "routing.md"
+  },
+  "reference_sources": [
+    { "repo": "apache/fineract", "url": "https://github.com/apache/fineract", "kind": "app", "license": "Apache-2.0", "note": "Core banking / loan management; study double-entry accounting, chart-of-accounts, and multi-tenancy patterns (code reusable under Apache-2.0)." },
+    { "repo": "firefly-iii/firefly-iii", "url": "https://github.com/firefly-iii/firefly-iii", "kind": "app", "license": "AGPL-3.0", "note": "Personal finance manager; study transaction/account modelling and double-entry integrity. Copyleft — study patterns, do not copy code." },
+    { "repo": "frappe/erpnext", "url": "https://github.com/frappe/erpnext", "kind": "app", "license": "GPL-3.0", "note": "ERP with full accounting module; study ledger posting, reconciliation, tax handling. Copyleft — study patterns, do not copy code." }
+  ],
+  "attribution": "Distilled from the linked reference_sources + PCI-DSS / payment best practices (Mode 4 pack-scoped, iterative)."
+}

@@ -131,6 +131,24 @@ Read .agent/session-start.md and execute it.
 
 ---
 
+## Technology-stack & domain packs (opt-in)
+
+The core platform is deliberately **stack- and domain-agnostic** — general software-engineering discipline for any project. **Packs** layer curated, opinionated knowledge for a specific **technology stack** (React, Django) or **business domain** (fintech) on top of the core, **without changing it**.
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=list --list=packs
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
+```
+
+- **Opt-in, no bloat** — packs never install by profile; only via `--mode=add --add=pack:<id>`, recorded in `active_packs`. Zero cost when none active.
+- **Detect-and-suggest** — the installer detects your stack and *suggests* matching packs; it never auto-installs.
+- **Overlays, not new experts** — a pack refines a generic expert only while active; core files are untouched. Packs compose.
+- **Domain reference architectures** — domain packs link back to real open-source apps. Ask *"reference architecture for a fintech app"* and the agent surfaces the distilled architecture + the linked source repos (license-aware).
+
+Available (v1): `stack-react`, `stack-django`, `domain-fintech`. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#technology-stack--domain-packs-opt-in-overlays) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+
+---
+
 ## Quick reference — commands, experts, and playbooks
 
 Install creates `.agent/QUICK-REF.md` — the full capability guide for your project.

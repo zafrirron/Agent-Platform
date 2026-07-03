@@ -161,6 +161,40 @@ function detectCoverageCmd(runner) {
   return '<fill-in coverage command>';
 }
 
+/* ── Pack detection (suggest only — never auto-install) ───────────────────── */
+function detectPacks(root) {
+  const catalog = manifest.packs_catalog || [];
+  if (catalog.length === 0) return [];
+  // Gather dependency names from common manifests
+  const deps = new Set();
+  const readJson = (f) => { try { return JSON.parse(fs.readFileSync(path.join(root, f), 'utf8')); } catch { return null; } };
+  const pkg = readJson('package.json');
+  if (pkg) {
+    for (const k of Object.keys(pkg.dependencies || {})) deps.add(k.toLowerCase());
+    for (const k of Object.keys(pkg.devDependencies || {})) deps.add(k.toLowerCase());
+  }
+  for (const f of ['requirements.txt', 'pyproject.toml']) {
+    try {
+      const txt = fs.readFileSync(path.join(root, f), 'utf8').toLowerCase();
+      for (const name of ['django', 'flask', 'fastapi', 'stripe', 'plaid', 'braintree', 'adyen']) {
+        if (txt.includes(name)) deps.add(name);
+      }
+    } catch { /* ignore */ }
+  }
+  let rootFiles = [];
+  try { rootFiles = fs.readdirSync(root); } catch { /* ignore */ }
+
+  const suggested = [];
+  for (const p of catalog) {
+    const d = p.detect || {};
+    let hit = false;
+    for (const dep of (d.deps || [])) if (deps.has(dep.toLowerCase())) hit = true;
+    for (const f of (d.files || [])) if (rootFiles.includes(f) || fs.existsSync(path.join(root, f))) hit = true;
+    if (hit) suggested.push(p);
+  }
+  return suggested;
+}
+
 /* ── Discover ─────────────────────────────────────────────────────────────── */
 function discover() {
   const name   = path.basename(INSTALL_ROOT);
@@ -494,6 +528,13 @@ if (MODE === 'list') {
     console.log('  full   — complete platform (default)');
     console.log('  core   — full minus enterprise playbooks');
     console.log('  lite   — skills pack + core playbooks, no handoff layer');
+  } else if (kind === 'packs') {
+    for (const p of (manifest.packs_catalog || [])) {
+      console.log(`  pack:${p.id}  [${p.kind}]  — ${p.description || p.display_name || p.id}`);
+    }
+    console.log('');
+    console.log('  Add one: npx ' + (manifest.platform_npx || 'github:zafrirron/Agent-Platform') +
+      ' --mode=add --add=pack:stack-react');
   }
   console.log('');
   process.exit(0);
@@ -766,6 +807,16 @@ if (fs.existsSync(platformPath)) {
     pj.test_runner        = vars.TEST_RUNNER;
     pj.coverage_cmd       = vars.COVERAGE_CMD;
     pj.coverage_threshold = vars.COVERAGE_THRESHOLD;
+    // Packs (technology-stack / domain overlays) — additive, opt-in
+    if (!Array.isArray(pj.active_packs)) pj.active_packs = [];
+    if (MODE === 'add' && ADD_TOKENS) {
+      for (const token of ADD_TOKENS) {
+        if (token.startsWith('pack:')) {
+          const id = token.slice('pack:'.length);
+          if (!pj.active_packs.includes(id)) pj.active_packs.push(id);
+        }
+      }
+    }
     // preserve last_update_check if already set
     if (!pj.last_update_check) pj.last_update_check = null;
     if (!pj.last_update_status) pj.last_update_status = null;
@@ -1253,6 +1304,20 @@ console.log('');
 console.log('  Works in: Claude Code · Cursor · Antigravity · Codex');
 console.log('  ⚠  This is an agent chat message — do not run it in the terminal.');
 console.log('');
+if (['install', 'upgrade'].includes(MODE)) {
+  try {
+    const suggestedPacks = detectPacks(INSTALL_ROOT);
+    if (suggestedPacks.length > 0) {
+      console.log('  Suggested packs (detected in your project — opt-in, not installed)');
+      console.log(SEP);
+      for (const p of suggestedPacks) {
+        console.log(`  • ${p.display_name} — npx ${vars.PLATFORM_NPX} --mode=add --add=pack:${p.id}`);
+      }
+      console.log('     Packs add curated stack/domain knowledge. List all: --mode=list --list=packs');
+      console.log('');
+    }
+  } catch { /* detection is best-effort */ }
+}
 console.log('  Notes');
 console.log(SEP);
 console.log('  ℹ  Rules are guidance — not deterministic enforcement.');

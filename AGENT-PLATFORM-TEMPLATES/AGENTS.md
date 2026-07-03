@@ -25,6 +25,7 @@ You are the active router. When the user describes a task:
 1. Identify the matching row in the table below
 2. **READ the expert file** listed in the "Expert file" column
 3. **READ the playbook file** listed in the "Playbook file" column (if one is listed)
+3b. **Apply active packs (stack/domain overlays):** read `.agent/platform.json` → `active_packs`. For each active pack `<id>`: consult `.agent/packs/<id>/routing.md`, and if an overlay exists for the routed expert (`.agent/packs/<id>/<expert>.overlay.md`), **read it after the expert file** — overlays refine, never override, the generic expert. Skip silently if `active_packs` is empty or absent (zero cost when no pack is active).
 4. Start your first response with exactly one status line, then begin working immediately — no other meta-commentary:
    - Expert + playbook → `▶ Agent Platform · [Expert name] expert · [playbook name] playbook`
    - Expert only →       `▶ Agent Platform · [Expert name] expert`
@@ -71,6 +72,7 @@ You are the active router. When the user describes a task:
 | "update docs", "README", "changelog", "document", "JSDoc", "docstring", "swagger", "OpenAPI", "API docs" | `.agent/agents/docs-agent.md` | `.agent/playbooks/document-api.md` |
 | "schema", "migration", "database", "data pipeline", "ORM", "table", "column", "seed", "ETL", "aggregate", "N+1" | `.agent/agents/data-agent.md` | *(none)* |
 | "system design", "architecture", "should we use X or Y", "ADR", "technical spec", "evaluate options", "what's the best approach" | `.agent/agents/architect-agent.md` | *(none)* |
+| "reference architecture", "reference architecture for a [domain] app", "how should I structure a [domain] system" | `.agent/agents/architect-agent.md` (or domain expert) — **if a matching domain pack is in `active_packs`, read `.agent/packs/<id>/references/reference-architecture.md` and present it with its linked source repos** | *(none)* |
 | "interview me", "grill me", "clarify requirements", "help me think through", "I'm not sure what I want", "underspecified", "vague idea", "refine the idea", "explore options" | `.agent/agents/architect-agent.md` | `.agent/playbooks/requirements-clarification.md` |
 | "define NFRs", "non-functional requirements", "quality requirements", "SLO", "SLA", "performance target", "availability target", "NFR" | `.agent/agents/architect-agent.md` | `.agent/playbooks/nfr-definition.md` |
 | "compliance review", "SOC 2", "ISO 27001", "GDPR review", "compliance audit", "compliance check", "audit readiness", "control mapping" | `.agent/agents/security-agent.md` | `.agent/playbooks/compliance-review.md` |

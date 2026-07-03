@@ -40,6 +40,8 @@
 
 Start every session: `Read .agent/session-start.md and execute it.`
 
+**Active packs (stack/domain overlays):** if `.agent/platform.json` → `active_packs` is non-empty, also read the matching overlay/reference under `.agent/packs/<id>/` (see each pack's `routing.md`) for stack/domain-specific tasks. Add packs with `npx {{PLATFORM_NPX}} --mode=add --add=pack:<id>`.
+
 **Upgrade to full platform** (multi-IDE handoff, enterprise gates, Critic):  
 `npx {{PLATFORM_NPX}} --profile=full`
 <!-- PLATFORM:END -->

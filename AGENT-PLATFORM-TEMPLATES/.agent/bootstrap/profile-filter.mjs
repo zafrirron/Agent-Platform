@@ -89,6 +89,16 @@ export function isCommandPath(entry) {
     || ((entry.path || '').includes('/commands/') && (entry.path || '').endsWith('.md'));
 }
 
+export function isPackPath(entry) {
+  return entry.kind === 'pack' || (entry.path || '').startsWith('.agent/packs/');
+}
+
+/** Extract pack id from a `.agent/packs/<id>/...` path (null for the shared README). */
+export function packIdOf(entry) {
+  const m = (entry.path || '').match(/^\.agent\/packs\/([^/]+)\//);
+  return m ? m[1] : null;
+}
+
 const SKILL_ALIASES = {
   tdd: 'test-driven-development',
   interview: 'interview-me',
@@ -131,6 +141,10 @@ export function shouldInstallEntry(entry, opts = {}) {
   if (addOnly && addOnly.size > 0) {
     return matchesAddSelection(entry, addOnly);
   }
+
+  // Packs (technology-stack / domain overlays) never install by profile —
+  // opt-in only via `--mode=add --add=pack:<id>`. Keeps core zero-cost.
+  if (isPackPath(entry)) return false;
 
   if (profile === 'full') return true;
 
@@ -183,7 +197,7 @@ export function parseAddTokens(tokens) {
     if (!t) continue;
     const [type, rawName] = t.includes(':') ? t.split(':') : ['skill', t];
     const name = (type === 'skill' && SKILL_ALIASES[rawName]) ? SKILL_ALIASES[rawName] : rawName;
-    if (type === 'skill' || type === 'playbook' || type === 'command') {
+    if (type === 'skill' || type === 'playbook' || type === 'command' || type === 'pack') {
       set.add(`${type}:${name}`);
     }
   }
@@ -193,6 +207,7 @@ export function parseAddTokens(tokens) {
 function matchesAddSelection(entry, addOnly) {
   const path = entry.path || '';
   const pb = playbookBasename(entry);
+  const hasPackToken = [...addOnly].some((t) => t.startsWith('pack:'));
 
   for (const token of addOnly) {
     const [type, name] = token.split(':');
@@ -201,7 +216,11 @@ function matchesAddSelection(entry, addOnly) {
     }
     if (type === 'skill' && path.includes(`.agent/skills/${name}/`)) return true;
     if (type === 'command' && isCommandPath(entry) && path.endsWith(`/commands/${name}.md`)) return true;
+    if (type === 'pack' && path.startsWith(`.agent/packs/${name}/`)) return true;
   }
+
+  // Shared pack README ships whenever any pack is selected.
+  if (hasPackToken && path === '.agent/packs/README.md') return true;
 
   // Minimal router + shared deps for à la carte install
   if (path === 'AGENTS.md' || path === '.agent/platform.json') return true;

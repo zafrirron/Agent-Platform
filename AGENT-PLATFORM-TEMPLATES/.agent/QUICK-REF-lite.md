@@ -67,6 +67,17 @@ npx {{PLATFORM_NPX}} --mode=list --list=skills
 
 ---
 
+## Packs — stack & domain overlays (opt-in)
+
+```bash
+npx {{PLATFORM_NPX}} --mode=list --list=packs
+npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react
+```
+
+Curated stack/domain knowledge on top of the agnostic core. Active packs live in `.agent/platform.json` → `active_packs`; the agent reads matching overlays under `.agent/packs/<id>/` for stack/domain tasks. v1: `stack-react`, `stack-django`, `domain-fintech`.
+
+---
+
 ## Session & help
 
 | Action | Say or type |

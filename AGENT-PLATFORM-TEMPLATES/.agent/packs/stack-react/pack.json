@@ -1,0 +1,20 @@
+{
+  "id": "stack-react",
+  "kind": "stack",
+  "display_name": "React",
+  "version": "1.0.0",
+  "requires_core": ">=2.44.0",
+  "confidence": "curated",
+  "last_verified": "2026-07-03",
+  "detect": {
+    "files": ["package.json"],
+    "deps": ["react", "react-dom"],
+    "globs": ["**/*.tsx", "**/*.jsx"]
+  },
+  "provides": {
+    "agent_overlays": { "frontend-agent": "frontend-agent.overlay.md" },
+    "references": ["references/react-pitfalls.md"],
+    "routing_rows": "routing.md"
+  },
+  "attribution": "Curated from React official docs + failure-derived platform pitfalls (Mode 2/4 pack-scoped)."
+}

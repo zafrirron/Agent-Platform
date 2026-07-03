@@ -1,0 +1,23 @@
+{
+  "id": "stack-django",
+  "kind": "stack",
+  "display_name": "Django",
+  "version": "1.0.0",
+  "requires_core": ">=2.44.0",
+  "confidence": "curated",
+  "last_verified": "2026-07-03",
+  "detect": {
+    "files": ["manage.py", "pyproject.toml", "requirements.txt"],
+    "deps": ["django", "Django"],
+    "globs": ["**/settings.py", "**/wsgi.py", "**/asgi.py"]
+  },
+  "provides": {
+    "agent_overlays": {
+      "backend-agent": "backend-agent.overlay.md",
+      "data-agent": "data-agent.overlay.md"
+    },
+    "references": ["references/django-pitfalls.md"],
+    "routing_rows": "routing.md"
+  },
+  "attribution": "Curated from Django official docs + failure-derived platform pitfalls (Mode 2/4 pack-scoped)."
+}

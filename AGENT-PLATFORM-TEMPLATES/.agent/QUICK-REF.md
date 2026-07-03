@@ -100,6 +100,23 @@ Cherry-pick: `npx {{PLATFORM_NPX}} --mode=add --add=skill:<id>` · Unsure? Load 
 
 ---
 
+## Packs — stack & domain overlays (opt-in)
+
+Curated stack/domain knowledge layered on the agnostic core. Not installed by default; only via `--mode=add`.
+
+| Action | Command |
+|--------|---------|
+| List available packs | `npx {{PLATFORM_NPX}} --mode=list --list=packs` |
+| Add a pack | `npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react` |
+| See what's active | Read `.agent/platform.json` → `active_packs` |
+
+- **Kinds:** `stack:*` (React, Django — idioms/pitfalls) · `domain:*` (fintech — compliance + reference architectures). They compose.
+- **How it loads:** when a pack is active, the routed expert also reads `.agent/packs/<id>/<expert>.overlay.md`. Zero cost when none active.
+- **Reference architecture:** with a domain pack active, ask *"reference architecture for a [domain] app"* → agent reads the pack's `reference-architecture.md` + linked source repos.
+- Full spec: `.agent/packs/README.md`.
+
+---
+
 ## Help & discovery
 
 | You say | You get |

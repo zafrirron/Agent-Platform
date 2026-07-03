@@ -771,6 +771,114 @@ describe('install — mode=list skills', () => {
   });
 });
 
+// ── Packs: technology-stack / domain overlays (opt-in) ─────────────────────
+
+describe('packs — not installed by default (full profile)', () => {
+  const dir = tmpDir();
+  runApply(dir);
+
+  test('no .agent/packs directory after full install', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/packs')), 'packs must not install by profile');
+  });
+
+  test('platform.json has empty active_packs', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.deepEqual(pj.active_packs, [], 'active_packs should be [] on a clean install');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('packs — registered in manifest catalog', () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-MANIFEST.json'), 'utf8'));
+
+  test('packs_catalog lists the v1 packs', () => {
+    const ids = (manifest.packs_catalog || []).map((p) => p.id);
+    for (const id of ['stack-react', 'stack-django', 'domain-fintech']) {
+      assert.ok(ids.includes(id), `packs_catalog missing ${id}`);
+    }
+  });
+
+  test('every catalog pack has a pack.json registered in files[]', () => {
+    for (const p of manifest.packs_catalog || []) {
+      const has = manifest.files.some((f) => f.kind === 'pack' && f.path === `.agent/packs/${p.id}/pack.json`);
+      assert.ok(has, `pack.json not registered for ${p.id}`);
+    }
+  });
+
+  test('domain-fintech pack.json declares reference_sources', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-TEMPLATES/.agent/packs/domain-fintech/pack.json'), 'utf8'));
+    assert.ok(Array.isArray(pj.reference_sources) && pj.reference_sources.length > 0, 'reference_sources missing');
+    assert.ok(pj.reference_sources.every((s) => s.repo && s.url && s.license), 'reference_sources entries incomplete');
+  });
+});
+
+describe('packs — mode=add activates a pack', () => {
+  const dir = tmpDir();
+  runApply(dir); // full install first
+  const result = runApply(dir, ['--mode=add', '--add=pack:stack-react', '--framework=cursor']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, result.stderr);
+  });
+
+  test('installs the pack files (overlay + reference + pack.json)', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/stack-react/pack.json')));
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/stack-react/frontend-agent.overlay.md')));
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/stack-react/references/react-pitfalls.md')));
+    assert.ok(fs.existsSync(path.join(dir, '.agent/packs/README.md')), 'shared packs README should ship with a pack');
+  });
+
+  test('does NOT install other packs', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/packs/stack-django')), 'unselected pack leaked');
+  });
+
+  test('records the pack in active_packs', () => {
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.ok(pj.active_packs.includes('stack-react'), 'active_packs missing stack-react');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('packs — mode=list packs', () => {
+  const result = spawnSync(
+    process.execPath,
+    [APPLY, `--pack=${PACK_ROOT}`, `--target=${tmpDir()}`, '--mode=list', '--list=packs'],
+    { encoding: 'utf8', timeout: 10_000 }
+  );
+
+  test('exits 0 and lists pack ids with kind', () => {
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('pack:stack-react'), result.stdout);
+    assert.ok(result.stdout.includes('domain-fintech'), result.stdout);
+  });
+});
+
+describe('packs — detect-and-suggest at install (proposal, not auto-install)', () => {
+  const dir = tmpDir();
+  // Simulate a React project so the detector fires
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({
+    name: 'sample', version: '1.0.0',
+    dependencies: { react: '^18.0.0', 'react-dom': '^18.0.0' },
+  }, null, 2));
+  const result = runApply(dir);
+
+  test('stdout proposes the detected pack', () => {
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.includes('Suggested packs'), `no suggestion block:\n${result.stdout}`);
+    assert.ok(result.stdout.includes('--add=pack:stack-react'), 'stack-react not suggested');
+  });
+
+  test('detection does NOT auto-install the pack', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.agent/packs/stack-react')), 'pack must not auto-install');
+    const pj = JSON.parse(fs.readFileSync(path.join(dir, '.agent/platform.json'), 'utf8'));
+    assert.deepEqual(pj.active_packs, [], 'active_packs must stay empty until user opts in');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
 // ── Phase 1B: Reputation vectors ───────────────────────────────────────────
 
 describe('Phase 1B — reputation.json deployed after install', () => {

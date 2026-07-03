@@ -92,6 +92,28 @@ Aliases: `skill:tdd` → `test-driven-development`, `skill:interview` → `inter
 
 ---
 
+## Technology-stack & domain packs (opt-in overlays)
+
+The core platform is **stack- and domain-agnostic** — it applies general software-engineering discipline to any project. **Packs** add curated, opinionated, failure-derived knowledge for a specific technology stack (React, Django…) or business domain (fintech…) **on top of** the agnostic core, without changing it.
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=list --list=packs
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
+npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
+```
+
+- **Two kinds:** `stack:*` (framework idioms/pitfalls) and `domain:*` (compliance, invariants, **reference architectures**). They compose — activate several at once.
+- **Opt-in, never bloat:** packs are **not** installed by any profile. They only install via `--mode=add --add=pack:<id>` and are recorded in `.agent/platform.json` → `active_packs`. Zero cost when none are active.
+- **Detect-and-suggest:** on install/upgrade, the installer detects your stack (from `package.json`, `manage.py`, etc.) and *suggests* matching packs — it never auto-installs them.
+- **Overlays, not new experts:** a pack refines a generic expert via `<expert>.overlay.md`, read only when the pack is active. Core files are never modified.
+- **Domain reference architectures:** domain packs link back to real source apps (`reference_sources` in `pack.json`). Ask your agent *"give me a reference architecture for a fintech app"* and it reads the pack's `reference-architecture.md` and points you at the linked implementations (license-aware).
+
+Full spec: `.agent/packs/README.md` (installed with any pack) · design: [`MAINTAINER/adr/ADR-001-stack-domain-packs.md`](../MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+
+Available packs (v1): `stack-react`, `stack-django`, `domain-fintech`. More via community contribution and maintainer pack-scoped scans.
+
+---
+
 ## Primary install (full — recommended for teams)
 
 ```bash

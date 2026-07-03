@@ -37,6 +37,10 @@ The maintainer runs four discovery "modes" (see [`MAINTAINER/GUIDE.md`](../MAINT
 | OWASP LLM top-10 | LLM-input screening | F004 |
 | Web performance (Core Web Vitals) | `web-performance-audit` skill (`/webperf`) | F013 |
 
+## Domain packs — reference-architecture provenance
+
+Domain **packs** (opt-in overlays, e.g. `domain-fintech`) are often distilled from **real open-source applications**, not just agent-brain repos. Each domain pack records its sources in `pack.json` → `reference_sources` (repo, URL, license, what we distilled), and its `reference-architecture.md` cites them so users can study the real implementations (license-aware). Example — `domain-fintech` distills from [apache/fineract](https://github.com/apache/fineract) (Apache-2.0), [firefly-iii](https://github.com/firefly-iii/firefly-iii) (AGPL-3.0), and [ERPNext](https://github.com/frappe/erpnext) (GPL-3.0). See [`.agent/packs/README.md`](../AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md) and [ADR-001](../MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+
 ## Where to dig deeper
 
 - **Full dispositions (what was implemented / deferred / skipped):** [`MAINTAINER/scan-results/registry.md`](../MAINTAINER/scan-results/registry.md)
