@@ -153,7 +153,7 @@ Your agent runs the install commands under the hood (e.g. `npx … --mode=add --
 - **Domain reference architectures** — domain packs link back to real open-source apps. Ask *"reference architecture for a fintech app"* and the agent surfaces the distilled architecture + the linked source repos (license-aware).
 - **Private & proprietary packs** — packs are where your **IP / secret sauce** belongs, never the public core. **Fork the platform to a private repo, build your packs there, and install from the fork**: your teams get the generic core *plus* your private packs, while you still merge upstream core updates conflict-free (your work lives in packs, not core). Per-project secrets stay in `user.overlay.md`. Maintainers stand up a whole project's pack set at once with **Mode 5 (Solution Blueprint)** — state a system goal, approve/reject candidate packs per axis, build. See [`.agent/packs/README.md`](AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md) and [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md).
 
-Available: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+Available (shipped reference packs): languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`, `domain-c4i` (C2 / C4ISR command-and-control). Build your own for any language/stack/platform/domain — see the fork pattern below. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · spec: [`.agent/packs/README.md`](AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 
 ---
 
@@ -238,6 +238,7 @@ Repeat. The platform never stops improving.
 | **🔍 Full Project Audit** | 11-phase professional report on first session or on demand — architecture through governance/maturity. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
 | **20 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api · deprecation · requirements-clarification. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
 | **Reference checklists** | `.agent/references/` — testing, security, performance, accessibility, orchestration patterns (agent-skills–informed) |
+| **🧩 Language / stack / platform / domain Packs** | Opt-in overlays that layer curated, failure-derived expertise on the agnostic core — `language:*` (TS/Java/C++), `stack:*` (React/Django), `platform:*` (roadmap), `domain:*` (fintech, C2/C4ISR). Composable, detect-and-suggest, zero cost when none active. Your rules live in `user.overlay.md` (survives every update). **Company IP → build packs in a private fork** (see below). Just ask: *"scan my repo for packs"*. |
 | **Install profiles** | `lite` skills pack · `core` (no enterprise) · `full` team platform · `--mode=add` cherry-pick |
 | **11 lifecycle skills** | `SKILL.md` modules — interview-me, TDD, plan/build slices, code-simplify, web-performance-audit, context-engineering, verification-before-completion |
 | **Agent-skills ingest** | Rationalization gates · doubt review · source-driven dev · Beyoncé/DAMP · spec-outline template |
@@ -442,7 +443,7 @@ The platform actively studies the open-source agent ecosystem and adapts proven 
 
 **Full provenance ledger** — every adopted source, finding ID, and disposition: [`docs/INTELLIGENCE-SOURCES.md`](docs/INTELLIGENCE-SOURCES.md)
 
-> **Platform fork maintainers:** the full improvement pipeline (Mode 1–4 commands, ingest workflow, governance scan) is documented in [`MAINTAINER/GUIDE.md`](MAINTAINER/GUIDE.md).
+> **Platform fork maintainers:** the full improvement pipeline is documented in [`MAINTAINER/GUIDE.md`](MAINTAINER/GUIDE.md) — the five maintainer modes across two lanes (**core** vs **packs**): Mode 1 manual rules, Mode 2 web audit (incl. greenfield `build-pack=<id>` and `url=<site>` scans), Mode 3 user ingest, Mode 4 GitHub ecosystem scan, and **Mode 5 (Solution Blueprint)** — decompose a whole system goal into a 4-axis pack set with per-candidate approval gates.
 
 ---
 
@@ -466,16 +467,32 @@ npx github:zafrirron/Agent-Platform --mode=remove-guards  # remove if needed
 
 ---
 
-## Fork this platform — build your own
+## Fork this platform — your IP lives in packs, not core edits
 
-This repository is designed to be forked. Teams and enterprises can run their own private instance with custom expert rules, playbooks, and branding.
+This repository is designed to be forked. Teams and enterprises run their own **private** instance and build their proprietary knowledge as **packs** inside it.
+
+> **The pattern that matters:** the public **core stays generic** (universal software-engineering discipline). Your **company IP / secret sauce goes into packs** — a proprietary domain brain, an internal stack's conventions, a classified system's reference architecture — authored in your private fork and **never** pushed public. Because your work lives in packs (not core files), you keep pulling upstream core improvements **conflict-free**. Per-project secrets stay in each repo's `user.overlay.md`.
+
+```
+public Agent-Platform ──fork──▶ your-org/Agent-Platform (PRIVATE)
+   generic core  ──merge upstream──▶ (no conflicts — your work is in packs)
+                                      build packs here (Mode 5 blueprint / build-pack= / add pack)
+                                      teams install from the fork → generic core + your private packs
+```
+
+| Layer | Lives in | Shared with |
+|-------|----------|-------------|
+| Generic core | public platform / upstream of your fork | everyone |
+| **Company packs (IP)** | **your private fork** `.agent/packs/*` | your org |
+| Per-project rules | this repo's `user.overlay.md` | this project only |
 
 ### Why fork?
-- Add your company's internal coding standards as permanent expert rules
-- Add domain-specific expert agents (mobile, ML, compliance, etc.)
+- **Build proprietary packs** — a private domain/stack/platform/language brain your teams activate per project (the recommended home for all company-specific knowledge)
+- **Stand up a whole project's pack set at once** — a maintainer runs **Mode 5 (Solution Blueprint)**: state the system goal, approve/reject candidate packs per axis, and the platform builds them (see [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md))
+- Add your company's internal coding standards (universal ones as core PROJECT-section rules; specific ones as packs)
 - Run private security audits with your own OWASP extensions
 - Deploy to your team via your own GitHub org: `npx github:YOUR_ORG/your-platform`
-- Keep proprietary rules out of a public repo
+- Keep proprietary knowledge out of a public repo — entirely
 
 ### Fork setup — 4 fields to change
 
@@ -626,6 +643,10 @@ This platform is developed using itself. All maintenance is done by telling the 
 | **Ingest user agentic files (Mode 3)** | `Read MAINTAINER/platform-ingest.md and execute it.` |
 | Monthly security + best practice audit (Mode 2) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly full ecosystem scan | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
+| GitHub ecosystem scan (Mode 4) | `Read MAINTAINER/github-governance-scan.md and execute it.` (add `repo=owner/name` for targeted) |
+| **Build a NEW pack brain** (greenfield) | `Read MAINTAINER/web-audit.md and execute it. build-pack=<id>` (Mode 2 pack ecosystem build) |
+| Grow an EXISTING pack brain | `… github-governance-scan.md … repo=owner/name pack=<id>` · `… web-audit.md … pack=<id>` / `url=<site> pack=<id>` · `… platform-ingest.md … pack=<id>` · or `"add rule to pack <id>: …"` |
+| **Plan a whole system's pack set (Mode 5)** | `Read MAINTAINER/solution-blueprint.md and execute it. blueprint="<system goal>"` — 4-axis plan, approve/reject per axis, then build (add `build=no` to dry-run) |
 | Internal consistency audit | `Read MAINTAINER/platform-audit.md and execute it.` |
 | Release the next version | `"Release"` — agent reads CHANGELOG, calculates version bump, confirms with you, runs the release script |
 | Sync user-facing docs after a release | `"Sync user-facing docs for vX.Y.Z"` — updates README, FRAMEWORK-README, QUICK-REF, PLATFORM-HELP, presentation deck |

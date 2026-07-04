@@ -637,7 +637,7 @@ The platform is deliberately **language-, stack- and domain-agnostic** — it ap
 - **Overlays, not new experts** — when a pack is active, the routed expert also reads the overlay the pack maps in `pack.json` → `provides.agent_overlays`. A stack/domain pack overlays one expert; a **language pack overlays every code-writing expert** (one shared overlay), so its rules apply to all code. Core files are never modified.
 - **Domain reference architectures** — with a domain pack active, ask *"give me a reference architecture for a fintech app"* → the agent reads the pack's `reference-architecture.md` and points you at the linked real-world source repos (license-aware).
 
-Available: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. Full spec: `.agent/packs/README.md`.
+Available: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`, `domain-c4i` (C2 / C4ISR). Build your own in a private fork (company IP → packs). Full spec: `.agent/packs/README.md`.
 
 ---
 

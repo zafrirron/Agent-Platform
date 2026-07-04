@@ -7,6 +7,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+### Changed
+- **README + user-facing docs synced to the packs pattern** (post-2.45.0 catch-up) — the pack capabilities shipped in 2.45.0 were under-represented in the top-level README and other consumer docs. Added a **🧩 Packs** row to the README "What you get" table; refreshed every **available-packs** list to include `domain-c4i` (README, `AGENT-PLATFORM-FRAMEWORK-README.md`, `docs/DISTRIBUTION.md`, `.agent/QUICK-REF.md`, `.agent/QUICK-REF-lite.md`, `.agent/PLATFORM-HELP.md`); reframed the README **"Fork this platform"** section around the **packs-first private-IP pattern** (core stays generic, company IP → packs in a private fork, upstream merges stay conflict-free) with a layering table + diagram; and surfaced the **five maintainer modes** (incl. Mode 4 GitHub scan, Mode 5 Solution Blueprint, `build-pack=`, pack-scoped growth) in the README intelligence note and maintainer-commands table. Docs-only.
+
 ---
 
 ## [2.45.0] — 2026-07-04

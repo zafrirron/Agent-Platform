@@ -100,9 +100,9 @@ Add a skill: just say *"add the `<id>` skill"* (the agent runs it) · Unsure? sa
 
 ---
 
-## Packs — language, stack & domain overlays (opt-in)
+## Packs — language, stack, platform & domain overlays (opt-in)
 
-Curated language/stack/domain knowledge layered on the agnostic core. Opt-in; never auto-installed. **Just prompt your agent — it runs everything:**
+Curated language/stack/platform/domain knowledge layered on the agnostic core. Opt-in; never auto-installed. **Just prompt your agent — it runs everything:**
 
 | Just say… | The agent does |
 |-----------|----------------|
@@ -116,7 +116,8 @@ Curated language/stack/domain knowledge layered on the agnostic core. Opt-in; ne
 - **Language vs stack:** a language pack = the language itself (reusable across every framework in it); a stack pack = a framework/library built in a language.
 - **How it loads:** when a pack is active, the routed expert also reads the overlay it maps in `pack.json` → `provides.agent_overlays`. A language pack overlays *every* code expert; a stack/domain pack overlays one. Zero cost when none active.
 - **Reference architecture:** with a domain pack active, ask *"reference architecture for a [domain] app"* → agent reads the pack's `reference-architecture.md` + linked source repos.
-- Full spec: `.agent/packs/README.md`.
+- **Available (shipped):** `language-typescript` · `language-java` · `language-cpp` · `stack-react` · `stack-django` · `domain-fintech` · `domain-c4i` (C2/C4ISR).
+- **Private/proprietary:** company IP belongs in packs — fork the platform to a private repo and build your packs there (not in this repo). Full spec: `.agent/packs/README.md`.
 
 ---
 
