@@ -67,15 +67,16 @@ npx {{PLATFORM_NPX}} --mode=list --list=skills
 
 ---
 
-## Packs — language, stack & domain overlays (opt-in)
+## Packs — language, stack, platform & domain overlays (opt-in)
 
-```bash
-npx {{PLATFORM_NPX}} --mode=list --list=packs
-npx {{PLATFORM_NPX}} --mode=add --add=pack:language-typescript
-npx {{PLATFORM_NPX}} --mode=add --add=pack:stack-react
+Just ask your agent — no terminal commands to remember:
+
+```text
+"what packs are available"   "scan my repo for packs"   "activate the React pack"
+"what packs are active"      "add this rule to my <pack> pack"  → user.overlay.md (survives updates)
 ```
 
-Curated **language / stack / domain** knowledge on top of the agnostic core (three composable kinds: `language:*`, `stack:*`, `domain:*`). A language pack = the language itself and overlays every code expert; a stack pack = a framework built in a language. Active packs live in `.agent/platform.json` → `active_packs`; the agent reads the overlay each pack maps in `pack.json` → `provides.agent_overlays`. Available: `language-typescript`, `language-java`, `language-cpp`, `stack-react`, `stack-django`, `domain-fintech`.
+Curated **language / stack / platform / domain** knowledge on top of the agnostic core (four composable kinds: `language:*`, `stack:*`, `platform:*` *(roadmap)*, `domain:*`). A language pack = the language itself and overlays every code expert; a stack pack = a framework built in a language. Active packs live in `.agent/platform.json` → `active_packs`; the agent reads the overlay each pack maps in `pack.json` → `provides.agent_overlays`, then your `user.overlay.md` last. Available: `language-typescript`, `language-java`, `language-cpp`, `stack-react`, `stack-django`, `domain-fintech`. The agent runs installs under the hood (`npx {{PLATFORM_NPX}} --mode=add --add=pack:<id>`).
 
 ---
 

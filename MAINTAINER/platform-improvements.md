@@ -18,6 +18,40 @@
 
 ---
 
+### [Unreleased] — 2026-07-03 — Docs: full repo sync sweep for OpenCode + Packs
+
+**Source:** User — "lots of documentation gaps; `MAINTAINER/GUIDE.md` doesn't cover the packs model or the OpenCode framework — scan the repo and make sure ALL docs are synched."
+
+**Failure observed (gap):** two shipped capabilities (OpenCode as the 5th IDE framework; the 4-kind packs model with `user.overlay.md` + natural-language management + `build-pack=<id>`) had not propagated to every doc. A whole-repo audit found **47 stale spots across 22 files**: framework enumerations still saying "four"/omitting OpenCode, packs sections saying "three kinds" and npx-only, missing `.opencode/`/`.agent/packs/` in layout diagrams, and stale automated-test counts (76/125/192/218).
+
+**Files changed (docs/presentation only — no behaviour change):**
+- Core user docs: `README.md`, `AGENT-PLATFORM-FRAMEWORK-README.md`, `docs/DISTRIBUTION.md`, `QUICK-REF.md`, `QUICK-REF-lite.md`, `PLATFORM-HELP.md`, `AGENTS-lite.md`, `SWITCH-PROMPTS.md`, `TOKEN-BUDGET.md`, `CONTRIBUTING.md`, `SECURITY.md`, `PACK-DEPLOY.md`.
+- Maintainer docs: `MAINTAINER/GUIDE.md` (5-framework always-loaded table + checklist + audit grep, repo-layout tree, scope diagram, `build-pack` grow-pack row, test count 264), `MAINTAINER/add-framework.md` (baseline 5→6 for next framework; OpenCode in "do not edit" + new SWITCH-PROMPTS step + banner find-strings), `MAINTAINER/platform-audit.md` (Step 6b pack-health across all 4 kinds + `build-pack` coverage-gap check).
+- Presentations: `presentation/agent-platform-beta.html`, `presentation/team-adoption.html` (packs titles/cards to 4 axes, NL pack UX + `user.overlay.md`, OpenCode lifecycle commands).
+
+**Rule added:** documentation must enumerate all **5** IDE frameworks (incl. OpenCode) and the **4** pack kinds (`language`/`stack`/`platform`/`domain`) wherever either is described; anchor links updated to match renamed headers; test-count references point to the live suite (264).
+
+**Validated:** Yes — `npm test` 264/264 green; re-grep confirms no live doc claims "four frameworks", "three kinds", or a stale test count (remaining hits are historical CHANGELOG/log snapshots).
+
+---
+
+### [Unreleased] — 2026-07-03 — Maintainer: Pack Ecosystem Build Scan (`build-pack=<id>`)
+
+**Source:** User question — "the pack build process doesn't describe a web scan across all relevant repos/sources to collect domain ecosystem know-how; how do we build a domain expert from the ecosystem, same for other axes?"
+
+**Failure observed (gap):** the five pack-growth paths were all single-source or freshness-only — `add pack` (empty), `add rule to pack` (one hand-written rule), Mode 4 `repo=… pack=` (one repo), Mode 2 `pack=` (freshness of an *existing* pack; precondition: pack already in catalog), Mode 3 (one user's rules). None did a greenfield, web-wide ecosystem discovery to bootstrap a new domain/stack/platform/language brain.
+
+**Files changed (maintainer workflow, docs only):**
+- `MAINTAINER/web-audit.md` — new **"Pack ecosystem build scan (`build-pack=<id>`)"** section (Phases A–F: parse target → axis-aware source matrix → license triage → synthesize candidate brain → present/select → scaffold+fill+PSG) + header trigger.
+- `MAINTAINER/platform-maintainer-agent.md` — Mode 2 triggers list + grow-packs lifecycle note (`build-pack` → `pack=` → `repo=…pack=` → Mode 3).
+- `MAINTAINER/scan-results/REPORT-SCHEMA.md` — `pack-build` scan scope + `web-audit/YYYY-MM-DD-build-pack-<id>-report.md` archive path.
+
+**Rule added:** a new pack should start with `build-pack=<id>` (ecosystem-wide web scan) before repo-specific or freshness scans; findings are selected by the maintainer, never auto-written; output runs the PSG pack lane so an immature pack never blocks core.
+
+**Validated:** Yes — docs-only; `npm test` unchanged (264/264). No packs created (capability only).
+
+---
+
 ### [Unreleased] — 2026-07-03 — Enforce "one terminal command" principle across all surfaces
 
 **Source:** User verification request — "the core is one terminal command (install); everything else is agentic (user prompts, router + manifest do the rest)."

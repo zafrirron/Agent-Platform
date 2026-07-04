@@ -1,7 +1,8 @@
 # Mode 2 — Web Ecosystem Audit
 
 > **Trigger:** `Read MAINTAINER/web-audit.md and execute it.`
-> **Trigger (pack-scoped refresh):** `Read MAINTAINER/web-audit.md and execute it. pack=<pack-id>`
+> **Trigger (pack-scoped refresh — freshen an *existing* pack):** `Read MAINTAINER/web-audit.md and execute it. pack=<pack-id>`
+> **Trigger (pack ecosystem build — greenfield, web-wide scan to author a *new* pack brain):** `Read MAINTAINER/web-audit.md and execute it. build-pack=<pack-id>`
 > **Requires:** Maintainer agent loaded — `Read MAINTAINER/platform-maintainer-agent.md`
 > **Scope:** Security (OWASP, CVEs, CWEs) + Engineering best practices (stack-specific) + **Agent skill packs & playbook ecosystems**
 > **Output:** Structured findings report → maintainer selects what to add
@@ -265,6 +266,58 @@ When `pack=<id>` is set, this becomes a **freshness pass for one stack/domain pa
 5. **Archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-pack-<id>-report.md`.
 
 Use this on a cadence to fight pack staleness (the `last_verified` signal surfaced by the internal audit).
+
+---
+
+## Pack ecosystem build scan (`build-pack=<id>`)
+
+> **Greenfield.** Where `pack=<id>` *freshens* an existing pack from a repo/release, `build-pack=<id>` **authors a new pack brain from the whole ecosystem** — it casts a wide net across the web (standards, specs, reference apps, threat models, compliance, community know-how), not one repo. This is the answer to *"build a domain expert by scanning the domain's ecosystem, same for any axis."*
+>
+> **It does not require the pack to exist yet.** It ends by scaffolding + filling the pack, then running the PSG pack lane. It **never** auto-writes — the maintainer selects findings first.
+
+### Phase A — Parse the target
+
+From `build-pack=<id>` derive `kind` and `name` (`domain-drone-autonomy` → kind `domain`, name `drone-autonomy`). If ambiguous, ask the maintainer for `kind`. Read `.agent/packs/README.md` (pack model) and `MAINTAINER/adr/ADR-001-stack-domain-packs.md` (design bar). If the id already exists in `packs_catalog`, stop and tell the maintainer to use `pack=<id>` (freshness) instead.
+
+### Phase B — Ecosystem discovery (axis-aware source matrix)
+
+Run a **wide** discovery keyed to the pack `kind` (≥6 searches, rotate; fetch top results; capture URL + license for every source):
+
+| Kind | Source classes to scan |
+|------|------------------------|
+| **domain** | standards bodies & official specs; **reference OSS applications** (for the reference architecture); domain threat models / attack surfaces; compliance & regulatory frameworks; canonical papers/textbooks; active communities (forums, RFCs). *(drone-autonomy → PX4/ArduPilot/MAVLink specs, DO-178C/DO-278A, airspace regs, perception/planning literature, OSS autopilots.)* |
+| **stack** | official framework docs; release notes & migration guides; RFCs/design docs; top libraries in the ecosystem; community "pitfalls/gotchas" write-ups; perf/benchmark reports. |
+| **platform** | vendor docs & datasheets; SoC/board reference manuals; SDK/driver/BSP docs; OS/RTOS docs; cross-compile toolchain guides; real-time/power/memory budget references. |
+| **language** | the language specification; official style guides; footgun/anti-pattern catalogs; memory/concurrency model docs; idiomatic-code references. |
+
+For each source, classify what it contributes: **rule/pitfall** (→ overlay), **architecture pattern** (→ reference-architecture), or **linkable source app/spec** (→ `reference_sources[]`).
+
+### Phase C — License & provenance triage
+
+Deduplicate across sources. Tag each candidate source app with its license and mark **reusable** vs **study-only (copyleft)** — distilled patterns are fine, copied code is not (mirror the `domain-fintech` `reference_sources[]` notes). Drop anything unreachable or unverifiable.
+
+### Phase D — Synthesize a candidate pack brain (in the report, not on disk yet)
+
+Roll findings into the proposed pack contents:
+- `<expert>-agent.overlay.md` (or shared `code.overlay.md` for `language`) — distilled hard rules, review lens, version/config awareness.
+- `references/reference-architecture.md` (domain/platform) — cross-component design citing the discovered real apps.
+- `references/<topic>-pitfalls.md` — failure catalog.
+- `pack.json` draft — `kind`, `detect{}` (axis-appropriate signals), `provides{}`, and for domain `reference_sources[]`.
+
+### Phase E — Present findings → maintainer selects
+
+Present using the standard report format (findings prefixed, impact-rated, each with source URL). Reuse the Phase 5 selection UX (`Add F001…`, `Skip`, `Defer`, `Modify`, `Explain`). **Write nothing until the maintainer selects.**
+
+### Phase F — Scaffold, fill, validate
+
+On selection:
+1. Run the Mode 1 **`add pack <id>`** scaffold (`platform-maintainer-agent.md` § "add pack <id>").
+2. Write the selected synthesized files into `.agent/packs/<id>/`.
+3. Set `pack.json` `version` `1.0.0`, `last_verified` = today, `confidence` `curated`.
+4. Run **PSG — pack lane** (manifest registration, references reachable, pack test, provenance in `platform-improvements.md` + `docs/INTELLIGENCE-SOURCES.md` for domain + scan registry `Scope: pack`).
+5. **Archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-build-pack-<id>-report.md`.
+
+> Lifecycle: **`build-pack=<id>` (greenfield, web-wide)** → `pack=<id>` (freshness) → Mode 4 `repo=… pack=<id>` (deep-dive one find) → Mode 3 `pack=<id>` (user field rules). All four write via the pack mechanics and the PSG pack lane.
 
 ---
 

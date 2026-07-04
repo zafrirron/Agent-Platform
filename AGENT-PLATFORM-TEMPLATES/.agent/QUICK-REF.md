@@ -112,7 +112,7 @@ Curated language/stack/domain knowledge layered on the agnostic core. Opt-in; ne
 | *"what packs are active"* | Reports `active_packs` |
 | *"add this rule to my X pack"* | Saves to `user.overlay.md` (survives updates) |
 
-- **Three kinds:** `language:*` (TypeScript, Java, C++ — the language's own footguns) · `stack:*` (React, Django — framework idioms/pitfalls) · `domain:*` (fintech — compliance + reference architectures). They compose (`language:typescript` + `stack:react` + `domain:fintech`).
+- **Four kinds:** `language:*` (TypeScript, Java, C++ — the language's own footguns) · `stack:*` (React, Django — framework idioms/pitfalls) · `platform:*` (Docker/boards/SoCs — *where the code runs*; **roadmap**) · `domain:*` (fintech — compliance + reference architectures). They compose (`language:typescript` + `stack:react` + `domain:fintech`).
 - **Language vs stack:** a language pack = the language itself (reusable across every framework in it); a stack pack = a framework/library built in a language.
 - **How it loads:** when a pack is active, the routed expert also reads the overlay it maps in `pack.json` → `provides.agent_overlays`. A language pack overlays *every* code expert; a stack/domain pack overlays one. Zero cost when none active.
 - **Reference architecture:** with a domain pack active, ask *"reference architecture for a [domain] app"* → agent reads the pack's `reference-architecture.md` + linked source repos.
@@ -251,7 +251,7 @@ When no routing applies (explain, conceptual), no prefix appears — the agent a
 | Custom routing row | `AGENTS.md` Section 5 (PROJECT section) | "Add a project routing rule: [trigger] → [expert]" |
 | New shared skill | `.agent/skills/<name>/` | "Add a new skill called [name] that [does X]" |
 | New context file | `.agent/context/<name>.md` | "Add a context file tracking [what]" |
-| 5th IDE framework | `.<name>/` private folder | "Add [Windsurf/Cline/etc.] as a 5th framework" |
+| 6th IDE framework | `.<name>/` private folder | "Add [Windsurf/Cline/etc.] as a 6th framework" (OpenCode is the 5th) |
 | New best practice | `.agent/BEST-PRACTICES.md` | "Add a new golden rule: [rule]" |
 | API conventions | `.agent/context/api-patterns.md` | "Add API pattern: [convention]" |
 

@@ -16,6 +16,8 @@ Task: [describe your platform improvement goal]
 - **Mode 1 — Internal audit:** `Read MAINTAINER/platform-audit.md and execute it.`
 - **Mode 2 — Web ecosystem audit (Option B, monthly):** `Read MAINTAINER/web-audit.md and execute it.`
 - **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
+- **Mode 2 — Pack freshness refresh (existing pack):** `Read MAINTAINER/web-audit.md and execute it. pack=<pack-id>`
+- **Mode 2 — Pack ecosystem build (greenfield, web-wide → new pack brain):** `Read MAINTAINER/web-audit.md and execute it. build-pack=<pack-id>`
 - **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
 - **Mode 4 — GitHub agent ecosystem scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
 - **Mode 4 — Targeted repo adoption scan:** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`
@@ -274,7 +276,13 @@ Execution:
 7. Report: "Rule added to pack <id> → <file>. version→X, last_verified→today."
 ```
 
-> To grow packs from external sources, use the scan modes: Mode 4 `repo=owner/name pack=<id>` (deep-read a repo/app), Mode 2 `pack=<id>` (docs/release freshness pass), or Mode 3 `platform-ingest.md … pack=<id>` / PACK-CANDIDATE findings (a user's production-proven rules). All write via the mechanics above and use the PSG pack lane.
+> To grow packs from external sources, use the scan modes:
+> - **Mode 2 `build-pack=<id>`** — *greenfield, web-wide ecosystem scan to author a NEW pack brain* (standards, specs, reference apps, threat models, compliance, community know-how — not one repo). Best first step for a new domain/stack/platform/language pack. See `web-audit.md` § "Pack ecosystem build scan".
+> - **Mode 2 `pack=<id>`** — docs/release **freshness pass** for an *existing* pack.
+> - **Mode 4 `repo=owner/name pack=<id>`** — deep-read one specific repo/app into a pack.
+> - **Mode 3 `platform-ingest.md … pack=<id>` / PACK-CANDIDATE** — a user's production-proven rules.
+>
+> Typical lifecycle: `build-pack=` (bootstrap) → `pack=` (keep fresh) → `repo=…pack=` (deep-dive a find) → Mode 3 (field rules). All write via the mechanics above and use the PSG pack lane.
 
 ---
 

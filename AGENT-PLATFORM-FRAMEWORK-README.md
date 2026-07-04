@@ -44,17 +44,18 @@ Run `npx github:zafrirron/Agent-Platform` in any repo root. In 30–90 seconds i
 
 ---
 
-## Language, technology-stack & domain packs (opt-in overlays)
+## Language, technology-stack, platform & domain packs (opt-in overlays)
 
 > **The core is stack-agnostic. Packs make it an expert in *your* stack — without bloating everyone else's.**
 
-The platform core deliberately gives **general** software-engineering discipline for any project. **Packs** layer curated, opinionated, failure-derived knowledge for a specific programming language, technology stack, or business domain **on top of** the core, without modifying it.
+The platform core deliberately gives **general** software-engineering discipline for any project. **Packs** layer curated, opinionated, failure-derived knowledge for a specific programming language, technology stack, execution platform, or business domain **on top of** the core, without modifying it.
 
-```bash
-npx github:zafrirron/Agent-Platform --mode=list --list=packs
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
+**Prompt-driven — no terminal commands.** Just ask your agent (it runs the install for you):
+
+```text
+"what packs are available"      "which packs should I use" / "scan my repo for packs"
+"activate the React pack"        "what packs are active"
+"add this rule to my <pack> pack"   → saved to user.overlay.md (survives every update)
 ```
 
 | Kind | Available | What it adds |
@@ -68,10 +69,11 @@ npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
 - **Opt-in, zero bloat** — never installed by any profile; only via `--mode=add --add=pack:<id>`, recorded in `.agent/platform.json` → `active_packs`. Zero cost when none are active.
 - **Detect-and-suggest** — the installer inspects your project (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, source extensions) and *suggests* matching packs — never auto-installs.
 - **Overlays, not new experts** — a pack refines a generic expert only while active; core files are never touched.
-- **Grows over time** — all four maintainer modes (GitHub scan, web audit, user ingest, hand-authored) can grow a pack's brain on an independent lane that never blocks a core release.
+- **Your rules survive updates** — add pack-specific rules to `.agent/packs/<id>/user.overlay.md` (user-owned, never in the manifest); no upgrade/force/re-install touches it.
+- **Grows over time** — all four maintainer modes (GitHub scan, web audit incl. greenfield `build-pack=<id>` ecosystem scan, user ingest, hand-authored) can grow a pack's brain on an independent lane that never blocks a core release.
 - **Domain reference architectures** — with a domain pack active, ask *"give me a reference architecture for a fintech app"* → the agent reads the pack's `reference-architecture.md` and points you at the linked real-world source repos (license-aware).
 
-Full user guide: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack--domain-packs-opt-in-overlays) · spec: `.agent/packs/README.md` · design: [MAINTAINER/adr/ADR-001-stack-domain-packs.md](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+Full user guide: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · spec: `.agent/packs/README.md` · design: [MAINTAINER/adr/ADR-001-stack-domain-packs.md](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 
 ---
 
@@ -416,9 +418,13 @@ repo-root/
 │   │   reputation.json               ← per-agent trust scores (seeds Phase 5 reputation-aware gates)
 │   │   patterns                      ← reusable approaches from prior sessions (agents write + read)
 │   ├── skills/caveman/SKILL.md       ← 🪨 token-compression skill
+│   ├── packs/                        ← opt-in overlays (only when activated) + shared README.md
+│   │   language-* · stack-* · domain-* (platform-* = roadmap); each: pack.json + overlays + references
+│   │   user.overlay.md               ← YOUR pack rules — user-owned, survives every update
 │   ├── tools/
 │   │   ├── check-updates.mjs         ← version check vs GitHub (7-day cache)
 │   │   ├── upgrade.md                ← agent self-upgrade prompt
+│   │   ├── packs.md                  ← agent-run pack management (list/activate/scan/add-rule)
 │   │   ├── check_locks.js            ← file conflict checker
 │   │   ├── prune_handoff.js          ← handoff log pruner
 │   │   └── launch.mjs / .sh / .ps1  ← app launcher
@@ -913,8 +919,8 @@ EXTEND PLATFORM     See Extending guide in this file (AGENT-PLATFORM-FRAMEWORK-R
 | **Playbook** | New step-by-step workflow in `.agent/playbooks/` |
 | **Shared skill** | New capability (like caveman) in `.agent/skills/` — wired into all frameworks |
 | **Context file** | New living reference doc in `.agent/context/` |
-| **IDE framework** | 5th framework (Windsurf, Cline, Copilot Workspace, etc.) |
-| **Slash command** | New `/command` in `.claude/commands/` and `.cursor/commands/` (mirror both IDEs) |
+| **IDE framework** | 6th framework (Windsurf, Cline, Copilot Workspace, etc. — OpenCode is the 5th) |
+| **Slash command** | New `/command` in `.claude/commands/`, `.cursor/commands/`, and `.opencode/commands/` (mirror all IDEs) |
 | **Session protocol step** | Extra check at start or end of every session |
 | **Best practice / rule** | New golden rule, protocol, or checklist item |
 | **API agentic pattern** | Conventions for agents that build or consume HTTP APIs |

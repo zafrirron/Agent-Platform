@@ -66,7 +66,7 @@ gemini            # then: /skills list
 **Notes:**
 - Platform skills are plain markdown — no host-specific frontmatter required, though most hosts read `name` + `description` from the header.
 - The reverse direction (external skill packs → platform) goes through **Mode 4 targeted scan** or **Mode 3 ingest**, not a direct copy — the platform adapts, de-duplicates, and **security-vets** before adopting (see below).
-- Full multi-agent Gemini support (a 5th framework stub) is not installed by default; open an issue if you want `--framework=gemini` scaffolding.
+- Full multi-agent Gemini support (a 6th framework stub) is not installed by default; open an issue if you want `--framework=gemini` scaffolding.
 - **Community installer** — because the modules are standard `SKILL.md`, they are also consumable by the generic [`npx skills`](https://github.com/thedesignproject/agent-skills) installer (`npx skills add <owner>/<repo> -s <skill> -g`). Complementary to `npx github:{{PLATFORM_REPO}} --mode=add`; vet any skill first (below).
 
 ### Vetting third-party skills before you install one
@@ -92,22 +92,26 @@ Aliases: `skill:tdd` → `test-driven-development`, `skill:interview` → `inter
 
 ---
 
-## Language, technology-stack & domain packs (opt-in overlays)
+## Language, technology-stack, platform & domain packs (opt-in overlays)
 
-The core platform is **language-, stack- and domain-agnostic** — it applies general software-engineering discipline to any project. **Packs** add curated, opinionated, failure-derived knowledge for a specific programming language (TypeScript, Java, C++…), technology stack (React, Django…), or business domain (fintech…) **on top of** the agnostic core, without changing it.
+The core platform is **language-, stack- and domain-agnostic** — it applies general software-engineering discipline to any project. **Packs** add curated, opinionated, failure-derived knowledge for a specific programming language (TypeScript, Java, C++…), technology stack (React, Django…), platform / execution target (Docker, boards/SoCs — roadmap), or business domain (fintech…) **on top of** the agnostic core, without changing it.
 
-```bash
-npx github:zafrirron/Agent-Platform --mode=list --list=packs
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:domain-fintech
+**Prompt-driven — no terminal commands to remember.** Just tell your agent:
+
+```text
+"what packs are available"      "which packs should I use" / "scan my repo for packs"
+"activate the React pack"        "what packs are active"
+"add this rule to my <pack> pack"   → saved to user.overlay.md (survives every update)
 ```
 
-- **Three kinds:** `language:*` (language semantics/footguns — TypeScript, Java, C++), `stack:*` (framework/library idioms & pitfalls), `domain:*` (compliance, invariants, **reference architectures**). They compose — a repo can run `language:typescript` + `stack:react` + `domain:fintech` at once.
+The agent runs the install under the hood (e.g. `npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react`); the only terminal command you type is the one-time install.
+
+- **Four kinds:** `language:*` (language semantics/footguns — TypeScript, Java, C++), `stack:*` (framework/library idioms & pitfalls), `platform:*` (*where the code runs* — hardware/OS/RTOS/container runtime; **defined, roadmap — no curated packs yet**), `domain:*` (compliance, invariants, **reference architectures**). They compose — a repo can run `language:typescript` + `stack:react` + `domain:fintech` at once.
   - **Language vs stack:** a language pack is the language itself and is reusable across every framework in it (a TS pack applies to React, Angular, Node); a stack pack is a framework/library *built in* a language. Separate kinds → no duplicated rules, no combo packs.
-- **Opt-in, never bloat:** packs are **not** installed by any profile. They only install via `--mode=add --add=pack:<id>` and are recorded in `.agent/platform.json` → `active_packs`. Zero cost when none are active.
-- **Detect-and-suggest:** on install/upgrade, the installer detects your language/stack (from `package.json`, `tsconfig.json`, `pom.xml`, `CMakeLists.txt`, `manage.py`, or a shallow source-extension scan) and *suggests* matching packs — it never auto-installs them.
+- **Opt-in, never bloat:** packs are **not** installed by any profile. They only install when you activate one and are recorded in `.agent/platform.json` → `active_packs`. Zero cost when none are active.
+- **Detect-and-suggest:** on install/upgrade (and *"scan my repo for packs"*), the installer detects your language/stack (from `package.json`, `tsconfig.json`, `pom.xml`, `CMakeLists.txt`, `manage.py`, or a shallow source-extension scan) and *suggests* matching packs — it never auto-installs them.
 - **Overlays, not new experts:** a stack/domain pack refines one generic expert via `<expert>.overlay.md`; a language pack maps one shared `code.overlay.md` to every code-writing expert — read only when the pack is active. Core files are never modified.
+- **Your rules survive updates:** add pack-specific rules to `.agent/packs/<id>/user.overlay.md` (user-owned, never in the manifest) — no upgrade/force/re-install touches it. The agent writes there when you say *"add this to my `<pack>` pack"*.
 - **Domain reference architectures:** domain packs link back to real source apps (`reference_sources` in `pack.json`). Ask your agent *"give me a reference architecture for a fintech app"* and it reads the pack's `reference-architecture.md` and points you at the linked implementations (license-aware).
 
 Full spec: `.agent/packs/README.md` (installed with any pack) · design: [`MAINTAINER/adr/ADR-001-stack-domain-packs.md`](../MAINTAINER/adr/ADR-001-stack-domain-packs.md).
@@ -136,7 +140,7 @@ Writes stubs to `~/.claude/`, `~/.cursor/`, etc. so any repo with `AGENTS.md` au
 
 ## Slash commands (`/`)
 
-After install, lifecycle shortcuts are available as `/` commands in **Cursor** and **Claude Code**.
+After install, lifecycle shortcuts are available as `/` commands in **Cursor**, **Claude Code**, and **OpenCode**.
 
 | Command | Routes to |
 |---------|-----------|
@@ -163,6 +167,7 @@ After install, lifecycle shortcuts are available as `/` commands in **Cursor** a
 |-----|----------|--------------------------|
 | **Cursor** | `.cursor/commands/*.md` | `~/.cursor/commands/` |
 | **Claude Code** | `.claude/commands/*.md` | `~/.claude/commands/` |
+| **OpenCode** | `.opencode/commands/*.md` | per-project (no global stub) |
 
 Filename (without `.md`) becomes the command name. Commands are thin routers — playbooks and experts hold the real discipline.
 

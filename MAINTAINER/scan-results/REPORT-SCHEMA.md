@@ -11,7 +11,7 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 
 ## Meta
 - **Mode:** internal | web-audit | ingest | mode4
-- **Scan scope:** discovery | targeted | **pack** *(targeted = single `repo=owner/name`; pack = `pack=<id>` grows a language/stack/platform/domain pack brain — mode4, web-audit, or ingest)*
+- **Scan scope:** discovery | targeted | **pack** | **pack-build** *(targeted = single `repo=owner/name`; pack = `pack=<id>` freshens an existing pack brain — mode4, web-audit, or ingest; pack-build = `build-pack=<id>` greenfield web-wide ecosystem scan that authors a NEW pack brain — web-audit only)*
 - **Pack:** <id> *(pack scope only)*
 - **Trigger:** [command user ran]
 - **Target repo:** owner/name *(targeted / pack mode4 only)*
@@ -56,6 +56,7 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 
 **Mode 4 targeted archive path:** `mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
 **Pack-scoped archive path:** `mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md`, `web-audit/YYYY-MM-DD-pack-<id>-report.md`, or `ingest/YYYY-MM-DD-pack-<id>-report.md`. Pack findings' **Suggested path** points at `.agent/packs/<id>/…` (overlay / references / `reference_sources`), never core. Ingest pack findings carry status **PACK-CANDIDATE**.
+**Pack-build archive path:** `web-audit/YYYY-MM-DD-build-pack-<id>-report.md` (greenfield `build-pack=<id>`). Findings use the web-audit `F`/`E` prefixes; the report also carries a **candidate pack brain** (draft overlay + references + `reference_sources[]`) synthesized from the multi-source ecosystem scan, and its **Actions taken** records the scaffolded pack.
 
 Each finding **must** include disposition after maintainer selects:
 

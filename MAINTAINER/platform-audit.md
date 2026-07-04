@@ -107,13 +107,14 @@ Verify that user-facing documentation and the product presentation reflect the p
 - The presentation version badge doesn't match the latest release
 - A manifest lists capabilities not found in the agent's PLATFORM section
 
-### Step 6b — Pack-health check (technology-stack / domain packs)
+### Step 6b — Pack-health check (language / stack / platform / domain packs)
 
-If `AGENT-PLATFORM-MANIFEST.json` has a `packs_catalog`, audit each pack under `.agent/packs/*` (independent of core — packs never block a core release, but staleness/drift should be surfaced):
+If `AGENT-PLATFORM-MANIFEST.json` has a `packs_catalog`, audit each pack under `.agent/packs/*` across all four kinds — `language:*`, `stack:*`, `platform:*`, `domain:*` (independent of core — packs never block a core release, but staleness/drift should be surfaced). Also flag any *gap* — a language/stack/platform/domain the platform should cover but has no pack yet → recommend authoring one via `Mode 2 build-pack=<id>` (greenfield web-wide ecosystem scan):
 
 | Check | Flag if… |
 |-------|----------|
 | **Staleness** | `pack.json.last_verified` older than ~6 months → recommend a `Mode 2 pack=<id>` freshness pass or `Mode 4 repo=… pack=<id>` refresh |
+| **Missing pack (coverage gap)** | a common language/stack/platform/domain in consumer repos has no pack → recommend `Mode 2 build-pack=<id>` to author one from scratch |
 | **Overlay ↔ routing drift** | an overlay in `provides.agent_overlays` has no matching `routing.md` row (or vice-versa); overlay references an expert id that doesn't exist |
 | **Missing files** | any path in `provides.references` / `agent_overlays` / `routing_rows` not present on disk |
 | **Reference sources (domain)** | `reference_sources[]` missing `license`, or a URL that 404s / repo archived → flag for re-source |

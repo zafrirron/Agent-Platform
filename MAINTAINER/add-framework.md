@@ -161,11 +161,11 @@ Add `'.<FOLDER>'` to the array.
 Find the `GI_BLOCK` constant. Add `.<FOLDER>/` to the list of gitignored platform folders.
 
 ### 2E — Hardcoded framework count and list
-Find: `'✔  4 IDE frameworks    Claude Code · Cursor · Antigravity · Codex'`
-Replace with: `'✔  5 IDE frameworks    Claude Code · Cursor · Antigravity · Codex · <DISPLAY>'`
+Find: `'✔  5 IDE frameworks    Claude Code · Cursor · Antigravity · Codex · OpenCode'`
+Replace with: `'✔  6 IDE frameworks    Claude Code · Cursor · Antigravity · Codex · OpenCode · <DISPLAY>'`
 
-Find: `'Works in: Claude Code · Cursor · Antigravity · Codex'`
-Replace with: `'Works in: Claude Code · Cursor · Antigravity · Codex · <DISPLAY>'`
+Find: `'Works in: Claude Code · Cursor · Antigravity · Codex · OpenCode'`
+Replace with: `'Works in: Claude Code · Cursor · Antigravity · Codex · OpenCode · <DISPLAY>'`
 
 ### 2F — platformCursorRules (if the new framework uses .cursor/rules)
 No change needed unless the new framework also uses `.cursor/rules/`.
@@ -254,26 +254,33 @@ Read each of these files and add `.<FOLDER>/` to the "Do not edit" line:
 - `AGENT-PLATFORM-TEMPLATES/.cursor/prompts/session-start.md`
 - `AGENT-PLATFORM-TEMPLATES/.agents/prompts/session-start.md`
 - `AGENT-PLATFORM-TEMPLATES/.codex/prompts/session-start.md`
+- `AGENT-PLATFORM-TEMPLATES/.opencode/prompts/session-start.md`
 
 Also update any agent-sync rules files:
 - `.cursor/rules/agent-sync.mdc` — add `.<FOLDER>/` to the protected folders list
 - `.agents/rules/00-multi-framework-sync.md` — same
 - `.codex/instructions.md` — add note about not editing `.<FOLDER>/`
+- `.opencode/sync.md` — same
+
+Also update the copy/paste switch table:
+- `AGENT-PLATFORM-TEMPLATES/.agent/SWITCH-PROMPTS.md` — add a `<DISPLAY>` start/end row
 
 ---
 
 ## Step 6 — Update all documentation
 
+> **Baseline:** the platform currently ships **5 IDE frameworks** (Claude Code, Cursor, Antigravity, Codex, OpenCode). The next framework you add is the **6th** — bump `5 → 6` everywhere below.
+
 ### 6A — README.md (root)
 Read `README.md`. Make these changes:
-- `"4 IDE frameworks"` → `"5 IDE frameworks"` (every occurrence)
-- `"Claude Code, Cursor, Antigravity, and Codex"` → add `, and <DISPLAY>`
+- `"5 IDE frameworks"` → `"6 IDE frameworks"` (every occurrence)
+- `"Claude Code, Cursor, Antigravity, Codex, and OpenCode"` → add `, and <DISPLAY>`
 - Add `.<FOLDER>/` to the gitignore/folder lists
 - Add `<DISPLAY>` row to the "What you get" frameworks table
 
 ### 6B — AGENT-PLATFORM-FRAMEWORK-README.md
 Read the file. Make these changes:
-- `"4 IDE frameworks"` → `"5 IDE frameworks"` in the "What you get" table
+- `"5 IDE frameworks"` → `"6 IDE frameworks"` in the "What you get" table
 - Session start/end tables (§1, §2): add `<DISPLAY>` row
 - Tree diagram in "What gets created": add `.<FOLDER>/` entry
 - §4 "Switch between IDEs": add `<DISPLAY>` to the example
@@ -357,7 +364,7 @@ Read `writeMigrationNotes()`. If there are pre-existing artifacts specific to th
 
 Write entry to `MAINTAINER/platform-improvements.md`:
 ```
-### [vX.Y.Z] — YYYY-MM-DD — Added <DISPLAY> as 5th supported framework
+### [vX.Y.Z] — YYYY-MM-DD — Added <DISPLAY> as 6th supported framework
 
 **Motivation:** [why this framework was chosen]
 **Files created:** N new files in AGENT-PLATFORM-TEMPLATES/.<FOLDER>/

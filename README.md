@@ -14,7 +14,7 @@
 
 ## What it is
 
-A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, Codex, and OpenCode work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** **Opt-in language/stack/domain Packs** (curated expertise layered on the agnostic core — [see below](#language-technology-stack--domain-packs-opt-in)). Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
+A complete multi-agent development environment installed into any repository in one command. Claude Code, Cursor, Antigravity, Codex, and OpenCode work together without conflicts. Nine expert agents (including the Critic — adversarial reviewer). **20 playbooks.** **11 lifecycle skills.** **Opt-in language/stack/platform/domain Packs** (curated expertise layered on the agnostic core — [see below](#language-technology-stack-platform--domain-packs-opt-in)). Three install profiles (`lite` / `core` / `full`). Test enforcement. A quick reference on every session start. No memorisation required.
 
 **Lifecycle:** `DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP` (full profile adds session handoff + enterprise gates)
 
@@ -131,23 +131,28 @@ Read .agent/session-start.md and execute it.
 
 ---
 
-## Language, technology-stack & domain packs (opt-in)
+## Language, technology-stack, platform & domain packs (opt-in)
 
-The core platform is deliberately **language-, stack- and domain-agnostic** — general software-engineering discipline for any project. **Packs** layer curated, opinionated knowledge for a specific **programming language** (TypeScript, Java, C++), **technology stack** (React, Django), or **business domain** (fintech) on top of the core, **without changing it**.
+The core platform is deliberately **language-, stack- and domain-agnostic** — general software-engineering discipline for any project. **Packs** layer curated, opinionated knowledge for a specific **programming language** (TypeScript, Java, C++), **technology stack** (React, Django), **platform / execution target** (Docker, boards/SoCs — roadmap), or **business domain** (fintech) on top of the core, **without changing it**.
 
-```bash
-npx github:zafrirron/Agent-Platform --mode=list --list=packs
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:language-typescript
-npx github:zafrirron/Agent-Platform --mode=add --add=pack:stack-react
+**Just ask your agent — no terminal commands to remember:**
+
+```text
+"what packs are available"      "which packs should I use" / "scan my repo for packs"
+"activate the React pack"        "what packs are active"
+"add this rule to my <pack> pack"   (saved to user.overlay.md — survives every update)
 ```
 
-- **Three composable kinds** — `language:*` (the language itself — type/memory/concurrency footguns), `stack:*` (a framework/library *built in* a language), `domain:*` (compliance + reference architectures). A repo can run `language:typescript` + `stack:react` + `domain:fintech` together. A language pack is reusable across every framework in it, so its rules aren't duplicated per stack.
-- **Opt-in, no bloat** — packs never install by profile; only via `--mode=add --add=pack:<id>`, recorded in `active_packs`. Zero cost when none active.
-- **Detect-and-suggest** — the installer detects your language/stack (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, or a source-extension scan) and *suggests* matching packs; it never auto-installs.
+Your agent runs the install commands under the hood (e.g. `npx … --mode=add --add=pack:stack-react`). The only terminal command you ever type is the one-time install.
+
+- **Four composable kinds** — `language:*` (the language itself — type/memory/concurrency footguns), `stack:*` (a framework/library *built in* a language), `platform:*` (*where the code runs* — hardware/OS/RTOS/container runtime; **roadmap**), `domain:*` (compliance + reference architectures). A repo can run `language:typescript` + `stack:react` + `domain:fintech` together. A language pack is reusable across every framework in it, so its rules aren't duplicated per stack.
+- **Opt-in, no bloat** — packs never install by profile; only when you activate one, recorded in `active_packs`. Zero cost when none active.
+- **Detect-and-suggest** — the installer (and *"scan my repo for packs"*) detects your language/stack (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, or a source-extension scan) and *suggests* matching packs; it never auto-installs.
 - **Overlays, not new experts** — a stack/domain pack refines one generic expert; a language pack overlays every code-writing expert (so its rules apply to all code) — only while active; core files are untouched. Packs compose.
+- **Your rules survive updates** — add pack-specific rules via `user.overlay.md` (user-owned, never in the manifest); no upgrade/force/re-install ever touches it.
 - **Domain reference architectures** — domain packs link back to real open-source apps. Ask *"reference architecture for a fintech app"* and the agent surfaces the distilled architecture + the linked source repos (license-aware).
 
-Available: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack--domain-packs-opt-in-overlays) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+Available: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 
 ---
 
@@ -511,7 +516,7 @@ $Repo = "YOUR_ORG/YOUR_REPO_NAME"
 
 **Step 5** — Verify everything is wired:
 ```bash
-npm test   # 125 tests must pass
+npm test   # 264 tests must pass
 ```
 
 **Step 6** — Deploy to your team:

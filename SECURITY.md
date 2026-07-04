@@ -10,7 +10,7 @@ Agent Platform Bootstrap installs **markdown files** that instruct AI agents how
 
 | Action | What happens |
 |--------|-------------|
-| Install | Writes `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/` — plain text files only |
+| Install | Writes `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`, `.opencode/` + `opencode.json` — plain text files only |
 | Upgrade | Updates the `<!-- PLATFORM:START -->` section of expert files — your content is never changed |
 | Session start | An AI agent reads markdown files and follows the instructions in them |
 | Update check | One read-only HTTPS call to `api.github.com/repos/zafrirron/Agent-Platform/releases/latest` |

@@ -630,7 +630,7 @@ The platform is deliberately **language-, stack- and domain-agnostic** — it ap
 </details>
 
 **How they work:**
-- **Three kinds** — `language:*` (TypeScript, Java, C++: the language's own type/memory/concurrency footguns), `stack:*` (React, Django: framework idioms, pitfalls, perf traps), `domain:*` (fintech: compliance, invariants, **reference architectures**). Packs compose — e.g. `language:typescript` + `stack:react` + `domain:fintech`.
+- **Four kinds** — `language:*` (TypeScript, Java, C++: the language's own type/memory/concurrency footguns), `stack:*` (React, Django: framework idioms, pitfalls, perf traps), `platform:*` (Docker/boards/SoCs: *where the code runs* — hardware/OS/RTOS/container runtime; **defined, roadmap — no curated packs yet**), `domain:*` (fintech: compliance, invariants, **reference architectures**). Packs compose — e.g. `language:typescript` + `stack:react` + `domain:fintech`.
 - **Language vs stack** — a **language** pack is the language itself and is reusable across every framework in it (a TS pack applies to React, Angular, Node…); a **stack** pack is a framework/library/runtime *built in* a language. They're separate kinds so language rules aren't duplicated into each framework pack, and there are no combo packs.
 - **Opt-in, no bloat** — packs never install by profile; only via `--mode=add`. Recorded in `active_packs`. Zero cost when none are active.
 - **Detect-and-suggest** — on install/upgrade the installer detects your language/stack (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, or a source-extension scan) and *suggests* matching packs; it never auto-installs.
@@ -652,7 +652,7 @@ You can permanently add new capabilities. Everything is prompt-driven — tell t
 | New playbook | `"Add a new playbook for [scenario — e.g. incident response, data migration]"` |
 | New shared skill | `"Add a new skill called [name] that [does X]"` |
 | New context file | `"Add a context file tracking [what]"` |
-| 5th IDE framework | `"Add [Windsurf/Cline/Copilot Workspace] as a 5th supported framework"` |
+| 6th IDE framework | `"Add [Windsurf/Cline/Copilot Workspace] as a 6th supported framework"` (OpenCode is the 5th) |
 | New best practice | `"Add a new golden rule: [rule]"` |
 | API convention | `"Add API agentic pattern: [convention]"` |
 

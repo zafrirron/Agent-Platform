@@ -105,7 +105,8 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Monthly | Web ecosystem check (OWASP, CWE, best practices, **skill packs Phase 2F**) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Quarterly | GitHub ecosystem scan — discovery **or** targeted `repo=` | `Read MAINTAINER/github-governance-scan.md and execute it.` · targeted: `… repo=owner/name` |
-| Grow a pack brain | Language/stack/platform/domain pack from a repo/app, docs freshness pass, user submissions, or a hand-written rule | `… github-governance-scan.md … repo=owner/name pack=<id>` (Mode 4) · `… web-audit.md … pack=<id>` (Mode 2) · `… platform-ingest.md … pack=<id>` (Mode 3) · or `"add rule to pack <id>: …"` (Mode 1) |
+| **Build a NEW pack brain (greenfield)** | Author a new language/stack/platform/domain pack from the whole web ecosystem (standards, specs, reference apps, threat models, compliance) — not one repo | `… web-audit.md … build-pack=<id>` (Mode 2 — pack ecosystem build scan) |
+| Grow an EXISTING pack brain | From a repo/app, docs freshness pass, user submissions, or a hand-written rule | `… github-governance-scan.md … repo=owner/name pack=<id>` (Mode 4) · `… web-audit.md … pack=<id>` (Mode 2 freshness) · `… platform-ingest.md … pack=<id>` (Mode 3) · or `"add rule to pack <id>: …"` (Mode 1) |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 | After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation + E2E plan | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D/F/G in `platform-maintainer-agent.md` |
 
@@ -155,12 +156,16 @@ Agent Platform Bootstrap (framework repo)
 ├── AGENT-PLATFORM-TEMPLATES/      ← SHIPS TO CONSUMER REPOS on install
 │   ├── .agent/agents/             ← 9 expert agents (with PLATFORM/PROJECT sections)
 │   ├── .agent/playbooks/          ← 20 playbooks (with PLATFORM section)
+│   ├── .agent/packs/              ← opt-in packs (language/stack/platform/domain) + shared README; user.overlay.md is user-owned
+│   ├── .agent/tools/              ← agent-run tool docs (upgrade.md, packs.md, uninstall.md, …)
 │   ├── .agent/CONVENTIONS.md      ← coding conventions (with PLATFORM/PROJECT sections)
+│   ├── .claude/ · .cursor/ · .agents/ · .codex/ · .opencode/  ← 5 IDE private folders (commands, prompts, rules)
+│   ├── opencode.json              ← OpenCode root config (instructions → AGENTS.md + .opencode/sync.md)
 │   ├── global/                    ← USER-LEVEL STUBS (scope=global) — installed to ~/ via --mode=global
 │   │   ├── .claude/CLAUDE.md      ←   global activation stub for Claude Code
 │   │   ├── .cursor/rules/         ←   alwaysApply global rule for Cursor
 │   │   ├── .codex/instructions.md ←   global activation stub for Codex
-│   │   └── .agents/rules/         ←   global activation stub for Antigravity
+│   │   └── .agents/rules/         ←   global activation stub for Antigravity (OpenCode is per-project, no global stub)
 │   └── ... (all other installed files)
 │
 ├── AGENT-PLATFORM-MANIFEST.json   ← template registry + bootstrap_version
@@ -168,11 +173,11 @@ Agent Platform Bootstrap (framework repo)
 ├── bin/agent-platform.js          ← npx entry point
 ├── AGENT-PLATFORM-FRAMEWORK-README.md  ← USER documentation
 ├── CHANGELOG.md                   ← version history (MUST be updated before release)
-├── tests/                         ← 76 integration + unit tests (run on every commit)
+├── tests/                         ← integration + unit tests (run on every commit)
 └── tools/release.ps1              ← single command for versioning + tagging + GitHub release
 ```
 
-> Test count: `npm test` runs 192 assertions (~3s). Count grows as governance phases add coverage.
+> Test count: `npm test` runs 264 assertions (~3s). Count grows as governance phases and packs add coverage.
 
 ---
 
@@ -185,12 +190,12 @@ Scope 1 — Project (per repo)                Scope 2 — Global (per user, per 
 ─────────────────────────────────────────   ──────────────────────────────────────────────
 [repo]/.agent/                              ~/.claude/CLAUDE.md
 [repo]/.claude/                             ~/.claude/commands/  (lifecycle + caveman)
-[repo]/.cursor/commands/                  ~/.cursor/commands/  (lifecycle + /implement)
-[repo]/.cursor/                             ~/.cursor/rules/agent-platform-global.mdc
-[repo]/.agents/                             ~/.codex/instructions.md
-[repo]/.codex/                              ~/.agents/rules/agent-platform-global.md
+[repo]/.cursor/                             ~/.cursor/commands/  (lifecycle + /implement)
+[repo]/.agents/                             ~/.cursor/rules/agent-platform-global.mdc
+[repo]/.codex/                              ~/.codex/instructions.md
+[repo]/.opencode/  + opencode.json          ~/.agents/rules/agent-platform-global.md
 [repo]/AGENTS.md                            ~/.agent-platform/global-version
-[repo]/CLAUDE.md
+[repo]/CLAUDE.md                            (OpenCode: per-project only — no global stub)
 
 Install:   npx ... (no flags)               Install:   npx ... --mode=global
 Uninstall: npx ... --mode=uninstall         Uninstall: npx ... --mode=uninstall-global
@@ -355,7 +360,7 @@ Processed files move to `MAINTAINER/ingest/archive/YYYY-MM-DD/` automatically.
 
 The platform runs on **5 frameworks** (Claude Code, Cursor, Antigravity, Codex, OpenCode). Every change to agent behaviour, routing, or session instructions must be applied to all five. Missing one means that framework silently diverges.
 
-### Always-loaded files — check all four on every behavioural change
+### Always-loaded files — check all five on every behavioural change
 
 | Framework | Always-loaded file |
 |---|---|
@@ -363,9 +368,10 @@ The platform runs on **5 frameworks** (Claude Code, Cursor, Antigravity, Codex, 
 | Cursor | `AGENT-PLATFORM-TEMPLATES/.cursor/rules/platform-core.mdc` |
 | Antigravity | `AGENT-PLATFORM-TEMPLATES/.agents/rules/00-multi-framework-sync.md` |
 | Codex | `AGENT-PLATFORM-TEMPLATES/.codex/instructions.md` |
+| OpenCode | `AGENT-PLATFORM-TEMPLATES/.opencode/sync.md` (loaded via `opencode.json` → `instructions: [AGENTS.md, .opencode/sync.md]`) |
 
-Session-start is shared (`session-start-shared.md`) — one change covers all four. ✅  
-Routing table (`AGENTS.md`) is shared — one change covers all four. ✅  
+Session-start is shared (`session-start-shared.md`) — one change covers all five. ✅  
+Routing table (`AGENTS.md`) is shared — one change covers all five. ✅  
 Always-loaded framework files are NOT shared — each must be updated individually. ⚠️
 
 ### Checklist before every commit that touches routing or session behaviour
@@ -375,8 +381,9 @@ Always-loaded framework files are NOT shared — each must be updated individual
 - [ ] `.cursor/rules/platform-core.mdc` — auto-routing section consistent with AGENTS.md
 - [ ] `.agents/rules/00-multi-framework-sync.md` — auto-routing section consistent with AGENTS.md
 - [ ] `.codex/instructions.md` — auto-routing section consistent with AGENTS.md
+- [ ] `.opencode/sync.md` — auto-routing section consistent with AGENTS.md
 - [ ] No conflicting instructions in any framework file (no "silently", no "never announce" if ▶ prefix is active)
-- [ ] Session-awareness notice: same text and logic in all four files
+- [ ] Session-awareness notice: same text and logic in all five files
 
 ### How to audit consistency quickly
 
@@ -385,7 +392,8 @@ grep -rn "announce\|silently\|▶\|status prefix\|auto-routing" \
   AGENT-PLATFORM-TEMPLATES/CLAUDE.md \
   AGENT-PLATFORM-TEMPLATES/.cursor/rules/platform-core.mdc \
   AGENT-PLATFORM-TEMPLATES/.agents/rules/00-multi-framework-sync.md \
-  AGENT-PLATFORM-TEMPLATES/.codex/instructions.md
+  AGENT-PLATFORM-TEMPLATES/.codex/instructions.md \
+  AGENT-PLATFORM-TEMPLATES/.opencode/sync.md
 ```
 
 Any result containing "never announce" or "silently" after routing changes is a bug.

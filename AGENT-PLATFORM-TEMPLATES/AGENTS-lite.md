@@ -20,7 +20,7 @@
 | Evidence | `/verify` | `verification-before-completion` skill |
 | Ship | `/ship` | `release` playbook |
 
-**Cursor:** commands in `.cursor/commands/` · **Claude Code:** `.claude/commands/` or Claude marketplace plugin
+**Cursor:** commands in `.cursor/commands/` · **Claude Code:** `.claude/commands/` or Claude marketplace plugin · **OpenCode:** `.opencode/commands/`
 
 ## Auto-routing (describe your task — agent loads skill or playbook)
 

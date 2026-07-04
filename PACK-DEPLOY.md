@@ -64,7 +64,7 @@ Start your first session — paste into your AI agent chat (not the terminal):
 Read .agent/session-start.md and execute it.
 ```
 
-Works in: Claude Code · Cursor · Antigravity · Codex
+Works in: Claude Code · Cursor · Antigravity · Codex · OpenCode
 
 ---
 

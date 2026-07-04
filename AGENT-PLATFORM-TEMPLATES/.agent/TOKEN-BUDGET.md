@@ -108,6 +108,6 @@ At output token prices (~3× input), 650 saved output tokens = ~1,950 equivalent
 - Your source code (never read unless you ask the agent to)
 - Test files (never read unless you ask)
 - Build artifacts, lock files, environment files
-- Any file outside `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`
+- Any file outside `.agent/`, `.claude/`, `.cursor/`, `.agents/`, `.codex/`, `.opencode/`
 
 The platform installs coordination files. It does not monitor, scan, or index your codebase in the background.
