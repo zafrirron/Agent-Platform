@@ -12,6 +12,7 @@
 | Web ecosystem audit | `web-audit.md` | F001 / E001… | `web-audit/` |
 | User submission ingest | `platform-ingest.md` | I001… | `ingest/` |
 | GitHub ecosystem scan | `github-governance-scan.md` | R001… | `mode4/` |
+| Solution blueprint (Mode 5) | `solution-blueprint.md` | (delegates to build-pack/pack=) | `blueprint/` |
 
 **Mode 4 variants:** discovery (quarterly search) · **targeted** (`repo=owner/name` — skip search, deep-read one repo for adoption ideas) · **pack-scoped** (`repo=owner/name pack=<id>` — grow a stack/domain pack brain; findings target `.agent/packs/<id>/`, not core)
 

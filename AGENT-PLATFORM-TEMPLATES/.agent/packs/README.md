@@ -116,6 +116,21 @@ Packs follow the same preservation contract as the rest of the platform: **anyth
 
 > To pull a newer shipped pack, delete the pack folder and re-add it. `user.overlay.md` is the only file you must keep — back it up (or keep it out of the deleted set) and it carries all your customizations onto the new version.
 
+## Private & proprietary packs — fork the platform
+
+Packs are where a **company's IP / secret sauce** belongs — a proprietary domain brain, an internal framework's conventions, a classified system's reference architecture. Keep that out of the public platform by **forking into a private repo and building your packs there**:
+
+1. **Fork** the platform to a private repo (e.g. `your-org/Agent-Platform`). The generic **core carries no domain/IP** by design, so periodically merging upstream `main` keeps your core current with no conflicts — your work lives in packs, not core files.
+2. **Build packs in the fork.** Author `.agent/packs/<company>-<x>/` there (the platform maintainer tooling can generate them). The pack files and their provenance stay in the private repo — nothing proprietary reaches the public project.
+3. **Install from the fork.** Your fork's manifest points the installer at itself, so teams run `npx github:your-org/Agent-Platform …` and get the generic core **plus** your private packs, activated per project with the usual *"scan my repo for packs"* / *"activate the X pack"* prompts.
+4. **Per-project secrets** (specific to one repo, not reusable org-wide) stay in that repo's `user.overlay.md` — never in any manifest, never shared.
+
+| Layer | Lives in | Shared with |
+|-------|----------|-------------|
+| Generic core | public platform / upstream of your fork | everyone |
+| Company packs (IP) | **your private fork** `.agent/packs/*` | your org |
+| Per-project rules | this repo's `user.overlay.md` | this project only |
+
 ## Activate / list — just ask your agent
 
 This is an agentic platform: **you never type a terminal command.** Prompt your agent in plain language and it runs the right action (it follows `.agent/tools/packs.md`):

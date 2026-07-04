@@ -18,6 +18,22 @@
 
 ---
 
+### [Unreleased] — 2026-07-04 — Docs: maintainer job clarified (base vs packs) + private-fork pattern surfaced
+
+**Failure observed (gap):** the 5 maintainer modes existed but no single doc explained the **maintainer's job** as two lanes (core vs packs), how the modes map to each lane, the **pack expansion lifecycle**, or the **cadence** of standard updates. Separately, there was no sanctioned answer to "where does my company IP / secret-sauce pack go?" — a critical question since real projects (and their packs) will be built in **forks**, not the public repo.
+
+**Files changed (docs only):**
+- `MAINTAINER/GUIDE.md` — meta-philosophy note broadened to 4 source-modes + Mode 5 orchestration; new **"The maintainer's job — base platform vs packs"** section (two-lane table, 5-modes×2-lanes matrix, pack lifecycle diagram, core-vs-pack cadence table); new **"Private & proprietary packs — fork to a private repo"** section (fork→build→install→upstream-merge flow + IP layering table + maintainer guidance).
+- `.agent/packs/README.md` — new **"Private & proprietary packs — fork the platform"** section (ships to users).
+- `README.md`, `AGENT-PLATFORM-FRAMEWORK-README.md`, `docs/DISTRIBUTION.md` — private-fork bullet + Mode 5 (Solution Blueprint) called out in the packs sections.
+- `presentation/agent-platform-beta.html`, `presentation/team-adoption.html` — packs slide now shows Mode 5 blueprint + the private/proprietary fork pattern; "4 maintainer modes" reworded to "4 improvement-source modes + Mode 5 orchestration".
+
+**Rule added:** Company IP belongs in **packs in a private fork**, never the public core; the generic core stays universal and merges upstream conflict-free because all specificity lives in packs (and per-project secrets in `user.overlay.md`).
+
+**Validated:** N/A (docs only) — `npm test` unaffected.
+
+---
+
 ### [Unreleased] — 2026-07-04 — `domain-c4i` v1.3.0 — Mode 3 ingest of internal C2 engineer UI/UX skill (operator cognition)
 
 **Source:** User — an internal C2 engineer submitted `c2_ui_ux_skill.md`; "analyze what shall we adopt" → "proceed with recommendations". First pack-lane **Mode 3 ingest (PACK-CANDIDATE)** into `domain-c4i`.
@@ -93,6 +109,25 @@
 **Rule added:** a `domain` pack carries **only** application capabilities, operator UI/UX, and domain information semantics; every technology signal (transport, middleware, rendering engine, codec, hardware/OS, language) is routed to **Adjacent pack candidates** and recorded in the per-pack ledger's Do-not-re-propose list, never merged into the domain brain. Full-motion video **UI/UX** (feeds-as-COP-citizens, slew-to-cue, video-on-map, DVR/replay) is domain; only the raw codec/transport primitive is adjacent (`stack-fmv-decode`).
 
 **Validated:** Yes — `npm test` 265/265 green; manifest parses; every declared overlay/reference/routing asset exists on disk; `reference_sources[]` complete (repo+url+license). Reference-source licenses flagged "verify before code reuse" in `pack.json` + ledger.
+
+---
+
+### [Unreleased] — 2026-07-04 — Maintainer Mode 5: Solution Blueprint (multi-axis pack decomposition + approval gates)
+
+**Source:** User — "let's put a maintainer pattern that helps design 4-axis pack building flow" (drone-mission example: NVIDIA edge module + visual AI on gimbal + radar-guided flight + radar→visual handoff) → "build mode 5, add approval gates so [maintainer] may reject some stacks/platforms/languages… out of scope."
+
+**Failure observed (gap):** all pack growth was **bottom-up** — the maintainer had to already know a single pack id (`build-pack=<id>`, `pack=<id>`). There was no **top-down** path to state a whole system/mission goal and have the platform decompose it into the packs it needs across all four axes, propose several candidates per axis, and let the maintainer approve/reject each before anything is built. A real system needs a *coordinated pack set*, not four disconnected packs discovered one at a time.
+
+**Files changed (maintainer workflow / docs only — no consumer template change):**
+- **New** `MAINTAINER/solution-blueprint.md` — Mode 5 workflow: S1 parse brief · S2 axis decomposition (decision table) · S3 dedup vs catalog+ledgers · S4 present matrix · **S5 per-candidate approval gates** · S6 orchestrated delegation to `build-pack=`/`pack=` · S7 composition note + archive + registry. Includes guardrails + selection-command summary.
+- `MAINTAINER/platform-maintainer-agent.md` — registered Mode 5 in the modes list + a Mode 5 section (selection commands, approval-gate semantics).
+- `MAINTAINER/scan-results/REPORT-SCHEMA.md` — `blueprint` mode + scope + solution-blueprint archive path (matrix, approvals, **out-of-scope exclusions**, bundle, build order).
+- `MAINTAINER/scan-results/registry.md` — Mode 5 row in the modes table (`blueprint/` archive).
+- `MAINTAINER/GUIDE.md` — sixth maintainer tool + toolbox row + "plan a whole system's pack set" cheatsheet row + repo-layout tree (`solution-blueprint.md`, `blueprint/`).
+
+**Rule added (approval-gate + out-of-scope guard):** Mode 5 **never auto-builds** — at S5 the maintainer approves/rejects **per candidate or per axis** (`Reject stack-gstreamer` / `Reject axis:language`). Every rejection is recorded as an **out-of-scope exclusion with a reason** in the blueprint archive AND pre-seeded into each built pack's ledger `Adjacent pack candidates` as `skipped — out of scope (blueprint <slug>)`, so the existing cross-axis discovery (Phase B2) + per-pack dedup ledger make the veto **sticky** — a later scan cannot resurrect vetoed tech. Mode 5 is an orchestrator: it delegates real brain-building to Mode 2 `build-pack=`/`pack=`, each of which keeps its own findings-selection, PSG pack lane, and ledger (tagged `via blueprint <slug>`); axis discipline is enforced by the S2 decision table.
+
+**Validated:** Docs-only, maintainer-only; `npm test` 265/265 green (no consumer template/manifest/test change). First real exercise pending a dry-run (`build=no`) on the drone-mission brief.
 
 ---
 

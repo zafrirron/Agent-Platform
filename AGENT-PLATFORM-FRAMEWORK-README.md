@@ -70,8 +70,9 @@ The platform core deliberately gives **general** software-engineering discipline
 - **Detect-and-suggest** — the installer inspects your project (dependency manifests, `tsconfig.json`/`pom.xml`/`CMakeLists.txt`, source extensions) and *suggests* matching packs — never auto-installs.
 - **Overlays, not new experts** — a pack refines a generic expert only while active; core files are never touched.
 - **Your rules survive updates** — add pack-specific rules to `.agent/packs/<id>/user.overlay.md` (user-owned, never in the manifest); no upgrade/force/re-install touches it.
-- **Grows over time** — all four maintainer modes (GitHub scan, web audit incl. greenfield `build-pack=<id>` ecosystem scan, user ingest, hand-authored) can grow a pack's brain on an independent lane that never blocks a core release.
+- **Grows over time** — the four improvement-source maintainer modes (GitHub scan, web audit incl. greenfield `build-pack=<id>` ecosystem scan, user ingest, hand-authored) grow a pack's brain on an independent lane that never blocks a core release; a fifth mode, **Solution Blueprint**, decomposes a whole system goal into a coordinated pack set across all four axes with per-candidate approval gates.
 - **Domain reference architectures** — with a domain pack active, ask *"give me a reference architecture for a fintech app"* → the agent reads the pack's `reference-architecture.md` and points you at the linked real-world source repos (license-aware).
+- **Private & proprietary packs** — packs are where company IP belongs, not the public core. **Fork the platform to a private repo, build your packs there, and install from the fork** — teams get the generic core *plus* your private packs; per-project secrets stay in `user.overlay.md`. See the pack spec `.agent/packs/README.md`.
 
 Full user guide: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · spec: `.agent/packs/README.md` · design: [MAINTAINER/adr/ADR-001-stack-domain-packs.md](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 

@@ -27,9 +27,9 @@ Loop continues                                                                  
                                                                             Submissions archived
 ```
 
-**The platform gets smarter from three sources: real failures, the global knowledge ecosystem, AND production-proven rules from users.**
+**The platform gets smarter from four sources: real failures, the global knowledge ecosystem, production-proven user rules, AND the open-source GitHub ecosystem (Mode 4).** A fifth mode — **Mode 5 (Solution Blueprint)** — doesn't add a new source; it **orchestrates** the others across a whole system goal (see below).
 
-> Each source feeds **two lanes**: universal rules improve the **core**; language/stack/platform/domain-specific rules improve **packs** (Mode 4 `repo=… pack=`, Mode 2 `pack=`, Mode 3 `pack=` / PACK-CANDIDATE, Mode 1 `add rule to pack`). Pack changes use the independent PSG pack lane and never block a core release.
+> Each source feeds **two lanes**: universal rules improve the **core**; language/stack/platform/domain-specific rules improve **packs** (Mode 4 `repo=… pack=`, Mode 2 `pack=`/`build-pack=`, Mode 3 `pack=` / PACK-CANDIDATE, Mode 1 `add rule to pack`, Mode 5 orchestrates multi-pack builds). Pack changes use the independent PSG pack lane and never block a core release.
 
 ---
 
@@ -48,7 +48,7 @@ The maintainer agent knows the full framework structure, the section model, the 
 
 ## Maintainer toolbox — what to use and when
 
-There are five maintainer tools. Each has a distinct trigger and a distinct output.
+There are six maintainer tools. Each has a distinct trigger and a distinct output.
 
 | Tool | File | Trigger | Output |
 |------|------|---------|--------|
@@ -58,6 +58,7 @@ There are five maintainer tools. Each has a distinct trigger and a distinct outp
 | **Targeted site scan** (Mode 2 `url=`) | `web-audit.md` | You want to point the scanner at one **non-repo website** (a product/service/docs/standards site) in a domain | Best-practice + feature-idea findings from that site; core lane, or `url=… pack=<id>` to route into any-axis pack (untrusted content + IP-safe: distil, never clone) |
 | **User submission ingest** (Mode 3) | `platform-ingest.md` | User drops their agent/playbook/convention files into `MAINTAINER/ingest/`; add `pack=<id>` to feed a pack | Structured findings I001-Ixxx (core lane) **+ PACK-CANDIDATE findings routed into language/stack/platform/domain packs** |
 | **GitHub ecosystem scan** (Mode 4) | `github-governance-scan.md` | Quarterly discovery **or** `repo=owner/name` targeted **or** `repo=… pack=<id>` to grow a stack/domain pack brain | Structured findings R001-Rxxx + Recommended adoption table (targeted/pack) |
+| **Solution Blueprint** (Mode 5) | `solution-blueprint.md` | You can state a whole **system/mission goal** and want the pack set it needs across all 4 axes | 4-axis pack plan (domain/stack/platform/language) with **per-candidate approval gates** (reject out-of-scope stacks/platforms/languages), then orchestrated `build-pack=`/`pack=` builds + a composition note in the domain pack |
 
 **The improvement cycle always ends the same way regardless of which tool triggered it:**
 Template change → log in `platform-improvements.md` → **Platform Sync Gate (PSG)** → CHANGELOG `[Unreleased]` → `npm test` → (when ready) release via `tools/release.ps1`.
@@ -106,10 +107,95 @@ It is NOT a replacement for Mode 1/2/3 improvement. It's the quality gate that c
 | Monthly | Web ecosystem check (OWASP, CWE, best practices, **skill packs Phase 2F**) | `Read MAINTAINER/web-audit.md and execute it.` |
 | Quarterly | Full ecosystem scan + emerging practices | `Read MAINTAINER/web-audit.md and execute it. scope=full` |
 | Quarterly | GitHub ecosystem scan — discovery **or** targeted `repo=` | `Read MAINTAINER/github-governance-scan.md and execute it.` · targeted: `… repo=owner/name` |
+| **Plan a whole system's pack set** | State a mission/system goal → 4-axis pack plan with per-candidate approval gates → orchestrated builds | `Read MAINTAINER/solution-blueprint.md and execute it. blueprint="<brief>"` (Mode 5; add `build=no` to dry-run) |
 | **Build a NEW pack brain (greenfield)** | Author a new language/stack/platform/domain pack from the whole web ecosystem (standards, specs, reference apps, threat models, compliance) — not one repo | `… web-audit.md … build-pack=<id>` (Mode 2 — pack ecosystem build scan) |
 | Grow an EXISTING pack brain | From a repo/app, docs freshness pass, user submissions, or a hand-written rule | `… github-governance-scan.md … repo=owner/name pack=<id>` (Mode 4) · `… web-audit.md … pack=<id>` (Mode 2 freshness) · `… platform-ingest.md … pack=<id>` (Mode 3) · or `"add rule to pack <id>: …"` (Mode 1) |
 | After OWASP update | Security-focused subset | Run Mode 2 Phase 1 only |
 | After shipping user-visible capabilities (v2.38+) | Sync user-facing docs + presentation + E2E plan | `"Sync user-facing docs for vX.Y.Z"` via maintainer agent — see checklist §D/F/G in `platform-maintainer-agent.md` |
+
+---
+
+## The maintainer's job — base platform vs packs
+
+Everything the maintainer does falls into **two lanes**. Being explicit about which lane you're in is the single most important habit.
+
+| | **Core lane (base platform)** | **Pack lane** |
+|---|---|---|
+| **What it holds** | Universal software-engineering discipline — experts, playbooks, skills, conventions. Ships to **every** consumer repo on `--mode=upgrade`. | Language/stack/platform/domain-specific knowledge — opt-in overlays users activate per project. Versioned & released **independently** of core. |
+| **Bar** | Must generalize to *any* project. Stack/domain specifics are **rejected**. | Specificity is **the point**. Non-universal by design. |
+| **Sync** | Full PSG (manifests, user docs, presentation, tests, counts). | PSG **pack lane** only (pack files + manifest `packs_catalog`/`kind:"pack"` + pack test + ledger). Never touches core counts. |
+| **Release impact** | A change here is a platform release (`bootstrap_version`). | A stale/immature pack **never blocks a core release**; packs carry their own `pack.json` `version`. |
+
+### The 5 modes across both lanes
+
+| Mode | Core lane (base) | Pack lane |
+|------|------------------|-----------|
+| **1 — Manual** | `add rule to <expert>` / `add step to <playbook>` | `add pack <id>` · `add rule to pack <id>` |
+| **2 — Web audit** | monthly OWASP/CWE/best-practice findings → experts | `build-pack=<id>` (greenfield build) · `pack=<id>` (freshness) · `url=<site> pack=<id>` (one site) |
+| **3 — User ingest** | production-proven universal rules → experts | `pack=<id>` / **PACK-CANDIDATE** (a user's stack/domain rules) |
+| **4 — GitHub scan** | coordination/skill-pack capabilities → platform | `repo=owner/name pack=<id>` (deep-read one app/repo into a pack) |
+| **5 — Solution Blueprint** | *(orchestration — no direct core writes)* | `blueprint="<system goal>"` → decompose into a 4-axis pack set → **approve/reject per axis** → delegate to `build-pack=`/`pack=` |
+
+### How a pack is expanded & enhanced (lifecycle)
+
+```
+build-pack=<id>        author the brain from the whole web ecosystem   (bootstrap)
+      ↓
+pack=<id>              docs/release freshness pass                      (keep current)
+      ↓
+repo=…pack=<id>        deep-read a specific real app/repo into it       (deep-dive a find)
+      ↓
+Mode 3 pack=<id>       a user/engineer's production-proven rules         (field-hardening)
+      ↓
+add rule to pack <id>  a hand-authored rule                             (targeted fix)
+```
+Mode 5 sits **above** this loop: for a whole system it fans the bootstrap step out across all four axes at once, with approval gates. Every step reads the **per-pack dedup ledger** first and updates it after, so nothing is processed twice and rejected items never re-surface.
+
+### Cadence — standard maintainer updates
+
+| Cadence | Core lane | Pack lane |
+|---------|-----------|-----------|
+| **Anytime (event-driven)** | `add rule` on an observed failure; Mode 3 when a user submits | `add rule to pack`; Mode 3 PACK-CANDIDATE; new pack via `build-pack=` or Mode 5 when a project needs it |
+| **Monthly** | Mode 2 web audit (OWASP/CWE) | `pack=<id>` freshness on the most-used packs |
+| **Quarterly** | Mode 2 `scope=full`; Mode 4 discovery; internal platform audit | `pack=<id>` freshness sweep on all active packs; re-check each pack's ledger "next iteration hints" (~6-month source re-verification) |
+| **Per new project/system** | — | Mode 5 `blueprint="…"` to stand up the pack set; then normal per-pack growth |
+| **Before a release** | internal audit + `"Sync user-facing docs for vX.Y.Z"` | verify changed packs' PSG pack lane; list added/updated packs in release notes |
+
+**In one sentence:** the maintainer keeps the **core** universally excellent and up to date, and grows **packs** wherever real projects need depth — using the same five modes, but on the independent pack lane, and reaching for **Mode 5** when a whole system needs a coordinated pack set.
+
+---
+
+## Private & proprietary packs — fork to a private repo
+
+Packs are where a **company's IP and secret sauce** live (a proprietary domain brain, an internal stack's conventions, a classified system's reference architecture). That content must **not** go into the public platform. The supported pattern:
+
+**Fork the platform into a private repo and build your packs there.**
+
+```
+public Agent-Platform  ──fork──▶  your-org/Agent-Platform  (PRIVATE)
+   (generic core)                       │
+   pull core updates ◀──────────────────┤  ← keep the generic core current from upstream
+                                         │
+                                        build your packs here (Mode 5 / build-pack= / add pack)
+                                         │
+                        your teams install from the private fork
+```
+
+**How it works and why it's clean:**
+1. **Core stays generic, keeps flowing.** The public core carries zero domain/IP by design (that's the whole "agnostic core" principle). Your private fork periodically merges upstream `main` to get core improvements — no conflicts, because your work lives in **packs**, not core files.
+2. **Packs carry the IP — and stay private.** Run Mode 5 / `build-pack=` / `add pack` **inside the fork**. The pack files (`.agent/packs/<company>-<x>/`), their ledgers, and the maintainer scan archives all live in the private repo. Nothing proprietary is ever pushed to the public project.
+3. **Teams install from the fork.** Point the installer at your fork (the fork's `AGENT-PLATFORM-MANIFEST.json` sets `platform_repo` / `platform_npx`): `npx github:your-org/Agent-Platform …`. Your developers get the generic core **plus** your private packs, activated per project via the normal *"scan my repo for packs"* / *"activate the X pack"* prompts.
+4. **Per-project secrets stay out of the pack too.** Anything specific to a single repo/deployment (not reusable across the company's projects) belongs in that repo's `user.overlay.md` — it's never in any manifest and never leaves the repo.
+
+**Layering summary (least → most sensitive):**
+
+| Layer | Lives in | Shared with |
+|-------|----------|-------------|
+| Generic core | public platform (or upstream of your fork) | everyone |
+| Company packs (IP / secret sauce) | **your private fork** `.agent/packs/*` | your org |
+| Per-project rules | the project repo's `user.overlay.md` | that project only |
+
+**Maintainer guidance:** treat your private fork as your pack factory. Keep core changes minimal (prefer contributing universal improvements back upstream) so upstream merges stay trivial; put all specificity in packs. This keeps the platform IP-safe *and* keeps you current with the public core — you get the best of both without ever exposing proprietary knowledge.
 
 ---
 
@@ -146,10 +232,11 @@ Agent Platform Bootstrap (framework repo)
 │   │   └── archive/                   ←   processed submissions (auto-created on first ingest)
 │   ├── platform-improvements.md       ← improvement log (all rules traced to source)
 │   ├── github-governance-scan.md      ← Mode 4: quarterly GitHub scan (coordination + skill packs)
+│   ├── solution-blueprint.md          ← Mode 5: system goal → 4-axis pack plan + orchestrated builds
 │   ├── scan-results/                  ← UNIFIED scan registry (all modes — read before every scan)
 │   │   ├── registry.md                ←   findings + dispositions + actions taken
 │   │   ├── REPORT-SCHEMA.md           ←   required report format
-│   │   ├── mode4/ · web-audit/ · ingest/ · internal/  ← per-mode archives
+│   │   ├── mode4/ · web-audit/ · ingest/ · internal/ · blueprint/  ← per-mode archives
 │   │   ├── packs/                     ←   per-pack dedup ledgers (packs/<id>.md — pack-scoped mirror of registry.md)
 │   └── governance-scan/               ← Mode 4 legacy output (mirrored to scan-results/)
 │       ├── scan-log.md                ←   Mode 4 summary (points to registry.md)

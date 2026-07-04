@@ -22,6 +22,7 @@ Task: [describe your platform improvement goal]
 - **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
 - **Mode 4 — GitHub agent ecosystem scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
 - **Mode 4 — Targeted repo adoption scan:** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`
+- **Mode 5 — Solution Blueprint (state a system goal → 4-axis pack plan → approve/reject per axis → orchestrated builds):** `Read MAINTAINER/solution-blueprint.md and execute it. blueprint="<mission/system brief>"` (add `build=no` for a plan-only dry run)
 
 > **You never need to remind the agent to sync manifests, docs, changelog, tests, or presentation.**
 > Every maintainer task ends with the **Platform Sync Gate (PSG)** below — automatically, before "done".
@@ -550,6 +551,32 @@ features or architectural patterns the platform could adopt.
 **Scan log:** `MAINTAINER/governance-scan/scan-log.md` — running record of all scanned repos, findings, and dispositions. Prevents re-analyzing the same repos within 6 months.
 
 **Archive:** `MAINTAINER/governance-scan/archive/YYYY-MM-DD/scan-report.md` — full report from each scan run.
+
+---
+
+## Mode 5 — Solution Blueprint (multi-axis pack decomposition & build orchestration)
+
+**Triggered by:** `Read MAINTAINER/solution-blueprint.md and execute it. blueprint="<mission/system brief>"` (add `build=no` for plan-only).
+
+See `MAINTAINER/solution-blueprint.md` for the full workflow.
+
+Unlike Modes 1–4 (which grow **one** pack from a known id/source), Mode 5 is **top-down orchestration**: the maintainer states a *system/mission goal*, and the mode **decomposes it into the four pack axes** (`domain`/`stack`/`platform`/`language`), proposes candidate packs per axis, dedups against `packs_catalog` + ledgers, then — **after per-candidate approval gates** — delegates each approved pack to the existing engine (`build-pack=<id>` for NEW, `pack=<id>` for ENHANCE). It never scans or writes brains itself and **never auto-builds**.
+
+**Approval gates (the maintainer's veto — required):** at Phase S5 the maintainer approves/rejects **per candidate or per axis**. `Reject stack-gstreamer` / `Reject axis:language` excludes that tech; every rejection is recorded as an **out-of-scope exclusion** and pre-seeded into built packs' ledgers so cross-axis discovery (Phase B2) can never resurrect it. This lets the maintainer keep out stacks/platforms/languages that are known out of scope before any pack is built.
+
+### Selection commands (Phase S5)
+
+| You say | Agent does |
+|---------|-----------|
+| `Approve all ★` | Builds/enhances only the top-ranked candidate per axis |
+| `Approve <id>[, <id>…]` / `Approve axis:<axis>` | Builds/enhances exactly those |
+| `Reject <id>[, <id>…]` / `Reject axis:<axis>` | **Excludes — never built; logged out-of-scope; sticky across future scans** |
+| `Defer <id>` | Backlog (not built, not excluded) |
+| `Reuse <id>` | Activate-only, no build |
+| `Modify <id> → <new-id>` | Re-scope a candidate before building |
+| `Skip all` | Archive plan, build nothing |
+
+Each approved build runs its own findings-selection, **PSG pack lane**, and per-pack ledger (tagged `via blueprint <slug>`). The composition (which packs compose for the mission) is written into the primary **domain** pack's `reference-architecture.md`; an optional named **solution bundle** lets the installer later suggest the pack set together. Mode 5 itself is maintainer-only; only the delegated builds touch pack files.
 
 ---
 
