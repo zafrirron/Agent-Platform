@@ -54,7 +54,7 @@ Maintainers route serious proposals through **Mode 3 ingest** (see `MAINTAINER/p
 
 1. Fork and clone `https://github.com/zafrirron/Agent-Platform`
 2. Edit under `AGENT-PLATFORM-TEMPLATES/` (installed files are gitignored in consumer repos)
-3. Run `npm test` — integration tests must pass (currently 264)
+3. Run `npm test` — integration tests must pass (currently 265)
 4. Run **PSG** — see `MAINTAINER/platform-maintainer-agent.md` § Platform Sync Gate (manifests, all user docs, presentation, E2E, CHANGELOG)
 5. Run `npm test` — must pass
 6. Log the improvement in `MAINTAINER/platform-improvements.md`

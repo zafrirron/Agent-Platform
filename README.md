@@ -516,7 +516,7 @@ $Repo = "YOUR_ORG/YOUR_REPO_NAME"
 
 **Step 5** — Verify everything is wired:
 ```bash
-npm test   # 264 tests must pass
+npm test   # 265 tests must pass
 ```
 
 **Step 6** — Deploy to your team:

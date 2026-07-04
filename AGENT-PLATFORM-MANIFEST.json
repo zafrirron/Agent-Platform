@@ -51,7 +51,8 @@
     { "id": "language-cpp", "kind": "language", "display_name": "C++", "description": "C++ ownership/RAII, memory safety, UB and rule-of-5 pitfalls", "detect": { "files": ["CMakeLists.txt", "conanfile.txt", "vcpkg.json"], "deps": [], "extensions": [".cpp", ".cc", ".cxx", ".hpp"] } },
     { "id": "stack-react", "kind": "stack", "display_name": "React", "description": "React idioms, hook/render pitfalls, perf traps", "detect": { "deps": ["react", "react-dom"], "globs": ["**/*.tsx", "**/*.jsx"] } },
     { "id": "stack-django", "kind": "stack", "display_name": "Django", "description": "Django ORM/N+1, migrations, settings/security pitfalls", "detect": { "files": ["manage.py"], "deps": ["django", "Django"], "globs": ["**/settings.py"] } },
-    { "id": "domain-fintech", "kind": "domain", "display_name": "Fintech / Payments", "description": "Double-entry ledger, PCI, idempotent money ops + reference architecture", "detect": { "deps": ["stripe", "plaid", "braintree", "adyen"] } }
+    { "id": "domain-fintech", "kind": "domain", "display_name": "Fintech / Payments", "description": "Double-entry ledger, PCI, idempotent money ops + reference architecture", "detect": { "deps": ["stripe", "plaid", "braintree", "adyen"] } },
+    { "id": "domain-c4i", "kind": "domain", "display_name": "C2 / C4ISR (Command & Control)", "description": "Common operating picture, C2 information model, symbology, FMV, DIL-tolerant operator UX + reference architecture", "detect": { "deps": ["pytak", "takproto"], "keywords": ["common operating picture", "situational awareness", "c4isr", "cursor on target", "mil-std-2525"] } }
   ],
   "files": [
     {
@@ -1295,6 +1296,18 @@
     { "path": ".agent/packs/domain-fintech/security-agent.overlay.md", "template": ".agent/packs/domain-fintech/security-agent.overlay.md", "kind": "pack" },
     { "path": ".agent/packs/domain-fintech/references/reference-architecture.md", "template": ".agent/packs/domain-fintech/references/reference-architecture.md", "kind": "pack" },
     { "path": ".agent/packs/domain-fintech/references/fintech-compliance.md", "template": ".agent/packs/domain-fintech/references/fintech-compliance.md", "kind": "pack" },
-    { "path": ".agent/packs/domain-fintech/routing.md", "template": ".agent/packs/domain-fintech/routing.md", "kind": "pack" }
+    { "path": ".agent/packs/domain-fintech/routing.md", "template": ".agent/packs/domain-fintech/routing.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/pack.json", "template": ".agent/packs/domain-c4i/pack.json", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/architect-agent.overlay.md", "template": ".agent/packs/domain-c4i/architect-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/frontend-agent.overlay.md", "template": ".agent/packs/domain-c4i/frontend-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/backend-agent.overlay.md", "template": ".agent/packs/domain-c4i/backend-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/security-agent.overlay.md", "template": ".agent/packs/domain-c4i/security-agent.overlay.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/routing.md", "template": ".agent/packs/domain-c4i/routing.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/references/reference-architecture.md", "template": ".agent/packs/domain-c4i/references/reference-architecture.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/references/c4i-capabilities.md", "template": ".agent/packs/domain-c4i/references/c4i-capabilities.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/references/c4i-ux.md", "template": ".agent/packs/domain-c4i/references/c4i-ux.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/references/c4i-video.md", "template": ".agent/packs/domain-c4i/references/c4i-video.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/references/symbology-sidc.md", "template": ".agent/packs/domain-c4i/references/symbology-sidc.md", "kind": "pack" },
+    { "path": ".agent/packs/domain-c4i/references/c4i-cognition.md", "template": ".agent/packs/domain-c4i/references/c4i-cognition.md", "kind": "pack" }
   ]
 }

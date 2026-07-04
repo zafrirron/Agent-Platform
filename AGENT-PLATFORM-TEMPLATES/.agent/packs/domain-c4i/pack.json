@@ -1,0 +1,40 @@
+{
+  "id": "domain-c4i",
+  "kind": "domain",
+  "display_name": "C2 / C4ISR (Command & Control)",
+  "version": "1.3.0",
+  "requires_core": ">=2.44.0",
+  "confidence": "curated",
+  "last_verified": "2026-07-04",
+  "detect": {
+    "files": [],
+    "deps": ["pytak", "takproto"],
+    "keywords": ["situational awareness", "common operating picture", "cop", "command and control", "c2", "c4i", "c4isr", "isr", "jadc2", "all-domain", "multi-domain", "track management", "cursor on target", "tak", "mil-std-2525", "app-6", "full motion video", "fmv", "tasking", "orders", "collection management", "decision support"]
+  },
+  "provides": {
+    "agent_overlays": {
+      "architect-agent": "architect-agent.overlay.md",
+      "frontend-agent": "frontend-agent.overlay.md",
+      "backend-agent": "backend-agent.overlay.md",
+      "security-agent": "security-agent.overlay.md"
+    },
+    "references": [
+      "references/reference-architecture.md",
+      "references/c4i-capabilities.md",
+      "references/c4i-ux.md",
+      "references/c4i-video.md",
+      "references/symbology-sidc.md",
+      "references/c4i-cognition.md"
+    ],
+    "routing_rows": "routing.md"
+  },
+  "reference_sources": [
+    { "repo": "deptofdefense/AndroidTacticalAssaultKit-CIV", "url": "https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV", "kind": "app", "license": "GPL-3.0 (copyleft — study only, do NOT copy; repo archived read-only May 2025; some bundled libs Apache-2.0)", "note": "Reference operator COP app; study map-centric UX, MIL-STD-2525 symbology rendering, plugin architecture, and degraded-comms operator workflows. Verified 2026-07-04. The CoT/TAK transport it uses is a stack concern (stack-cot-tak), not domain." },
+    { "repo": "FreeTAKTeam/FreeTakServer", "url": "https://github.com/FreeTAKTeam/FreeTakServer", "kind": "app", "license": "EPL-2.0 (copyleft — study patterns, do not copy code)", "note": "Reference C2 server (Python, ~900★); study the COP entity/track data model, SA-state federation, and mission/data-package capabilities. Verified 2026-07-04. Transport (CoT) belongs to stack-cot-tak." },
+    { "repo": "MIL-STD-2525D / NATO APP-6(D)", "url": "https://www.jcs.mil/portals/36/documents/doctrine/other_pubs/ms_2525d.pdf", "kind": "standard", "license": "US DoD public standard (harmonized with NATO STANAG 2019)", "note": "Symbol Identification Code (20-digit positional), frame/icon/status/echelon composition. Distilled into references/symbology-sidc.md. Verified 2026-07-04." },
+    { "repo": "MISB ST 0601 / STANAG 4609 (KLV, SMPTE ST 336)", "url": "https://nsgreg.nga.mil/doc/view?i=5093", "kind": "standard", "license": "public standard", "note": "UAS Datalink Local Set — geo-metadata for FMV (sensor lat/long/alt, platform attitude, HFOV) enabling footprint/target-location. Distilled into references/c4i-video.md. Verified 2026-07-04." },
+    { "repo": "Cursor on Target (CoT) base schema", "url": "https://freetakteam-freetakserver.mintlify.app/concepts/cot-messages", "kind": "spec", "license": "open interoperability format", "note": "event(uid/type/time/start/stale/how) + point + detail; stale-driven confidence decay and access/sharing marker. Distilled into backend + security overlays as SEMANTICS (the wire format is adjacent stack-cot-tak). Verified 2026-07-04." },
+    { "repo": "Internal C2 engineering submission — C2 UI/UX skill", "url": "internal://mode3-ingest/2026-07-04-c2-ui-ux-skill", "kind": "contribution", "license": "internal contribution (owned)", "note": "Operator cognition & interaction design: SA pipeline (Perception/Comprehension/Projection), cognitive-load/widget limits, Fitts' Law (forward+reverse), stress single-tasking, forgiveness + neutral destructive colours, alert-fatigue, interruption state-save. Distilled into references/c4i-cognition.md + frontend overlay. Ingested via Mode 3 PACK-CANDIDATE." }
+  ],
+  "attribution": "Domain axis only — application capabilities + UI/UX + C2 information semantics. Distilled from the linked reference_sources: real apps (ATAK-CIV GPL-3.0 study-only/archived; FreeTAKServer EPL-2.0) plus public standards (MIL-STD-2525D / NATO APP-6D symbology; MISB ST 0601 / STANAG 4609 FMV metadata; Cursor-on-Target entity semantics). All licenses web-scan verified 2026-07-04 (copyleft apps are study-only). v1.2.0 added all-domain/JADC2, ISR collection+PED, and human-on-the-loop predictive decision support (breadth signals from an ecosystem site scan; deepen via standards scans). Transport/middleware/hardware/language + cyber-ops/EW + ML inference concerns are intentionally excluded and tracked as adjacent packs (stack-cot-tak, stack-dds, stack-geospatial, stack-fmv-decode, platform-tactical-edge, language-cpp, domain-cyber-ops, stack-ew). Grow via pack-scoped scans (build-pack / pack= / repo=…pack= / url=…pack= / ingest pack=)."
+}
