@@ -18,6 +18,7 @@ Task: [describe your platform improvement goal]
 - **Mode 2 — Web ecosystem audit (Option C, quarterly):** `Read MAINTAINER/web-audit.md and execute it. scope=full`
 - **Mode 2 — Pack freshness refresh (existing pack):** `Read MAINTAINER/web-audit.md and execute it. pack=<pack-id>`
 - **Mode 2 — Pack ecosystem build (greenfield, web-wide → new pack brain):** `Read MAINTAINER/web-audit.md and execute it. build-pack=<pack-id>`
+- **Mode 2 — Targeted site scan (one non-repo website → best practices / feature ideas):** `Read MAINTAINER/web-audit.md and execute it. url=<https://site>` (core lane) · `… url=<https://site> pack=<id>` (route into any-axis pack)
 - **Mode 3 — User submission ingest:** `Read MAINTAINER/platform-ingest.md and execute it.`
 - **Mode 4 — GitHub agent ecosystem scan (quarterly):** `Read MAINTAINER/github-governance-scan.md and execute it.`
 - **Mode 4 — Targeted repo adoption scan:** `Read MAINTAINER/github-governance-scan.md and execute it. repo=owner/name`

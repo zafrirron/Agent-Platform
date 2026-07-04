@@ -15,6 +15,8 @@
 
 **Mode 4 variants:** discovery (quarterly search) · **targeted** (`repo=owner/name` — skip search, deep-read one repo for adoption ideas) · **pack-scoped** (`repo=owner/name pack=<id>` — grow a stack/domain pack brain; findings target `.agent/packs/<id>/`, not core)
 
+**Mode 2 variants:** default (monthly web audit) · `scope=full` (quarterly horizon) · `pack=<id>` (freshen an existing pack) · `build-pack=<id>` (greenfield web-wide new-pack build) · **`url=<website>`** (deep-read ONE non-repo site for best practices / feature ideas; core lane, or `url=… pack=<id>` to route into any-axis pack — untrusted content + IP-safe: distil, never clone)
+
 **Pack-scoped scans** (Mode 2 `build-pack=<id>` / `pack=<id>`, Mode 4 `repo=… pack=<id>`, or Mode 3 ingest `pack=<id>` / PACK-CANDIDATE findings) use `Scope: pack` · `Pack: <id>` in Meta and follow the **PSG pack lane** — see `platform-maintainer-agent.md`. Each also keeps a **per-pack dedup ledger** at `MAINTAINER/scan-results/packs/<id>.md` (schema: `packs/README.md`) — the pack-scoped mirror of this registry. Read that ledger before, and update it after, any pack-scoped scan so no source or finding is processed twice.
 
 Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — new runs write to **both** until consolidated.
