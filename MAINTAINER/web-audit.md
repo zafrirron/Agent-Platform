@@ -259,10 +259,10 @@ For each finding, identify which expert file or playbook should receive the rule
 
 When `pack=<id>` is set, this becomes a **freshness pass for one stack/domain pack** rather than a universal audit.
 
-1. **Preconditions:** verify `<id>` exists in `packs_catalog`; read the pack (`.agent/packs/<id>/pack.json`, overlays, `references/*`, `routing.md`) and its `last_verified` date.
+1. **Preconditions:** verify `<id>` exists in `packs_catalog`; read the pack (`.agent/packs/<id>/pack.json`, overlays, `references/*`, `routing.md`) and its `last_verified` date. **Read the per-pack ledger `MAINTAINER/scan-results/packs/<id>.md` first** — skip any source already consumed and any finding already `Adopted`/`Rejected` (classify new candidates NEW / ENHANCE / DUPLICATE / REJECTED-BEFORE).
 2. **Research targeted at the pack's technology/domain:** e.g. framework major/minor changes and new pitfalls (React 19 idioms, Django release notes), or domain/compliance updates (PCI-DSS, HIPAA revisions) — sourced from official docs, OWASP, CWE, and release notes.
-3. **Findings land in the pack** (non-universal bar): `Suggested path` points at `.agent/packs/<id>/references/…`, `<expert>.overlay.md`, or (domain) `reference-architecture.md`. Do **not** generalize into core.
-4. **On selection:** write to the pack, bump `pack.json` `version` + **`last_verified`**, keep `routing.md` consistent, run the **pack PSG lane** (see `platform-maintainer-agent.md` § PSG — pack lane), and log provenance pack-tagged (`platform-improvements.md` + registry `Scope: pack` · `Pack: <id>`).
+3. **Findings land in the pack** (non-universal bar): `Suggested path` points at `.agent/packs/<id>/references/…`, `<expert>.overlay.md`, or (domain) `reference-architecture.md`. Do **not** generalize into core. Off-axis discoveries → **Adjacent pack candidates** (Phase B2), never merged into this pack.
+4. **On selection:** write to the pack, bump `pack.json` `version` + **`last_verified`**, keep `routing.md` consistent, run the **pack PSG lane** (see `platform-maintainer-agent.md` § PSG — pack lane), log provenance pack-tagged (`platform-improvements.md` + registry `Scope: pack` · `Pack: <id>`), and **append the new sources + dispositions to `MAINTAINER/scan-results/packs/<id>.md`**.
 5. **Archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-pack-<id>-report.md`.
 
 Use this on a cadence to fight pack staleness (the `last_verified` signal surfaced by the internal audit).
@@ -279,6 +279,11 @@ Use this on a cadence to fight pack staleness (the `last_verified` signal surfac
 
 From `build-pack=<id>` derive `kind` and `name` (`domain-drone-autonomy` → kind `domain`, name `drone-autonomy`). If ambiguous, ask the maintainer for `kind`. Read `.agent/packs/README.md` (pack model) and `MAINTAINER/adr/ADR-001-stack-domain-packs.md` (design bar). If the id already exists in `packs_catalog`, stop and tell the maintainer to use `pack=<id>` (freshness) instead.
 
+**Read the dedup memory first (mandatory):**
+- `MAINTAINER/scan-results/packs/README.md` — the per-pack ledger schema.
+- `MAINTAINER/scan-results/packs/<id>.md` — this pack's ledger, **if it exists** (a prior aborted build or a re-run). It records every source already consumed and every finding disposition (`Adopted` / `Rejected` / `Deferred`) + a **Do-not-re-propose** list. Skip re-surfacing anything already `Adopted` or `Rejected` there — exactly like `registry.md` for core scans.
+- `MAINTAINER/scan-results/registry.md` — cross-mode context.
+
 ### Phase B — Ecosystem discovery (axis-aware source matrix)
 
 Run a **wide** discovery keyed to the pack `kind` (≥6 searches, rotate; fetch top results; capture URL + license for every source):
@@ -291,6 +296,21 @@ Run a **wide** discovery keyed to the pack `kind` (≥6 searches, rotate; fetch 
 | **language** | the language specification; official style guides; footgun/anti-pattern catalogs; memory/concurrency model docs; idiomatic-code references. |
 
 For each source, classify what it contributes: **rule/pitfall** (→ overlay), **architecture pattern** (→ reference-architecture), or **linkable source app/spec** (→ `reference_sources[]`).
+
+### Phase B2 — Cross-axis signal capture (keep axes orthogonal)
+
+A real ecosystem scan on one axis **always** surfaces signals belonging to *other* axes — a `domain` scan reveals the language it's written in, the platform/hardware it targets, and the stacks it builds on. **Do not bake these into the primary pack** (that duplicates knowledge and breaks reusability — a C++ rule found while scanning drones belongs in `language-cpp`, not `domain-drone-autonomy`). Instead, **capture them separately** as *adjacent pack candidates*.
+
+While running Phase B, whenever a source implies a different axis, record it in a side list keyed by axis:
+
+| Off-axis signal seen | Belongs in kind | Action to recommend |
+|----------------------|-----------------|---------------------|
+| A programming language's own footguns/idioms | `language` | route to existing `language-<x>` (`add rule to pack`) **or** `build-pack=language-<x>` if none |
+| A hardware/board/SoC/OS/RTOS/runtime constraint | `platform` | `build-pack=platform-<x>` (usually new) |
+| A framework/library idiom or pitfall | `stack` | route to existing `stack-<x>` **or** `build-pack=stack-<x>` |
+| Another business domain overlapping this one | `domain` | separate `build-pack=domain-<x>` (do not merge) |
+
+For each candidate record: the off-axis `id`, whether a matching pack **already exists** in `packs_catalog` (→ route) or not (→ spin off), the evidence (source URL), and a one-line rationale. **These are proposals only** — the primary build never creates a second pack automatically. They surface in the report's **Adjacent pack candidates** section (Phase E) so the maintainer can chain a follow-up `build-pack=` or `add rule to pack`. The primary pack merely **references** them (e.g. a domain reference-architecture cites the platform/stack), it does not copy their rules.
 
 ### Phase C — License & provenance triage
 
@@ -308,6 +328,19 @@ Roll findings into the proposed pack contents:
 
 Present using the standard report format (findings prefixed, impact-rated, each with source URL). Reuse the Phase 5 selection UX (`Add F001…`, `Skip`, `Defer`, `Modify`, `Explain`). **Write nothing until the maintainer selects.**
 
+Classify every primary-axis finding against the pack ledger read in Phase A: **NEW** (not in ledger) · **ENHANCE** (strengthens an `Adopted` item) · **DUPLICATE** (already `Adopted`, drop) · **REJECTED-BEFORE** (in the Do-not-re-propose list — only re-raise with the prior reason quoted). This is the pack-scoped mirror of the base platform's `registry.md` dedup.
+
+The report **must** end with an **Adjacent pack candidates** section (from Phase B2), separate from the primary findings:
+
+```
+━━━ Adjacent pack candidates (other axes discovered during this scan) ━━━
+  ▸ language-cpp     EXISTS  → route: "add rule to pack language-cpp: …"   (evidence: <url>)
+  ▸ platform-jetson-orin  NEW → spin off: build-pack=platform-jetson-orin   (evidence: <url>)
+  ▸ stack-ros2       NEW → spin off: build-pack=stack-ros2                  (evidence: <url>)
+  These are proposals. The current build touches ONLY <primary-id>.
+  Chain a follow-up build-pack= / add-rule-to-pack, or say "skip adjacents".
+```
+
 ### Phase F — Scaffold, fill, validate
 
 On selection:
@@ -315,9 +348,10 @@ On selection:
 2. Write the selected synthesized files into `.agent/packs/<id>/`.
 3. Set `pack.json` `version` `1.0.0`, `last_verified` = today, `confidence` `curated`.
 4. Run **PSG — pack lane** (manifest registration, references reachable, pack test, provenance in `platform-improvements.md` + `docs/INTELLIGENCE-SOURCES.md` for domain + scan registry `Scope: pack`).
-5. **Archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-build-pack-<id>-report.md`.
+5. **Write the dedup ledger** `MAINTAINER/scan-results/packs/<id>.md` (schema: `MAINTAINER/scan-results/packs/README.md`): every source consumed (URL + license + date), every finding disposition (`Adopted`→file / `Rejected`→reason / `Deferred`), and the **Do-not-re-propose** list. Also record the **Adjacent pack candidates** and whether each was chained, routed, or skipped.
+6. **Archive:** `MAINTAINER/scan-results/web-audit/YYYY-MM-DD-build-pack-<id>-report.md`.
 
-> Lifecycle: **`build-pack=<id>` (greenfield, web-wide)** → `pack=<id>` (freshness) → Mode 4 `repo=… pack=<id>` (deep-dive one find) → Mode 3 `pack=<id>` (user field rules). All four write via the pack mechanics and the PSG pack lane.
+> Lifecycle: **`build-pack=<id>` (greenfield, web-wide)** → `pack=<id>` (freshness) → Mode 4 `repo=… pack=<id>` (deep-dive one find) → Mode 3 `pack=<id>` (user field rules). All four write via the pack mechanics and the PSG pack lane, and **all four read + update the per-pack ledger** (`packs/<id>.md`) so no source or finding is ever processed twice.
 
 ---
 

@@ -105,6 +105,7 @@ For each candidate, search ALL existing PLATFORM sections across:
 - `AGENT-PLATFORM-TEMPLATES/.agent/playbooks/*.md`
 - `AGENT-PLATFORM-TEMPLATES/.agent/CONVENTIONS.md`
 - `AGENT-PLATFORM-TEMPLATES/.agent/packs/**` (overlays + references — so a pack-specific candidate isn't flagged NEW when the pack already carries it)
+- `MAINTAINER/scan-results/packs/<id>.md` for any targeted pack (the per-pack ledger — so a candidate matching an already-`Adopted` or `Rejected` finding is classified DUPLICATE / REJECTED-BEFORE, not NEW)
 
 Classify each candidate:
 
@@ -282,7 +283,7 @@ Route each selected finding by lane.
 3. Write the rule to the mapped pack path (Step 4): overlay (`<expert>-agent.overlay.md` or shared `code.overlay.md`), `references/<topic>.md`, `reference_sources[]`, or `reference-architecture.md`. Keep it thin and failure-derived.
 4. Keep `.agent/packs/<id>/routing.md` in sync if a new overlay/topic was added.
 5. Bump the pack's `pack.json` `version` + `last_verified` (today).
-6. Log provenance **pack-tagged** to `platform-improvements.md` (`Source: User submission — <file> (ingest YYYY-MM-DD) · Pack: <id>`); for domain/platform packs refresh `docs/INTELLIGENCE-SOURCES.md`.
+6. Log provenance **pack-tagged** to `platform-improvements.md` (`Source: User submission — <file> (ingest YYYY-MM-DD) · Pack: <id>`); for domain/platform packs refresh `docs/INTELLIGENCE-SOURCES.md`; append the finding + source to the per-pack ledger `MAINTAINER/scan-results/packs/<id>.md` (Adopted / Rejected + reason).
 7. Run the **PSG — pack lane** (`platform-maintainer-agent.md` § PSG — pack lane), **not** full PSG: core count invariants, core experts/playbooks, manifests-beyond-pack-registration, and presentation are **N/A**.
 
 After all selected findings are implemented, report with **PSG Report** (note which lane each used):

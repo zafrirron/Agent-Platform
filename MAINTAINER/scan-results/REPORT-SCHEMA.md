@@ -56,7 +56,9 @@ Every scan **must** produce an archive file and update `registry.md`. Use this s
 
 **Mode 4 targeted archive path:** `mode4/YYYY-MM-DD-targeted-<repo-slug>-report.md`
 **Pack-scoped archive path:** `mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md`, `web-audit/YYYY-MM-DD-pack-<id>-report.md`, or `ingest/YYYY-MM-DD-pack-<id>-report.md`. Pack findings' **Suggested path** points at `.agent/packs/<id>/…` (overlay / references / `reference_sources`), never core. Ingest pack findings carry status **PACK-CANDIDATE**.
-**Pack-build archive path:** `web-audit/YYYY-MM-DD-build-pack-<id>-report.md` (greenfield `build-pack=<id>`). Findings use the web-audit `F`/`E` prefixes; the report also carries a **candidate pack brain** (draft overlay + references + `reference_sources[]`) synthesized from the multi-source ecosystem scan, and its **Actions taken** records the scaffolded pack.
+**Pack-build archive path:** `web-audit/YYYY-MM-DD-build-pack-<id>-report.md` (greenfield `build-pack=<id>`). Findings use the web-audit `F`/`E` prefixes; the report also carries a **candidate pack brain** (draft overlay + references + `reference_sources[]`) synthesized from the multi-source ecosystem scan, and its **Actions taken** records the scaffolded pack. The report **must** include an **Adjacent pack candidates** section (off-axis signals discovered during the scan — other `language`/`stack`/`platform`/`domain` packs to spin off or route into; proposals only, the build touches one pack).
+
+**Per-pack dedup ledger:** `MAINTAINER/scan-results/packs/<id>.md` (schema: `packs/README.md`) — the pack-scoped mirror of `registry.md`. **Every** pack-scoped scan (`build-pack=`, `pack=`, mode4 `repo=…pack=`, ingest `pack=`) **reads it first** (skip already-consumed sources / `Adopted` / `Rejected` findings; classify NEW / ENHANCE / DUPLICATE / REJECTED-BEFORE) and **updates it after** (sources consumed, dispositions, Do-not-re-propose, adjacent candidates). Maintainer-only — never shipped.
 
 Each finding **must** include disposition after maintainer selects:
 

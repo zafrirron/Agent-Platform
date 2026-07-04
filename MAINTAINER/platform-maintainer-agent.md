@@ -257,21 +257,26 @@ Execution:
    - files[] entries with "kind": "pack" for every pack file
 5. Add a test to apply-integration.test.mjs (catalog registration + a pack asset).
 6. Log to platform-improvements.md (pack-tagged); update docs/INTELLIGENCE-SOURCES.md if domain.
-7. Run **PSG — pack lane** (below).
-8. Report: "Pack <id> scaffolded and registered. Activate: --mode=add --add=pack:<id>."
+7. Create the per-pack dedup ledger MAINTAINER/scan-results/packs/<id>.md
+   (schema: MAINTAINER/scan-results/packs/README.md) — record sources consumed,
+   finding dispositions, Do-not-re-propose, and any adjacent-pack candidates.
+8. Run **PSG — pack lane** (below).
+9. Report: "Pack <id> scaffolded and registered. Activate: --mode=add --add=pack:<id>."
 ```
 
 **"add rule to pack <id>: <rule>"** — grow an existing pack brain:
 ```
 Execution:
-1. Read the pack (pack.json, overlays, references, routing.md).
+1. Read the pack (pack.json, overlays, references, routing.md) AND the per-pack ledger
+   MAINTAINER/scan-results/packs/<id>.md. Skip if the rule duplicates an Adopted finding;
+   if it matches a Do-not-re-propose entry, surface the prior reason instead of adding.
 2. Place the rule correctly:
    - hard rule / review-lens for an expert → <expert>-agent.overlay.md (stack/domain) or the shared code.overlay.md (language)
    - curated pitfall / pattern → references/<topic>.md (thin, failure-derived)
    - domain architecture / source → references/reference-architecture.md + reference_sources[]
 3. If a new expert overlay or topic was added, update routing.md.
 4. Bump pack.json version + last_verified (today).
-5. Log to platform-improvements.md (pack-tagged); refresh provenance in docs/INTELLIGENCE-SOURCES.md for domain packs.
+5. Log to platform-improvements.md (pack-tagged); refresh provenance in docs/INTELLIGENCE-SOURCES.md for domain packs; append the rule (and any source) to the per-pack ledger MAINTAINER/scan-results/packs/<id>.md as Adopted.
 6. Run **PSG — pack lane** (below).
 7. Report: "Rule added to pack <id> → <file>. version→X, last_verified→today."
 ```
@@ -633,6 +638,7 @@ Packs are versioned and validated **independently of core** so a stale or immatu
 - [ ] **Manifest registration** — `packs_catalog[]` entry + `kind:"pack"` `files[]` entries for every pack file (so `--mode=add --add=pack:<id>` installs it).
 - [ ] **Pack test** — an `apply-integration.test.mjs` assertion covers the pack (catalog registration + at least one asset); `npm test` green.
 - [ ] **Provenance** — `platform-improvements.md` entry (pack-tagged); domain packs also refresh `docs/INTELLIGENCE-SOURCES.md` (domain-pack provenance) and the scan registry (`Scope: pack` · `Pack: <id>`).
+- [ ] **Per-pack ledger** — `MAINTAINER/scan-results/packs/<id>.md` exists and was updated this scan (sources consumed, finding dispositions, Do-not-re-propose, adjacent-pack candidates). This is the dedup memory every future pack scan reads first.
 - [ ] **Explicit N/A** — core **count invariants** (11 lifecycle skills / 20 playbooks / slash commands), core experts/playbooks/skills, and presentation badges are **N/A** (packs are a separate lane; note it in the PSG Report).
 - [ ] **bootstrap_version** — do **not** bump for a pack change; packs carry their own `pack.json` `version`.
 

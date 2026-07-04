@@ -149,6 +149,7 @@ Agent Platform Bootstrap (framework repo)
 │   │   ├── registry.md                ←   findings + dispositions + actions taken
 │   │   ├── REPORT-SCHEMA.md           ←   required report format
 │   │   ├── mode4/ · web-audit/ · ingest/ · internal/  ← per-mode archives
+│   │   ├── packs/                     ←   per-pack dedup ledgers (packs/<id>.md — pack-scoped mirror of registry.md)
 │   └── governance-scan/               ← Mode 4 legacy output (mirrored to scan-results/)
 │       ├── scan-log.md                ←   Mode 4 summary (points to registry.md)
 │       └── archive/                   ←   full scan reports (legacy path)

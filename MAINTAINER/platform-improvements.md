@@ -18,6 +18,28 @@
 
 ---
 
+### [Unreleased] — 2026-07-04 — Maintainer: pack build scan cross-axis + per-pack dedup ledger
+
+**Source:** User — "web scan brings the domain ecosystem, but while scanning it detects other-axis packs (platform/OS, languages, stacks) to consider; how does the maintainer handle optional pack creation across axes? And how does the next iteration / additional sources avoid duplication (like the base modes do so well)?"
+
+**Failure observed (gaps):**
+1. `build-pack=`/`pack=` Phase B was **single-axis** — a domain scan that surfaces C++/Jetson/ROS2 signals had nowhere to put them; they'd be wrongly merged into the domain pack (duplication + broken reusability) or dropped.
+2. Packs had **no per-pack dedup memory**. `registry.md` is core-oriented; a re-scan or new source could re-surface an already-adopted or deliberately-rejected finding — the base platform avoids this via `registry.md` + NEW/ENHANCE/DUPLICATE + Do-not-re-propose.
+
+**Files changed (maintainer workflow / docs only):**
+- `MAINTAINER/web-audit.md` — build-pack Phase A reads the ledger; new **Phase B2 cross-axis signal capture**; Phase E classifies against the ledger + emits an **Adjacent pack candidates** section; Phase F writes the ledger. `pack=` freshness reads/writes the ledger too.
+- `MAINTAINER/scan-results/packs/README.md` — **new** per-pack ledger schema (Sources consumed · Findings · Do-not-re-propose · Adjacent candidates · Next-iteration hints) + read-first/write-after contract.
+- `MAINTAINER/scan-results/REPORT-SCHEMA.md`, `registry.md` — reference the ledger + adjacent-candidates requirement.
+- `MAINTAINER/platform-maintainer-agent.md` — `add pack` creates the ledger; `add rule to pack` reads/writes it; PSG pack-lane checklist gains a ledger item.
+- `MAINTAINER/github-governance-scan.md`, `MAINTAINER/platform-ingest.md` — pack-scoped lanes read/update the ledger.
+- `MAINTAINER/GUIDE.md` — repo-layout tree shows `scan-results/packs/`.
+
+**Rule added:** every pack-scoped scan reads `MAINTAINER/scan-results/packs/<id>.md` before proposing and updates it after selecting; off-axis discoveries are captured as Adjacent pack candidates (chain `build-pack=` or route via `add rule to pack`) and never merged into the primary pack.
+
+**Validated:** Docs-only; `npm test` 264/264 green. Will be exercised end-to-end by the first real `build-pack=` dry run.
+
+---
+
 ### [Unreleased] — 2026-07-03 — Docs: full repo sync sweep for OpenCode + Packs
 
 **Source:** User — "lots of documentation gaps; `MAINTAINER/GUIDE.md` doesn't cover the packs model or the OpenCode framework — scan the repo and make sure ALL docs are synched."

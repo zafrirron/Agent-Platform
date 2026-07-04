@@ -99,7 +99,7 @@ Use when the goal is **not** a universal platform capability but **growing a spe
 ### P0 — Preconditions
 1. Parse `repo=owner/name` **and** `pack=<id>`.
 2. Verify `<id>` exists in `AGENT-PLATFORM-MANIFEST.json` → `packs_catalog`. If not → stop and offer Mode 1 `add pack <id>` to scaffold it first.
-3. Read the current pack so you don't duplicate: `.agent/packs/<id>/pack.json`, its `*.overlay.md`, `references/*`, `routing.md`.
+3. Read the current pack so you don't duplicate: `.agent/packs/<id>/pack.json`, its `*.overlay.md`, `references/*`, `routing.md`. **Also read the per-pack ledger `MAINTAINER/scan-results/packs/<id>.md`** (schema: `packs/README.md`) — skip any source already consumed and any finding already `Adopted`/`Rejected`; classify new candidates NEW / ENHANCE / DUPLICATE / REJECTED-BEFORE. Off-axis discoveries → **Adjacent pack candidates**, never merged into this pack.
 
 ### P1 — Deep-read the source repo (run T0–T3 first)
 Run the targeted phases T0–T3 on the repo. For **domain source apps** (real applications, not agent-brain repos), read for *architecture and invariants*, not skills:
@@ -134,10 +134,12 @@ Each finding's **Suggested path** must point at the pack, e.g.:
 - Keep `routing.md` in sync if a new overlay/topic added.
 - Run the **pack PSG lane** (see `platform-maintainer-agent.md` § PSG — pack lane): pack-only sync — **N/A** for core count invariants, manifests, presentation, and core tests; verify `pack.json` valid, overlay↔routing consistent, referenced files exist, `reference_sources` reachable.
 - Log provenance: `platform-improvements.md` (pack-tagged) + registry entry `Scope: pack` · `Pack: <id>`; add/refresh the pack's sources in `docs/INTELLIGENCE-SOURCES.md` (domain-pack provenance section).
+- **Update the per-pack ledger** `MAINTAINER/scan-results/packs/<id>.md`: append the repo + sources consumed, finding dispositions (`Adopted`/`Rejected`/`Deferred`), Do-not-re-propose, and any adjacent-pack candidates surfaced.
 
 ### P5 — Archive naming
 - Report file: `MAINTAINER/scan-results/mode4/YYYY-MM-DD-pack-<id>-<repo-slug>-report.md`
 - Registry Meta must include: `Scope: pack` · `Pack: <id>` · `Target repo: owner/name`
+- Per-pack ledger updated: `MAINTAINER/scan-results/packs/<id>.md`
 
 ---
 
