@@ -154,20 +154,39 @@ Check if `.agent/MIGRATION-NOTES.md` exists.
      - `.cursorrules` or `.cursor/rules/*.mdc` → Cursor rules
      - `.codex/instructions.md` → Codex instructions
      - Any other AI config file → read and evaluate
-4. For each rule or instruction found across ALL backed-up files, evaluate:
+4. For each rule or instruction found across ALL backed-up files, classify it into exactly one bucket:
    - **Domain coding rule** (backend, frontend, security, data, testing, DevOps) → add to the PROJECT section of the appropriate expert agent in `.agent/agents/`
    - **General coding convention** (naming, formatting, git, style) → add to `.agent/CONVENTIONS.md` PROJECT section
    - **Project-specific constraint** (e.g. "always use TypeScript", "max line length 100") → add to `.agent/CONVENTIONS.md` PROJECT section
    - **Session-start instruction or platform trigger** → skip (already handled by the platform)
    - **Boilerplate, placeholder, or zero-content rule** → skip
-   - **Duplicate of an existing platform rule** → skip
+   - **Duplicate of an existing platform rule** → skip (the platform already enforces it)
+   - **Contradicts an existing platform rule** (e.g. user rule says "never write tests" but the platform requires tests; or a different lint/style stance) → do **NOT** silently skip or apply. Collect it for the conflict report in Step 4b.
+
+   > **Note — your original rule files stay live.** The platform reads *copies* from the backup. Your own rule files (e.g. `.cursor/rules/*.mdc`, `.claude/…`) were **not** deleted and remain **active in their IDE** exactly as before. Migration just also surfaces the rule in the platform's cross-framework PROJECT sections so every IDE honours it. To avoid the same rule living in two places, when you migrate a rule, tell the user it also still lives in `[original path]` and offer to leave it (IDE-specific) or note it for removal — never delete the user's file automatically.
+
+4b. **Conflict report (only if Step 4 found contradictions).** Present a compact list and ask the user to resolve each — do not proceed on contradictions without a decision:
+   ```
+   ⚠ Rule conflicts with the platform:
+     [n]. Your rule: "[rule text]"  (from [original path])
+          Platform : "[the platform rule it contradicts]"
+          Keep mine / Keep platform / Keep both (mine wins in PROJECT section)?
+   ```
+   Apply each choice: *Keep mine* → add to the relevant PROJECT section (PROJECT overrides PLATFORM by design); *Keep platform* → skip the user rule; *Keep both* → add to PROJECT with a one-line note that it intentionally overrides the platform default.
+
+   > **Precedence:** PROJECT-section rules override the platform's PLATFORM-section defaults. A user's live IDE rules also still apply within that IDE. When in doubt, the user's explicit project rule wins.
+
 5. For each rule migrated, output one line: `✅ Migrated: "[rule text]" → [target file]`
 6. For each rule skipped, output one line: `⏭ Skipped: "[rule text]" (reason)`
 7. If nothing was migrated: output `ℹ No custom rules found worth migrating.`
-8. Delete `.agent/MIGRATION-NOTES.md` — migration is complete, this step will never run again
+8. Delete `.agent/MIGRATION-NOTES.md` — migration is complete, this step will never run again.
 
 > **Framework-agnostic by design:** It does not matter which IDE the user came from. All backed-up AI configs are read, evaluated, and merged into the platform in one automatic pass.
-> **The user does nothing.** No manual copying, no file editing, no prompts.
+> **Mostly hands-off:** the only time the user is asked anything is to resolve a genuine **conflict** (Step 4b). Otherwise no manual copying or file editing is needed.
+> **Re-run any time:** the user can say `"reconcile my rules"` to repeat this classification against their current rule files (useful after adding new rules later).
+
+> **On-demand trigger — "reconcile my rules" / "reconcile rules" / "check my rules against the platform":**
+> Run the Step 1c classification (Steps 4–7 above), but source the rules from the user's **live** framework files (`.cursor/rules/*.mdc`, `.claude/**`, `.codex/instructions.md`, `.agents/**`, legacy `.cursorrules`, `CLAUDE.md` PROJECT/user content) instead of the backup, and do **not** delete `MIGRATION-NOTES.md`. This lets the user reconcile rules added after install.
 
 ### Step 1d — First-session audit offer
 

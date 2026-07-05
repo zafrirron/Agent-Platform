@@ -255,6 +255,33 @@ describe('install — user rules in shared folders preserved and tracked', () =>
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
 });
 
+// ── Rule reconciliation (session-start Step 1c enhancements) ──────────────
+
+describe('install — rule reconciliation covers conflict, precedence, on-demand', () => {
+  const dir = tmpDir();
+  runApply(dir);
+  const ss = fs.readFileSync(path.join(dir, '.agent/session-start-shared.md'), 'utf8');
+
+  test('classifies contradictions with platform rules', () => {
+    assert.ok(/Contradicts an existing platform rule/i.test(ss), 'no contradiction classification');
+    assert.ok(/Conflict report/i.test(ss), 'no conflict report step');
+  });
+
+  test('states precedence (PROJECT overrides PLATFORM)', () => {
+    assert.ok(/PROJECT-section rules override/i.test(ss), 'precedence rule missing');
+  });
+
+  test('notes user original rule files stay live', () => {
+    assert.ok(/your original rule files stay live/i.test(ss), 'live-rules note missing');
+  });
+
+  test('supports on-demand "reconcile my rules"', () => {
+    assert.ok(/reconcile my rules/i.test(ss), 'on-demand reconcile trigger missing');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
 // ── Upgrade ───────────────────────────────────────────────────────────────
 
 describe('upgrade — after fresh install', () => {
