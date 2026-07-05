@@ -920,9 +920,36 @@ if (fs.existsSync(platformPath)) {
 /* ── Uninstall mode ───────────────────────────────────────────────────────── */
 if (MODE === 'uninstall') {
   const LINE = '═'.repeat(62);
-  const managedDirs  = ['.agent', '.claude', '.cursor', '.agents', '.codex', '.opencode'];
-  const managedFiles = ['AGENTS.md', 'SYNC-POINTS.md', 'CLAUDE.md', 'opencode.json'];
-  const all = [...managedDirs, ...managedFiles];
+
+  // `.agent/` is platform-exclusive → removed wholesale. Everything else the
+  // platform installed is enumerated from the manifest so we delete ONLY the
+  // platform's own files inside the shared framework folders — the user's own
+  // rules/commands/configs there are never touched. Empty platform folders are
+  // pruned afterward; folders still holding user files are kept.
+  const platformWholeDirs   = ['.agent'];
+  const sharedFrameworkDirs = ['.claude', '.cursor', '.agents', '.codex', '.opencode'];
+  const platformFiles = [];
+  for (const entry of manifest.files) {
+    if (entry.scope === 'global') continue;
+    const p = entry.path.replace(/\\/g, '/');
+    if (p.startsWith('.agent/')) continue; // covered by platformWholeDirs
+    platformFiles.push(p);
+  }
+  const existingWholeDirs = platformWholeDirs.filter((d) => fs.existsSync(path.join(INSTALL_ROOT, d)));
+  const existingFiles     = platformFiles.filter((f) => fs.existsSync(path.join(INSTALL_ROOT, f)));
+
+  const pruneEmptyDirs = (relRoot) => {
+    const abs = path.join(INSTALL_ROOT, relRoot);
+    if (!fs.existsSync(abs)) return;
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d)) {
+        const full = path.join(d, e);
+        if (fs.statSync(full).isDirectory()) walk(full);
+      }
+      if (fs.readdirSync(d).length === 0) fs.rmdirSync(d);
+    };
+    walk(abs);
+  };
 
   console.log('');
   console.log(LINE);
@@ -933,13 +960,13 @@ if (MODE === 'uninstall') {
   if (!CONFIRM) {
     console.log('  ⚠️  DRY RUN — nothing deleted. Add --confirm to proceed.');
     console.log('');
-    console.log('  The following will be permanently removed from:');
+    console.log('  The following PLATFORM files will be permanently removed from:');
     console.log('  ' + INSTALL_ROOT);
     console.log('');
-    all.forEach((p) => {
-      const full = path.join(INSTALL_ROOT, p);
-      if (fs.existsSync(full)) console.log('    ' + p);
-    });
+    existingWholeDirs.forEach((d) => console.log('    ' + d + '/  (platform-only folder)'));
+    existingFiles.forEach((f) => console.log('    ' + f));
+    console.log('');
+    console.log('  Your own rules/commands/configs in .cursor/ .claude/ etc. are preserved.');
     console.log('');
     console.log('  To confirm removal run:');
     console.log(`  npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=uninstall --confirm`);
@@ -982,14 +1009,22 @@ if (MODE === 'uninstall') {
   console.log('  Removing platform files from: ' + INSTALL_ROOT);
   console.log('');
   let removed = 0;
-  all.forEach((p) => {
-    const full = path.join(INSTALL_ROOT, p);
+  for (const d of existingWholeDirs) {
+    fs.rmSync(path.join(INSTALL_ROOT, d), { recursive: true, force: true });
+    console.log('  ✔ Removed: ' + d + '/');
+    removed++;
+  }
+  for (const f of platformFiles) {
+    const full = path.join(INSTALL_ROOT, f);
     if (fs.existsSync(full)) {
-      fs.rmSync(full, { recursive: true, force: true });
-      console.log('  ✔ Removed: ' + p);
+      fs.rmSync(full, { force: true });
+      console.log('  ✔ Removed: ' + f);
       removed++;
     }
-  });
+  }
+  // Prune platform folders that are now empty; folders still holding the user's
+  // own files are left in place.
+  sharedFrameworkDirs.forEach(pruneEmptyDirs);
 
   // Remove platform gitignore block
   const giPath2 = path.join(INSTALL_ROOT, '.gitignore');

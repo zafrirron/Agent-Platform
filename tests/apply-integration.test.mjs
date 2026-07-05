@@ -340,6 +340,58 @@ describe('uninstall --confirm — platform removed, user files intact', () => {
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
 });
 
+// ── Uninstall preserves user rules created AFTER install ──────────────────
+
+describe('uninstall --confirm — user rules in shared folders survive', () => {
+  const dir = tmpDir();
+  runApply(dir); // install (creates .cursor/rules/platform-core.mdc etc.)
+  // User adds their OWN rule AFTER install — was never in the pre-install backup.
+  fs.writeFileSync(path.join(dir, '.cursor/rules/added-later.mdc'), '---\ndescription: mine\n---\nKeep me\n');
+  const result = runApply(dir, ['--mode=uninstall', '--confirm']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}`);
+  });
+
+  test('user rule added after install survives uninstall', () => {
+    const p = path.join(dir, '.cursor/rules/added-later.mdc');
+    assert.ok(fs.existsSync(p), 'user rule was deleted by uninstall');
+    assert.ok(fs.readFileSync(p, 'utf8').includes('Keep me'), 'user rule content lost');
+  });
+
+  test('.cursor/ folder retained because it holds a user file', () => {
+    assert.ok(fs.existsSync(path.join(dir, '.cursor/rules')), '.cursor/rules should survive (user file present)');
+  });
+
+  test('platform Cursor rule was removed', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.cursor/rules/platform-core.mdc')), 'platform rule not removed');
+  });
+
+  test('.agent/ removed', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.agent')), '.agent/ still exists after uninstall');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── Uninstall prunes empty platform folders ───────────────────────────────
+
+describe('uninstall --confirm — empty platform folders pruned', () => {
+  const dir = tmpDir();
+  runApply(dir); // install
+  const result = runApply(dir, ['--mode=uninstall', '--confirm']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}`);
+  });
+
+  test('.cursor/ removed when it held only platform files', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.cursor')), '.cursor/ should be pruned when empty');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
 // ── Uninstall restores pre-existing CLAUDE.md ─────────────────────────────
 
 describe('uninstall --confirm — restores backed-up CLAUDE.md', () => {
