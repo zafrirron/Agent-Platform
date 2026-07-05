@@ -817,24 +817,49 @@ for (const entry of manifest.files) {
   created.push(entry.path);
 }
 
-/* ── Gitignore — add platform block ──────────────────────────────────────── */
+/* ── Gitignore — add platform block (file-scoped in shared folders) ───────── */
 const GI_START = '# Agent Platform Bootstrap — START';
 const GI_END   = '# Agent Platform Bootstrap — END';
-const GI_BLOCK = `${GI_START}
-# Platform coordination files — gitignored by default so nothing is
-# accidentally committed with your code. Remove this block if you want
-# to track platform files in git (e.g. to share agent config with your team).
-.agent/
-.claude/
-.cursor/
-.agents/
-.codex/
-.opencode/
-AGENTS.md
-SYNC-POINTS.md
-CLAUDE.md
-opencode.json
-${GI_END}`;
+
+// Build the ignore block from the manifest so it lists ONLY the platform's own
+// files. `.agent/` is platform-exclusive → whole-folder ignore. The other
+// framework folders (.cursor / .claude / .codex / .agents / .opencode) are
+// SHARED with the user, so we ignore each platform file individually and never
+// the whole folder — the user's own rules/commands there stay tracked exactly
+// as before, and their own new files are never silently hidden from git.
+function buildGitignoreBlock() {
+  const createdSet  = new Set(created);
+  const sharedFiles = new Set();
+  for (const entry of manifest.files) {
+    if (entry.scope === 'global') continue;
+    if (!shouldInstallEntry(entry, filterOpts)) continue;
+    const p = entry.path.replace(/\\/g, '/');
+    if (p.startsWith('.agent/')) continue; // covered by /.agent/
+    if (!p.includes('/')) continue;        // root files handled below
+    sharedFiles.add('/' + p);
+  }
+  // Root entry files. AGENTS.md / SYNC-POINTS.md are always platform-format
+  // (replaced on install) → always ignored. CLAUDE.md / opencode.json are
+  // user-ownable → ignore them ONLY when the platform created them (they did
+  // not pre-exist). A user's own CLAUDE.md stays tracked and untouched, and a
+  // non-<framework> user never gets a platform-created file into their git tree.
+  const rootFiles = ['/AGENTS.md', '/SYNC-POINTS.md'];
+  for (const f of ['CLAUDE.md', 'opencode.json']) {
+    if (createdSet.has(f)) rootFiles.push('/' + f);
+  }
+
+  return [
+    GI_START,
+    '# Platform coordination files — gitignored by default so nothing is',
+    '# accidentally committed with your code. Only the platform\'s OWN files are',
+    '# listed here — your own rules/commands in these folders stay tracked.',
+    '# Remove any line to track that file (e.g. to share agent config with your team).',
+    '/.agent/',
+    ...[...sharedFiles].sort(),
+    ...rootFiles.sort(),
+    GI_END,
+  ].join('\n');
+}
 
 // Only add the gitignore block for project-modifying modes (not uninstall-global which uses HOME)
 if (INSTALL_MODES.has(MODE)) {
@@ -842,7 +867,7 @@ if (INSTALL_MODES.has(MODE)) {
   if (!fs.existsSync(giPath) || !fs.readFileSync(giPath, 'utf8').includes(GI_START)) {
     const existing = fs.existsSync(giPath) ? fs.readFileSync(giPath, 'utf8') : '';
     const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
-    fs.appendFileSync(giPath, separator + GI_BLOCK + '\n');
+    fs.appendFileSync(giPath, separator + buildGitignoreBlock() + '\n');
     created.push('.gitignore (platform block)');
   }
 }

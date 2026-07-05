@@ -113,7 +113,19 @@ describe('install — clean empty directory', () => {
     assert.ok(fs.existsSync(gi), '.gitignore missing');
     const content = fs.readFileSync(gi, 'utf8');
     assert.ok(content.includes('Agent Platform Bootstrap'), 'gitignore block missing');
-    assert.ok(content.includes('.agent/'), '.agent/ not gitignored');
+    assert.ok(content.includes('/.agent/'), '.agent/ not gitignored (whole folder)');
+  });
+
+  test('gitignore is file-scoped in shared folders (not whole-folder)', () => {
+    const content = fs.readFileSync(path.join(dir, '.gitignore'), 'utf8');
+    const lines = content.split('\n').map((l) => l.trim());
+    // Platform's own files are ignored individually...
+    assert.ok(content.includes('/.cursor/rules/platform-core.mdc'), 'platform Cursor rule not gitignored');
+    assert.ok(content.includes('/.claude/commands/plan.md'), 'platform Claude command not gitignored');
+    // ...but the shared framework folders are NEVER whole-folder ignored.
+    for (const folder of ['.cursor/', '.claude/', '.codex/', '.agents/', '.opencode/', '/.cursor/', '/.claude/', '/.codex/', '/.agents/', '/.opencode/']) {
+      assert.ok(!lines.includes(folder), `shared folder ${folder} must not be whole-folder ignored`);
+    }
   });
 
   test('install summary mentions v2', () => {
@@ -173,6 +185,13 @@ describe('install — pre-existing CLAUDE.md backed up', () => {
     assert.ok(content.includes('My existing instructions'), 'original content was overwritten');
   });
 
+  test('user-owned CLAUDE.md is NOT gitignored', () => {
+    const gi = fs.readFileSync(path.join(dir, '.gitignore'), 'utf8');
+    const lines = gi.split('\n').map((l) => l.trim());
+    assert.ok(!lines.includes('/CLAUDE.md') && !lines.includes('CLAUDE.md'),
+      'a pre-existing user CLAUDE.md must stay tracked, not gitignored');
+  });
+
   test('backup directory created', () => {
     const backupRoot = path.join(dir, '.agent/backup');
     assert.ok(fs.existsSync(backupRoot), '.agent/backup/ missing');
@@ -193,6 +212,44 @@ describe('install — pre-existing CLAUDE.md backed up', () => {
 
   test('no crash — no stderr', () => {
     assert.equal(result.stderr.trim(), '', `unexpected stderr: ${result.stderr}`);
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── Shared-folder ownership: user files preserved & tracked ───────────────
+
+describe('install — user rules in shared folders preserved and tracked', () => {
+  const dir = tmpDir();
+  // A user with their own Cursor rule but NO Claude usage.
+  fs.mkdirSync(path.join(dir, '.cursor/rules'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.cursor/rules/my-custom.mdc'), '---\ndescription: mine\n---\nMy rule\n');
+  const result = runApply(dir);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}`);
+  });
+
+  test('user rule file still present on disk', () => {
+    const content = fs.readFileSync(path.join(dir, '.cursor/rules/my-custom.mdc'), 'utf8');
+    assert.ok(content.includes('My rule'), 'user rule was modified or deleted');
+  });
+
+  test('user rule is NOT gitignored', () => {
+    const gi = fs.readFileSync(path.join(dir, '.gitignore'), 'utf8');
+    assert.ok(!gi.includes('my-custom.mdc'), 'user rule must not be gitignored');
+    const lines = gi.split('\n').map((l) => l.trim());
+    assert.ok(!lines.includes('.cursor/') && !lines.includes('/.cursor/'),
+      '.cursor/ must not be whole-folder ignored (would hide user rules)');
+  });
+
+  test('platform-created CLAUDE.md IS gitignored for non-Claude user', () => {
+    // User had no CLAUDE.md; platform creates one for cross-framework activation.
+    assert.ok(fs.existsSync(path.join(dir, 'CLAUDE.md')), 'platform CLAUDE.md should be created');
+    const gi = fs.readFileSync(path.join(dir, '.gitignore'), 'utf8');
+    const lines = gi.split('\n').map((l) => l.trim());
+    assert.ok(lines.includes('/CLAUDE.md'),
+      'a platform-created CLAUDE.md must be gitignored so it never pollutes the user git tree');
   });
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
