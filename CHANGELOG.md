@@ -7,8 +7,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+---
+
+## [2.47.0] — 2026-07-05
+
+Fixes a class of problems where the platform treated the **shared** IDE folders (`.cursor/`, `.claude/`, `.codex/`, `.agents/`, `.opencode/`) as platform-exclusive. It now operates at **file granularity** in those folders, so a user's own rules/commands are never hidden from git, clobbered on uninstall, or left unreconciled. `.agent/` remains platform-exclusive (whole-folder).
+
 ### Fixed
-- **Repo `.gitignore` missing OpenCode self-install artifacts.** When OpenCode was added as the 5th framework, its root artifacts `/.opencode/` and `/opencode.json` were never added to the platform repo's own `.gitignore` (only the *installer's* target-repo gitignore block was updated). During platform dev/testing these could be accidentally committed. Added both entries alongside the other self-install artifacts. (Installer target-repo behavior was already correct.)
+- **`.gitignore` is now file-scoped in shared framework folders.** Previously the installer whole-folder-ignored `.cursor/ .claude/ .codex/ .agents/ .opencode/`, which hid (or silently un-tracked) a user's own rules/commands and changed their git workflow. The block is now generated from the manifest and lists only the platform's **own** files; `.agent/` stays whole-folder ignored. Root entry files `CLAUDE.md`/`opencode.json` are ignored **only when the platform created them** (a user's own pre-existing file stays tracked); `AGENTS.md`/`SYNC-POINTS.md` stay ignored (platform-format).
+- **Uninstall no longer deletes the whole shared folders.** It removed `.cursor/` etc. wholesale, destroying any user rules created after install (they were never in the pre-install backup). Uninstall now deletes only the platform's own files (from the manifest), prunes folders that become empty, and keeps any folder still holding user files. `.agent/` is still removed wholesale. Restore-from-backup is unchanged.
+- **Repo `.gitignore` missing OpenCode self-install artifacts.** The platform repo's own `.gitignore` never got `/.opencode/` and `/opencode.json` when OpenCode was added (only the installer's target-repo block was). Added (maintainer-side dev hygiene; installer target-repo behavior was already correct).
+
+### Changed
+- **Rule reconciliation (session-start Step 1c) now handles conflicts and precedence.** It classifies pre-existing rules as keep / duplicate / **conflict** / migrate; contradictions with a platform rule are surfaced in a **conflict report** for the user to resolve (keep mine / keep platform / keep both) instead of being silently skipped. States precedence (PROJECT sections override PLATFORM defaults; live IDE rules still apply), notes the user's own rule files stay live (no silent duplication/deletion), and adds an on-demand **"reconcile my rules"** trigger that runs against the user's current live rules.
+- **Docs surface the shared-folder model.** `MIGRATION-NOTES.md` now explains that user rules stay tracked/active, only platform files are ignored, where to maintain rules going forward, and the reconcile trigger. README corrected from whole-folder to file-scoped ignore/uninstall wording.
+
+### Tests
+- **286** integration tests pass (was 264): added coverage for file-scoped gitignore, user-file preservation & git-tracking, user rules surviving uninstall, empty-folder pruning, reconciliation conflict/precedence/on-demand, and migration-notes content.
 
 ---
 

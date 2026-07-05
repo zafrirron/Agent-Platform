@@ -18,6 +18,21 @@
 
 ---
 
+### [2.47.0] — 2026-07-05 — Shared IDE folders treated as shared, not platform-exclusive
+
+**Failure observed (user report):** Installing the platform into a repo with the user's own `.cursor/rules/*.mdc` (or other IDE rules) created a mess: (1) the whole `.cursor/`/`.claude/` folders were git-ignored, so the user's own rules were hidden/un-tracked and their git workflow changed; (2) uninstall `rm -rf`'d the whole shared folders, permanently deleting any user rule created after install (never in the pre-install backup); (3) no reconciliation for rules that duplicate or **contradict** platform rules, and no statement of precedence or where to maintain rules; (4) a non-`<framework>` user still got a platform-created root file (e.g. `CLAUDE.md`).
+
+**Files changed:**
+- `.agent/bootstrap/apply.js` — gitignore block now generated from the manifest, listing only the platform's **own** files in shared folders (`.agent/` still whole-folder); root `CLAUDE.md`/`opencode.json` ignored only when platform-created. Uninstall removes only platform files + prunes empty folders (keeps folders holding user files); `.agent/` still removed wholesale. `writeMigrationNotes()` explains the shared-folder model, precedence, where to maintain rules, and the reconcile trigger.
+- `.agent/session-start-shared.md` — Step 1c reconciliation gains conflict classification + conflict-report resolution, precedence statement, live-rules note, and an on-demand "reconcile my rules" trigger.
+- `README.md` — corrected whole-folder → file-scoped ignore/uninstall wording; test-count and various docs updated.
+
+**Rule added:** `.agent/` is platform-exclusive (whole-folder ignore/remove); every other framework folder is **shared** — operate at file granularity only, never hide/delete the user's own files, and reconcile pre-existing rules (keep/dup/**conflict**/migrate) with explicit precedence (PROJECT overrides PLATFORM).
+
+**Validated:** Yes — `npm test` 286/286 green (+22: file-scoped gitignore, user-file preservation & tracking, user rules surviving uninstall, empty-folder pruning, reconciliation conflict/precedence/on-demand, migration-notes content).
+
+---
+
 ### [Unreleased] — 2026-07-04 — Docs: maintainer job clarified (base vs packs) + private-fork pattern surfaced
 
 **Failure observed (gap):** the 5 maintainer modes existed but no single doc explained the **maintainer's job** as two lanes (core vs packs), how the modes map to each lane, the **pack expansion lifecycle**, or the **cadence** of standard updates. Separately, there was no sanctioned answer to "where does my company IP / secret-sauce pack go?" — a critical question since real projects (and their packs) will be built in **forks**, not the public repo.

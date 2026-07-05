@@ -266,7 +266,7 @@ Agent Platform Bootstrap (framework repo)
 └── tools/release.ps1              ← single command for versioning + tagging + GitHub release
 ```
 
-> Test count: `npm test` runs 264 assertions (~3s). Count grows as governance phases and packs add coverage.
+> Test count: `npm test` runs 286 assertions (~3s). Count grows as governance phases and packs add coverage.
 
 ---
 
