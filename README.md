@@ -53,7 +53,7 @@ Expert rules and playbooks are plain-text instructions that tell AI agents how t
 | **No code changes on install** | Only adds `.agent/` `.claude/` `.cursor/` `.agents/` `.codex/` `.opencode/` folders and `AGENTS.md` `SYNC-POINTS.md` `CLAUDE.md` `opencode.json`. Zero modifications to your existing files. |
 | **Nothing committed accidentally** | The platform's **own** files are added to `.gitignore` automatically on install — file-scoped: `.agent/` fully, plus only the platform's own files inside shared folders like `.cursor/`. `git status` stays clean, and **your own rules/commands in those folders stay tracked** (never whole-folder ignored). |
 | **Existing AI configs are preserved** | Already using Claude Code, Cursor, Antigravity, Codex, or OpenCode? Your `CLAUDE.md`, `AGENTS.md`, Cursor rules, `opencode.json`, and any other AI config files are **never overwritten** and stay tracked in git. Backed up to `.agent/backup/`. A `MIGRATION-NOTES.md` explains the model, precedence, and where to maintain rules; say `"reconcile my rules"` to check them against the platform. |
-| **Clean removal** | `--mode=uninstall` removes all platform AI coordination files and restores your original AI configs from backup. The platform coordination layer never modifies your source code — your AI agents write code for you, the platform just makes them smarter. |
+| **Clean removal** | `--mode=uninstall` removes the platform's own files and restores your original AI configs from backup — and first **harvests any rules you authored inside platform files** (`PROJECT` sections + pack `user.overlay.md`) to `AGENT-PLATFORM-PRESERVED-RULES.md` / `.agent-platform-preserved/` so nothing you wrote is ever lost. The platform never modifies your source code — your AI agents write code for you, the platform just makes them smarter. |
 | **Your customisations survive upgrades** | `mode=upgrade` only updates the `<!-- PLATFORM:START/END -->` section of each file. Your project-specific content is never overwritten. |
 
 ---
@@ -534,7 +534,7 @@ $Repo = "YOUR_ORG/YOUR_REPO_NAME"
 
 **Step 5** — Verify everything is wired:
 ```bash
-npm test   # 286 tests must pass
+npm test   # 293 tests must pass
 ```
 
 **Step 6** — Deploy to your team:
@@ -566,7 +566,9 @@ npx github:zafrirron/Agent-Platform --mode=uninstall          # dry run — show
 npx github:zafrirron/Agent-Platform --mode=uninstall --confirm # removes platform AI files
 ```
 
-Removes: the platform's **own** files only — `.agent/` fully, plus the platform's files inside shared folders (`.cursor/`, `.claude/`, etc.), platform root files, and the gitignore block. Empty platform folders are pruned; any folder still holding **your** files is kept. **Your own rules/commands are never removed.**  
+Removes: the platform's **own** files only — `.agent/` fully, plus the platform's files inside shared folders (`.cursor/`, `.claude/`, etc.), platform root files, and the gitignore block. Empty platform folders are pruned; any folder still holding **your** files is kept. **Your own rules/commands are never removed.**
+
+**Your authored rules are never lost, even the ones inside platform files.** Before deleting anything, uninstall harvests any `PROJECT`-section rules you wrote into platform files (`.agent/agents/*.md`, `.agent/CONVENTIONS.md`, `AGENTS.md`, …) into `AGENT-PLATFORM-PRESERVED-RULES.md` at your repo root, and copies each pack's `user.overlay.md` into `.agent-platform-preserved/`. Run the dry run (`--mode=uninstall` without `--confirm`) to see exactly what will be saved. Untouched template sections are ignored, so you only get a file when you actually authored something.  
 Restores: any AI config files you had before installing (CLAUDE.md, AGENTS.md, Cursor rules, etc.) from the backup.
 
 The platform coordination layer is removed cleanly. Your AI agents improved your code while you used the platform — those changes are yours. The platform scaffolding that made them smarter is what gets removed.

@@ -216,6 +216,7 @@ describe('install — pre-existing CLAUDE.md backed up', () => {
     assert.ok(/stay tracked/i.test(notes), 'missing stay-tracked statement');
     assert.ok(/override/i.test(notes), 'missing precedence statement');
     assert.ok(/reconcile my rules/i.test(notes), 'missing reconcile trigger');
+    assert.ok(/AGENT-PLATFORM-PRESERVED-RULES\.md/.test(notes), 'missing uninstall-preservation note');
   });
 
   test('no crash — no stderr', () => {
@@ -422,6 +423,69 @@ describe('uninstall --confirm — empty platform folders pruned', () => {
 
   test('.cursor/ removed when it held only platform files', () => {
     assert.ok(!fs.existsSync(path.join(dir, '.cursor')), '.cursor/ should be pruned when empty');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+// ── Uninstall preserves user content stored INSIDE platform files ──────────
+
+describe('uninstall --confirm — user PROJECT rules + pack overlays are preserved', () => {
+  const dir = tmpDir();
+  runApply(dir); // install
+
+  // (a) user adds a real rule to the PROJECT section of a platform agent file
+  const agentFile = path.join(dir, '.agent/agents/backend-agent.md');
+  const before = fs.readFileSync(agentFile, 'utf8');
+  const withRule = before.replace(
+    /<!-- PROJECT:START -->[\s\S]*?<!-- PROJECT:END -->/,
+    '<!-- PROJECT:START -->\nMY CUSTOM RULE: every endpoint must respond in under 200ms.\n<!-- PROJECT:END -->'
+  );
+  fs.writeFileSync(agentFile, withRule);
+
+  // (b) user has a per-pack overlay (user.overlay.md is never in the manifest)
+  const packOverlayDir = path.join(dir, '.agent/packs/mypack');
+  fs.mkdirSync(packOverlayDir, { recursive: true });
+  fs.writeFileSync(path.join(packOverlayDir, 'user.overlay.md'), 'OVERLAY RULE: money in integer cents only.\n');
+
+  const result = runApply(dir, ['--mode=uninstall', '--confirm']);
+
+  test('exits 0', () => {
+    assert.equal(result.status, 0, `stderr: ${result.stderr}`);
+  });
+
+  test('.agent/ removed (platform gone)', () => {
+    assert.ok(!fs.existsSync(path.join(dir, '.agent')), '.agent/ should be removed');
+  });
+
+  test('PROJECT rule from platform file saved to AGENT-PLATFORM-PRESERVED-RULES.md', () => {
+    const p = path.join(dir, 'AGENT-PLATFORM-PRESERVED-RULES.md');
+    assert.ok(fs.existsSync(p), 'preserved-rules file was not created');
+    const c = fs.readFileSync(p, 'utf8');
+    assert.ok(c.includes('MY CUSTOM RULE: every endpoint must respond in under 200ms.'),
+      'user PROJECT rule was lost');
+    assert.ok(/backend-agent\.md/.test(c), 'preserved file does not attribute the source path');
+  });
+
+  test('pack user.overlay.md copied to .agent-platform-preserved/', () => {
+    const p = path.join(dir, '.agent-platform-preserved/packs/mypack/user.overlay.md');
+    assert.ok(fs.existsSync(p), 'user.overlay.md was not preserved');
+    assert.ok(fs.readFileSync(p, 'utf8').includes('integer cents only'), 'overlay content lost');
+  });
+
+  test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });
+});
+
+describe('uninstall --confirm — pristine PROJECT sections are NOT preserved (no noise)', () => {
+  const dir = tmpDir();
+  runApply(dir); // install, no user edits to any PROJECT section
+  runApply(dir, ['--mode=uninstall', '--confirm']);
+
+  test('no AGENT-PLATFORM-PRESERVED-RULES.md when nothing was authored', () => {
+    assert.ok(!fs.existsSync(path.join(dir, 'AGENT-PLATFORM-PRESERVED-RULES.md')),
+      'preserved-rules file should not be created for untouched template sections');
+    assert.ok(!fs.existsSync(path.join(dir, '.agent-platform-preserved')),
+      'preserved dir should not be created when there are no overlays');
   });
 
   test('cleanup', () => { fs.rmSync(dir, { recursive: true }); assert.ok(true); });

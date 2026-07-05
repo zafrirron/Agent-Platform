@@ -9,6 +9,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ---
 
+## [2.48.0] — 2026-07-05
+
+Closes the last data-loss gap in the shared-folder model (v2.47.0): rules a user authored **inside** platform files were still destroyed on uninstall.
+
+### Fixed
+- **Uninstall now preserves user content stored inside platform files.** Previously `--mode=uninstall` deleted `.agent/` wholesale and removed platform root files, silently destroying (a) `PROJECT:START…PROJECT:END` rules the user added to `.agent/agents/*.md`, `.agent/CONVENTIONS.md`, `AGENTS.md`, etc., and (b) per-pack `.agent/packs/<id>/user.overlay.md` files — the exact places the platform tells users to put their rules. Uninstall now **harvests** this content *before* deleting anything: authored `PROJECT` sections are written to `AGENT-PLATFORM-PRESERVED-RULES.md` at the repo root (attributed to their source file), and each `user.overlay.md` is copied to `.agent-platform-preserved/packs/<id>/`. The dry run (`--mode=uninstall` without `--confirm`) lists exactly what will be saved. Pristine, unmodified template `PROJECT` sections are compared against the shipped template and skipped, so no noise file is created when the user authored nothing. Standalone user rule files in shared folders were already safe (v2.47.0); upgrades already preserved `PROJECT` sections and `user.overlay.md`.
+
+### Docs
+- `MIGRATION-NOTES.md`, `README.md` (Clean removal + uninstall section), and the E2E test plan (Phase 1r.7/1r.8, 9p coverage) document the uninstall preservation guarantee.
+
+### Tests
+- **293** integration tests pass (was 286): authored `PROJECT` rule + pack `user.overlay.md` preserved to the kept file/folder on uninstall, dry-run announces saves, and pristine sections produce no preserved file.
+
+---
+
 ## [2.47.0] — 2026-07-05
 
 Fixes a class of problems where the platform treated the **shared** IDE folders (`.cursor/`, `.claude/`, `.codex/`, `.agents/`, `.opencode/`) as platform-exclusive. It now operates at **file granularity** in those folders, so a user's own rules/commands are never hidden from git, clobbered on uninstall, or left unreconciled. `.agent/` remains platform-exclusive (whole-folder).

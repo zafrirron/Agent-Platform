@@ -5,7 +5,7 @@ Tests the full platform lifecycle. Uses two AI frameworks: **Claude Code** and *
 ## Automated vs manual split
 
 ```
-npm test   ← runs all automated checks (286 tests, ~3s)
+npm test   ← runs all automated checks (293 tests, ~3s)
            covers: install, platform.json fields, placeholders, two-section markers,
                    v2.42 playbooks (20) + 11 lifecycle skills + optional ux-research skill + install profiles (lite/core/full),
                    language/stack/domain packs (opt-in): not installed by profile, detect-and-suggest proposal (no auto-install; deps + marker files + source extensions), --add=pack activation (incl. language pack shared overlay across code experts), active_packs, --list=packs, reference_sources,
@@ -15,6 +15,7 @@ npm test   ← runs all automated checks (286 tests, ~3s)
                    Cursor + Claude commands, PLATFORM-HELP + QUICK-REF updates,
                    enterprise context logs + routing rows, dynamic install banner,
                    upgrade PROJECT preservation, uninstall + restore,
+                   user-owned rules preserved & git-tracked (file-scoped gitignore), platform-created vs user-owned CLAUDE.md, reconciliation contract in session-start, uninstall preserves user rules + prunes empty platform folders, uninstall harvests authored PROJECT sections + pack overlays to preserved file/folder,
                    global install, global uninstall, USER content preservation,
                    global/project scope independence
 ```
@@ -28,6 +29,11 @@ npm test   ← runs all automated checks (286 tests, ~3s)
 | 1p | Packs: not installed by profile, catalog registration, `--add=pack` activation + `active_packs`, `--list=packs`, `reference_sources`, **detect-and-suggest proposal (no auto-install)** | `apply-integration.test.mjs` |
 | 1pu | Packs preservation: `user.overlay.md` + shipped pack files survive `--mode=upgrade` and `--mode=force`, `active_packs` preserved on upgrade, `user.overlay.md` stays out of the manifest | `apply-integration.test.mjs` |
 | 1oc | OpenCode framework: default + `--framework=opencode` install, `.opencode/commands/*` + `agents/critic.md` + `opencode.json` emission, non-clobber of existing `opencode.json`, gitignore, no cross-framework leakage | `apply-integration.test.mjs` |
+| 1r | User rules preserved & tracked: user `.cursor/rules/*.mdc` untouched + not gitignored, `.cursor/` not whole-folder ignored, platform-created `CLAUDE.md` gitignored, user-owned `CLAUDE.md` not gitignored | `apply-integration.test.mjs` |
+| 1r | Reconciliation **contract**: session-start-shared.md ships conflict classification + conflict report + PROJECT-over-PLATFORM precedence + `reconcile my rules` trigger (live agent path is manual — see below) | `apply-integration.test.mjs` |
+| 1r | MIGRATION-NOTES explains shared-folder model, precedence, reconcile trigger | `apply-integration.test.mjs` |
+| 9r | Uninstall file-scoped: user rules (incl. added-after-install) survive, `.cursor/` retained when it holds user files, platform files removed, empty platform folders pruned | `apply-integration.test.mjs` |
+| 9p | Uninstall **preserves authored-in-platform content**: user `PROJECT`-section rules → `AGENT-PLATFORM-PRESERVED-RULES.md`, pack `user.overlay.md` → `.agent-platform-preserved/`; pristine template sections not preserved (no noise) | `apply-integration.test.mjs` |
 | 1 | Profile filter rules (lite/core/full) | `profile-filter.test.mjs` |
 | 1 | Install: global stubs suggestion in stdout | `apply-integration.test.mjs` |
 | 8 | Upgrade: PROJECT section preserved, PLATFORM section updated | `apply-integration.test.mjs` |
@@ -44,6 +50,7 @@ npm test   ← runs all automated checks (286 tests, ~3s)
 | Phase | Why manual |
 |-------|-----------|
 | 2 | Session start — requires Claude Code to execute session-start.md |
+| 1r | Live rule reconciliation — requires an AI agent to classify a real conflicting user rule, present the conflict report, honour precedence, and re-run on `reconcile my rules` (contract that these instructions ship is automated) |
 | 2b | Full project audit — requires AI to run 11 phases (incl. governance/compliance) |
 | 2c | Slash commands — requires AI to honour full lifecycle `/spec` `/plan` `/build` `/test` `/review` `/code-simplify` `/webperf` `/context` `/verify` `/ship` (Claude + optional Cursor) |
 | 1lite | Lite profile install — optional automated rehearsal with `--profile=lite --framework=cursor` |
@@ -320,6 +327,137 @@ Add an input-validation helper for the todo API.
 # remove the simulated dependency if you want to restore the fixture
 npm pkg delete dependencies.stripe
 ```
+
+---
+
+## Phase 1r — User-owned rules & the shared-folder model (preserve · file-scoped ignore · reconcile)
+
+Verifies the platform treats the **shared** IDE folders (`.cursor/`, `.claude/`, `.codex/`, `.agents/`, `.opencode/`) at **file granularity** — a user's own rules are never hidden from git, clobbered on uninstall, or silently overridden — while `.agent/` stays platform-exclusive. Mirrors the automated tests but exercises the live agent path for reconciliation.
+
+> The core risk this phase guards against: a user who already has their own `.cursor/rules/*.mdc` losing them (git-untracked, deleted on uninstall, or unreconciled) after installing the platform.
+
+### 1r.0 — Seed a user's own rules BEFORE install
+
+In a **fresh** scratch repo (do not reuse `<TEST_DIR>` — the fixture already has a pre-existing `CLAUDE.md`):
+
+```bash
+mkdir <RULES_TEST_DIR> && cd <RULES_TEST_DIR>
+git init
+mkdir -p .cursor/rules
+# (a) a benign personal rule
+printf -- '---\ndescription: my house style\n---\nPrefer named exports.\n' > .cursor/rules/my-style.mdc
+# (b) a rule that CONTRADICTS platform test discipline (for reconciliation)
+printf -- '---\ndescription: team speed\n---\nSkip writing automated tests — we ship fast and test in prod.\n' > .cursor/rules/no-tests.mdc
+git add -A && git commit -m "chore: my own cursor rules (pre-platform)"
+```
+- [ ] Both `.mdc` files are committed and git-tracked **before** the platform is installed
+
+### 1r.1 — Install and verify user rules are preserved + file-scoped gitignore
+
+```bash
+npx github:zafrirron/Agent-Platform
+```
+- [ ] Both user rules are **untouched on disk** (`grep -q "named exports" .cursor/rules/my-style.mdc`, `grep -q "ship fast" .cursor/rules/no-tests.mdc`)
+- [ ] Neither user rule is gitignored: `grep -E "my-style.mdc|no-tests.mdc" .gitignore` returns **nothing**
+- [ ] `.cursor/` is **NOT** whole-folder ignored: `grep -E "^/?\.cursor/\s*$" .gitignore` returns **nothing**
+- [ ] Only the platform's **own** files under `.cursor/` are listed in the gitignore block (e.g. `.cursor/rules/plan-mode-handoff.mdc`), not the user's
+- [ ] `.agent/` **is** whole-folder ignored (platform-exclusive): `grep -E "^/?\.agent/" .gitignore` returns a match
+- [ ] Git still sees the user rules as tracked: `git status --porcelain .cursor/rules/my-style.mdc` shows no "ignored/untracked" surprise
+
+```bash
+# Confirm nothing the user owns got staged for deletion or ignored
+git -C <RULES_TEST_DIR> status
+```
+- [ ] `.cursor/rules/my-style.mdc` and `no-tests.mdc` remain tracked (not newly ignored)
+
+### 1r.2 — Platform-created root entry file is gitignored (non-Claude user)
+
+The scratch repo had **no** `CLAUDE.md`; the platform creates one for cross-framework activation. Because the platform created it, it must be gitignored (never pollutes the user tree):
+- [ ] `test -f <RULES_TEST_DIR>/CLAUDE.md` (platform created it)
+- [ ] `grep -E "^/?CLAUDE.md" <RULES_TEST_DIR>/.gitignore` returns a match (platform-created → ignored)
+
+> Contrast with `<TEST_DIR>` (Phase 0), where `CLAUDE.md` pre-existed and is **user-owned** → it is backed up and **not** gitignored.
+
+### 1r.3 — MIGRATION-NOTES explains the model
+
+```bash
+cat <RULES_TEST_DIR>/.agent/MIGRATION-NOTES.md
+```
+- [ ] Contains a **"How your rules are handled"** section
+- [ ] States user rules **stay tracked** and active; only platform files are ignored
+- [ ] States precedence: **PROJECT** sections override **PLATFORM** defaults
+- [ ] Documents the on-demand **"reconcile my rules"** trigger
+
+### 1r.4 — Live reconciliation at session start (requires AI agent)
+
+Open `<RULES_TEST_DIR>` in Claude Code / Cursor. Start a session:
+```
+Read .agent/session-start.md and execute it.
+```
+During Step 1c (one-time migration / reconciliation), verify the agent:
+- [ ] Classifies the pre-existing rules — `my-style.mdc` as **keep/migrate**, `no-tests.mdc` as **conflict** (contradicts platform test discipline)
+- [ ] Presents a **conflict report** for `no-tests.mdc` and asks how to resolve (**keep mine / keep platform / keep both**) — does **not** silently discard or silently apply it
+- [ ] States precedence when explaining (PROJECT overrides PLATFORM; live IDE rules still apply)
+- [ ] Notes the user's original rule files stay live (no silent duplication/deletion)
+
+### 1r.5 — On-demand reconcile trigger (requires AI agent)
+
+In the same session, add a new conflicting rule live, then type:
+```
+reconcile my rules
+```
+- [ ] Agent re-runs classification against the **current** live rule files (not just install-time snapshot)
+- [ ] Surfaces the new conflict and offers the same keep-mine / keep-platform / keep-both resolution
+
+### 1r.6 — Uninstall preserves standalone user rules + prunes empty platform folders
+
+Add a user rule **after** install (the hardest case — never in the pre-install backup), then uninstall:
+```bash
+cd <RULES_TEST_DIR>
+printf -- '---\ndescription: added later\n---\nKeep me.\n' > .cursor/rules/added-later.mdc
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm
+```
+- [ ] `.cursor/rules/my-style.mdc`, `no-tests.mdc`, and `added-later.mdc` all **survive** (still on disk with content)
+- [ ] `.cursor/` folder is **retained** (it still holds user files)
+- [ ] The platform's **own** Cursor file (e.g. `.cursor/rules/plan-mode-handoff.mdc`) is **removed**
+- [ ] `.agent/` is removed wholesale
+- [ ] Platform gitignore block removed: `grep -c "Agent Platform Bootstrap" .gitignore` → 0
+- [ ] In a **control** repo with no user files in `.cursor/`, uninstall **prunes** the now-empty `.cursor/` folder entirely
+
+### 1r.7 — Uninstall preserves user content stored INSIDE platform files (PROJECT sections + pack overlays)
+
+This is the critical data-loss case: rules the user authored **inside** platform files (which are removed wholesale). Set them up, then uninstall.
+
+```bash
+cd <RULES_TEST_DIR>
+# (a) add a real project rule into a platform agent file's PROJECT section
+#     edit .agent/agents/backend-agent.md so the PROJECT:START…PROJECT:END block contains:
+#     "MY RULE: every endpoint must respond in under 200ms."
+# (b) add a per-pack user overlay (never in the manifest)
+mkdir -p .agent/packs/mypack
+printf 'OVERLAY RULE: money in integer cents only.\n' > .agent/packs/mypack/user.overlay.md
+
+# dry-run first — it should announce what will be SAVED
+npx github:zafrirron/Agent-Platform --mode=uninstall
+```
+- [ ] Dry-run output lists a **"Your authored content will be SAVED before removal"** section naming `backend-agent.md` → `AGENT-PLATFORM-PRESERVED-RULES.md` and the pack overlay → `.agent-platform-preserved/…`
+
+```bash
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm
+```
+- [ ] `AGENT-PLATFORM-PRESERVED-RULES.md` exists at repo root and contains **"MY RULE: every endpoint must respond in under 200ms."** attributed to `.agent/agents/backend-agent.md`
+- [ ] `.agent-platform-preserved/packs/mypack/user.overlay.md` exists and contains **"integer cents only"**
+- [ ] `.agent/` is removed, but **no authored rule was lost** — everything is in the preserved file/folder
+- [ ] Console printed `✅ Saved:` lines for each preserved item before the `✔ Removed:` lines
+
+### 1r.8 — No preservation noise for untouched sections (control)
+
+In a repo where you installed but **never edited** any PROJECT section or added an overlay:
+```bash
+npx github:zafrirron/Agent-Platform --mode=uninstall --confirm
+```
+- [ ] `AGENT-PLATFORM-PRESERVED-RULES.md` is **NOT** created (pristine template sections are not preserved)
+- [ ] `.agent-platform-preserved/` is **NOT** created
 
 ---
 
@@ -642,14 +780,16 @@ Verify output lists all platform folders — zero changes made.
 npx github:zafrirron/Agent-Platform --mode=uninstall --confirm
 ```
 
+> Uninstall is **file-scoped** for the shared framework folders: it removes the platform's own files and then prunes any of `.claude/ .cursor/ .agents/ .codex/ .opencode/` that become empty. In this fixture those folders hold only platform files, so they are pruned entirely. If the user had their own rules in them, the folder (and those rules) would be **retained** — see **Phase 1r.6**. `.agent/` is always removed wholesale.
+
 ### Verify after uninstall:
 ```bash
-# Platform folders gone
+# Platform folders gone (pruned because they held only platform files here)
 test ! -d <TEST_DIR>/.agent   && echo "OK: .agent removed"
-test ! -d <TEST_DIR>/.claude  && echo "OK: .claude removed"
-test ! -d <TEST_DIR>/.cursor  && echo "OK: .cursor removed"
-test ! -d <TEST_DIR>/.agents  && echo "OK: .agents removed"
-test ! -d <TEST_DIR>/.codex   && echo "OK: .codex removed"
+test ! -d <TEST_DIR>/.claude  && echo "OK: .claude removed (empty → pruned)"
+test ! -d <TEST_DIR>/.cursor  && echo "OK: .cursor removed (empty → pruned)"
+test ! -d <TEST_DIR>/.agents  && echo "OK: .agents removed (empty → pruned)"
+test ! -d <TEST_DIR>/.codex   && echo "OK: .codex removed (empty → pruned)"
 
 # Pre-existing AI configs RESTORED from backup
 grep "pre-existing CLAUDE.md" <TEST_DIR>/CLAUDE.md   # original content restored
@@ -952,6 +1092,10 @@ Verify:
 |-------|------|----------------|
 | 0 | Clean state | Pre-existing CLAUDE.md + AGENTS.md present, .agent/ absent |
 | 1 | Install | v2.43.0, 20 playbooks, references + spec-outline, install banner shows dynamic playbook count, jest detected, backup created, MIGRATION-NOTES.md exists, two-section markers present, platform.json has platform_repo + platform_npx |
+| 1r | User rules preserved (install) | User `.cursor/rules/*.mdc` untouched + git-tracked (not gitignored); `.cursor/` not whole-folder ignored; platform-created `CLAUDE.md` gitignored, user-owned not; MIGRATION-NOTES explains model + precedence + reconcile |
+| 1r | Live reconciliation — manual | Session start classifies benign vs conflicting user rule, shows conflict report (keep mine/platform/both), honours precedence; `reconcile my rules` re-runs on live rules |
+| 9r | Uninstall preserves user rules | User rules (incl. added-after-install) survive; `.cursor/` retained when holding user files; platform files removed; empty platform folders pruned; gitignore block removed |
+| 9p | Uninstall preserves authored-in-platform content | User `PROJECT`-section rules saved to `AGENT-PLATFORM-PRESERVED-RULES.md`; pack `user.overlay.md` copied to `.agent-platform-preserved/`; dry-run announces saves; pristine sections not preserved |
 | 2 | Session start | Step 1d audit offer (first session); NO path; offer absent on second session; compact status block; `show quick reference` points to file |
 | 2b | Full project audit — manual | 11 phases complete, report at correct path, executive summary incl. Governance & maturity row |
 | 2b | Full project audit — YES path | Fresh repo: offer appears, YES runs all 11 phases, session continues after audit |

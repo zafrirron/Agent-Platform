@@ -126,6 +126,25 @@ function hasRealUserContent(content) {
   return noComments.trim().length > 0;
 }
 
+/**
+ * Returns the inner text of the PROJECT:START…PROJECT:END block, or null if the
+ * file has no PROJECT section. Used on uninstall to harvest the user's own
+ * project rules before platform files are deleted.
+ */
+function extractProjectSection(content) {
+  const START = '<!-- PROJECT:START -->';
+  const END   = '<!-- PROJECT:END -->';
+  const s = content.indexOf(START);
+  const e = content.indexOf(END);
+  if (s < 0 || e < 0 || e < s) return null;
+  return content.slice(s + START.length, e).trim();
+}
+
+/** Whitespace-insensitive comparison of two section bodies. */
+function normalizeBody(t) {
+  return (t || '').replace(/\s+/g, ' ').trim();
+}
+
 /* ── Stack detection ──────────────────────────────────────────────────────── */
 function detectTestRunner(root) {
   if (fs.existsSync(path.join(root, 'pyproject.toml')) ||
@@ -420,6 +439,7 @@ function writeMigrationNotes(root, artifacts, backupDir) {
     `- **Precedence:** platform defaults live in \`<!-- PLATFORM:START -->\` sections; your project rules live in \`<!-- PROJECT:START -->\` sections and **override** the platform defaults. Your live IDE rules also still apply within that IDE.\n`,
     `- **Where to maintain rules going forward:** keep IDE-specific rules in your own \`.cursor/rules/*.mdc\` (etc.) as before, **or** — recommended for cross-framework consistency — put project rules in the \`PROJECT\` sections of \`.agent/agents/*.md\` and \`.agent/CONVENTIONS.md\` so every IDE honours them.\n`,
     `- **Reconcile any time:** say \`"reconcile my rules"\` and the agent will classify your rules (keep / duplicate / conflict / migrate) and flag anything that contradicts a platform rule for your decision.\n`,
+    `- **Removal never loses your rules.** On \`--mode=uninstall\`, any \`PROJECT\`-section rules you authored inside platform files are saved to \`AGENT-PLATFORM-PRESERVED-RULES.md\` at the repo root, and each pack \`user.overlay.md\` is copied to \`.agent-platform-preserved/\` — before anything is deleted. Run \`--mode=uninstall\` (no \`--confirm\`) first to see exactly what will be saved.\n`,
     `\n---\n`,
   ];
 
@@ -441,7 +461,7 @@ function writeMigrationNotes(root, artifacts, backupDir) {
   });
 
   lines.push(`\n---\n\n`,
-    `**Remove the platform** (restores all your backed-up AI config files automatically):\n`,
+    `**Remove the platform** (restores your backed-up AI config files **and** preserves any rules you authored inside platform files → \`AGENT-PLATFORM-PRESERVED-RULES.md\` + \`.agent-platform-preserved/\`):\n`,
     `\`\`\`\nnpx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=uninstall --confirm\n\`\`\`\n`,
   );
 
@@ -958,6 +978,51 @@ if (MODE === 'uninstall') {
     walk(abs);
   };
 
+  // ── Harvest user-authored content BEFORE anything is deleted ──────────────
+  // Two things live *inside* platform files/folders and would otherwise be lost:
+  //   1. PROJECT-section rules the user added to platform files (.agent/agents/*.md,
+  //      .agent/CONVENTIONS.md, root AGENTS.md/CLAUDE.md, …).
+  //   2. Per-pack user overlays (.agent/packs/<id>/user.overlay.md).
+  // We copy them to a preserved location that survives uninstall. This is a hard
+  // guarantee: removing the platform must never delete rules the user authored.
+  const preservedSections = []; // { path, body }
+  const preservedOverlays = []; // { id, srcAbs }
+
+  for (const entry of manifest.files) {
+    if (entry.scope === 'global') continue;
+    const installed = path.join(INSTALL_ROOT, entry.path);
+    if (!fs.existsSync(installed)) continue;
+    let installedContent;
+    try { installedContent = fs.readFileSync(installed, 'utf8'); } catch { continue; }
+    const body = extractProjectSection(installedContent);
+    if (body === null) continue;
+    const meaningful = body.replace(/<!--[\s\S]*?-->/g, '').trim().length > 0;
+    if (!meaningful) continue;
+    // Compare against the shipped template's PROJECT block — only preserve if the
+    // user actually changed it (avoids saving pristine boilerplate).
+    let templateBody = null;
+    try {
+      const src = path.join(templatesRoot, resolveTemplate(entry, PROFILE));
+      if (fs.existsSync(src)) templateBody = extractProjectSection(sub(fs.readFileSync(src, 'utf8'), vars));
+    } catch { /* if template can't be read, err toward preserving */ }
+    if (templateBody !== null && normalizeBody(body) === normalizeBody(templateBody)) continue;
+    preservedSections.push({ path: entry.path.replace(/\\/g, '/'), body });
+  }
+
+  const packsDir = path.join(INSTALL_ROOT, '.agent/packs');
+  if (fs.existsSync(packsDir)) {
+    for (const id of fs.readdirSync(packsDir)) {
+      const ov = path.join(packsDir, id, 'user.overlay.md');
+      if (fs.existsSync(ov)) {
+        try { if (fs.readFileSync(ov, 'utf8').trim().length > 0) preservedOverlays.push({ id, srcAbs: ov }); }
+        catch { /* ignore unreadable */ }
+      }
+    }
+  }
+
+  const PRESERVED_FILE = 'AGENT-PLATFORM-PRESERVED-RULES.md';
+  const PRESERVED_DIR  = '.agent-platform-preserved';
+
   console.log('');
   console.log(LINE);
   console.log('  Agent Platform Bootstrap — Uninstall');
@@ -974,6 +1039,12 @@ if (MODE === 'uninstall') {
     existingFiles.forEach((f) => console.log('    ' + f));
     console.log('');
     console.log('  Your own rules/commands/configs in .cursor/ .claude/ etc. are preserved.');
+    if (preservedSections.length || preservedOverlays.length) {
+      console.log('');
+      console.log('  Your authored content will be SAVED before removal:');
+      preservedSections.forEach((s) => console.log(`    PROJECT rules from ${s.path}  →  ${PRESERVED_FILE}`));
+      preservedOverlays.forEach((o) => console.log(`    ${'.agent/packs/' + o.id + '/user.overlay.md'}  →  ${PRESERVED_DIR}/packs/${o.id}/user.overlay.md`));
+    }
     console.log('');
     console.log('  To confirm removal run:');
     console.log(`  npx ${manifest.platform_npx || 'github:zafrirron/Agent-Platform'} --mode=uninstall --confirm`);
@@ -1011,6 +1082,40 @@ if (MODE === 'uninstall') {
 
   if (!CONFIRM && staged) {
     console.log('  ℹ  Pre-install backup found — original files will be restored after removal.');
+  }
+
+  // ── Save harvested user content BEFORE deleting anything ──────────────────
+  let preservedCount = 0;
+  if (preservedSections.length || preservedOverlays.length) {
+    let out = `# Preserved project rules\n\n` +
+      `Saved automatically by Agent Platform uninstall on ${new Date().toISOString()}.\n\n` +
+      `These are rules **you** authored inside platform files. The platform has been removed, ` +
+      `but your rules are kept here so nothing is lost. Move them wherever you keep your rules ` +
+      `(your own \`.cursor/rules/*.mdc\`, a re-installed platform's \`PROJECT\` sections, etc.).\n`;
+    for (const s of preservedSections) {
+      out += `\n\n---\n\n## From \`${s.path}\`\n\n${s.body}\n`;
+    }
+    if (preservedOverlays.length) {
+      out += `\n\n---\n\n## Preserved pack overlays\n\n` +
+        `Your per-pack \`user.overlay.md\` files were copied to \`${PRESERVED_DIR}/\`:\n\n`;
+      for (const o of preservedOverlays) {
+        out += `- \`${PRESERVED_DIR}/packs/${o.id}/user.overlay.md\` (was \`.agent/packs/${o.id}/user.overlay.md\`)\n`;
+      }
+    }
+    fs.writeFileSync(path.join(INSTALL_ROOT, PRESERVED_FILE), out.endsWith('\n') ? out : out + '\n');
+    preservedCount += preservedSections.length;
+    for (const o of preservedOverlays) {
+      const dest = path.join(INSTALL_ROOT, PRESERVED_DIR, 'packs', o.id, 'user.overlay.md');
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.copyFileSync(o.srcAbs, dest);
+      preservedCount++;
+    }
+    console.log('  ──────────────────────────────────────────────────────────────');
+    console.log('  Preserving your authored rules before removal...');
+    preservedSections.forEach((s) => console.log(`  ✅ Saved: PROJECT rules from ${s.path} → ${PRESERVED_FILE}`));
+    preservedOverlays.forEach((o) => console.log(`  ✅ Saved: ${o.id} user.overlay.md → ${PRESERVED_DIR}/packs/${o.id}/`));
+    console.log('  ──────────────────────────────────────────────────────────────');
+    console.log('');
   }
 
   console.log('  Removing platform files from: ' + INSTALL_ROOT);
