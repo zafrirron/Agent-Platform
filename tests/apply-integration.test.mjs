@@ -799,7 +799,7 @@ describe('packs — registered in manifest catalog', () => {
 
   test('packs_catalog lists the v1 packs', () => {
     const ids = (manifest.packs_catalog || []).map((p) => p.id);
-    for (const id of ['stack-react', 'stack-django', 'domain-fintech', 'domain-c4i',
+    for (const id of ['stack-react', 'stack-django', 'domain-fintech',
                       'language-typescript', 'language-java', 'language-cpp']) {
       assert.ok(ids.includes(id), `packs_catalog missing ${id}`);
     }
@@ -822,19 +822,6 @@ describe('packs — registered in manifest catalog', () => {
     const pj = JSON.parse(fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-TEMPLATES/.agent/packs/domain-fintech/pack.json'), 'utf8'));
     assert.ok(Array.isArray(pj.reference_sources) && pj.reference_sources.length > 0, 'reference_sources missing');
     assert.ok(pj.reference_sources.every((s) => s.repo && s.url && s.license), 'reference_sources entries incomplete');
-  });
-
-  test('domain-c4i pack.json is a well-formed domain pack', () => {
-    const pj = JSON.parse(fs.readFileSync(path.join(PACK_ROOT, 'AGENT-PLATFORM-TEMPLATES/.agent/packs/domain-c4i/pack.json'), 'utf8'));
-    assert.equal(pj.kind, 'domain', 'domain-c4i must be kind "domain"');
-    assert.ok(Array.isArray(pj.reference_sources) && pj.reference_sources.length > 0, 'reference_sources missing');
-    assert.ok(pj.reference_sources.every((s) => s.repo && s.url && s.license), 'reference_sources entries incomplete');
-    const overlays = Object.values(pj.provides.agent_overlays || {});
-    const refs = pj.provides.references || [];
-    for (const rel of [...overlays, ...refs, pj.provides.routing_rows]) {
-      const abs = path.join(PACK_ROOT, 'AGENT-PLATFORM-TEMPLATES/.agent/packs/domain-c4i', rel);
-      assert.ok(fs.existsSync(abs), `domain-c4i missing declared asset: ${rel}`);
-    }
   });
 });
 

@@ -117,7 +117,7 @@ The agent runs the install under the hood (e.g. `npx github:zafrirron/Agent-Plat
 
 Full spec: `.agent/packs/README.md` (installed with any pack) · design: [`MAINTAINER/adr/ADR-001-stack-domain-packs.md`](../MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 
-Available packs: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`, `domain-c4i` (C2 / C4ISR). More via community contribution, maintainer pack-scoped scans, and your own **private-fork packs** (build company IP as packs — see the fork pattern in [README](../README.md#fork-this-platform--your-ip-lives-in-packs-not-core-edits)).
+Available packs: languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech` (example). More via community contribution, maintainer pack-scoped scans, and your own **private-fork packs** (build company IP as packs — see the fork pattern in [README](../README.md#fork-this-platform--your-ip-lives-in-packs-not-core-edits)).
 
 ---
 

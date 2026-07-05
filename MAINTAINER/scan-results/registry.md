@@ -28,10 +28,6 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 
 | Date | Mode | Findings | Implemented | Skipped | Deferred | Archive |
 |------|------|----------|-------------|---------|----------|---------|
-| 2026-07-04 | Mode 3 ingest — PACK-CANDIDATE (pack:domain-c4i) | 11 (C001–C011) | 8 (C001–C008) | 0 | 0 (3 already covered) | [packs/domain-c4i.md](packs/domain-c4i.md) |
-| 2026-07-04 | Mode 2 `url=` site scan (pack:domain-c4i) | 7 (U001–U007) | 3 (U001–U003) | 1 (U006→adjacent) + 1 covered | 2 (U004/U005) | [packs/domain-c4i.md](packs/domain-c4i.md) |
-| 2026-07-04 | Mode 2 web-scan enrich (pack:domain-c4i) | 4 (B018–B021) | 4 (all adopted) | 0 | 0 | [packs/domain-c4i.md](packs/domain-c4i.md) |
-| 2026-07-04 | Mode 2 build-pack | 17 (B001–B017) | 17 (all adopted) | 0 | 6 adjacent candidates | [packs/domain-c4i.md](packs/domain-c4i.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R036–R041) | 4 (R036–R039) | 0 | 2 (R040 roadmap; R041→R014) | [mode4/2026-07-03-targeted-opencode-report.md](mode4/2026-07-03-targeted-opencode-report.md) |
 | 2026-07-03 | Mode 4 targeted | 5 (R031–R035) | 2 (R031, R032) | 0 | 3 (R033 opt-in; R034 roadmap; R035) | [mode4/2026-07-03-targeted-ponytail-report.md](mode4/2026-07-03-targeted-ponytail-report.md) |
 | 2026-07-03 | Mode 4 targeted | 6 (R025–R030) | 3 (R025, R028, R029) | 0 | 3 (R026 roadmap; R027 opt-in; R030) | [mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md](mode4/2026-07-03-targeted-thedesignproject-agent-skills-report.md) |
@@ -41,76 +37,6 @@ Legacy Mode 4 copies also remain at `MAINTAINER/governance-scan/archive/` — ne
 | 2026-06-09 | Mode 2 | 15 | 5 (F001–F004, F013) | 0 | 10 | *(see platform-improvements.md)* |
 | 2026-06-11 | Mode 4 | — | scan keyword fix | — | — | governance-scan/scan-log |
 | 2026-06-02 | Mode 4 | 8 repos | 14 phases | — | — | founding scan |
-
----
-
-## [2026-07-04] — Mode 3 ingest (PACK-CANDIDATE) — internal C2 engineer UI/UX skill → pack:domain-c4i v1.3.0
-
-**Source:** internal C2 engineering submission `c2_ui_ux_skill.md` (owned contribution — no external IP)  
-**Ledger:** [packs/domain-c4i.md](packs/domain-c4i.md)
-
-**Scan mode:** Mode 3 ingest, pack lane (PACK-CANDIDATE → `pack=domain-c4i`). Added an **operator-cognition & interaction-design** layer the pack under-covered (existing UX ref was layout/symbology/map/video).
-
-### Findings (8 adopted, 3 already covered)
-- **C001** SA pipeline (Perception/Comprehension/Projection), **C002** cognitive-load/widget limits (~5–7), **C003** Fitts' Law forward+reverse, **C004** stress single-tasking + sensible defaults, **C005** interruption task-state save, **C006** forgiveness + neutral destructive colours, **C007** alert fatigue/habituation (enhances §8/B010), **C008** UX-enforcing components + domain/UI state separation — **Adopted** → new `references/c4i-cognition.md` + `frontend-agent.overlay.md` rules + routing.
-- **C009** dual-coding, **C010** agent transparency, **C011** graceful degradation — **already covered** (B007 / U002 / B006); wording aligned, external validation of the existing brain.
-
----
-
-## [2026-07-04] — Mode 2 `url=` site scan — imarcgroup.com/top-c4isr-companies → pack:domain-c4i v1.2.0
-
-**Target site:** https://www.imarcgroup.com/blog/top-c4isr-companies — proprietary market-research listicle (**inspiration-only**, low fidelity)  
-**Ledger:** [packs/domain-c4i.md](packs/domain-c4i.md)
-
-**Scan mode:** `url=` targeted site scan (pack lane). IP guard applied: distilled capability *themes* only; **no company list, market figures, or wording copied**; the platform builds capability packs, not vendor packs.
-
-### Findings (breadth/gap signals — deepen later with standards scans)
-- **U001** All-domain / multi-domain C2 (land/air/maritime/space/cyber; JADC2; joint interop by contract) — **Adopted** → capabilities §15 + architect/frontend overlays.
-- **U002** Predictive decision support — AI recommendations with confidence/provenance, human-on/in-the-loop (models adjacent) — **Adopted** (enhances B010) → §16 + backend/frontend overlays.
-- **U003** ISR collection management + PED (tasking→coverage/gap; Processing/Exploitation/Dissemination→intel products) — **Adopted** → §17 + backend overlay.
-- **U004** Commander-level SA / big-data roll-up dashboards — **Deferred** (backlog).
-- **U005** Unmanned-systems (UxV) C2 in the COP — **Deferred** (backlog).
-- **U006** Cyber-ops C2 + Electronic Warfare — **Rejected for this pack → adjacent** `domain-cyber-ops` / `stack-ew`.
-- **U007** Interoperability / integrated-systems — **COVERED** (B002).
-
-**Note:** source is marketing-level, so adopted items are *directional capabilities*, not verified depth — flagged in the ledger to deepen via JADC2 (U001) and STANAG collection-management (U003) standards scans.
-
----
-
-## [2026-07-04] — Mode 2 web-scan enrichment — pack:domain-c4i → v1.1.0 (live sources verified)
-
-**Selection:** B018–B021 all adopted; ATAK-CIV license corrected GPL-3.0 (was mislabeled Apache-2.0 in the author-derived v1.0.0 draft)  
-**Ledger:** [packs/domain-c4i.md](packs/domain-c4i.md)
-
-**Scan mode:** pack-scoped web scan (live WebFetch/WebSearch)  
-**Sources verified:** ATAK-CIV (GPL-3.0, archived) · FreeTAKServer (EPL-2.0) · MIL-STD-2525D/APP-6(D) (JCS) · MISB ST 0601/STANAG 4609 (NSG) · Cursor-on-Target base schema
-
-### Findings (all adopted into the pack)
-- **B018** MIL-STD-2525D SIDC depth → new `references/symbology-sidc.md` + frontend overlay (compose frame/icon/status/echelon; JMSML validation; echelon-offset & frame/icon pixel-grid pitfalls).
-- **B019** CoT entity semantics (persistent uid, time/start/stale validity, **stale→confidence decay**, access/sharing marker) → backend + security overlays as *semantics* (wire format stays adjacent `stack-cot-tak`).
-- **B020** MISB ST 0601 / STANAG 4609 KLV depth (sensor/platform geo-metadata → footprint/target-location; MPEG-2 TS mux; sync = designer responsibility) → `references/c4i-video.md` + frontend video rules.
-- **B021** License verification/correction of both reference apps (ATAK **GPL-3.0** archived; FTS **EPL-2.0**).
-
-**Note:** this is the enrichment that converts `domain-c4i` from *author-derived expert judgment* to *web-scan-verified, source-cited* brain. Adjacent candidates unchanged (still proposed, not built).
-
----
-
-## [2026-07-04] — Mode 2 build-pack — domain-c4i (C2 / C4ISR) — first curated domain pack
-
-**Selection:** all 17 findings (B001–B017) adopted into the new pack; 6 off-axis signals routed to Adjacent pack candidates  
-**Ledger:** [packs/domain-c4i.md](packs/domain-c4i.md) (per-pack dedup ledger — pack-scoped mirror of this registry)
-
-**Scan mode:** build-pack (greenfield, dry-run → real build)  
-**Target pack:** `domain-c4i` — kind `domain`  
-**Sources:** ATAK-CIV (ATAK-CIV/Apache-2.0, verify) · FreeTAKServer (EPL-2.0, verify) · public MIL-STD-2525 / NATO APP-6 standards
-
-### Findings summary (domain = capabilities + UI/UX + C2 semantics only)
-
-B001 COP single-truth · B002 C2 information model · B003 track management · B004 tasking/orders lifecycle · B005 DIL tolerance · B006 freshness & uncertainty · B007 symbology (2525/APP-6, no-color-alone) · B008 layout/perspectives/zones/menus · B009 map UX · B010 alerting & decision support · B011 multi-echelon releasability · B012 after-action replay/attribution · B013 collaboration chat/voice · B014 accessibility/ergonomics · B015 full-motion-video-in-app UX · B016 planning & COA · B017 sensor/report fusion capability.
-
-**Adjacent pack candidates (Phase B2, not built this pass):** `stack-cot-tak`, `stack-dds`, `stack-geospatial`, `stack-fmv-decode`, `platform-tactical-edge`, `language-cpp`.
-
-**Do not re-propose (routed off-axis on purpose):** CoT/TAK transport, DDS middleware, map-rendering engine, video codec/transport, edge HW/OS, C++ language — all belong to adjacent packs, never the domain brain.
 
 ---
 

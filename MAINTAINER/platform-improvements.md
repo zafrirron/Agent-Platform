@@ -34,84 +34,6 @@
 
 ---
 
-### [Unreleased] — 2026-07-04 — `domain-c4i` v1.3.0 — Mode 3 ingest of internal C2 engineer UI/UX skill (operator cognition)
-
-**Source:** User — an internal C2 engineer submitted `c2_ui_ux_skill.md`; "analyze what shall we adopt" → "proceed with recommendations". First pack-lane **Mode 3 ingest (PACK-CANDIDATE)** into `domain-c4i`.
-
-**Failure observed (gap):** the pack's UX coverage (`c4i-ux.md` + overlay) was strong on layout / symbology / map / video but thin on **operator cognition & interaction design** — the human-factors layer for a stressed, time-pressured operator. The engineer's skill filled exactly that gap.
-
-**Files changed (pack lane):**
-- **New** `references/c4i-cognition.md` — SA pipeline (Perception/Comprehension/Projection), cognitive-load/widget limits, alert fatigue, Fitts' Law (forward+reverse), stress single-tasking + sensible defaults, interruption task-state save, forgiveness + neutral destructive colours, UX-enforcing components, domain/UI state separation.
-- `frontend-agent.overlay.md` — 4 new always-on rules (SA+cognitive-load, Fitts both ways + neutral destructive + undo, interruption state-save, dual-code/never-fake-normal).
-- `routing.md` — cognition/usability/Fitts row. `pack.json` — version 1.2.0 → 1.3.0, references[], `reference_sources[]` credit (internal contribution). `AGENT-PLATFORM-MANIFEST.json` — registered the new reference.
-- Provenance: per-pack ledger (source row + C001–C011), `registry.md` (Mode 3 section + quick-index row), `CHANGELOG.md`.
-
-**Rule added:** internal engineering submissions ingest via **Mode 3 PACK-CANDIDATE → `pack=<id>`** and are credited as owned `reference_sources` (`kind:"contribution"`); findings that duplicate the existing brain (dual-coding, agent transparency, graceful degradation) are recorded as DUPLICATE/validated, not re-added. Human-factors/cognition depth lands in a dedicated reference; only the always-on non-negotiables go in the thin overlay.
-
-**Validated:** Yes — `npm test` 265/265 green (well-formed-domain-pack test now also verifies `c4i-cognition.md` exists); manifest parses; live reinstall activates v1.3.0 (12 files).
-
----
-
-### [Unreleased] — 2026-07-04 — `domain-c4i` v1.2.0 — `url=` site scan breadth (all-domain / ISR-PED / decision support)
-
-**Source:** User — "look into website https://www.imarcgroup.com/blog/top-c4isr-companies … what can you grab on this domain worth to consider" → "proceed with recommendation". First real exercise of the maintainer **`url=<website>` targeted site scan** on a live non-repo site.
-
-**Failure observed (gap):** the v1.1.0 brain was tactical-ground-COP-centric and covered the "C2" of C4ISR far better than the "ISR" half; it also lacked all-domain (JADC2) framing and modern AI/predictive decision-support UX — all themes the C4ISR ecosystem overwhelmingly emphasizes.
-
-**Files changed (pack lane only, no new files):**
-- `references/c4i-capabilities.md` — added §15 all-domain/multi-domain C2, §16 predictive decision support (human-on-the-loop), §17 ISR collection management + PED; extended Adjacent list (`domain-cyber-ops`, `stack-ew`, ML inference).
-- `architect-agent.overlay.md` — all-domain-by-default rule. `backend-agent.overlay.md` — ISR collection+PED + AI-outputs-as-provenanced-recommendations. `frontend-agent.overlay.md` — all-domain COP + AI-recommendations-not-verdicts.
-- `routing.md` — rows for all-domain/JADC2, ISR/PED, decision support.
-- `pack.json` — version 1.1.0 → 1.2.0, keywords (+isr/jadc2/all-domain/collection management/decision support), attribution.
-- Provenance: per-pack ledger (source row + U001–U007 + adjacents + deferred backlog), `registry.md` (site-scan section + quick-index row), `CHANGELOG.md`.
-
-**Rule added (site-scan discipline):** a proprietary market/marketing site is **inspiration-only** — distil capability *themes*, never copy the vendor list, market figures, or wording, and build **capability packs, not vendor packs**. Signals from marketing-level sources are recorded as **directional (low-fidelity)** and flagged in the ledger to be **deepened by a real standards/repo scan** before being treated as verified depth (U001→JADC2 doctrine; U003→STANAG collection-management). Cyber-ops/EW and ML inference are held as adjacent, not merged into the C4ISR-COP domain.
-
-**Validated:** Yes — `npm test` 265/265 green; manifest parses; live reinstall activates v1.2.0 (11 files). No new files (added to existing references), so no manifest/test-count change.
-
----
-
-### [Unreleased] — 2026-07-04 — `domain-c4i` v1.1.0 — live web-scan enrichment (author-derived → source-verified)
-
-**Source:** User — "so lets go to next level expert using web scan-results" (after asking whether the v1.0.0 pack contained real scanned intelligence or only author-derived content — it was author-derived).
-
-**Failure observed:** v1.0.0 was built from expert judgment without live fetching, so (a) reference-source **licenses were guessed** — ATAK-CIV was mislabeled `Apache-2.0`, and (b) symbology / FMV / entity-model content lacked verified, citable depth. An unverified copyleft license in a shipped pack is a real IP risk.
-
-**Files changed (pack enrichment, pack lane only):**
-- `AGENT-PLATFORM-TEMPLATES/.agent/packs/domain-c4i/references/symbology-sidc.md` — **new**, MIL-STD-2525D/APP-6(D) SIDC depth (B018).
-- `references/c4i-video.md` — MISB ST 0601 / STANAG 4609 / KLV depth (B020).
-- `backend-agent.overlay.md` + `security-agent.overlay.md` — CoT entity semantics: persistent uid, time/start/stale validity, **stale→confidence decay**, access/sharing marker (B019).
-- `frontend-agent.overlay.md` — SIDC composition + JMSML validation + pixel-alignment rules; MISB metadata rules.
-- `pack.json` — **corrected/verified licenses** (ATAK **GPL-3.0** archived; FTS **EPL-2.0**), added 3 standards/spec `reference_sources`, version **1.0.0 → 1.1.0**, new reference + attribution.
-- `routing.md` — symbology row now points at `symbology-sidc.md`.
-- `AGENT-PLATFORM-MANIFEST.json` — registered `symbology-sidc.md`.
-- Provenance: per-pack ledger (B018–B021 + license correction), `registry.md` (enrichment scan row), `docs/INTELLIGENCE-SOURCES.md` (license fix), `CHANGELOG.md`.
-
-**Rule added:** a pack built without live fetching is `confidence` at best *author-derived* — its `reference_sources` licenses **must be web-verified before the pack is treated as source-cited**; copyleft (GPL/EPL/AGPL) reference apps are **study-only** and must be labeled as such. CoT/2525D/MISB are ingested as **domain semantics**, with wire format/codec/rendering explicitly left to adjacent packs.
-
-**Validated:** Yes — `npm test` 265/265 green (the well-formed-domain-pack test now also verifies `symbology-sidc.md` exists + `reference_sources` complete); manifest parses; live reinstall activates all 11 files. Licenses verified against upstream LICENSE.md / repo metadata on 2026-07-04.
-
----
-
-### [Unreleased] — 2026-07-04 — First curated domain pack: `domain-c4i` (C2 / C4ISR) via `build-pack`
-
-**Source:** User — "enrich add 8-10 and run real phase to check building the pack" (following a two-pass `build-pack=domain-c4i` dry run with the strict-axis feedback: "some of your findings are technology oriented while domain axis is application capabilities including ui/ux" and "video you marked stack where i pointed to video ui/ux integration into the application layer").
-
-**Failure observed (gap + validation of the workflow):** the `build-pack=` workflow had never produced a real shipped pack, so the dry-run → real-build → register → PSG-pack-lane → green-tests loop was unproven end to end. The dry run also exposed an axis-discipline risk: it is easy to pull transport/middleware/codec/hardware/language material into a *domain* pack. This build validates the loop and enforces strict axis separation (domain = application capabilities + UI/UX + C2 information semantics only).
-
-**Files changed (new pack + registration + provenance):**
-- New pack `AGENT-PLATFORM-TEMPLATES/.agent/packs/domain-c4i/` — `pack.json`, 4 overlays (`architect`/`frontend`/`backend`/`security`), `routing.md`, 4 references (`reference-architecture.md`, `c4i-capabilities.md`, `c4i-ux.md`, `c4i-video.md`).
-- `AGENT-PLATFORM-MANIFEST.json` — `packs_catalog` entry + 10 `files[]` `kind:"pack"` rows.
-- `tests/apply-integration.test.mjs` — catalog membership + well-formed-domain-pack test (declared overlays/references/routing exist on disk). +1 test (265 total).
-- Provenance: `MAINTAINER/scan-results/packs/domain-c4i.md` (per-pack ledger, 17 findings + adjacents + do-not-re-propose), `MAINTAINER/scan-results/registry.md` (scan row), `docs/INTELLIGENCE-SOURCES.md` (domain example extended), `CHANGELOG.md`.
-- Live test-count refs 264→265 (`GUIDE.md`, both decks, `CONTRIBUTING.md`, `README.md`, `E2E-TEST-PLAN.md`).
-
-**Rule added:** a `domain` pack carries **only** application capabilities, operator UI/UX, and domain information semantics; every technology signal (transport, middleware, rendering engine, codec, hardware/OS, language) is routed to **Adjacent pack candidates** and recorded in the per-pack ledger's Do-not-re-propose list, never merged into the domain brain. Full-motion video **UI/UX** (feeds-as-COP-citizens, slew-to-cue, video-on-map, DVR/replay) is domain; only the raw codec/transport primitive is adjacent (`stack-fmv-decode`).
-
-**Validated:** Yes — `npm test` 265/265 green; manifest parses; every declared overlay/reference/routing asset exists on disk; `reference_sources[]` complete (repo+url+license). Reference-source licenses flagged "verify before code reuse" in `pack.json` + ledger.
-
----
-
 ### [Unreleased] — 2026-07-04 — Maintainer Mode 5: Solution Blueprint (multi-axis pack decomposition + approval gates)
 
 **Source:** User — "let's put a maintainer pattern that helps design 4-axis pack building flow" (drone-mission example: NVIDIA edge module + visual AI on gimbal + radar-guided flight + radar→visual handoff) → "build mode 5, add approval gates so [maintainer] may reject some stacks/platforms/languages… out of scope."
@@ -127,7 +49,7 @@
 
 **Rule added (approval-gate + out-of-scope guard):** Mode 5 **never auto-builds** — at S5 the maintainer approves/rejects **per candidate or per axis** (`Reject stack-gstreamer` / `Reject axis:language`). Every rejection is recorded as an **out-of-scope exclusion with a reason** in the blueprint archive AND pre-seeded into each built pack's ledger `Adjacent pack candidates` as `skipped — out of scope (blueprint <slug>)`, so the existing cross-axis discovery (Phase B2) + per-pack dedup ledger make the veto **sticky** — a later scan cannot resurrect vetoed tech. Mode 5 is an orchestrator: it delegates real brain-building to Mode 2 `build-pack=`/`pack=`, each of which keeps its own findings-selection, PSG pack lane, and ledger (tagged `via blueprint <slug>`); axis discipline is enforced by the S2 decision table.
 
-**Validated:** Docs-only, maintainer-only; `npm test` 265/265 green (no consumer template/manifest/test change). First real exercise pending a dry-run (`build=no`) on the drone-mission brief.
+**Validated:** Docs-only, maintainer-only; `npm test` green (no consumer template/manifest/test change). First real exercise pending a dry-run (`build=no`) on the drone-mission brief.
 
 ---
 

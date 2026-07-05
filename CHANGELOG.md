@@ -7,8 +7,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+---
+
+## [2.46.0] — 2026-07-05
+
 ### Changed
-- **README + user-facing docs synced to the packs pattern** (post-2.45.0 catch-up) — the pack capabilities shipped in 2.45.0 were under-represented in the top-level README and other consumer docs. Added a **🧩 Packs** row to the README "What you get" table; refreshed every **available-packs** list to include `domain-c4i` (README, `AGENT-PLATFORM-FRAMEWORK-README.md`, `docs/DISTRIBUTION.md`, `.agent/QUICK-REF.md`, `.agent/QUICK-REF-lite.md`, `.agent/PLATFORM-HELP.md`); reframed the README **"Fork this platform"** section around the **packs-first private-IP pattern** (core stays generic, company IP → packs in a private fork, upstream merges stay conflict-free) with a layering table + diagram; and surfaced the **five maintainer modes** (incl. Mode 4 GitHub scan, Mode 5 Solution Blueprint, `build-pack=`, pack-scoped growth) in the README intelligence note and maintainer-commands table. Docs-only.
+- **Public platform restored to domain/axis-agnostic — `domain-c4i` extracted to a private fork.** The public core is deliberately language-, stack-, platform- and **domain-agnostic**; it now ships only **generic reference example packs** (languages TypeScript/Java/C++, stacks React/Django, `domain-fintech`). The proprietary/domain-specific `domain-c4i` (C2 / C4ISR) pack was **removed from the public repo** and now lives only in a private downstream fork — exactly the platform's own **"company IP → packs in a private fork, never the public core"** pattern (eat-our-own-dog-food). Removed from public: the pack files, its `packs_catalog` + `files[]` manifest entries, the dedicated pack test, the per-pack dedup ledger (`MAINTAINER/scan-results/packs/domain-c4i.md`), and every user-facing available-pack / provenance reference (README, `AGENT-PLATFORM-FRAMEWORK-README.md`, `docs/DISTRIBUTION.md`, `docs/INTELLIGENCE-SOURCES.md`, `.agent/QUICK-REF*.md`, `.agent/PLATFORM-HELP.md`, `MAINTAINER/scan-results/registry.md`). Test count **265 → 264**. The v2.45.0 entry below is retained unchanged as history (c4i shipped there).
+- **README + user-facing docs synced to the packs pattern** (post-2.45.0 catch-up) — Added a **🧩 Packs** row to the README "What you get" table; refreshed every **available-packs** list; reframed the README **"Fork this platform"** section around the **packs-first private-IP pattern** (core stays generic, company IP → packs in a private fork, upstream merges stay conflict-free) with a layering table + diagram; and surfaced the **five maintainer modes** (incl. Mode 4 GitHub scan, Mode 5 Solution Blueprint, `build-pack=`, pack-scoped growth) in the README intelligence note and maintainer-commands table.
 
 ---
 

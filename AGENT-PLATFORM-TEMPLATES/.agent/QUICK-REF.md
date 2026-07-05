@@ -116,7 +116,7 @@ Curated language/stack/platform/domain knowledge layered on the agnostic core. O
 - **Language vs stack:** a language pack = the language itself (reusable across every framework in it); a stack pack = a framework/library built in a language.
 - **How it loads:** when a pack is active, the routed expert also reads the overlay it maps in `pack.json` → `provides.agent_overlays`. A language pack overlays *every* code expert; a stack/domain pack overlays one. Zero cost when none active.
 - **Reference architecture:** with a domain pack active, ask *"reference architecture for a [domain] app"* → agent reads the pack's `reference-architecture.md` + linked source repos.
-- **Available (shipped):** `language-typescript` · `language-java` · `language-cpp` · `stack-react` · `stack-django` · `domain-fintech` · `domain-c4i` (C2/C4ISR).
+- **Available (shipped examples):** `language-typescript` · `language-java` · `language-cpp` · `stack-react` · `stack-django` · `domain-fintech`.
 - **Private/proprietary:** company IP belongs in packs — fork the platform to a private repo and build your packs there (not in this repo). Full spec: `.agent/packs/README.md`.
 
 ---

@@ -153,7 +153,7 @@ Your agent runs the install commands under the hood (e.g. `npx … --mode=add --
 - **Domain reference architectures** — domain packs link back to real open-source apps. Ask *"reference architecture for a fintech app"* and the agent surfaces the distilled architecture + the linked source repos (license-aware).
 - **Private & proprietary packs** — packs are where your **IP / secret sauce** belongs, never the public core. **Fork the platform to a private repo, build your packs there, and install from the fork**: your teams get the generic core *plus* your private packs, while you still merge upstream core updates conflict-free (your work lives in packs, not core). Per-project secrets stay in `user.overlay.md`. Maintainers stand up a whole project's pack set at once with **Mode 5 (Solution Blueprint)** — state a system goal, approve/reject candidate packs per axis, build. See [`.agent/packs/README.md`](AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md) and [MAINTAINER/GUIDE.md](MAINTAINER/GUIDE.md).
 
-Available (shipped reference packs): languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`, `domain-c4i` (C2 / C4ISR command-and-control). Build your own for any language/stack/platform/domain — see the fork pattern below. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · spec: [`.agent/packs/README.md`](AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
+Available (shipped reference packs): languages — `language-typescript`, `language-java`, `language-cpp`; stacks — `stack-react`, `stack-django`; domains — `domain-fintech`. These are **generic examples** — the core stays domain/axis-agnostic. Build your own for any language/stack/platform/domain (proprietary ones in a private fork) — see the fork pattern below. Details: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md#language-technology-stack-platform--domain-packs-opt-in-overlays) · spec: [`.agent/packs/README.md`](AGENT-PLATFORM-TEMPLATES/.agent/packs/README.md) · design: [ADR-001](MAINTAINER/adr/ADR-001-stack-domain-packs.md).
 
 ---
 
@@ -238,7 +238,7 @@ Repeat. The platform never stops improving.
 | **🔍 Full Project Audit** | 11-phase professional report on first session or on demand — architecture through governance/maturity. Report saved to `.agent/context/audit-[date].md`. Ideal for onboarding to any unknown repo. |
 | **20 playbooks** | Core: audit · add-feature · bug-fix · refactor · release · debug · security-audit · add-dependency · api-integration · document-api · deprecation · requirements-clarification. Quality: nfr-definition · production-readiness · performance-budget · observability-setup · accessibility-audit. Compliance: compliance-review · org-maturity-assessment · incident-postmortem |
 | **Reference checklists** | `.agent/references/` — testing, security, performance, accessibility, orchestration patterns (agent-skills–informed) |
-| **🧩 Language / stack / platform / domain Packs** | Opt-in overlays that layer curated, failure-derived expertise on the agnostic core — `language:*` (TS/Java/C++), `stack:*` (React/Django), `platform:*` (roadmap), `domain:*` (fintech, C2/C4ISR). Composable, detect-and-suggest, zero cost when none active. Your rules live in `user.overlay.md` (survives every update). **Company IP → build packs in a private fork** (see below). Just ask: *"scan my repo for packs"*. |
+| **🧩 Language / stack / platform / domain Packs** | Opt-in overlays that layer curated, failure-derived expertise on the agnostic core — `language:*` (TS/Java/C++), `stack:*` (React/Django), `platform:*` (roadmap), `domain:*` (fintech example — build your own). Composable, detect-and-suggest, zero cost when none active. Your rules live in `user.overlay.md` (survives every update). **Company IP → build packs in a private fork** (see below). Just ask: *"scan my repo for packs"*. |
 | **Install profiles** | `lite` skills pack · `core` (no enterprise) · `full` team platform · `--mode=add` cherry-pick |
 | **11 lifecycle skills** | `SKILL.md` modules — interview-me, TDD, plan/build slices, code-simplify, web-performance-audit, context-engineering, verification-before-completion |
 | **Agent-skills ingest** | Rationalization gates · doubt review · source-driven dev · Beyoncé/DAMP · spec-outline template |
@@ -534,7 +534,7 @@ $Repo = "YOUR_ORG/YOUR_REPO_NAME"
 
 **Step 5** — Verify everything is wired:
 ```bash
-npm test   # 265 tests must pass
+npm test   # 264 tests must pass
 ```
 
 **Step 6** — Deploy to your team:

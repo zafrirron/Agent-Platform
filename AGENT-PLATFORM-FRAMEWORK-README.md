@@ -62,7 +62,7 @@ The platform core deliberately gives **general** software-engineering discipline
 |------|-----------|--------------|
 | `language:*` | `language-typescript`, `language-java`, `language-cpp` | The language's own type/memory/concurrency footguns — loads for every code-writing expert |
 | `stack:*` | `stack-react`, `stack-django` | Framework/library idioms, pitfalls, perf traps, version gotchas |
-| `domain:*` | `domain-fintech`, `domain-c4i` (C2 / C4ISR) | Compliance, domain invariants, threat models, capability + UI/UX semantics, and **reference architectures** linked to real source apps |
+| `domain:*` | `domain-fintech` (example) | Compliance, domain invariants, threat models, capability + UI/UX semantics, and **reference architectures** linked to real source apps |
 | `platform:*` | *roadmap (design-formalized)* | Execution/deployment target — hardware (Jetson, STM32), OS/RTOS, container runtime (Docker/k8s) |
 
 - **Orthogonal & composable** — a repo can run `language:cpp` + `stack:react` + `domain:fintech` at once. Language ≠ stack: a language pack is reusable across every framework in it. There are **no combo packs**.

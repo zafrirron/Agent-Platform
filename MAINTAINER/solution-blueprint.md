@@ -78,7 +78,7 @@ Brief: "<verbatim>"
 | Axis | Candidate id | Class | Rank | Rationale (signal → capability) | Build via |
 |------|--------------|-------|-----:|---------------------------------|-----------|
 | domain   | domain-drone-mission | NEW      | ★1 | mission plan + radar→visual handoff + operator UX | build-pack= |
-| domain   | domain-c4i           | REUSE    |  2 | track/COP semantics already shipped               | activate    |
+| domain   | domain-track-mgmt    | REUSE    |  2 | track/COP semantics already built                 | activate    |
 | stack    | stack-ros2           | NEW      | ★1 | robotics middleware                                | build-pack= |
 | stack    | stack-cv-inference   | NEW      |  2 | TensorRT/OpenCV perception                         | build-pack= |
 | stack    | stack-gstreamer      | NEW      |  3 | gimbal video pipeline                             | build-pack= |
