@@ -414,6 +414,13 @@ function writeMigrationNotes(root, artifacts, backupDir) {
     `Backup location: \`.agent/backup/${backupName}/\`\n\n`,
     `Delete this file when you have finished reviewing.\n`,
     `\n---\n`,
+    `\n## How your rules are handled\n`,
+    `- **Your own rule files stay put and stay tracked.** The platform only adds *its own* files to the shared framework folders (\`.cursor/\`, \`.claude/\`, \`.codex/\`, \`.agents/\`, \`.opencode/\`). Your own rules/commands in those folders are left exactly as they were — still committed to git if they were before, still active in your IDE.\n`,
+    `- **The platform's own files are git-ignored** (only those specific files), so they never clutter your commits. Your files are untouched by the ignore rules.\n`,
+    `- **Precedence:** platform defaults live in \`<!-- PLATFORM:START -->\` sections; your project rules live in \`<!-- PROJECT:START -->\` sections and **override** the platform defaults. Your live IDE rules also still apply within that IDE.\n`,
+    `- **Where to maintain rules going forward:** keep IDE-specific rules in your own \`.cursor/rules/*.mdc\` (etc.) as before, **or** — recommended for cross-framework consistency — put project rules in the \`PROJECT\` sections of \`.agent/agents/*.md\` and \`.agent/CONVENTIONS.md\` so every IDE honours them.\n`,
+    `- **Reconcile any time:** say \`"reconcile my rules"\` and the agent will classify your rules (keep / duplicate / conflict / migrate) and flag anything that contradicts a platform rule for your decision.\n`,
+    `\n---\n`,
   ];
 
   toBackup.forEach(({ file, label }) => {
@@ -429,7 +436,7 @@ function writeMigrationNotes(root, artifacts, backupDir) {
         `To preserve your custom rules: move them into the \`<!-- PROJECT:START -->\` sections of the relevant expert agent files in \`.agent/agents/\`.\n`);
     } else {
       lines.push(`\n## ${label} — preserved\n`,
-        `Backed up. Continues to work alongside the platform.\n`);
+        `Left in place, still tracked in git, and still active in your IDE. A backup copy was also taken. It works alongside the platform; run \`"reconcile my rules"\` if you want it checked against the platform rules for duplicates or conflicts.\n`);
     }
   });
 

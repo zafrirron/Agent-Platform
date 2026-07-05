@@ -210,6 +210,14 @@ describe('install — pre-existing CLAUDE.md backed up', () => {
     assert.ok(fs.existsSync(path.join(dir, '.agent/MIGRATION-NOTES.md')), 'MIGRATION-NOTES.md missing');
   });
 
+  test('MIGRATION-NOTES.md explains shared-folder model, precedence, reconcile', () => {
+    const notes = fs.readFileSync(path.join(dir, '.agent/MIGRATION-NOTES.md'), 'utf8');
+    assert.ok(/How your rules are handled/i.test(notes), 'missing rules-handling section');
+    assert.ok(/stay tracked/i.test(notes), 'missing stay-tracked statement');
+    assert.ok(/override/i.test(notes), 'missing precedence statement');
+    assert.ok(/reconcile my rules/i.test(notes), 'missing reconcile trigger');
+  });
+
   test('no crash — no stderr', () => {
     assert.equal(result.stderr.trim(), '', `unexpected stderr: ${result.stderr}`);
   });
