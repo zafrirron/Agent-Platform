@@ -10,9 +10,11 @@ Thumbs.db
 /.cursor/
 /.agents/
 /.codex/
+/.opencode/
 /AGENTS.md
 /CLAUDE.md
 /SYNC-POINTS.md
+/opencode.json
 
 # Local E2E rehearsal scratch (npm run test:manual --dir=...)
 /tests/e2e-scratch/

@@ -7,6 +7,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versi
 
 ## [Unreleased]
 
+### Fixed
+- **Repo `.gitignore` missing OpenCode self-install artifacts.** When OpenCode was added as the 5th framework, its root artifacts `/.opencode/` and `/opencode.json` were never added to the platform repo's own `.gitignore` (only the *installer's* target-repo gitignore block was updated). During platform dev/testing these could be accidentally committed. Added both entries alongside the other self-install artifacts. (Installer target-repo behavior was already correct.)
+
 ---
 
 ## [2.46.0] — 2026-07-05
